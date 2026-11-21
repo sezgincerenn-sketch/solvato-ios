@@ -15,6 +15,14 @@ Claude Code'un bu repoda nasıl çalışacağı. Kodun yapısı `README.md`'de, 
   yaparsın; o sonucu GitHub'da ve önizlemede görür. iOS derlemesi bulut serviste alınır: Xcode'da elle yapılacak bir
   ayar gerekiyorsa onu proje dosyasından yap ya da nasıl yapılacağını göster.
 
+## Repolar
+
+- **Bu repo (`solvato-ios`)**: aktif geliştirme, iPhone + iPad. Değişiklikler buraya, `main`e.
+- `solvato-android`: dondurulmuş kopya; Android işi başlayana kadar **kod yazma**. Başlayınca `src/` buradan alınır.
+  Bu yüzden `src/` içindeki Android'e özel küçük parçaları (geri tuşu) silme.
+- `solvato-admin`: analitik sunucusu, veritabanı ve admin paneli (1.1, `docs/PLAN.md`).
+- Eski `solvato` reposu kullanılmıyor.
+
 ## Çalışma şekli
 
 - Küçük, net istekleri doğrudan yap. Geri dönmesi zor ya da birden çok yoruma açık işlerde önce tek soru sor.
@@ -32,7 +40,7 @@ npm run check          # tür kontrolü (noUnused açık) + Prettier kontrolü
 npm run format         # biçim hatalarını düzeltir
 node scripts/ekran.mjs --ad x --adim Profil --se   # ekran görüntüsü (önce npm run build); `ekran` becerisine bak
 npm run build:single   # tek dosyalık önizleme: dist-single/index.html
-npm run sync           # derle + cap sync (android/ ve ios/ projelerini günceller)
+npm run sync           # derle + cap sync ios (ios/ projesini günceller)
 ```
 
 Kancalar (`.claude/settings.json`): oturum başında `node_modules` yoksa `npm install`; düzenlenen `src/` dosyası Prettier'dan

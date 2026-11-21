@@ -11,8 +11,7 @@ Ayrıntılı ilk kontrol `docs/APP-STORE-KONTROL.md`'de. Her sürümde şunlara 
 
 1. **Apple'ın güncel kuralları:** https://developer.apple.com/news/upcoming-requirements/ sayfasını oku (tahmin etme);
    en düşük Xcode/SDK ve iOS hedefini `ios/App/App.xcodeproj/project.pbxproj` ve bulut derleme ayarıyla karşılaştır.
-2. **Sürüm numarası:** `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (pbxproj, iki yer), `android/app/build.gradle`
-   `versionName` / `versionCode`, Ayarlar'daki "Sürüm" yazısı aynı olmalı; build numarası her yüklemede artar.
+2. **Sürüm numarası:** `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (pbxproj, iki yer; build numarasını Codemagic verir), Ayarlar'daki "Sürüm" yazısı aynı olmalı; build numarası her yüklemede artar.
 3. **Gizlilik:** yeni native eklenti eklendiyse kaynağında required reason API ara
    (`UserDefaults`, dosya tarihleri, `systemUptime`, disk alanı, klavye listesi) ve `ios/App/App/PrivacyInfo.xcprivacy`'ye ekle.
    `node scripts/ekran.mjs` birkaç ekranda DIŞ İSTEK raporlamamalı.

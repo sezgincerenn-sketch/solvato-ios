@@ -1,7 +1,9 @@
 # Solvato
 
 Piyano öğrencileri için nota okuma, ritim, akor ve müzik terimleri pratiği.
-iOS ve Android'de çalışan tek bir web uygulaması: **React 19 + TypeScript + Vite**, yerel kabuk **Capacitor 7**.
+iPhone ve iPad uygulaması: **React 19 + TypeScript + Vite**, yerel kabuk **Capacitor 7**.
+Bu repo **iOS** sürümüdür. Android sürümü dondurulmuş bir kopya olarak `solvato-android` reposunda; Android işi başlayınca
+`src/` buradan oraya alınır. Analitik sunucusu ve admin paneli `solvato-admin` reposunda (1.1).
 Sunucu yok; tüm ilerleme telefonda saklanır.
 
 Ürün kararları ve yol haritası: `docs/URUN.md`. Claude Code ile çalışma kuralları: `CLAUDE.md`,
@@ -32,7 +34,7 @@ Sunucu yok; tüm ilerleme telefonda saklanır.
   `SolfieSays` konuşma balonuyla. Pozlar duruma göre: `idle` (ipucu, tur sonucu), `wave` (tanıtımın ilk adımı, selam),
   `cheer` (rekor, kutlama penceresi, tanıtımın son adımı "Hazırsın"). Balon metni tek kısa cümle; her ekrana eklemeyin,
   az görünmesi değerini korur.
-- Uygulama kimliği: `com.solvato.app` (Android paketi `android/app/src/main/java/com/solvato/app`).
+- Uygulama kimliği: `com.solvato.app` (iOS ve Android'de aynı).
 - Eski ad Notalık'tı; ad ve kimlik ilk mağaza yüklemesinden önce değişti. Depolama anahtarları **bilerek değiştirilmedi**
   (anlamları yok, değiştirmek yalnızca geçiş kodu gerektirir):
   `pianote_settings_v1`, `notausta_stats_v1`, `notalik_rotate_hint_v1`, `notalik-daily` vb. Yeni anahtar eklerken
@@ -51,10 +53,16 @@ npm run format       # Prettier ile biçimlendir
 | ------------------------ | -------------------------------------------------------------------------- |
 | `npm run build`          | `dist/` içine üretim derlemesi                                             |
 | `npm run build:single`   | Tek dosyalık önizleme (`dist-single/index.html`), paylaşmak için           |
-| `npm run sync`           | Derle + `cap sync` (iOS/Android projelerini günceller)                     |
+| `npm run sync`           | Derle + `cap sync ios` (iOS projesini günceller)                           |
 | `npm run ios`            | Derle, eşitle, Xcode'u aç (Mac gerekir)                                    |
-| `npm run android`        | Derle, eşitle, Android Studio'yu aç                                        |
 | `node scripts/ekran.mjs` | Ekran görüntüsü (koyu/açık, `--se`, `--tablet`), taşma ve dış istek raporu |
+
+## iOS derlemesi ve TestFlight
+
+Mac yok: `codemagic.yaml` Codemagic'in bulut Mac'inde derler, imzalar ve TestFlight'a yükler (Xcode 26+ kontrolü,
+`npm run check`, build numarası Codemagic sayacından). Başlatma: Codemagic'te "Start new build" ya da `testflight-*` git
+etiketi. Kurulum ve cihaz testi listesi: `docs/IOS-TEST-REHBERI.md`. Ses oturumu `AppDelegate.swift`'te `playback` +
+`mixWithOthers`: sessiz düğme açıkken de ses çalar, arkadaki müzik durmaz.
 
 ## Klasör yapısı
 
@@ -148,7 +156,7 @@ Yeni bir renk gerekiyorsa önce `palette`'e, temaya göre değişmesi gerekiyors
 - **Ünvanlar**: seviyeden ayrı, XP ile kazanılan 15 basamak (Yeni Başlayan → Usta), `utils/level.ts` `RANKS`.
   Arayüzde "seviye" kelimesi yalnızca Başlangıç/Orta/İleri için kullanılır; XP basamakları her yerde "ünvan".
 - **Kaydırarak geri (`utils/swipeBack.tsx`)**: ekranın sol kenarından kaydırınca önceki ekran altta görünür.
-  Ekranların geri düğmesi `data-back` ile işaretlenir; Android geri tuşu da onu kullanır.
+  Ekranların geri düğmesi `data-back` ile işaretlenir; Android geri tuşu da onu kullanır (iOS'ta etkisiz; `src/` Android'e aynen taşınabilsin diye duruyor).
 - **Gizlilik ve Lisanslar (`screens/LegalScreen.tsx`, `data/legal.ts`)**: Ayarlar › Hakkında. Gizlilik metni mağazadaki
   gizlilik politikasıyla aynı içerikte tutulur (App Store 5.1.1 politikayı uygulama içinde de ister); politika değişirse
   ikisi birlikte güncellenir. Font lisansları (SIL OFL) paketlerin kendi `LICENSE` dosyalarından `?raw` ile alınır;

@@ -50,7 +50,7 @@ mağaza metinlerini ona göre güncellerim. Ad yayından önce değiştirilebili
 
 1. Codemagic → **Sign up** → **GitHub ile devam et**. **Kişisel hesap** kullan, takım (Team) oluşturma. Ücretsiz
    500 dakika yalnızca kişisel hesapta var.
-2. GitHub izin ekranında `solvato` reposuna erişim ver.
+2. GitHub izin ekranında `solvato-ios` reposuna erişim ver.
 3. Hesap ayarları → **Integrations** → **Developer Portal** → **Manage keys** → **Add key**.
 4. App Store Connect API key name: tam olarak **`Solvato`** yaz (derleme dosyası bu adı arıyor).
 5. Issuer ID ve Key ID'yi gir, `.p8` dosyasını yükle → **Save**.
@@ -85,7 +85,7 @@ demektir. Apple Developer → Certificates'ta kullanmadığın eskilerden birini
 
 ### 8. Uygulamayı Codemagic'e ekle ve ilk derlemeyi başlat
 
-1. Codemagic → **Applications** → **Add application** → GitHub → `solvato` reposu.
+1. Codemagic → **Applications** → **Add application** → GitHub → `solvato-ios` reposu.
 2. Codemagic repodaki `codemagic.yaml` dosyasını bulur. Proje türü sorarsa **codemagic.yaml**'ı seç.
 3. **Start new build** → Branch: `main` → Workflow: **iOS → TestFlight** → **Start new build**.
 4. Derleme yaklaşık 15–20 dakika sürer. Adımlar tek tek yeşile döner. Kırmızı bir adım olursa aşağıdaki

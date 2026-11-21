@@ -295,3 +295,12 @@ Kural: uygulama "yeniden paketlenmiş bir web sitesinin" ötesine geçen özelli
 1. **iPad:** koruyup 13 inç görüntü mü hazırlayalım, yoksa yalnız iPhone mu? (3e)
 2. **Sessiz mod:** sessizde de ses gelsin mi? (5c)
 3. **Gizlilik sayfasının adresi:** GitHub Pages'i ben kurayım mı? (2e)
+
+## Özellik kontrolleri
+
+Her yeni özellik ya da bağımlılıktan sonra kısa kontrol (`bitir` becerisi, adım 4b). Tam kontrol her sürümde `/magaza-kontrol`.
+
+| Tarih      | Değişiklik                                | Sonuç                                                                 |
+| ---------- | ----------------------------------------- | --------------------------------------------------------------------- |
+| 21.11.2026 | Sessiz modda ses (AppDelegate)            | Tamam: yeni izin yok, ağ isteği yok. 5c kapandı; cihazda doğrulanacak |
+| 21.11.2026 | Codemagic derlemesi, Android'in ayrılması | Tamam: Xcode 26+ derlemede kontrol ediliyor (madde 0)                 |

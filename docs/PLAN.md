@@ -55,7 +55,7 @@ Veritabanını A ile başlayıp B'ye genişleyebilecek şekilde tasarlarım (aş
 
 | Repo                     | İçerik                                                    | Durum                     |
 | ------------------------ | --------------------------------------------------------- | ------------------------- |
-| `solvato` (bu repo)      | iOS uygulaması: `src/` + `ios/`                           | Aktif geliştirme          |
+| `solvato-ios`            | iOS uygulaması: `src/` + `ios/`                           | Aktif geliştirme          |
 | `solvato-android` (yeni) | Bugünkü `src/` + `android/` anlık kopyası                 | Dondurulmuş, kod yazılmaz |
 | `solvato-admin` (yeni)   | Sunucu (Cloudflare Worker), veritabanı (D1), admin paneli | Paket 4'te                |
 
@@ -146,6 +146,5 @@ istiyorsan Paket 4'ü öne alırız.
 
 ## Hâlâ açık
 
-1. Repo yapısı: önerilen yapı (bu repo iOS, `solvato-android` dondurulmuş kopya, `solvato-admin`) itiraz gelmezse uygulanır.
-   GitHub'da iki boş reponun Ceren tarafından açılması gerekiyor.
-2. Sessiz modda ses (önerim: evet, arkada çalan müzik durmadan).
+Yok. Repolar açıldı (21 Kasım): `solvato-ios` (aktif, eski `solvato`nun tüm geçmişiyle), `solvato-android` (dondurulmuş),
+`solvato-admin` (boş iskelet). Sessiz modda ses: evet, uygulandı.

@@ -12,12 +12,10 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "check": "npm run typecheck && npm run format:check",
-    "sync": "npm run build && cap sync",
-    "ios": "npm run build && cap sync ios && cap open ios",
-    "android": "npm run build && cap sync android && cap open android"
+    "sync": "npm run build && cap sync ios",
+    "ios": "npm run build && cap sync ios && cap open ios"
   },
   "dependencies": {
-    "@capacitor/android": "^7.0.0",
     "@capacitor/app": "^7.1.2",
     "@capacitor/core": "^7.0.0",
     "@capacitor/haptics": "^7.0.5",
