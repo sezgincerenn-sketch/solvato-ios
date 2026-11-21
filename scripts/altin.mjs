@@ -20,6 +20,10 @@ await build({
   format: "esm",
   outfile: tmp,
   logLevel: "warning",
+  jsx: "automatic",
+  // react-dom/server CommonJS: Node modüllerini require ile ister
+  banner: { js: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);" },
+  define: { "process.env.NODE_ENV": '"production"' },
 })
 
 rmSync(out, { recursive: true, force: true })
@@ -35,5 +39,9 @@ mkdirSync(dirname(bankOut), { recursive: true })
 writeFileSync(bankOut, JSON.stringify(bank.questions) + "\n")
 const fixture = { count: bank.count, levels: bank.levels }
 writeFileSync(join(out, "soru-bankasi.json"), JSON.stringify(fixture) + "\n")
+
+// Bravura sembol yolları (src/data/smufl.ts): native nota çizimi aynı yolları kullanır
+const { SMUFL } = await import(join(root, "src/data/smufl.ts"))
+writeFileSync(join(dirname(bankOut), "smufl.json"), JSON.stringify(SMUFL) + "\n")
 
 execFileSync("du", ["-sh", out, bankOut], { stdio: "inherit" })
