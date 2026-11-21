@@ -1,6 +1,54 @@
 # Codemagic bulut derlemesi: iOS uygulamasını derler, imzalar ve TestFlight'a yükler (Mac gerekmez).
 # Kurulum ve kullanım: docs/IOS-TEST-REHBERI.md
-# Başlatma: Codemagic'te "Start new build" ya da `testflight-` ile başlayan bir git etiketi (Claude atar).
+# Başlatma: Codemagic'te "Start new build". Native iOS iş akışları aşağıda.
+definitions:
+  # Native iOS iş akışlarının ortak adımları (aşağıda *ad ile kullanılır)
+  native_adimlar:
+    - &xcode_kontrol
+      name: Xcode sürümü 26 ya da üstü mü
+      script: |
+        xcodebuild -version
+        MAJOR=$(xcodebuild -version | head -1 | awk '{print $2}' | cut -d. -f1)
+        if [ "$MAJOR" -lt 26 ]; then echo "Xcode $MAJOR: App Store Connect Xcode 26+ istiyor"; exit 1; fi
+    - &cekirdek_test
+      name: Çekirdek paket testleri (SolvatoCore)
+      script: cd ios-native/SolvatoCore && swift test
+    - &xcodegen
+      name: Xcode projesini üret (XcodeGen)
+      script: |
+        brew install xcodegen
+        cd ios-native && xcodegen generate
+    - &ui_ekranlar
+      name: UI testleri ve ekran görüntüleri
+      script: |
+        set -o pipefail
+        # Simülatör adları Xcode sürümüyle değişir; mevcutlardan seç: büyük iPhone, küçük iPhone, 13 inç iPad
+        xcrun simctl list devices available -j > /tmp/sims.json
+        python3 - > /tmp/devices.txt <<'PY'
+        import json, re
+        devs = [d for r, ds in json.load(open("/tmp/sims.json"))["devices"].items() if "iOS" in r for d in ds]
+        names = [d["name"] for d in devs]
+        def pick(*patterns):
+            for p in patterns:
+                for n in names:
+                    if re.fullmatch(p, n): return n
+        for slug, n in [
+            ("iphone", pick(r"iPhone \d+ Pro", r"iPhone \d+")),
+            ("iphone-kucuk", pick(r"iPhone SE.*", r"iPhone \d+e")),
+            ("ipad", pick(r"iPad Pro 13.*", r"iPad Pro.*", r"iPad.*")),
+        ]:
+            if n: print(f"{slug}|{n}")
+        PY
+        cat /tmp/devices.txt
+        mkdir -p build/ekranlar
+        while IFS='|' read -r SLUG DEVICE; do
+          xcodebuild test -project ios-native/Solvato.xcodeproj -scheme Solvato \
+            -destination "platform=iOS Simulator,name=$DEVICE" \
+            -resultBundlePath "build/ui-$SLUG.xcresult" CODE_SIGNING_ALLOWED=NO < /dev/null | tail -20
+          python3 scripts/native-ekranlar.py "build/ui-$SLUG.xcresult" "$SLUG" build/ekranlar
+        done < /tmp/devices.txt
+        cd build && zip -qr native-ekranlar.zip ekranlar
+
 workflows:
   ios-testflight:
     name: iOS → TestFlight
@@ -60,20 +108,18 @@ workflows:
         submit_to_testflight: true # iç test grubundakiler (Ceren) beta incelemesi beklemeden alır
 
   # ─── Native iOS (Swift / SwiftUI, docs/PLAN.md Paket 0) ─────────────────────────────────────────────────────────
-  # Çekirdek paketin testleri, iPhone / küçük iPhone / iPad simülatöründe UI testleri ve ekran görüntüleri,
-  # ardından imzalı derleme TestFlight'a. Başlatma: main'e `ios-native/` klasörünü değiştiren her gönderim (kendiliğinden)
-  # ya da Codemagic'te elle "Start new build". (Bulut oturumları git etiketi gönderemiyor.)
+  # İki iş akışı:
+  # - ios-native-test: imzasız. Çekirdek paket testleri, iPhone / küçük iPhone / iPad simülatöründe UI testleri ve
+  #   ekran görüntüleri. main'e `ios-native/` klasörünü değiştiren her gönderimde kendiliğinden başlar.
+  # - ios-native-testflight: aynı adımlar + imzalı derleme ve TestFlight. Elle başlatılır ("Start new build");
+  #   App Store imzalaması kurulu olmalı (docs/IOS-TEST-REHBERI.md, Bölüm A ve B 5–7).
   # Ekran görüntüleri derleme çıktısında `native-ekranlar.zip` (<senaryo>-<iphone|iphone-kucuk|ipad>-<koyu|acik>.png).
-  ios-native:
-    name: Native iOS → testler, ekranlar, TestFlight
+  # (Bulut oturumları git etiketi gönderemediği için etiketle başlatma yok.)
+  ios-native-test:
+    name: Native iOS → testler ve ekranlar
     instance_type: mac_mini_m2
-    max_build_duration: 90
-    integrations:
-      app_store_connect: Solvato
+    max_build_duration: 60
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.solvato.app
       xcode: latest
     triggering:
       events:
@@ -89,46 +135,30 @@ workflows:
           - scripts/native-ekranlar.py
           - codemagic.yaml
     scripts:
-      - name: Xcode sürümü 26 ya da üstü mü
-        script: |
-          xcodebuild -version
-          MAJOR=$(xcodebuild -version | head -1 | awk '{print $2}' | cut -d. -f1)
-          if [ "$MAJOR" -lt 26 ]; then echo "Xcode $MAJOR: App Store Connect Xcode 26+ istiyor"; exit 1; fi
-      - name: Çekirdek paket testleri (SolvatoCore)
-        script: cd ios-native/SolvatoCore && swift test
-      - name: Xcode projesini üret (XcodeGen)
-        script: |
-          brew install xcodegen
-          cd native && xcodegen generate
-      - name: UI testleri ve ekran görüntüleri
-        script: |
-          set -o pipefail
-          # Simülatör adları Xcode sürümüyle değişir; mevcutlardan seç: büyük iPhone, küçük iPhone, 13 inç iPad
-          xcrun simctl list devices available -j > /tmp/sims.json
-          python3 - > /tmp/devices.txt <<'PY'
-          import json, re
-          devs = [d for r, ds in json.load(open("/tmp/sims.json"))["devices"].items() if "iOS" in r for d in ds]
-          names = [d["name"] for d in devs]
-          def pick(*patterns):
-              for p in patterns:
-                  for n in names:
-                      if re.fullmatch(p, n): return n
-          for slug, n in [
-              ("iphone", pick(r"iPhone \d+ Pro", r"iPhone \d+")),
-              ("iphone-kucuk", pick(r"iPhone SE.*", r"iPhone \d+e")),
-              ("ipad", pick(r"iPad Pro 13.*", r"iPad Pro.*", r"iPad.*")),
-          ]:
-              if n: print(f"{slug}|{n}")
-          PY
-          cat /tmp/devices.txt
-          mkdir -p build/ekranlar
-          while IFS='|' read -r SLUG DEVICE; do
-            xcodebuild test -project ios-native/Solvato.xcodeproj -scheme Solvato \
-              -destination "platform=iOS Simulator,name=$DEVICE" \
-              -resultBundlePath "build/ui-$SLUG.xcresult" CODE_SIGNING_ALLOWED=NO < /dev/null | tail -20
-            python3 scripts/native-ekranlar.py "build/ui-$SLUG.xcresult" "$SLUG" build/ekranlar
-          done < /tmp/devices.txt
-          cd build && zip -qr native-ekranlar.zip ekranlar
+      - *xcode_kontrol
+      - *cekirdek_test
+      - *xcodegen
+      - *ui_ekranlar
+    artifacts:
+      - build/native-ekranlar.zip
+      - /tmp/xcodebuild_logs/*.log
+
+  ios-native-testflight:
+    name: Native iOS → TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 90
+    integrations:
+      app_store_connect: Solvato
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.solvato.app
+      xcode: latest
+    scripts:
+      - *xcode_kontrol
+      - *cekirdek_test
+      - *xcodegen
+      - *ui_ekranlar
       - name: İmzalama ayarları
         script: xcode-project use-profiles --project ios-native/Solvato.xcodeproj
       - name: Build numarası (her derlemede artar)

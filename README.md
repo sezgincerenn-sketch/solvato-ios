@@ -82,10 +82,12 @@ ios-native/
 - **Web ile birebir değerler:** `node scripts/native-tokens.mjs` web'in `tokens.ts` + `tokens.css` değerlerini
   `SolvatoCore/Tests/.../Fixtures/tokens.json`'a döker; `TokensTests` Swift değerlerini bununla karşılaştırır. Web
   tasarım değeri değişirse betiği çalıştırın ve Swift tarafını eşitleyin.
-- **Derleme:** Codemagic `ios-native` iş akışı (main'e `ios-native/` değişikliği gönderilince kendiliğinden başlar): `swift test`, `xcodegen generate`,
-  iPhone / küçük iPhone / iPad simülatörlerinde UI testleri, ekran görüntüleri (`native-ekranlar.zip`, adlar web referanslarıyla aynı:
-  `<senaryo>-<cihaz>-<koyu|acik>.png`), imzalı derleme ve TestFlight. Build numarası 1000 + Codemagic sayacı (React
-  derlemeleriyle çakışmaz). Aynı uygulama kaydı (`com.solvato.app`).
+- **Derleme (Codemagic, iki iş akışı):**
+  - `ios-native-test`, imzasız: `swift test`, `xcodegen generate`, iPhone / küçük iPhone / iPad simülatörlerinde UI
+    testleri ve ekran görüntüleri (`native-ekranlar.zip`, adlar web referanslarıyla aynı:
+    `<senaryo>-<cihaz>-<koyu|acik>.png`). main'e `ios-native/` değişikliği gönderilince kendiliğinden başlar.
+  - `ios-native-testflight`: aynı adımlar + imzalı derleme ve TestFlight; elle başlatılır. Build numarası 1000 +
+    Codemagic sayacı (React derlemeleriyle çakışmaz). Aynı uygulama kaydı (`com.solvato.app`).
 - Tema tercihi web'le aynı anahtarda (`pianote_theme_v1`, UserDefaults). UI testleri `-UITestTheme dark|light` ile
   temayı zorlar.
 - Henüz tek ekran var: tasarım sistemi önizlemesi. Gerçek ekranlar aşama 0.5'te.
