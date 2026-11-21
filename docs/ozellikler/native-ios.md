@@ -64,8 +64,9 @@ alır ve bitince işaretler.
 
 - Arayüz yazısı **Outfit**, sayılar ve kodlar **JetBrains Mono** (`@fontsource`), nota sembolleri **Bravura**
   (SMuFL). Üçü de uygulamaya gömülür; lisansları Lisanslar sayfasında (`src/data/legal.ts`).
-- Bugün semboller SVG yolu olarak çiziliyor (`src/data/smufl.ts`); native'de Bravura yazı tipinden doğrudan çizilir
-  (PLAN: performans). Görünüş aynı kalmalı: aynı boyut, aynı konum.
+- Semboller web'de Bravura'dan çıkarılmış SVG yolları (`src/data/smufl.ts`). Native de **aynı yolları** kullanır
+  (`scripts/altin.mjs` → `Resources/smufl.json`, bir kez okunup saklanır): yazı tipi gömmeye göre görünüş birebir
+  tutar, uygulama küçük kalır, hızı aynı. Görünüş aynı: aynı boyut, aynı konum (0.4, 22 Kasım).
 - Ölçüler `tokens.ts`: `radius xs4 sm8 md12 lg20 pill`, `space` 4'ün katları, yazı boyları `12/14/16/20/24/32`,
   ağırlıklar 400–800.
 
@@ -564,9 +565,17 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 - **Akor portesi** (`ChordStaffSvg.tsx`), **günlük hedef portesi** (`GoalStaff.tsx`).
 - **Klavye**: tek/çok oktav, siyah tuşlar, tuş adları, basılı/doğru/yanlış/ipucu görünümleri (`design/piano.ts` tek
   kaynak), çok tuşlu seçim.
+- Yöntem (0.4): React bileşenleri sunucu tarafında SVG'ye dökülür ve parçalara ayrılır (`scripts/altin/cizim.ts` →
+  `cizim.json`): çizgi, dikdörtgen, daire, yol, Bravura sembolü, yazı; sırası, konumu, rengi. Native yerleşim motoru
+  (`SolvatoCore/Notation`) aynı listeyi üretir, `NotationTests` karşılaştırır. SwiftUI yalnız çizer
+  (`Solvato/Notation/DrawingView.swift`).
 - Kabul:
-  - [ ] Bankadaki 701 sorunun ve 94 akorun çizimi, React çizimiyle üst üste konduğunda aynı (0.4'te görüntü
-        karşılaştırma betiği).
+  - [x] Bankadaki her nota metni (`score`, `optionScores`), terim ve ritim gösterimleri, Ritmi Tut'un 30 ritmi ve
+        kenar durumları (261 metin), her nota konumunun portesi (204), 94 akor × 3 renk, günlük hedef portesi, anahtar
+        ikonları React'la parça parça aynı.
+  - [ ] Ekranda React görüntüsüyle üst üste konduğunda aynı (Codemagic görüntüleri; yazıların taban çizgisi ve
+        parıltı göz kontrolüyle).
+  - [ ] Klavye (tek ve çok tuşlu) React'la aynı.
 
 ## D. Sistem entegrasyonları
 

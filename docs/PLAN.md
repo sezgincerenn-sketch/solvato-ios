@@ -115,6 +115,8 @@ okuma kodu, günün meydan okuması, tohumlu oyun soruları, tur için soru seç
 31 test geçiyor (K-01–K-04, K-06–K-09, K-12, K-14–K-16). Akor motoru ve akor turu (K-17), Ritmi Tut puanlama (K-18),
 haftalık rapor ve dönem doğruluğu (K-13, K-14), kalıcı depolama (G-09: web anahtarlarıyla dosyalar, veri koruması,
 yedek dışı son ders) eklendi; 46 test. **0.3 tamam.** Sırada 0.4: nota çizimi ve piyano klavyesi.
+0.4 başladı (22 Kasım): nota çizimi (Notation dili, tek nota portesi, akor portesi, günlük hedef portesi, anahtar ikonu)
+web'in SVG çıktısıyla parça parça aynı; 54 test. Tasarım sistemi ekranında örnekler. 0.4'te kalan: piyano klavyeleri.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.

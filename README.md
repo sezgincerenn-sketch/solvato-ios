@@ -75,9 +75,12 @@ ios-native/
   SolvatoCore/         arayüzden bağımsız Swift paketi (Linux'ta da derlenir): tasarım değerleri, tema tercihi;
                        Logic/ (soru bankası, seviye, ünvan, yıldız, seri, tur sonu, öğretmen ve meydan okuma kodu,
                        oyunlar, soru seçimi, kulak soruları, akorlar ve akor turu, Ritmi Tut puanlama, haftalık rapor, kalıcı depolama), Resources/soru-bankasi.json. Testler: `swift test`
+                       Notation/ (nota çizimi yerleşimi: Notation dili, portesi, akor ve hedef portesi → çizim listesi),
+                       Resources/smufl.json (Bravura sembol yolları, web'le aynı)
   Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
                        aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,
-                       StatTile, StatPill, ScoreRing; SVG yolları Vector.swift ile çizilir), Screens/,
+                       StatTile, StatPill, ScoreRing; SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
+                       Canvas'a çizer; NotationView, MusicalStaffView, ChordStaffView, GoalStaffView, ClefIconView), Screens/,
                        Resources/Fonts (Outfit, JetBrains Mono TTF), PrivacyInfo.xcprivacy
   SolvatoUITests/      her ekranı koyu/açık açıp ekran görüntüsü alan testler
 ```
@@ -86,8 +89,9 @@ ios-native/
   `SolvatoCore/Tests/.../Fixtures/tokens.json`'a, ikon ve yıldız yollarını `icons.json`'a döker; `TokensTests` Swift değerlerini bununla karşılaştırır. Web
   tasarım değeri değişirse betiği çalıştırın ve Swift tarafını eşitleyin.
 - **Mantık web ile birebir (altın tablolar):** `node scripts/altin.mjs` React mantığını sabit tarih, saat dilimi ve
-  rastgelelikle çalıştırıp girdi/çıktıları `Fixtures/altin/`'e yazar ve soru bankasını `Resources/soru-bankasi.json`'a
-  döker; Swift testleri aynı girdiyle aynı çıktıyı bekler. `src/` mantığı ya da soruları değişirse betiği çalıştırın.
+  rastgelelikle çalıştırıp girdi/çıktıları `Fixtures/altin/`'e yazar, soru bankasını `Resources/soru-bankasi.json`'a ve
+  Bravura yollarını `Resources/smufl.json`'a döker. Nota çizimleri için React bileşenlerini SVG'ye döküp parçalara ayırır
+  (`scripts/altin/cizim.ts`); Swift testleri aynı girdiyle aynı çıktıyı bekler. `src/` mantığı ya da soruları değişirse betiği çalıştırın.
   Rastgelelik dışarıdan verilir (`RandomSource`; oyunlarda web'le aynı tohumlu üreteç). İstatistik JSON'u kendi küçük
   okuyucusuyla (`JSON.swift`) okunur, çünkü sözlüklerin ekleme sırası ekranda görünür (eşit yüzdeli zorlandığın notalar).
   Swift bulut oturumunda: `download.swift.org`'dan `/opt/swift`'e kurulur.
