@@ -1,4 +1,4 @@
-// Tasarım sistemi önizlemesi: palet, tema renkleri, konu renkleri, yazı basamakları, düğme ve kart.
+// Tasarım sistemi önizlemesi: logo, ikonlar, seçim ve gösterim parçaları, renkler, yazı basamakları, düğme ve kart.
 // Aşama 0.2'de uygulamanın tek ekranı; gerçek ekranlar gelince (0.5) yalnızca UI testlerinde açılır.
 // Koyu / açık görüntüsü web'deki değerlerle göz kontrolü içindir; sayısal eşitliği SolvatoCore testleri doğrular.
 import SolvatoCore
@@ -6,12 +6,20 @@ import SwiftUI
 
 struct DesignSystemScreen: View {
     @Binding var themeMode: ThemeMode
+    // Seçim parçalarının önizleme durumu
+    @State private var chip = "Tümü"
+    @State private var goal = 20
+    @State private var level = "orta"
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Space.s6) {
                 header
                 themePicker
+                section("Logo ve ikonlar") { logoAndIcons }
+                section("Seçim") { choices }
+                section("Rozet ve göstergeler") { badges }
+                section("Puan halkası") { rings }
                 section("Konu renkleri") { categories }
                 section("Tema renkleri") { themeColors }
                 section("Palet") { palette }
@@ -30,10 +38,7 @@ struct DesignSystemScreen: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: Space.s1) {
-            (Text("Solv").foregroundStyle(ThemeColor.text.color)
-                + Text("ato").foregroundStyle(Brand.accent.color))
-                .font(.ui(FontSize.xxl, .heavy))
-                .tracking(em: -0.02, size: FontSize.xxl)
+            Logo(size: 34)
             Text("Tasarım sistemi")
                 .font(.ui(FontSize.sm, .medium))
                 .foregroundStyle(ThemeColor.textMuted.color)
@@ -131,6 +136,70 @@ struct DesignSystemScreen: View {
                 AppButton("Vazgeç", variant: .ghost, action: {})
                 AppButton("Pasif", disabled: true, action: {})
             }
+        }
+    }
+
+    private var logoAndIcons: some View {
+        VStack(alignment: .leading, spacing: Space.s4) {
+            HStack(spacing: Space.s6) {
+                LogoMark(size: 72)
+                Logo(size: 28)
+            }
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: Space.s10), spacing: Space.s2)], spacing: Space.s3) {
+                ForEach(IconName.allCases, id: \.self) { name in
+                    Icon(name, size: 24, fill: [.flame, .star, .heart].contains(name))
+                        .foregroundStyle(ThemeColor.textSecondary.color)
+                }
+            }
+        }
+    }
+
+    private var choices: some View {
+        VStack(alignment: .leading, spacing: Space.s3) {
+            HStack(spacing: Space.s2) {
+                ForEach(["Tümü", "Sol", "Fa", "Ritim"], id: \.self) { title in
+                    Chip(title, selected: chip == title) { chip = title }
+                }
+            }
+            Segmented(value: goal, options: [(10, "10"), (20, "20"), (30, "30"), (50, "50")]) { goal = $0 }
+            ChoiceCard(
+                selected: level == "baslangic", title: "Yeni başladım", sub: "Temel notalar, ritim ve işaretler",
+                action: { level = "baslangic" }
+            ) { Icon(.leaf, size: 22) }
+            ChoiceCard(
+                selected: level == "orta", title: "Bir süredir çalıyorum", sub: "Tüm notalar, diyez/bemol, ek çizgiler",
+                action: { level = "orta" }
+            ) { Icon(.piano, size: 22) }
+        }
+    }
+
+    private var badges: some View {
+        VStack(alignment: .leading, spacing: Space.s3) {
+            HStack(spacing: Space.s3) {
+                IconBadge(name: .note, color: CategoryColor.treble.base, size: .sm)
+                IconBadge(name: .target, color: CategoryColor.rhythm.base)
+                IconBadge(name: .trophy, color: Brand.highlight, size: .lg, glow: true)
+                VStack(alignment: .leading, spacing: Space.s2) {
+                    ForEach(0..<4, id: \.self) { Stars(value: $0) }
+                }
+            }
+            HStack(spacing: Space.s2) {
+                StatPill(tone: .orange, value: "12", label: "12 gün seri", action: {}) { Icon(.flame, size: 18, fill: true) }
+                StatPill(tone: .amber, value: "180 XP", label: "180 XP", action: {}) { Icon(.star, size: 18, fill: true) }
+                StatPill(tone: .muted, value: "0", label: "Seri yok", action: {}) { Icon(.flame, size: 18) }
+            }
+            HStack(spacing: Space.s2) {
+                StatTile(value: "%86", label: "Doğruluk")
+                StatTile(value: "0,9 sn", label: "Ort. süre")
+                StatTile(value: "1.270", label: "XP") { Icon(.star, size: 16, fill: true).foregroundStyle(PaletteColor.amber400.color) }
+            }
+        }
+    }
+
+    private var rings: some View {
+        HStack(spacing: Space.s4) {
+            ScoreRing(value: 7, max: 10, caption: "doğru", detail: "%70")
+            ScoreRing(value: 3, max: 4, size: 96, caption: "yıldız")
         }
     }
 

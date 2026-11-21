@@ -74,13 +74,15 @@ ios-native/
   project.yml          Xcode projesinin tanımı (XcodeGen); .xcodeproj repoda yok, derlemede üretilir
   SolvatoCore/         arayüzden bağımsız Swift paketi (Linux'ta da derlenir): tasarım değerleri, tema tercihi;
                        0.3'ten itibaren puan, seviye, seri, kodlar. Testler: `swift test`
-  Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (AppButton,
-                       AppCard), Screens/, Resources/Fonts (Outfit, JetBrains Mono TTF), PrivacyInfo.xcprivacy
+  Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
+                       aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,
+                       StatTile, StatPill, ScoreRing; SVG yolları Vector.swift ile çizilir), Screens/,
+                       Resources/Fonts (Outfit, JetBrains Mono TTF), PrivacyInfo.xcprivacy
   SolvatoUITests/      her ekranı koyu/açık açıp ekran görüntüsü alan testler
 ```
 
 - **Web ile birebir değerler:** `node scripts/native-tokens.mjs` web'in `tokens.ts` + `tokens.css` değerlerini
-  `SolvatoCore/Tests/.../Fixtures/tokens.json`'a döker; `TokensTests` Swift değerlerini bununla karşılaştırır. Web
+  `SolvatoCore/Tests/.../Fixtures/tokens.json`'a, ikon ve yıldız yollarını `icons.json`'a döker; `TokensTests` Swift değerlerini bununla karşılaştırır. Web
   tasarım değeri değişirse betiği çalıştırın ve Swift tarafını eşitleyin.
 - **Derleme (Codemagic, iki iş akışı):**
   - `ios-native-test`, imzasız: `swift test`, `xcodegen generate`, iPhone / küçük iPhone / iPad simülatörlerinde UI

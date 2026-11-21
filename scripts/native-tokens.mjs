@@ -1,6 +1,7 @@
 // Web tasarım sisteminin değerlerini (src/design/tokens.ts + tokens.css) JSON'a döker. Native iOS'taki Swift testi
 // (ios-native/SolvatoCore) aynı değerleri bu dosyayla karşılaştırır: renk, ölçü ya da yazı değeri iki sürümde ayrışırsa test düşer.
-// Kullanım: node scripts/native-tokens.mjs   (tokens.ts / tokens.css değişince yeniden çalıştırın)
+// İkon yolları (src/components/Icons.tsx) ve yıldız yolu (src/ui/Stars.tsx) da aynı şekilde icons.json'a yazılır.
+// Kullanım: node scripts/native-tokens.mjs   (tokens.ts / tokens.css / Icons.tsx değişince yeniden çalıştırın)
 import { readFileSync, writeFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 import { dirname, join } from "node:path"
@@ -78,3 +79,11 @@ console.log(`yazıldı: ${out.slice(root.length + 1)}`)
 console.log(
   `palet ${Object.keys(fixture.palette).length}, koyu ${Object.keys(fixture.theme.dark).length}, açık ${Object.keys(fixture.theme.light).length} renk`,
 )
+
+// İkonlar: Icons.tsx'teki PATHS nesnesi (JSX içerdiği için içe aktarılmaz, metinden okunur)
+const iconSrc = readFileSync(join(root, "src/components/Icons.tsx"), "utf8")
+const pathsBlock = iconSrc.slice(iconSrc.indexOf("const PATHS"), iconSrc.indexOf("\n}\n") + 2)
+const icons = Object.fromEntries([...pathsBlock.matchAll(/^\s+(\w+):\s*"([^"]+)"/gm)].map((m) => [m[1], m[2]]))
+const star = readFileSync(join(root, "src/ui/Stars.tsx"), "utf8").match(/const STAR = "([^"]+)"/)[1]
+writeFileSync(join(dirname(out), "icons.json"), JSON.stringify({ icons, star }, null, 2) + "\n")
+console.log(`ikon ${Object.keys(icons).length}`)

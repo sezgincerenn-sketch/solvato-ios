@@ -11,13 +11,14 @@ final class ScreenshotTests: XCTestCase {
             let app = launch(theme: theme)
             let screen = app.descendants(matching: .any)["tasarim-sistemi"]
             XCTAssertTrue(screen.waitForExistence(timeout: 10), "tasarım sistemi ekranı açılmadı")
-            snap("tasarim-1-\(tr)")
-            app.swipeUp()
-            app.swipeUp()
-            snap("tasarim-2-\(tr)")
-            app.swipeUp()
-            app.swipeUp()
-            snap("tasarim-3-\(tr)")
+            // Ekran uzun: her iki kaydırmada bir görüntü (iPad'de son görüntüler tekrar edebilir)
+            for shot in 1...5 {
+                if shot > 1 {
+                    app.swipeUp()
+                    app.swipeUp()
+                }
+                snap("tasarim-\(shot)-\(tr)")
+            }
             app.terminate()
         }
     }
