@@ -248,7 +248,7 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
   gün, hedef tutturulan gün, çözülen soru, haftalık doğruluk ve geçen hafta, konular (çok çözülenden aza), zorlanılan
   notalar, seviye, hedef, seri, öğretmen kodu. Tarih aralığı Türkçe ("16–22 Kasım", ay değişirse "30 Kasım – 6 Aralık").
 - Kabul:
-  - [ ] Altın tablodaki istatistik + tarih için rapor metni React'la karakter karakter aynı.
+  - [x] Altın tablodaki istatistik + tarih için rapor metni React'la karakter karakter aynı.
 
 ### K-14 Doğruluk dönemleri
 
@@ -597,7 +597,7 @@ React kodundan bir betikle (`node scripts/altin.mjs`; `scripts/altin/uret.ts`'i 
 üretilen JSON dosyaları, `ios-native/SolvatoCore/Tests/SolvatoCoreTests/Fixtures/altin/`; native testler bunları okur.
 Tarih, saat dilimi ve rastgelelik sabit. `seri` iki saat diliminde üretilir (`seri-Europe-Istanbul.json`,
 `seri-America-New_York.json`; ikincisi yaz saati gecelerini de içerir). Akor turu ayrıca `akor-turu.json`
-(K-17). Durum (22 Kasım): `haftalik-rapor` henüz üretilmiyor; diğerleri üretiliyor ve native testler geçiyor.
+(K-17). Durum (22 Kasım): tablonun hepsi üretiliyor ve native testler geçiyor.
 
 | Tablo                 | Girdi                                                         | Çıktı                                                 |
 | --------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |

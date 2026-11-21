@@ -112,9 +112,8 @@ ExitConfirm, TopicLink, PlayChip, NavBar, Coachmark (ekranlarla birlikte 0.5'te 
 0.3 başladı (22 Kasım): `scripts/altin.mjs` altın tabloları üretiyor; `SolvatoCore/Logic/` altında soru bankası ve
 seviyeler, ünvan, yıldız, takvim dönemleri, seri ve tur sonu istatistikleri, seviye atlama, kutlama, öğretmen kodu, meydan
 okuma kodu, günün meydan okuması, tohumlu oyun soruları, tur için soru seçimi, kulak soruları, zorlandığın notalar yazıldı;
-31 test geçiyor (K-01–K-04, K-06–K-09, K-12, K-14–K-16). Akor motoru ve akor turu (K-17), Ritmi Tut puanlama (K-18)
-eklendi, 37 test. 0.3'te kalan:
-haftalık rapor (K-13), depolama katmanı (UserDefaults, veri koruması, yedek dışı anahtar).
+31 test geçiyor (K-01–K-04, K-06–K-09, K-12, K-14–K-16). Akor motoru ve akor turu (K-17), Ritmi Tut puanlama (K-18),
+haftalık rapor ve dönem doğruluğu (K-13, K-14) eklendi, 38 test. 0.3'te kalan: depolama katmanı (UserDefaults, veri koruması, yedek dışı anahtar).
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.
