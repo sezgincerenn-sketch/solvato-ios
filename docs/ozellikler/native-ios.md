@@ -403,7 +403,8 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
   - [ ] iPad'de 2 oktav, iPhone yan ekranda 3 oktav; doğru tuş oktavlı kontrol ediliyor.
   - [ ] Süre dolunca yanlış sayılıyor ve açıklama açılıyor.
 - Görüntü: `soru-nota`, `soru-nota-ipucu`, `soru-nota-dogru`, `soru-nota-yanlis`, `soru-nota-siklar`,
-  `soru-diyez`, `soru-ritim`, `soru-terim`, `soru-yazim`, `soru-kulak`, `soru-sure`, `soru-cikis`.
+  `soru-nota-yatay` (yalnız iPhone yan), `soru-diyez`, `soru-ritim`, `soru-terim`, `soru-yazim`, `soru-kulak`,
+  `soru-sure`, `soru-cikis`.
 
 ### E-06 Akor turu
 
@@ -415,7 +416,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 - Alt düğme: "Seçenek Seç..." / "Tuşlara Bas..." / "Kontrol Et ✓" / "Sıradaki" / "Turu bitir".
 - Doğru: üstte bildirim "Harika! Do majör (+10 XP)", 1,5 sn sonra sıradaki. Yanlış/süre: "Süre doldu. Doğru cevap:
   …" + "Notalar: Do – Mi – Sol".
-- Görüntü: `akor-porte`, `akor-tuslar`, `akor-bas`, `akor-yanlis`.
+- Görüntü: `akor` (ilk soru; tohumla "Akoru bas" türü). Diğer türler ve yanlış durumu 0.5'te eklenir.
 
 ### E-07 Ritmi Tut
 
@@ -437,7 +438,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 - Doğruluk halkası (%, "7/10 doğru"), +XP, ortalama süre ("2,4 sn"; Ritmi Tut'ta "Ort. Sapma 38 ms").
 - Ünvan kartı (kısa): "Bu turda +70 XP. Porte Gezgini ünvanına 230 XP kaldı."
 - Ana düğme: "Hatalarını tekrar et · 3 soru" ya da "Yeni tur"; "Bitir".
-- Görüntü: `sonuc`, `sonuc-tam`, `sonuc-ritmi-tut`.
+- Görüntü: `sonuc` (Ritmi Tut sonucu cihazda dokunuş gerektirdiği için elle karşılaştırılır).
 
 ### E-09 Kutlama penceresi
 
@@ -515,7 +516,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
   - Majör ve minör nasıl kurulur (`ChordMemoVisual`, `KeyIntervals`); akor kartları 4 seviye (`ChordsStudy.tsx`,
     çevrilen kart, mini klavye, çalma, örnek diziler).
   - Terimler 6 grup (`TermsStudy.tsx`).
-- Görüntü: `ders-<id>` her ders için (19), ayrıca `ders-chords-1-kart` (çevrilmiş kart).
+- Görüntü: `ders-<id>` her ders için (19).
 
 ### E-17 Oyunlar
 
@@ -531,7 +532,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
   her yarıda akor (porte ya da tuşlar) ve şıklar; doğruya ilk basan puan alır, yanlış basan o soruda kilitlenir; ikisi
   de yanlışsa doğru gösterilir; 1,6 sn sonra sıradaki; 10 soru; sonuç (kazanan, Rövanş, Çık); çıkış onayı.
 - Görüntü: `oyunlar`, `oyunlar-oynandi`, `gunun-oyunu`, `gunun-oyunu-oynandi`, `meydan-oku`, `meydan-oku-hata`,
-  `oyun-sonucu-gunluk`, `oyun-sonucu-kod`, `duello-kurulum`, `duello-oyun`, `duello-sonuc`.
+  `oyun-sonucu-gunluk`, `oyun-sonucu-kod`, `duello-kurulum`, `duello-oyun`.
 
 ### E-18 Ortak pencereler ve parçalar
 
@@ -584,7 +585,7 @@ node scripts/referans.mjs --sadece soru    # adı "soru" ile başlayan senaryola
 - Sabitler: tarih 18 Kasım 2026 Çarşamba 10:00, rastgelelik tohumlu, "Hareketi azalt" açık (animasyonlar son
   karesinde). Örnek istatistikler betikteki `ORNEK_STATS` (Orta seviye, 4 günlük seri, 1.270 XP, zorlanılan notalar,
   son turlar).
-- Görüntüler git'e girmez (yaklaşık 200 dosya). Web kodu silinmeden önce (0.9) bir kez `docs/native/referans/`
+- 71 senaryo, 318 görüntü, 29 MB (1x). Görüntüler git'e girmez. Web kodu silinmeden önce (0.9) bir kez `docs/native/referans/`
   altına alınır.
 
 ## Altın tablolar (0.3'te üretilecek)
