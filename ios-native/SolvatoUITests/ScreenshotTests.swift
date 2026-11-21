@@ -11,12 +11,11 @@ final class ScreenshotTests: XCTestCase {
             let app = launch(theme: theme)
             let screen = app.descendants(matching: .any)["tasarim-sistemi"]
             XCTAssertTrue(screen.waitForExistence(timeout: 10), "tasarım sistemi ekranı açılmadı")
-            // Ekran uzun: her iki kaydırmada bir görüntü (iPad'de son görüntüler tekrar edebilir)
-            for shot in 1...5 {
-                if shot > 1 {
-                    app.swipeUp()
-                    app.swipeUp()
-                }
+            // Simülatörün ilk açılış bildirimleri (ör. Apple Intelligence) kaybolsun
+            if theme == "dark" { Thread.sleep(forTimeInterval: 8) }
+            // Ekran uzun: her kısa kaydırmada bir görüntü (iPad'de son görüntüler tekrar edebilir)
+            for shot in 1...8 {
+                if shot > 1 { app.swipeUp(velocity: .slow) }
                 snap("tasarim-\(shot)-\(tr)")
             }
             app.terminate()

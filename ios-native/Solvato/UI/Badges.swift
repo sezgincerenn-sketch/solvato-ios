@@ -62,7 +62,8 @@ struct Stars: View {
     }
 }
 
-/// Küçük istatistik kutusu: büyük değer + altında etiket
+/// Küçük istatistik kutusu: büyük değer + altında etiket. Yan yana kutular eşit boyda olsun diye satırı
+/// `.fixedSize(horizontal: false, vertical: true)` ile sarın (web'de flex satırı aynı şeyi yapar).
 struct StatTile<IconView: View>: View {
     let value: String
     let label: String
@@ -85,7 +86,7 @@ struct StatTile<IconView: View>: View {
         .multilineTextAlignment(.center)
         .padding(.vertical, Space.s3)
         .padding(.horizontal, Space.s2)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(ThemeColor.fill.color, in: shape)
         .overlay(shape.strokeBorder(ThemeColor.border.color, lineWidth: 1))
     }

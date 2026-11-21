@@ -193,6 +193,7 @@ struct DesignSystemScreen: View {
                 StatTile(value: "0,9 sn", label: "Ort. süre")
                 StatTile(value: "1.270", label: "XP") { Icon(.star, size: 16, fill: true).foregroundStyle(PaletteColor.amber400.color) }
             }
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 
