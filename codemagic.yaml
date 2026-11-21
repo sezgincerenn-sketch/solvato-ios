@@ -61,7 +61,8 @@ workflows:
 
   # ─── Native iOS (Swift / SwiftUI, docs/PLAN.md Paket 0) ─────────────────────────────────────────────────────────
   # Çekirdek paketin testleri, iPhone / küçük iPhone / iPad simülatöründe UI testleri ve ekran görüntüleri,
-  # ardından imzalı derleme TestFlight'a. Başlatma: `native-` ile başlayan git etiketi (Claude atar).
+  # ardından imzalı derleme TestFlight'a. Başlatma: main'e `ios-native/` klasörünü değiştiren her gönderim (kendiliğinden)
+  # ya da Codemagic'te elle "Start new build". (Bulut oturumları git etiketi gönderemiyor.)
   # Ekran görüntüleri derleme çıktısında `native-ekranlar.zip` (<senaryo>-<iphone|iphone-kucuk|ipad>-<koyu|acik>.png).
   ios-native:
     name: Native iOS → testler, ekranlar, TestFlight
@@ -76,10 +77,17 @@ workflows:
       xcode: latest
     triggering:
       events:
-        - tag
-      tag_patterns:
-        - pattern: "native-*"
+        - push
+      branch_patterns:
+        - pattern: main
           include: true
+      cancel_previous_builds: true # art arda gönderimlerde yalnızca sonuncusu derlenir
+    when:
+      changeset:
+        includes:
+          - ios-native/
+          - scripts/native-ekranlar.py
+          - codemagic.yaml
     scripts:
       - name: Xcode sürümü 26 ya da üstü mü
         script: |
