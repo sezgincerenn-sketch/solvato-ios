@@ -42,6 +42,17 @@ import {
 } from "../../src/data/chords"
 import { distractors, shuffle as chordShuffle } from "../../src/data/chordQuiz"
 import { fitsKeyboard, litKeys } from "../../src/components/piano/MultiPiano"
+import {
+  RHYTHM_PATTERNS,
+  TEMPO,
+  PASS,
+  gradeTaps,
+  onsets,
+  parseRhythm,
+  pickPatterns,
+  type TapResult,
+} from "../../src/data/rhythmTap"
+import type { QuestionLevel } from "../../src/data/questions"
 import type { AppStats, FilterCategory, Question, SessionResult, SpecialRound } from "../../src/types"
 
 const OUT = process.argv[2]
@@ -650,6 +661,83 @@ function akorTuru() {
   return { rounds, distractors: dist }
 }
 
+// ─── K-18 Ritmi Tut ──────────────────────────────────────────────────────────
+// RhythmTapSession.tsx'teki erken/geç uyarısının birebir kopyası (ekran dosyasında)
+function biasText(result: TapResult) {
+  const passed = result.score >= PASS
+  const hits = result.notes.filter((n) => n.grade !== "miss").length
+  return hits >= 2 && Math.abs(result.biasMs) > 45
+    ? `${passed ? "Güzel; " : ""}${
+        result.biasMs < 0
+          ? "biraz erken dokunuyorsun, metronomu dinle."
+          : "biraz geç dokunuyorsun, vuruşla birlikte dokun."
+      }`.replace(/^b/, passed ? "b" : "B")
+    : null
+}
+
+function ritmiTut() {
+  const levels: QuestionLevel[] = [1, 2, 3]
+  const patterns = levels.flatMap((lv) =>
+    RHYTHM_PATTERNS[lv].map((score) => ({ level: lv, score, parsed: parseRhythm(score), onsets: onsets(score) })),
+  )
+  // Elle yazılmış ve hatalı metinler de ayrıştırılır (bilinmeyen parça atlanır)
+  for (const score of ["w", "hr h", "q. q. q", "x q q", "  q   q  ", "eee q", "ssssss q"])
+    patterns.push({ level: 1, score, parsed: parseRhythm(score), onsets: onsets(score) })
+  const cases = []
+  for (let i = 0; i < 1500; i++) {
+    const level = pick(levels)
+    const score = pick(RHYTHM_PATTERNS[pick(levels)])
+    const bpm = gen() < 0.8 ? TEMPO[level] : 50 + int(90)
+    const beatSec = 60 / bpm
+    const style = int(6)
+    const spread = [0.005, 0.03, 0.07, 0.12, 0.2, 0.05][style] // saniye
+    const bias = style === 5 ? (gen() < 0.5 ? -0.07 : 0.07) : 0
+    const taps: number[] = []
+    for (const b of onsets(score)) {
+      if (gen() < [0, 0.05, 0.1, 0.15, 0.25, 0.05][style]) continue // atlanan nota
+      taps.push(b * beatSec + bias + (gen() * 2 - 1) * spread)
+    }
+    const extra = int(4) === 0 ? 1 + int(3) : 0
+    for (let k = 0; k < extra; k++) taps.push(gen() * 4 * beatSec)
+    if (gen() < 0.3) taps.reverse() // sırasız gelse de sıralanır
+    const result = gradeTaps(score, taps, bpm, level)
+    cases.push({ score, taps, bpm, level, result, passed: result.score >= PASS, bias: biasText(result) })
+  }
+  for (const level of levels) {
+    const score = RHYTHM_PATTERNS[level][0]
+    cases.push({
+      score,
+      taps: [],
+      bpm: TEMPO[level],
+      level,
+      result: gradeTaps(score, [], TEMPO[level], level),
+      passed: false,
+      bias: null,
+    })
+  }
+  // Elle: iki dokunuş bir notaya tam eşit uzaklıkta (ilk gelen sayılır), pencere sınırında, hepsi fazla
+  const hand: [string, number[], number, QuestionLevel][] = [
+    ["q q q q", [-0.05, 0.05, 0.95, 1.05, 2, 3], 60, 1],
+    ["q q q q", [0.25, -0.25, 1, 2, 3], 60, 2],
+    ["q q h", [0.2, 1.2, 2.2], 60, 1],
+    ["q q h", [0.18, 1.18, 2.18], 60, 2],
+    ["q q h", [0.11, 1.09, 2.09], 60, 1],
+    ["ee ee q q", [0, 0.25, 0.5, 0.75, 1, 1.5, 2, 3], 60, 1],
+    ["q q q q", [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5], 60, 1],
+  ]
+  for (const [score, taps, bpm, level] of hand) {
+    const result = gradeTaps(score, taps, bpm, level)
+    cases.push({ score, taps, bpm, level, result, passed: result.score >= PASS, bias: biasText(result) })
+  }
+  const picks = []
+  for (let i = 0; i < 300; i++) {
+    const level = levels[i % 3]
+    const seed = int(2 ** 31)
+    picks.push({ level, seed, patterns: pickPatterns(level, mulberry(seed)) })
+  }
+  return { tempo: TEMPO, pass: PASS, patterns, cases, picks }
+}
+
 // ─── Çalıştır ────────────────────────────────────────────────────────────────
 const only = process.argv[3]
 if (only === "seri") write(`seri-${TZ!.replace("/", "-")}.json`, seri())
@@ -666,5 +754,6 @@ else {
   write("tur-secimi.json", turSecimi())
   write("akorlar.json", akorlar())
   write("akor-turu.json", akorTuru())
+  write("ritmi-tut.json", ritmiTut())
   write("seri-" + TZ!.replace("/", "-") + ".json", seri())
 }
