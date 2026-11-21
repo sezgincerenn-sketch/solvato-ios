@@ -67,10 +67,10 @@ etiketi. Kurulum ve cihaz testi listesi: `docs/IOS-TEST-REHBERI.md`. Ses oturumu
 
 ## Native iOS (Swift / SwiftUI, yapım aşamasında)
 
-`docs/PLAN.md` Paket 0: uygulama native olarak yeniden yazılıyor; bugünkü React kodu başvuru kaynağı. Klasör `native/`:
+`docs/PLAN.md` Paket 0: uygulama native olarak yeniden yazılıyor; bugünkü React kodu başvuru kaynağı. Klasör `ios-native/`:
 
 ```
-native/
+ios-native/
   project.yml          Xcode projesinin tanımı (XcodeGen); .xcodeproj repoda yok, derlemede üretilir
   SolvatoCore/         arayüzden bağımsız Swift paketi (Linux'ta da derlenir): tasarım değerleri, tema tercihi;
                        0.3'ten itibaren puan, seviye, seri, kodlar. Testler: `swift test`
@@ -83,8 +83,8 @@ native/
   `SolvatoCore/Tests/.../Fixtures/tokens.json`'a döker; `TokensTests` Swift değerlerini bununla karşılaştırır. Web
   tasarım değeri değişirse betiği çalıştırın ve Swift tarafını eşitleyin.
 - **Derleme:** Codemagic `ios-native` iş akışı (`native-*` git etiketiyle başlar): `swift test`, `xcodegen generate`,
-  iPhone / küçük iPhone / iPad simülatörlerinde UI testleri, ekran görüntüleri (`native-ekranlar.zip`, adlandırma
-  `scripts/native-ekranlar.py`), imzalı derleme ve TestFlight. Build numarası 1000 + Codemagic sayacı (React
+  iPhone / küçük iPhone / iPad simülatörlerinde UI testleri, ekran görüntüleri (`native-ekranlar.zip`, adlar web referanslarıyla aynı:
+  `<senaryo>-<cihaz>-<koyu|acik>.png`), imzalı derleme ve TestFlight. Build numarası 1000 + Codemagic sayacı (React
   derlemeleriyle çakışmaz). Aynı uygulama kaydı (`com.solvato.app`).
 - Tema tercihi web'le aynı anahtarda (`pianote_theme_v1`, UserDefaults). UI testleri `-UITestTheme dark|light` ile
   temayı zorlar.

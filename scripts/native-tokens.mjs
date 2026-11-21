@@ -1,5 +1,5 @@
 // Web tasarım sisteminin değerlerini (src/design/tokens.ts + tokens.css) JSON'a döker. Native iOS'taki Swift testi
-// (native/SolvatoCore) aynı değerleri bu dosyayla karşılaştırır: renk, ölçü ya da yazı değeri iki sürümde ayrışırsa test düşer.
+// (ios-native/SolvatoCore) aynı değerleri bu dosyayla karşılaştırır: renk, ölçü ya da yazı değeri iki sürümde ayrışırsa test düşer.
 // Kullanım: node scripts/native-tokens.mjs   (tokens.ts / tokens.css değişince yeniden çalıştırın)
 import { readFileSync, writeFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
@@ -8,7 +8,7 @@ import { dirname, join } from "node:path"
 const root = join(dirname(fileURLToPath(import.meta.url)), "..")
 const t = await import(join(root, "src/design/tokens.ts"))
 const css = readFileSync(join(root, "src/design/tokens.css"), "utf8")
-const out = join(root, "native/SolvatoCore/Tests/SolvatoCoreTests/Fixtures/tokens.json")
+const out = join(root, "ios-native/SolvatoCore/Tests/SolvatoCoreTests/Fixtures/tokens.json")
 
 const hex2 = (n) => n.toString(16).padStart(2, "0").toUpperCase()
 

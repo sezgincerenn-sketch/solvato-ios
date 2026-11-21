@@ -10,17 +10,17 @@ final class ScreenshotTests: XCTestCase {
 
     @MainActor
     func testDesignSystem() {
-        for theme in ["dark", "light"] {
+        for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
             let app = launch(theme: theme)
             let screen = app.descendants(matching: .any)["tasarim-sistemi"]
             XCTAssertTrue(screen.waitForExistence(timeout: 10), "tasarım sistemi ekranı açılmadı")
-            snap("tasarim-1-\(theme)")
+            snap("tasarim-1-\(tr)")
             app.swipeUp()
             app.swipeUp()
-            snap("tasarim-2-\(theme)")
+            snap("tasarim-2-\(tr)")
             app.swipeUp()
             app.swipeUp()
-            snap("tasarim-3-\(theme)")
+            snap("tasarim-3-\(tr)")
             app.terminate()
         }
     }
