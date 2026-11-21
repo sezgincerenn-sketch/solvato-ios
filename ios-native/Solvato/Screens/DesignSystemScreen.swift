@@ -46,7 +46,7 @@ struct DesignSystemScreen: View {
         }
     }
 
-    /// 0.4: nota çizimleri (web Notation, MusicalStaff, ChordStaffSvg, GoalStaff, ClefIcon)
+    /// 0.4: nota çizimleri ve klavyeler (web Notation, MusicalStaff, ChordStaffSvg, GoalStaff, QuizPiano, MultiPiano, ClefIcon)
     private var notation: some View {
         VStack(alignment: .leading, spacing: Space.s4) {
             HStack(spacing: Space.s3) {
@@ -62,6 +62,17 @@ struct DesignSystemScreen: View {
                 ChordStaffView(chord: Chords.all.first { $0.id == "C#min" }!, color: .palette(.violet500))
                 ChordStaffView(chord: Chords.all.first { $0.id == "C13" }!)
             }
+            QuizPianoView(
+                keys: Piano.quizKeys(answerState: "wrong", selectedNote: "Mi", correctAnswer: "Fa", showLabels: true),
+                height: 150, disabled: true
+            ) { _ in }
+            QuizPianoView(
+                keys: Piano.quizKeys(octaves: 2, startOctave: 3, octaveMode: true, answerState: "correct", selectedNote: "Sol#4", showLabels: false),
+                height: 130, disabled: true
+            ) { _ in }
+            MultiPianoView(
+                keys: Piano.multiKeys(selected: ["Do", "Mi"], correctKeys: [], showResult: false)
+            ) { _ in }
             HStack(spacing: Space.s2) {
                 ClefIconView(clef: .treble, size: 24)
                 ClefIconView(clef: .bass, size: 24)
