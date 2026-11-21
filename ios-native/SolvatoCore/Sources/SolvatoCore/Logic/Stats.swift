@@ -152,6 +152,7 @@ extension AppStats {
         o["dailyQuestions"] = ints(dailyQuestions)
         o["noteStats"] = tallies(noteStats)
         o["categoryAccuracy"] = .object(OrderedMap(CategoryAccuracy.keys.map { ($0, tally(categoryAccuracy[$0])) }))
+        if let dailyAccuracy { o["dailyAccuracy"] = tallies(dailyAccuracy) }
         if let history {
             o["history"] = .array(
                 history.map { r in
@@ -164,7 +165,6 @@ extension AppStats {
                     return .object(h)
                 })
         }
-        if let dailyAccuracy { o["dailyAccuracy"] = tallies(dailyAccuracy) }
         if let bestStars { o["bestStars"] = ints(bestStars) }
         if let dailyTopics { o["dailyTopics"] = .object(dailyTopics.mapValues(tallies)) }
         return .object(o)
