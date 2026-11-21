@@ -1338,10 +1338,11 @@ const ids = (s: string) =>
 const RHYTHM_L1 = ids(
   "313 314 315 318 319 320 323 324 331 332 333 334 335 337 338 339 343 344 347 348 357 358 360 361 370 375 386 387",
 )
-const RHYTHM_L3 = ids("356 369 378 383 384 385 389 390 391 393 394 395 399 401 402 406 411")
+// İleri: bileşik ölçüler (6/8, 9/8, 12/8), alla breve, onaltılık hesapları, triole, ön vuruş, bağlı birlikler
+const RHYTHM_L3 = ids("327 329 330 349 352 362 363 365 372 374 377 385 388 399")
 const TERMS_L1 = ids("413 414 415 416 417 418 419 420 425 426 427 428 429 431 432 436 437 443 456 457 465")
-const TERMS_L3 = ids(`440 441 446 449 451 453 455 459 460 469 473 475 478 479 480 481 482 483 484
-  487 488 489 490 495 498 499 500 501 502 505 506 507 508 509 510 511 512`)
+// İleri: sfz, fff/ppp, tenuto, espressivo, coda, poco/molto, rallentando
+const TERMS_L3 = ids("421 423 424 438 444 458 476 477 486")
 
 export function questionLevel(q: Question): QuestionLevel {
   if (q.category === "note_identification") {

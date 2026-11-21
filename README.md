@@ -49,13 +49,14 @@ npm run check        # tür kontrolü + biçim kontrolü (commit öncesi)
 npm run format       # Prettier ile biçimlendir
 ```
 
-| Komut                    | Ne yapar                                                                   |
-| ------------------------ | -------------------------------------------------------------------------- |
-| `npm run build`          | `dist/` içine üretim derlemesi                                             |
-| `npm run build:single`   | Tek dosyalık önizleme (`dist-single/index.html`), paylaşmak için           |
-| `npm run sync`           | Derle + `cap sync ios` (iOS projesini günceller)                           |
-| `npm run ios`            | Derle, eşitle, Xcode'u aç (Mac gerekir)                                    |
-| `node scripts/ekran.mjs` | Ekran görüntüsü (koyu/açık, `--se`, `--tablet`), taşma ve dış istek raporu |
+| Komut                       | Ne yapar                                                                                        |
+| --------------------------- | ----------------------------------------------------------------------------------------------- |
+| `npm run build`             | `dist/` içine üretim derlemesi                                                                  |
+| `npm run build:single`      | Tek dosyalık önizleme (`dist-single/index.html`), paylaşmak için                                |
+| `npm run sync`              | Derle + `cap sync ios` (iOS projesini günceller)                                                |
+| `npm run ios`               | Derle, eşitle, Xcode'u aç (Mac gerekir)                                                         |
+| `node scripts/ekran.mjs`    | Ekran görüntüsü (koyu/açık, `--se`, `--tablet`), taşma ve dış istek raporu                      |
+| `node scripts/referans.mjs` | Native geçişi için her ekranın referans görüntüsü (iPhone/iPad, koyu/açık, sabit tarih ve veri) |
 
 ## iOS derlemesi ve TestFlight
 

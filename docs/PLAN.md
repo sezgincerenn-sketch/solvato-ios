@@ -104,6 +104,9 @@ Gizlilik ve Lisanslar, bildirim, titreşim, paylaşım, koyu/açık tema. Bugün
 
 Toplam kabaca 25–30 oturum; Ceren'in TestFlight geri bildirimine bağlı olarak **5–7 hafta**.
 
+**Durum:** 0.1 yazıldı (21 Kasım): `docs/ozellikler/native-ios.md` (19 kural, 18 ekran grubu, kabul ölçütleri) ve
+referans görüntü betiği `scripts/referans.mjs`. Altın tablolar 0.3'te, aynı dokümandaki listeye göre üretilir.
+
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.
 

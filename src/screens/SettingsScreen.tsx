@@ -282,7 +282,7 @@ export default function SettingsScreen({
         <Section>Ses ve görünüm</Section>
         <Row
           title="Ses"
-          sub="Telefon sessizdeyse ses gelmeyebilir."
+          sub="Telefon sessiz moddayken de çalar."
           on={s.soundKeys}
           onToggle={() => updateSettings({ soundKeys: !s.soundKeys })}
         />
