@@ -31,6 +31,17 @@ import { pickQuestions, getWeakQuestions, ROUND_LABELS } from "../../src/data/se
 import { buildEarQuestions } from "../../src/data/ear"
 import { ALL_NOTES, getSettings, updateSettings, type Settings } from "../../src/utils/settings"
 import { DEFAULT_STATS } from "../../src/types"
+import {
+  ALL_CHORDS,
+  chordsUpTo,
+  staffY,
+  samePcs,
+  progressionsFor,
+  QUALITY_COLOR,
+  type ChordLevel,
+} from "../../src/data/chords"
+import { distractors, shuffle as chordShuffle } from "../../src/data/chordQuiz"
+import { fitsKeyboard, litKeys } from "../../src/components/piano/MultiPiano"
 import type { AppStats, FilterCategory, Question, SessionResult, SpecialRound } from "../../src/types"
 
 const OUT = process.argv[2]
@@ -576,6 +587,69 @@ function turSecimi() {
   return { rows, weak }
 }
 
+// ─── K-17 akor motoru ve akor turu ───────────────────────────────────────────
+function akorlar() {
+  const chords = ALL_CHORDS.map((c) => ({
+    ...c,
+    staffY: c.notes.map(staffY),
+    lit: [...litKeys(c)],
+    fits: fitsKeyboard(c),
+    progressions: progressionsFor(c),
+  }))
+  const same: string[][] = []
+  for (const a of ALL_CHORDS) for (const b of ALL_CHORDS) if (a.id < b.id && samePcs(a, b)) same.push([a.id, b.id])
+  const upTo = [1, 2, 3, 4].map((lv) => chordsUpTo(lv as ChordLevel).map((c) => c.id))
+  return { chords, same, upTo, colors: QUALITY_COLOR }
+}
+
+// ChordQuizSession.tsx buildQuestions'ın birebir kopyası (ekran dosyasında, dışa aktarılmıyor)
+function buildChordQuestions(level: ChordLevel) {
+  const SESSION = 10
+  type QType = "staff" | "keys" | "build"
+  const pool = chordsUpTo(level)
+  const current = chordShuffle(pool.filter((c) => c.level === level))
+  const earlier = chordShuffle(pool.filter((c) => c.level < level))
+  const nCur = earlier.length ? Math.min(5, current.length) : Math.min(SESSION, current.length)
+  let picked = [...current.slice(0, nCur), ...earlier.slice(0, SESSION - nCur)]
+  if (picked.length < SESSION) picked = [...picked, ...chordShuffle(pool)].slice(0, SESSION)
+  const types: QType[] = chordShuffle(
+    Array.from({ length: SESSION }, (_, i) => (["staff", "keys", "build"] as QType[])[i % 3]),
+  )
+  const distractorPool = level === 1 ? chordsUpTo(1) : pool
+  return chordShuffle(picked).map((chord, i) => ({
+    chord,
+    type: types[i] === "keys" && !fitsKeyboard(chord) ? "staff" : types[i],
+    options: chordShuffle([chord, ...distractors(chord, distractorPool)]),
+  }))
+}
+
+function akorTuru() {
+  const realRandom = Math.random
+  const rounds = []
+  for (let i = 0; i < 300; i++) {
+    const level = (1 + (i % 3)) as ChordLevel
+    const seed = int(2 ** 31)
+    Math.random = mulberry(seed)
+    const qs = buildChordQuestions(level)
+    rounds.push({
+      level,
+      seed,
+      questions: qs.map((q) => ({ id: q.chord.id, type: q.type, options: q.options.map((o) => o.id) })),
+    })
+  }
+  const dist = []
+  for (let i = 0; i < 200; i++) {
+    const level = (1 + (i % 4)) as ChordLevel
+    const pool = chordsUpTo(level)
+    const chord = pick(pool)
+    const seed = int(2 ** 31)
+    Math.random = mulberry(seed)
+    dist.push({ level, chord: chord.id, seed, ids: distractors(chord, pool).map((c) => c.id) })
+  }
+  Math.random = realRandom
+  return { rounds, distractors: dist }
+}
+
 // ─── Çalıştır ────────────────────────────────────────────────────────────────
 const only = process.argv[3]
 if (only === "seri") write(`seri-${TZ!.replace("/", "-")}.json`, seri())
@@ -590,5 +664,7 @@ else {
   write("ogretmen-kodu.json", ogretmen())
   write("oyun.json", oyun())
   write("tur-secimi.json", turSecimi())
+  write("akorlar.json", akorlar())
+  write("akor-turu.json", akorTuru())
   write("seri-" + TZ!.replace("/", "-") + ".json", seri())
 }
