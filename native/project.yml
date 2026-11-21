@@ -1,0 +1,97 @@
+# Native Solvato'nun Xcode projesi tanımı (XcodeGen). Proje dosyası (.xcodeproj) elle düzenlenmez ve repoda tutulmaz:
+# Codemagic her derlemede `xcodegen generate` ile bundan üretir. Yeni dosya eklemek için yalnızca klasöre koymak yeter.
+name: Solvato
+options:
+  bundleIdPrefix: com.solvato
+  deploymentTarget:
+    iOS: "17.0"
+  developmentLanguage: tr
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1" # Codemagic derlemede artırır
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    TARGETED_DEVICE_FAMILY: "1,2" # iPhone + iPad
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    DEAD_CODE_STRIPPING: YES
+
+packages:
+  SolvatoCore:
+    path: SolvatoCore
+
+targets:
+  Solvato:
+    type: application
+    platform: iOS
+    sources:
+      - path: Solvato
+    dependencies:
+      - package: SolvatoCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.solvato.app
+        PRODUCT_NAME: Solvato
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_STYLE: Automatic
+    info:
+      path: Solvato/Info.plist
+      properties:
+        CFBundleDevelopmentRegion: tr
+        CFBundleLocalizations: [tr]
+        CFBundleDisplayName: Solvato
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        LSRequiresIPhoneOS: true
+        UIRequiredDeviceCapabilities: [arm64]
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UIAppFonts:
+          - Outfit_400Regular.ttf
+          - Outfit_500Medium.ttf
+          - Outfit_600SemiBold.ttf
+          - Outfit_700Bold.ttf
+          - Outfit_800ExtraBold.ttf
+          - JetBrainsMono_400Regular.ttf
+          - JetBrainsMono_500Medium.ttf
+          - JetBrainsMono_600SemiBold.ttf
+          - JetBrainsMono_700Bold.ttf
+          - JetBrainsMono_800ExtraBold.ttf
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+
+  SolvatoUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: SolvatoUITests
+    dependencies:
+      - target: Solvato
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.solvato.app.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+
+schemes:
+  Solvato:
+    build:
+      targets:
+        Solvato: all
+        SolvatoUITests: [test]
+    test:
+      targets:
+        - SolvatoUITests
+    archive:
+      config: Release

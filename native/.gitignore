@@ -1,0 +1,5 @@
+# XcodeGen çıktısı: project.yml'den üretilir, repoda tutulmaz
+Solvato.xcodeproj/
+Solvato/Info.plist
+build/
+DerivedData/
