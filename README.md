@@ -64,6 +64,31 @@ Mac yok: `codemagic.yaml` Codemagic'in bulut Mac'inde derler, imzalar ve TestFli
 etiketi. Kurulum ve cihaz testi listesi: `docs/IOS-TEST-REHBERI.md`. Ses oturumu `AppDelegate.swift`'te `playback` +
 `mixWithOthers`: sessiz düğme açıkken de ses çalar, arkadaki müzik durmaz.
 
+## Native iOS (Swift / SwiftUI, yapım aşamasında)
+
+`docs/PLAN.md` Paket 0: uygulama native olarak yeniden yazılıyor; bugünkü React kodu başvuru kaynağı. Klasör `native/`:
+
+```
+native/
+  project.yml          Xcode projesinin tanımı (XcodeGen); .xcodeproj repoda yok, derlemede üretilir
+  SolvatoCore/         arayüzden bağımsız Swift paketi (Linux'ta da derlenir): tasarım değerleri, tema tercihi;
+                       0.3'ten itibaren puan, seviye, seri, kodlar. Testler: `swift test`
+  Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (AppButton,
+                       AppCard), Screens/, Resources/Fonts (Outfit, JetBrains Mono TTF), PrivacyInfo.xcprivacy
+  SolvatoUITests/      her ekranı koyu/açık açıp ekran görüntüsü alan testler
+```
+
+- **Web ile birebir değerler:** `node scripts/native-tokens.mjs` web'in `tokens.ts` + `tokens.css` değerlerini
+  `SolvatoCore/Tests/.../Fixtures/tokens.json`'a döker; `TokensTests` Swift değerlerini bununla karşılaştırır. Web
+  tasarım değeri değişirse betiği çalıştırın ve Swift tarafını eşitleyin.
+- **Derleme:** Codemagic `ios-native` iş akışı (`native-*` git etiketiyle başlar): `swift test`, `xcodegen generate`,
+  iPhone / küçük iPhone / iPad simülatörlerinde UI testleri, ekran görüntüleri (`native-ekranlar.zip`, adlandırma
+  `scripts/native-ekranlar.py`), imzalı derleme ve TestFlight. Build numarası 1000 + Codemagic sayacı (React
+  derlemeleriyle çakışmaz). Aynı uygulama kaydı (`com.solvato.app`).
+- Tema tercihi web'le aynı anahtarda (`pianote_theme_v1`, UserDefaults). UI testleri `-UITestTheme dark|light` ile
+  temayı zorlar.
+- Henüz tek ekran var: tasarım sistemi önizlemesi. Gerçek ekranlar aşama 0.5'te.
+
 ## Klasör yapısı
 
 ```

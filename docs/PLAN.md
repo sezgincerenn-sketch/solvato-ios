@@ -99,6 +99,9 @@ Gizlilik ve Lisanslar, bildirim, titreşim, paylaşım, koyu/açık tema. Bugün
 | 0.8   | Performans ve güvenlik ölçümleri, erişilebilirlik (VoiceOver, Dinamik Yazı), iPad düzenleri                                 | 2–3 oturum   |
 | 0.9   | `inceleyici` ile envantere göre tam karşılaştırma, TestFlight'ta kapalı test, web kodunun silinmesi                         | 2 oturum     |
 
+**0.2 durumu (21 Kasım):** iskelet yazıldı (`native/`, README "Native iOS"). Bekleyen: bulut oturumunda
+`swift test` (Swift çalıştırma izni) ve ilk Codemagic derlemesi (`native-*` etiketi). Aşama 0.1 envanteri henüz yok.
+
 Toplam kabaca 25–30 oturum; Ceren'in TestFlight geri bildirimine bağlı olarak **5–7 hafta**.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
