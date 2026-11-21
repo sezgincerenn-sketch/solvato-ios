@@ -27,6 +27,8 @@ import {
   catLabel,
   type GameCat,
 } from "../../src/utils/games"
+import { buildWeeklyReport, weeklyReportText } from "../../src/utils/weeklyReport"
+import { accuracyFor } from "../../src/state/stats"
 import { pickQuestions, getWeakQuestions, ROUND_LABELS } from "../../src/data/session"
 import { buildEarQuestions } from "../../src/data/ear"
 import { ALL_NOTES, getSettings, updateSettings, type Settings } from "../../src/utils/settings"
@@ -738,6 +740,58 @@ function ritmiTut() {
   return { tempo: TEMPO, pass: PASS, patterns, cases, picks }
 }
 
+// ─── K-13 haftalık rapor, K-14 doğruluk dönemleri ───────────────────────────
+function haftalikRapor() {
+  const cases = []
+  const fixedNows = [
+    at(2026, 11, 18, 10),
+    at(2026, 11, 30, 9),
+    at(2026, 12, 2, 21),
+    at(2027, 1, 3, 23, 30),
+    at(2026, 3, 1, 8),
+  ]
+  for (let i = 0; i < 70; i++) {
+    const settings = {
+      name: pick(["", "Ada", "  Deniz Su  ", "Çağrı"]),
+      level: (1 + int(3)) as 1 | 2 | 3,
+      dailyGoal: pick(GOALS),
+      teacherCode: gen() < 0.3 ? "K7M-2QX" : "",
+      levelProgress: { n: 0, c: 0 },
+    }
+    resetSettings(settings)
+    let stats: AppStats = JSON.parse(JSON.stringify(DEFAULT_STATS))
+    const end = i < fixedNows.length ? fixedNows[i] : at(2026, 1 + int(12), 1 + int(28), 8 + int(14))
+    // Rapordan önceki ~3 hafta; bazı durumlarda bu hafta hiç çalışılmamış
+    const quiet = i % 9 === 4
+    const days = i === 0 ? 0 : 3 + int(18)
+    const times = Array.from({ length: days }, () => end - int(21) * 86400000 - int(12) * 3600000)
+      .filter((t) => !(quiet && t > end - 8 * 86400000))
+      .sort((a, b) => a - b)
+    for (const t of times) {
+      NOW = Math.min(end, t)
+      const round = randomRound(0.5 + gen() * 0.5)
+      stats = (round.kind === "quiz" ? completeQuiz(stats, round) : completeSpecial(stats, round)).stats
+    }
+    NOW = end
+    const s = getSettings()
+    const r = buildWeeklyReport(stats, s, new Date(end))
+    const acc = {
+      all: accuracyFor(stats),
+      week: [0, 1, 2].map((o) => accuracyFor(stats, "week", o)),
+      month: [0, 1].map((o) => accuracyFor(stats, "month", o)),
+    }
+    cases.push({
+      now: end,
+      settings: { name: s.name, level: s.level, dailyGoal: s.dailyGoal, teacherCode: s.teacherCode },
+      stats,
+      report: { ...r, days: r.days.map(({ date: _d, ...rest }) => rest) },
+      text: weeklyReportText(r),
+      acc,
+    })
+  }
+  return cases
+}
+
 // ─── Çalıştır ────────────────────────────────────────────────────────────────
 const only = process.argv[3]
 if (only === "seri") write(`seri-${TZ!.replace("/", "-")}.json`, seri())
@@ -755,5 +809,6 @@ else {
   write("akorlar.json", akorlar())
   write("akor-turu.json", akorTuru())
   write("ritmi-tut.json", ritmiTut())
+  write("haftalik-rapor.json", haftalikRapor())
   write("seri-" + TZ!.replace("/", "-") + ".json", seri())
 }
