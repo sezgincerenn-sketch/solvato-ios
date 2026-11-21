@@ -73,7 +73,8 @@ etiketi. Kurulum ve cihaz testi listesi: `docs/IOS-TEST-REHBERI.md`. Ses oturumu
 ios-native/
   project.yml          Xcode projesinin tanımı (XcodeGen); .xcodeproj repoda yok, derlemede üretilir
   SolvatoCore/         arayüzden bağımsız Swift paketi (Linux'ta da derlenir): tasarım değerleri, tema tercihi;
-                       0.3'ten itibaren puan, seviye, seri, kodlar. Testler: `swift test`
+                       Logic/ (soru bankası, seviye, ünvan, yıldız, seri, tur sonu, öğretmen ve meydan okuma kodu,
+                       oyunlar, soru seçimi, kulak soruları), Resources/soru-bankasi.json. Testler: `swift test`
   Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
                        aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,
                        StatTile, StatPill, ScoreRing; SVG yolları Vector.swift ile çizilir), Screens/,
@@ -84,6 +85,12 @@ ios-native/
 - **Web ile birebir değerler:** `node scripts/native-tokens.mjs` web'in `tokens.ts` + `tokens.css` değerlerini
   `SolvatoCore/Tests/.../Fixtures/tokens.json`'a, ikon ve yıldız yollarını `icons.json`'a döker; `TokensTests` Swift değerlerini bununla karşılaştırır. Web
   tasarım değeri değişirse betiği çalıştırın ve Swift tarafını eşitleyin.
+- **Mantık web ile birebir (altın tablolar):** `node scripts/altin.mjs` React mantığını sabit tarih, saat dilimi ve
+  rastgelelikle çalıştırıp girdi/çıktıları `Fixtures/altin/`'e yazar ve soru bankasını `Resources/soru-bankasi.json`'a
+  döker; Swift testleri aynı girdiyle aynı çıktıyı bekler. `src/` mantığı ya da soruları değişirse betiği çalıştırın.
+  Rastgelelik dışarıdan verilir (`RandomSource`; oyunlarda web'le aynı tohumlu üreteç). İstatistik JSON'u kendi küçük
+  okuyucusuyla (`JSON.swift`) okunur, çünkü sözlüklerin ekleme sırası ekranda görünür (eşit yüzdeli zorlandığın notalar).
+  Swift bulut oturumunda: `download.swift.org`'dan `/opt/swift`'e kurulur.
 - **Derleme (Codemagic, iki iş akışı):**
   - `ios-native-test`, imzasız: `swift test`, `xcodegen generate`, iPhone / küçük iPhone / iPad simülatörlerinde UI
     testleri ve ekran görüntüleri (`native-ekranlar.zip`, adlar web referanslarıyla aynı:

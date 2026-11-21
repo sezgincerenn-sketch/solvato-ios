@@ -109,6 +109,11 @@ TestFlight için App Store imzalaması (rehber Bölüm A, B 5–7), `src/ui` ve 
 22 Kasım: imzalama kuruldu, ilk native derleme (`ios-native-testflight`) TestFlight'a yüklendi; ortak arayüz parçaları
 (ikon, logo, seçim, rozet, yıldız, gösterge, puan halkası) taşındı. 0.2'de kalan: Avatar, BackButton, ScreenHeader, Toast,
 ExitConfirm, TopicLink, PlayChip, NavBar, Coachmark (ekranlarla birlikte 0.5'te de yapılabilir).
+0.3 başladı (22 Kasım): `scripts/altin.mjs` altın tabloları üretiyor; `SolvatoCore/Logic/` altında soru bankası ve
+seviyeler, ünvan, yıldız, takvim dönemleri, seri ve tur sonu istatistikleri, seviye atlama, kutlama, öğretmen kodu, meydan
+okuma kodu, günün meydan okuması, tohumlu oyun soruları, tur için soru seçimi, kulak soruları, zorlandığın notalar yazıldı;
+31 test geçiyor (K-01–K-04, K-06–K-09, K-12, K-14–K-16). 0.3'te kalan: akor motoru (K-17), Ritmi Tut puanlama (K-18),
+haftalık rapor (K-13), depolama katmanı (UserDefaults, veri koruması, yedek dışı anahtar).
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.

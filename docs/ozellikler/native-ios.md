@@ -142,7 +142,7 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
   metinleri ve açıklamalar bu üreteçlerin çıktısıyla **aynı** olmalı. 0.3'te banka React'tan JSON olarak dışa
   aktarılır ve native pakete gömülür (elle yeniden yazılmaz).
 - Kabul:
-  - [ ] Native bankada aynı 701 kimlik, aynı metin, şık, doğru cevap, açıklama, porte konumu, ek çizgi ve nota dizisi.
+  - [x] Native bankada aynı 701 kimlik, aynı metin, şık, doğru cevap, açıklama, porte konumu, ek çizgi ve nota dizisi.
 
 ### K-02 Soru seviyesi
 
@@ -150,7 +150,7 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
   üstü/altı ve orta Do → Başlangıç; diğer ek çizgiler → Orta. Ritim ve terimlerde sabit kimlik listeleri; yazımda
   kimlik ≥1801 Orta. Dağılım: Başlangıç 362, Orta 155, İleri 184 (ritimde 14, terimlerde 9 İleri soru).
 - Kabul:
-  - [ ] 701 sorunun her birinin seviyesi React'la aynı (altın tablo).
+  - [x] 701 sorunun her birinin seviyesi React'la aynı (altın tablo).
 
 ### K-03 Tur için soru seçimi
 
@@ -164,9 +164,9 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
 - Zayıf notalar turu (`getWeakQuestions`): seçilen nota konumlarından en çok 10 soru.
 - Hataların tekrarı: son turda yanlış yapılan sorular, aynı sırayla.
 - Kabul:
-  - [ ] Aynı ayarlar ve aynı rastgele sayı dizisiyle aynı 10 soru seçiliyor (altın tablo, rastgele üreteç dışarıdan
+  - [x] Aynı ayarlar ve aynı rastgele sayı dizisiyle aynı 10 soru seçiliyor (altın tablo, rastgele üreteç dışarıdan
         verilir).
-  - [ ] Başlangıç seviyesinde hiçbir turda Orta/İleri soru yok (1.000 turluk deneme).
+  - [x] Başlangıç seviyesinde hiçbir turda Orta/İleri soru yok (1.000 turluk deneme).
 
 ### K-04 Seviye (Başlangıç / Orta / İleri)
 
@@ -175,7 +175,7 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
   Açılmazsa sayaç son ~50 soruya ölçeklenir (`n·k`, `c·k` yuvarlanır).
 - Ayarlar'da ya da öğretmen koduyla seviye değişirse sayaç sıfırlanır.
 - Kabul:
-  - [ ] Altın tablodaki tur dizileri için seviye ve sayaç her adımda React'la aynı.
+  - [x] Altın tablodaki tur dizileri için seviye ve sayaç her adımda React'la aynı.
 
 ### K-05 Kulak soruları
 
@@ -193,7 +193,7 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
   `rankFromXp`.
 - "Seviye" yalnız Başlangıç/Orta/İleri; XP basamakları "ünvan" (CLAUDE.md yazım kuralı).
 - Kabul:
-  - [ ] 0–25.000 arası her 50 XP için `rankFromXp` sonucu aynı (altın tablo).
+  - [x] 0–25.000 arası her 50 XP için `rankFromXp` sonucu aynı (altın tablo).
 
 ### K-07 Günlük hedef ve seri
 
@@ -202,7 +202,7 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
   (`currentStreak`): son seri günü bugün ya da dün değilse 0.
 - Gün yerel saatle hesaplanır. Dün = şimdi − 24 saat (yaz saati geçişinde bile böyle; birebir korunur).
 - Kabul:
-  - [ ] Altın tablodaki gün/tur senaryolarında seri, `lastPlayDate` ve gösterilen seri React'la aynı.
+  - [x] Altın tablodaki gün/tur senaryolarında seri, `lastPlayDate` ve gösterilen seri React'la aynı.
 
 ### K-08 Tur sonu istatistik güncellemesi
 
@@ -216,7 +216,7 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
   eskisi silinir).
 - Akor turu doğruluğu Akorlar'a, Ritmi Tut Ritim'e yazılır.
 - Kabul:
-  - [ ] Altın tablodaki tur sonuçları uygulanınca `AppStats` JSON'u React'la birebir aynı (tarih sabit).
+  - [x] Altın tablodaki tur sonuçları uygulanınca `AppStats` JSON'u React'la birebir aynı (tarih sabit).
 
 ### K-09 Yıldızlar
 
@@ -262,9 +262,9 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
   boşluk, O→0, I→1 düzeltilir. Geçersiz kod (uzunluk, harf, kontrol, işaret, seviye, anahtar, <3 nota) reddedilir.
 - Konular 0 = hepsi. Konu listesinin sırası değişmez.
 - Kabul:
-  - [ ] Bütün geçerli ayar birleşimleri (7 nota alt kümesi × 3 anahtar × 3 seviye × 4 hedef × 2 × 128 konu) için
+  - [x] Bütün geçerli ayar birleşimleri (7 nota alt kümesi × 3 anahtar × 3 seviye × 4 hedef × 2 × 128 konu) için
         native kodlayıcı React'la aynı kodu üretiyor; React'ın ürettiği her kodu native çözüyor (altın tablo, örneklem).
-  - [ ] Bozuk kod örnekleri (altın tablo) native'de de reddediliyor.
+  - [x] Bozuk kod örnekleri (altın tablo) native'de de reddediliyor.
 
 ### K-16 Oyunlar: tohum, günün meydan okuması, meydan okuma kodu
 
@@ -278,9 +278,9 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
   kontrol 5. Öğretmen koduyla karışmaz (farklı uzunluk ve kontrol).
 - Kazanan: önce doğru sayısı, eşitse süre; ikisi de eşitse berabere.
 - Kabul:
-  - [ ] 1.000 tohum × 6 kategori × 3 seviye için soru kimlikleri ve şık sırası React'la aynı (altın tablo).
-  - [ ] 2026 ve 2027'nin her günü için günün kategori, tohum ve numarası aynı.
-  - [ ] React'ın ürettiği meydan okuma kodlarını native çözüyor, native'in ürettiklerini React çözüyor.
+  - [x] 1.000 tohum × 6 kategori × 3 seviye için soru kimlikleri ve şık sırası React'la aynı (altın tablo).
+  - [x] 2026 ve 2027'nin her günü için günün kategori, tohum ve numarası aynı.
+  - [x] React'ın ürettiği meydan okuma kodlarını native çözüyor, native'in ürettiklerini React çözüyor.
 
 ### K-17 Akor motoru ve akor turu
 
@@ -588,10 +588,13 @@ node scripts/referans.mjs --sadece soru    # adı "soru" ile başlayan senaryola
 - 71 senaryo, 318 görüntü, 29 MB (1x). Görüntüler git'e girmez. Web kodu silinmeden önce (0.9) bir kez `docs/native/referans/`
   altına alınır.
 
-## Altın tablolar (0.3'te üretilecek)
+## Altın tablolar
 
-React kodundan bir betikle (`scripts/altin.mjs`, esbuild ile TS'yi çalıştırır) üretilen JSON dosyaları; native
-testler bunları okur. Tarih ve rastgelelik sabit.
+React kodundan bir betikle (`node scripts/altin.mjs`; `scripts/altin/uret.ts`'i esbuild ile paketleyip çalıştırır)
+üretilen JSON dosyaları, `ios-native/SolvatoCore/Tests/SolvatoCoreTests/Fixtures/altin/`; native testler bunları okur.
+Tarih, saat dilimi ve rastgelelik sabit. `seri` iki saat diliminde üretilir (`seri-Europe-Istanbul.json`,
+`seri-America-New_York.json`; ikincisi yaz saati gecelerini de içerir). Durum (22 Kasım): `akorlar`, `ritmi-tut`,
+`haftalik-rapor` henüz üretilmiyor; diğerleri üretiliyor ve native testler geçiyor.
 
 | Tablo                 | Girdi                                                         | Çıktı                                                 |
 | --------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
