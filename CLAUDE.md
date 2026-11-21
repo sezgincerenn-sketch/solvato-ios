@@ -70,7 +70,6 @@ geçer; `src/` değişmişken iş bitirilmek istenirse `npm run check` koşar ve
 - Yeni native eklenti → `ios/App/App/PrivacyInfo.xcprivacy` beyanını kontrol et. Yeni bağımlılık ya da yazı tipi →
   `src/data/legal.ts` `LICENSES`. Gizlilik politikası değişirse aynı dosyadaki `PRIVACY` metni de değişir.
 - `utils/persist.ts` yalnızca üç anahtarı UserDefaults'a yansıtıyor; yeni kalıcı veri eklersen listeye ekle.
-- Reklam kodu (`utils/ads.ts`) kapalı ve kapalı kalacak; açmak gizlilik beyanını değiştirir.
 - Uygulama hiçbir yere ağ isteği göndermez ("Data Not Collected"). Bir şey gönderen özellik eklenecekse önce Ceren'e sor.
 
 ## Ürün ilkeleri (kısa)

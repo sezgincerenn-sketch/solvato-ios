@@ -27,7 +27,6 @@ import Onboarding from "./screens/Onboarding"
 import Splash from "./screens/Splash"
 import { getSettings, updateSettings, subscribeSettings } from "./utils/settings"
 import { todayKey } from "./utils/level"
-import { ADS_ENABLED, BANNER_HEIGHT } from "./utils/ads"
 
 import { shadow, colors, palette } from "./design/tokens"
 import NavBar from "./ui/NavBar"
@@ -557,14 +556,7 @@ export default function App() {
           </TabletColumn>
         )}
       </div>
-      {isTabView(v) && (
-        <>
-          {ADS_ENABLED && v === "home" && (
-            <div aria-label="Reklam alanı" style={{ height: BANNER_HEIGHT, flexShrink: 0 }} />
-          )}
-          <NavBar active={v as NavTab} onChange={(t) => setView(t)} />
-        </>
-      )}
+      {isTabView(v) && <NavBar active={v as NavTab} onChange={(t) => setView(t)} />}
     </>
   )
 

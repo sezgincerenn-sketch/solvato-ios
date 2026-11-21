@@ -210,9 +210,7 @@ Kural: uygulama "yeniden paketlenmiş bir web sitesinin" ötesine geçen özelli
 
 ### 5d. Reklam — Tamam
 
-- `src/utils/ads.ts:4` `ADS_ENABLED = false`; reklam SDK'sı (AdMob vb.) paketlerde **yok**, ağ isteği yok. Banner alanı
-  yalnızca bu bayrak açıkken çiziliyor (`src/App.tsx:552`). Gizlilik beyanıyla çelişmiyor.
-- Kod hiç kullanılmayacaksa ileride silinebilir; şimdilik zararsız.
+- Reklam kodu 21 Kasım'da tamamen silindi (`utils/ads.ts` ve ana sayfadaki boş banner alanı). Reklam SDK'sı yok, ağ isteği yok.
 
 ## 6. 2.3 Mağaza metinleri — Risk
 

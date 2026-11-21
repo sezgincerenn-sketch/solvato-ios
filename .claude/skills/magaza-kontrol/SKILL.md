@@ -16,7 +16,7 @@ Ayrıntılı ilk kontrol `docs/APP-STORE-KONTROL.md`'de. Her sürümde şunlara 
    (`UserDefaults`, dosya tarihleri, `systemUptime`, disk alanı, klavye listesi) ve `ios/App/App/PrivacyInfo.xcprivacy`'ye ekle.
    `node scripts/ekran.mjs` birkaç ekranda DIŞ İSTEK raporlamamalı.
 4. **Lisanslar:** yeni bağımlılık ya da yazı tipi `src/data/legal.ts` `LICENSES`'ta var mı.
-5. **Tamamlık:** `grep -rniE "yakında|coming soon|lorem|todo|console\.log" src`; reklam `ADS_ENABLED = false`.
+5. **Tamamlık:** `grep -rniE "yakında|coming soon|lorem|todo|console\.log" src`; reklam kodu yok (`grep -rniE "admob|interstitial|banner" src` boş).
 6. **Mağaza metinleri:** "Solvato Mağaza Metinleri" dokümanını (Claude Docs) oku, her iddiayı koddaki karşılığıyla
    eşleştir (tur uzunluğu, ünvan sayısı, oyunlar). Köşeli parantezli yer tutucu kalmamalı.
 7. **Ekran görüntüleri:** arayüz değiştiyse hangi mağaza karesinin yeniden çekilmesi gerektiğini listele.
