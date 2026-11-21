@@ -291,6 +291,9 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
   klavyeye sığmazsa porte), **Akoru bas** (çoklu tuş). Çeldiriciler: biri aynı kökün başka türü, diğerleri aynı türün
   başka kökleri. Başlangıç'ta çeldiriciler de Başlangıç akorlarından.
 - Süre açıksa soru başına 15 sn halka.
+- Kabul:
+  - [x] 94 akorun adı, sembolü, yazımı, porte konumu, tuşları ve örnek dizileri React'la aynı (altın tablo).
+  - [x] Aynı rastgele sayı dizisiyle aynı 10 soru, aynı soru türleri ve aynı şıklar (altın tablo).
 
 ### K-18 Ritmi Tut puanlama
 
@@ -593,8 +596,8 @@ node scripts/referans.mjs --sadece soru    # adı "soru" ile başlayan senaryola
 React kodundan bir betikle (`node scripts/altin.mjs`; `scripts/altin/uret.ts`'i esbuild ile paketleyip çalıştırır)
 üretilen JSON dosyaları, `ios-native/SolvatoCore/Tests/SolvatoCoreTests/Fixtures/altin/`; native testler bunları okur.
 Tarih, saat dilimi ve rastgelelik sabit. `seri` iki saat diliminde üretilir (`seri-Europe-Istanbul.json`,
-`seri-America-New_York.json`; ikincisi yaz saati gecelerini de içerir). Durum (22 Kasım): `akorlar`, `ritmi-tut`,
-`haftalik-rapor` henüz üretilmiyor; diğerleri üretiliyor ve native testler geçiyor.
+`seri-America-New_York.json`; ikincisi yaz saati gecelerini de içerir). Akor turu ayrıca `akor-turu.json`
+(K-17). Durum (22 Kasım): `ritmi-tut` ve `haftalik-rapor` henüz üretilmiyor; diğerleri üretiliyor ve native testler geçiyor.
 
 | Tablo                 | Girdi                                                         | Çıktı                                                 |
 | --------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
