@@ -16,7 +16,6 @@ const TR: Record<string, string> = { C: "Do", D: "Re", E: "Mi", F: "Fa", G: "Sol
 // Piyano klavyesindeki tuş adları (siyah tuşlar diyez adıyla)
 export const PC_KEY = ["Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#", "Si"]
 
-const ACC_SYM: Record<number, string> = { [-2]: "𝄫", [-1]: "♭", 0: "", 1: "♯", 2: "𝄪" }
 const ACC_TXT: Record<number, string> = { [-2]: "♭♭", [-1]: "♭", 0: "", 1: "#", 2: "##" }
 
 // Akor türü: aralıklar (yarım ses) ve harf adımları (üçlü = 2 harf, beşli = 4 …)
@@ -192,10 +191,6 @@ function spell(letterIdx: number, acc: number, q: Quality, octave: number): Chor
 export function noteName(n: { letter: number; acc: number }) {
   return TR[LETTERS[n.letter]] + ACC_TXT[n.acc]
 }
-export function accSymbol(acc: number) {
-  return ACC_SYM[acc]
-}
-
 function make(root: string, qKey: string, level: ChordLevel): Chord {
   const q = Q.find((x) => x.key === qKey)!
   const letterIdx = LETTERS.indexOf(root[0] as (typeof LETTERS)[number])

@@ -1,4 +1,3 @@
-export type NoteNameTR = "Do" | "Re" | "Mi" | "Fa" | "Sol" | "La" | "Si"
 export type ClefType = "treble" | "bass"
 export type QuestionCategory = "note_identification" | "rhythm" | "musical_terms" | "writing" | "ear"
 export type FilterCategory = "all" | "treble" | "bass" | "rhythm" | "terms" | "accidentals" | "writing" | "ear"

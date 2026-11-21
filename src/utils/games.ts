@@ -133,7 +133,6 @@ export const newSeed = () => Math.floor(Math.random() * 65536)
 
 // ─── Günün meydan okuması ────────────────────────────────────────────────────
 const DAILY_ORDER: GameCat[] = ["all", "treble", "bass", "rhythm", "all", "terms", "writing"]
-export const DAILY_LEVEL = 2
 
 export function todayStr(d = new Date()) {
   const p = (n: number) => String(n).padStart(2, "0")

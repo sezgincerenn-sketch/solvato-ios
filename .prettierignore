@@ -1,6 +1,5 @@
 dist
 dist-single
-android
 ios
 node_modules
 src/data/smufl.ts
