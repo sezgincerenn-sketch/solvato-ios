@@ -74,7 +74,7 @@ ios-native/
   project.yml          Xcode projesinin tanımı (XcodeGen); .xcodeproj repoda yok, derlemede üretilir
   SolvatoCore/         arayüzden bağımsız Swift paketi (Linux'ta da derlenir): tasarım değerleri, tema tercihi;
                        Logic/ (soru bankası, seviye, ünvan, yıldız, seri, tur sonu, öğretmen ve meydan okuma kodu,
-                       oyunlar, soru seçimi, kulak soruları, akorlar ve akor turu), Resources/soru-bankasi.json. Testler: `swift test`
+                       oyunlar, soru seçimi, kulak soruları, akorlar ve akor turu, Ritmi Tut puanlama), Resources/soru-bankasi.json. Testler: `swift test`
   Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
                        aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,
                        StatTile, StatPill, ScoreRing; SVG yolları Vector.swift ile çizilir), Screens/,

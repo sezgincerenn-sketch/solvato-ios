@@ -305,7 +305,7 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
 - Zamanlama: tıklar ses saatine önceden zamanlanır, dokunuş aynı saatle ölçülür, ses çıkış gecikmesi düşülür.
   Native'de AVAudioEngine saatiyle; doğruluk bugünkünden iyi olmalı (PLAN), puanlama kuralı aynı kalmalı.
 - Kabul:
-  - [ ] Altın tablodaki (ritim, dokunuş zamanları, tempo, seviye) girdileri için `gradeTaps` sonucu aynı.
+  - [x] Altın tablodaki (ritim, dokunuş zamanları, tempo, seviye) girdileri için `gradeTaps` sonucu aynı.
   - [ ] iPhone'da metronomla mükemmel çalınan ritim ≥%90 alıyor (cihazda elle test).
 
 ### K-19 Süre (zaman yarışı)
@@ -597,7 +597,7 @@ React kodundan bir betikle (`node scripts/altin.mjs`; `scripts/altin/uret.ts`'i 
 üretilen JSON dosyaları, `ios-native/SolvatoCore/Tests/SolvatoCoreTests/Fixtures/altin/`; native testler bunları okur.
 Tarih, saat dilimi ve rastgelelik sabit. `seri` iki saat diliminde üretilir (`seri-Europe-Istanbul.json`,
 `seri-America-New_York.json`; ikincisi yaz saati gecelerini de içerir). Akor turu ayrıca `akor-turu.json`
-(K-17). Durum (22 Kasım): `ritmi-tut` ve `haftalik-rapor` henüz üretilmiyor; diğerleri üretiliyor ve native testler geçiyor.
+(K-17). Durum (22 Kasım): `haftalik-rapor` henüz üretilmiyor; diğerleri üretiliyor ve native testler geçiyor.
 
 | Tablo                 | Girdi                                                         | Çıktı                                                 |
 | --------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
