@@ -42,6 +42,13 @@ Veritabanını A ile başlayıp B'ye genişleyebilecek şekilde tasarlarım (aş
 
 ### Paket 0 — Native iOS uygulaması (1. öncelik)
 
+**Birebir uyum (Ceren'in şartı):** native sürüm mevcut uygulamayla ekran ekran aynı olur: akışlar, metinler, renkler,
+yazı tipleri, ölçüler, animasyonlar ve kurallar. Yeniden tasarım yok. Aşama 0.1'de her ekranın React sürümünden
+iPhone / iPad, koyu / açık görüntüleri alınır; her native ekran aynı durumdaki görüntüsüyle yan yana karşılaştırılarak
+kabul edilir. Mantık kuralları (puan, seviye, seri, öğretmen ve meydan okuma kodları) aynı girdilerle aynı sonucu
+vermeli: React sürümünden üretilen örnek girdi/çıktı tabloları native testlerde kullanılır. Öğretmen ve meydan okuma
+kodları iki sürüm arasında birbirini okuyabilmeli.
+
 **Hedef:** Bugünkü uygulamanın bütün işlevleri, aynı tasarımla, Swift ve SwiftUI ile. Web görünümü yok, üçüncü taraf
 kütüphane yok (yalnızca Apple'ın kendi çatıları). iPhone + iPad, en düşük iOS 17.
 
@@ -194,5 +201,5 @@ Mevcut React sürümüne bundan sonra yeni özellik eklenmez; yalnızca TestFlig
 
 ## Hâlâ açık
 
-Yok. Repolar açıldı (21 Kasım): `solvato-ios` (aktif, eski `solvato`nun tüm geçmişiyle), `solvato-android` (dondurulmuş),
+Yok. Repolar açıldı (21 Kasım): `solvato-ios` (aktif, `solvato`nun tüm geçmişiyle; `solvato` dokunulmaz yedek olarak kalır), `solvato-android` (dondurulmuş),
 `solvato-admin` (boş iskelet). Sessiz modda ses: evet, uygulandı.

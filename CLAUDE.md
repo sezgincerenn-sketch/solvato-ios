@@ -23,7 +23,12 @@ Claude Code'un bu repoda nasıl çalışacağı. Kodun yapısı `README.md`'de, 
 - `solvato-android`: dondurulmuş kopya; Android işi başlayana kadar **kod yazma**. Başlayınca `src/` buradan alınır.
   Bu yüzden `src/` içindeki Android'e özel küçük parçaları (geri tuşu) silme.
 - `solvato-admin`: analitik sunucusu, veritabanı ve admin paneli (1.1, `docs/PLAN.md`).
-- Eski `solvato` reposu kullanılmıyor.
+- **`solvato` reposu yedek: ona hiçbir şekilde dokunma** (commit, push, dal, etiket yok). Bugünkü React sürümünün
+  çalışan kopyası olarak olduğu gibi kalır. Değişiklikler yalnızca `solvato-ios` ve `solvato-android`'de.
+- **Birebir uyum:** native iOS (ve ileride Android) mevcut uygulamayla birebir aynı olmalı: aynı ekranlar ve akışlar,
+  aynı metinler, renkler, yazı tipleri, ölçüler, animasyonlar ve aynı kurallar (puan, seviye, seri, kodlar). Yeniden
+  tasarlama ya da "iyileştirme" yapma; fark gerekiyorsa önce Ceren'e sor. Başvuru kaynağı bu repodaki `src/` ve
+  `node scripts/ekran.mjs` ile alınan ekran görüntüleri.
 
 ## Çalışma şekli
 
