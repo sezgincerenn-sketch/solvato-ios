@@ -575,7 +575,9 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
         ikonları React'la parça parça aynı.
   - [ ] Ekranda React görüntüsüyle üst üste konduğunda aynı (Codemagic görüntüleri; yazıların taban çizgisi ve
         parıltı göz kontrolüyle).
-  - [ ] Klavye (tek ve çok tuşlu) React'la aynı.
+  - [x] Klavye (tek ve çok tuşlu) React'la aynı: her nota sorusunun klavyedeki yeri ve klavye penceresi (564), soru
+        klavyesinin 84 ve akor klavyesinin 16 durumunda her tuşun konumu, rengi, kenarlığı, gölgesi ve yazısı
+        (`scripts/altin/piyano.ts` → `piyano.json`, `PianoTests`). Ekranda görünüşü Codemagic görüntüleriyle.
 
 ## D. Sistem entegrasyonları
 
