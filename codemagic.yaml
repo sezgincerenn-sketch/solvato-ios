@@ -22,31 +22,24 @@ definitions:
       name: UI testleri ve ekran görüntüleri
       script: |
         set -o pipefail
-        # Simülatör adları Xcode sürümüyle değişir; mevcutlardan seç: büyük iPhone, küçük iPhone, 13 inç iPad
-        xcrun simctl list devices available -j > /tmp/sims.json
-        python3 - > /tmp/devices.txt <<'PY'
-        import json, re
-        devs = [d for r, ds in json.load(open("/tmp/sims.json"))["devices"].items() if "iOS" in r for d in ds]
-        names = [d["name"] for d in devs]
-        def pick(*patterns):
-            for p in patterns:
-                for n in names:
-                    if re.fullmatch(p, n): return n
-        for slug, n in [
-            ("iphone", pick(r"iPhone \d+ Pro", r"iPhone \d+")),
-            ("iphone-kucuk", pick(r"iPhone SE.*", r"iPhone \d+e")),
-            ("ipad", pick(r"iPad Pro 13.*", r"iPad Pro.*", r"iPad.*")),
-        ]:
-            if n: print(f"{slug}|{n}")
-        PY
+        # iOS simülatörü kurulu değilse indir (Xcode 26'da ayrı geliyor)
+        if ! xcrun simctl list runtimes | grep -q "^iOS"; then xcodebuild -downloadPlatform iOS; fi
+        xcrun simctl list runtimes
+        xcrun simctl list runtimes -j > /tmp/runtimes.json
+        xcrun simctl list devicetypes -j > /tmp/types.json
+        python3 scripts/native-simulatorler.py /tmp/runtimes.json /tmp/types.json > /tmp/devices.txt
         cat /tmp/devices.txt
+        [ "$(wc -l < /tmp/devices.txt)" -ge 3 ] || { echo "Üç simülatör bulunamadı"; exit 1; }
         mkdir -p build/ekranlar
-        while IFS='|' read -r SLUG DEVICE; do
+        while IFS='|' read -r SLUG TYPE RUNTIME; do
+          UDID=$(xcrun simctl create "solvato-$SLUG" "$TYPE" "$RUNTIME")
+          echo "$SLUG: $TYPE ($UDID)"
           xcodebuild test -project ios-native/Solvato.xcodeproj -scheme Solvato \
-            -destination "platform=iOS Simulator,name=$DEVICE" \
-            -resultBundlePath "build/ui-$SLUG.xcresult" CODE_SIGNING_ALLOWED=NO < /dev/null | tail -20
+            -destination "platform=iOS Simulator,id=$UDID" \
+            -resultBundlePath "build/ui-$SLUG.xcresult" CODE_SIGNING_ALLOWED=NO < /dev/null | tail -40
           python3 scripts/native-ekranlar.py "build/ui-$SLUG.xcresult" "$SLUG" build/ekranlar
         done < /tmp/devices.txt
+        ls build/ekranlar | grep -q png || { echo "Ekran görüntüsü yok"; exit 1; }
         cd build && zip -qr native-ekranlar.zip ekranlar
 
 workflows:
@@ -133,6 +126,7 @@ workflows:
         includes:
           - ios-native/
           - scripts/native-ekranlar.py
+          - scripts/native-simulatorler.py
           - codemagic.yaml
     scripts:
       - *xcode_kontrol
