@@ -148,7 +148,7 @@ Bu bölümün her maddesi 0.3'te Swift paketinde yazılır ve altın tablolarla 
 
 - `questionLevel(q)`: nota sorusunda 2+ ek çizgi ya da y>95 / y<25 → İleri; diyez/bemol → Orta; porte içi, hemen
   üstü/altı ve orta Do → Başlangıç; diğer ek çizgiler → Orta. Ritim ve terimlerde sabit kimlik listeleri; yazımda
-  kimlik ≥1801 Orta. Dağılım: Başlangıç 362, Orta 176, İleri 163.
+  kimlik ≥1801 Orta. Dağılım: Başlangıç 362, Orta 155, İleri 184 (ritimde 14, terimlerde 9 İleri soru).
 - Kabul:
   - [ ] 701 sorunun her birinin seviyesi React'la aynı (altın tablo).
 
@@ -614,16 +614,16 @@ testler bunları okur. Tarih ve rastgelelik sabit.
 Kod okunurken fark edilenler. Native bunları **aynen** taşır; değişecekse Ceren karar verir ve "Bilinçli farklar"a
 yazılır.
 
-1. **İleri seviyede neredeyse hiç İleri ritim ve terim sorusu yok.** `questionLevel` İleri listesindeki kimliklerin
-   çoğu bankada yok (ritimde 2, terimlerde 0 İleri soru). İleri seviyedeki kullanıcı Orta ritim/terim sorularını görür.
-2. **Ayarlar › Ses açıklaması** "Telefon sessizdeyse ses gelmeyebilir." diyor; oysa ses oturumu sessizde de çalıyor.
-3. **Seri "dün"ü** şimdiden 24 saat çıkarılarak bulunuyor; yaz saati geçişi gecesinde nadiren bir günü atlayabilir.
+1. **Seri "dün"ü** şimdiden 24 saat çıkarılarak bulunuyor; yaz saati geçişi gecesinde nadiren bir günü atlayabilir.
    (Türkiye'de yaz saati yok; etkisi yalnız yurt dışında.)
-4. **İlerlemeyi sıfırla** günün meydan okuması kayıtlarını (oyun serisi) silmiyor.
+2. **İlerlemeyi sıfırla** günün meydan okuması kayıtlarını (oyun serisi) silmiyor. Ceren: böyle kalsın (21 Kasım).
 
 ## Bilinçli farklar
 
-(Ceren'in onayıyla eklenir.)
+(Ceren'in onayıyla eklenir.) 21 Kasım'da iki düzeltme React sürümünde de yapıldı, native aynısını taşır:
+
+- İleri seviyede İleri ritim ve terim soruları geliyor (eski İleri listesindeki kimliklerin çoğu bankada yoktu).
+- Ayarlar › Ses açıklaması: "Telefon sessiz moddayken de çalar." (Ses sessiz modda da çalıyor.)
 
 - Bilgisayara özgü davranışlar taşınmaz: fareyle üzerine gelme renkleri, boşluk tuşuyla Ritmi Tut, masaüstünde telefon
   çerçevesi, Android geri tuşu.
