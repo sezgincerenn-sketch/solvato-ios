@@ -98,7 +98,7 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-        submit_to_testflight: true # iç test grubundakiler (Ceren) beta incelemesi beklemeden alır
+        submit_to_testflight: false # iç test grubu (Ceren) incelemesiz alır; true dış test için Apple beta incelemesine gönderir
 
   # ─── Native iOS (Swift / SwiftUI, docs/PLAN.md Paket 0) ─────────────────────────────────────────────────────────
   # İki iş akışı:
@@ -170,4 +170,4 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-        submit_to_testflight: true
+        submit_to_testflight: false # iç test grubu incelemesiz alır; dış test açılınca true + Test Information
