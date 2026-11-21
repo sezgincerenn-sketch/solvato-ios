@@ -99,8 +99,10 @@ alır ve bitince işaretler.
 
 ### G-09 Depolama
 
-Her şey cihazda. Anahtar adları **değişmez** (README, CLAUDE.md). Native'de UserDefaults'ta aynı anahtarlar ve aynı
-JSON biçimi kullanılır; böylece ileride bir veri taşıma gerekirse biçim tanıdık kalır.
+Her şey cihazda. Anahtar adları **değişmez** (README, CLAUDE.md). Native'de aynı anahtarlar ve aynı JSON biçimi
+kullanılır; böylece ileride bir veri taşıma gerekirse biçim tanıdık kalır. Her anahtar Application Support/Solvato altında
+anahtar adıyla bir dosya (`SolvatoCore/Logic/Persistence.swift`): UserDefaults'ta "kilitliyken şifreli" koruma ek bir
+yetki ve imzalama değişikliği isterdi; dosyada veri koruması doğrudan açılır.
 
 | Anahtar                  | İçerik                                                     | Kaynak                          |
 | ------------------------ | ---------------------------------------------------------- | ------------------------------- |
@@ -113,7 +115,11 @@ JSON biçimi kullanılır; böylece ileride bir veri taşıma gerekirse biçim t
 
 - Ayar varsayılanları `utils/settings.ts` `DEFAULTS`. Eski tek `sound` ayarı `soundKeys`'e taşınır (native'de
   gerek yok: yayında eski kullanıcı yok).
-- Veri koruması açık (cihaz kilitliyken şifreli).
+- Veri koruması açık (cihaz kilitliyken şifreli): dosyalar `completeFileProtectionUnlessOpen` ile yazılır.
+  `solvato_last_lesson_v1` yedeğe girmeyen `NoBackup` alt klasöründe.
+- İlerlemeyi sıfırla: istatistikler sıfırlanır; ayarlar ve günün meydan okuması kayıtları kalır.
+- Kod hazır ve testli (0.3); tema bugün uygulamada hâlâ `@AppStorage` ile okunuyor, ekranlarla birlikte (0.5) bu katmana
+  geçer. Aşağıdaki iki madde cihazda doğrulanınca işaretlenir.
 - Kabul:
   - [ ] Uygulama silinip yeniden kurulmadıkça veriler kalıcı; güncellemede kaybolmuyor.
   - [ ] `solvato_last_lesson_v1` iCloud yedeğine girmiyor; diğerleri giriyor.

@@ -74,7 +74,7 @@ ios-native/
   project.yml          Xcode projesinin tanımı (XcodeGen); .xcodeproj repoda yok, derlemede üretilir
   SolvatoCore/         arayüzden bağımsız Swift paketi (Linux'ta da derlenir): tasarım değerleri, tema tercihi;
                        Logic/ (soru bankası, seviye, ünvan, yıldız, seri, tur sonu, öğretmen ve meydan okuma kodu,
-                       oyunlar, soru seçimi, kulak soruları, akorlar ve akor turu, Ritmi Tut puanlama, haftalık rapor), Resources/soru-bankasi.json. Testler: `swift test`
+                       oyunlar, soru seçimi, kulak soruları, akorlar ve akor turu, Ritmi Tut puanlama, haftalık rapor, kalıcı depolama), Resources/soru-bankasi.json. Testler: `swift test`
   Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
                        aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,
                        StatTile, StatPill, ScoreRing; SVG yolları Vector.swift ile çizilir), Screens/,
@@ -97,7 +97,8 @@ ios-native/
     `<senaryo>-<cihaz>-<koyu|acik>.png`). main'e `ios-native/` değişikliği gönderilince kendiliğinden başlar.
   - `ios-native-testflight`: aynı adımlar + imzalı derleme ve TestFlight; elle başlatılır. Build numarası 1000 +
     Codemagic sayacı (React derlemeleriyle çakışmaz). Aynı uygulama kaydı (`com.solvato.app`).
-- Tema tercihi web'le aynı anahtarda (`pianote_theme_v1`, UserDefaults). UI testleri `-UITestTheme dark|light` ile
+- Kalıcı veriler web'le aynı anahtar adlarıyla Application Support/Solvato altında dosya (`Persistence.swift`; veri
+  korumalı, son ders yedek dışı). Tema bugün uygulamada `pianote_theme_v1` ile UserDefaults'tan okunuyor; 0.5'te bu katmana geçer. UI testleri `-UITestTheme dark|light` ile
   temayı zorlar.
 - Henüz tek ekran var: tasarım sistemi önizlemesi. Gerçek ekranlar aşama 0.5'te.
 
