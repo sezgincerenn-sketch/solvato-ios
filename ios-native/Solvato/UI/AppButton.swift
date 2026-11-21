@@ -27,7 +27,7 @@ struct AppButton<Icon: View>: View {
         block: Bool = false,
         disabled: Bool = false,
         action: @escaping () -> Void,
-        @ViewBuilder icon: () -> Icon = { EmptyView() }
+        @ViewBuilder icon: () -> Icon
     ) {
         self.title = title
         self.variant = variant
@@ -53,11 +53,11 @@ struct AppButton<Icon: View>: View {
             .padding(.horizontal, size == .lg ? Space.s5 : Space.s4)
             .frame(minHeight: Touch.min)
             .frame(maxWidth: block ? .infinity : nil)
-            .background { background.clipShape(shape) }
+            .background { fill.clipShape(shape) }
             .overlay {
                 if variant == .secondary { shape.strokeBorder(ThemeColor.border.color, lineWidth: 1) }
             }
-            .shadow(variant == .primary ? .glow(Brand.primary, strength: 0.45) : .none)
+            .shadow(variant == .primary ? BoxShadow.glow(Brand.primary, strength: 0.45) : BoxShadow.none)
             .contentShape(shape)
         }
         .buttonStyle(.plain)
@@ -74,12 +74,26 @@ struct AppButton<Icon: View>: View {
         }
     }
 
-    @ViewBuilder private var background: some View {
+    @ViewBuilder private var fill: some View {
         switch variant {
         case .primary: CSSLinearGradient(.primaryFlat)
         case .success: CSSLinearGradient(.success)
         case .secondary: ThemeColor.fillStrong.color
         case .ghost: Color.clear
         }
+    }
+}
+
+extension AppButton where Icon == EmptyView {
+    /// İkonsuz düğme
+    init(
+        _ title: String,
+        variant: ButtonVariant = .primary,
+        size: ButtonSize = .md,
+        block: Bool = false,
+        disabled: Bool = false,
+        action: @escaping () -> Void
+    ) {
+        self.init(title, variant: variant, size: size, block: block, disabled: disabled, action: action) { EmptyView() }
     }
 }

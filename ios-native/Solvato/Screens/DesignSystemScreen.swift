@@ -21,7 +21,7 @@ struct DesignSystemScreen: View {
             }
             .padding(.horizontal, Space.s4)
             .padding(.vertical, Space.s6)
-            .frame(maxWidth: Layout.tabletColumn)
+            .frame(maxWidth: Metrics.tabletColumn)
             .frame(maxWidth: .infinity)
         }
         .background(ThemeColor.bg.color.ignoresSafeArea())
@@ -62,7 +62,7 @@ struct DesignSystemScreen: View {
 
     private var categories: some View {
         VStack(spacing: Space.s2) {
-            ForEach(Category.allCases, id: \.self) { c in
+            ForEach(CategoryColor.allCases, id: \.self) { c in
                 HStack(spacing: Space.s3) {
                     Text(c.rawValue)
                         .font(.ui(FontSize.sm, .semibold))
@@ -141,10 +141,10 @@ struct DesignSystemScreen: View {
                     .font(.ui(FontSize.sm))
                     .foregroundStyle(ThemeColor.textSoft.color)
             }
-            AppCard(tone: Category.rhythm.base) {
+            AppCard(tone: CategoryColor.rhythm.base) {
                 Text("Konu tonlu kart (Ritim)")
                     .font(.ui(FontSize.sm, .semibold))
-                    .foregroundStyle(Category.rhythm.text.color)
+                    .foregroundStyle(CategoryColor.rhythm.text.color)
             }
         }
     }

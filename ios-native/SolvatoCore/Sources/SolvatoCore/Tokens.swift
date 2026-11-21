@@ -17,7 +17,7 @@ public enum Brand {
 
 /// Her konunun tek rengi: ana sayfa kartı, soru etiketi ve ilerleme çubuğu aynı rengi kullanır.
 /// base: dolgu/kenar/ikon · light: çubuk gradyanının açık ucu · text: yazı (temaya duyarlı)
-public enum Category: String, CaseIterable, Sendable {
+public enum CategoryColor: String, CaseIterable, Sendable {
     case treble, bass, accidentals, rhythm, writing, terms, chords, games, ear
 
     public var base: PaletteColor {
@@ -63,7 +63,7 @@ public enum Category: String, CaseIterable, Sendable {
     }
 }
 
-/// 135° doğrusal gradyanlar (web: gradient). Konu çubuğu ise 90°: Category.base → Category.light.
+/// 135° doğrusal gradyanlar (web: gradient). Konu çubuğu ise 90°: CategoryColor.base → CategoryColor.light.
 public enum BrandGradient: String, CaseIterable, Sendable {
     case primary, primaryFlat, success, warning, danger
 
@@ -127,18 +127,18 @@ public enum Tracking {
 }
 
 /// Gölge: dikey kayma, bulanıklık (CSS blur yarıçapı) ve renk.
-public struct ShadowStyle: Equatable, Sendable {
+public struct BoxShadow: Equatable, Sendable {
     public let y: Double
     public let blur: Double
     public let color: RGBA
 
-    public static let none = ShadowStyle(y: 0, blur: 0, color: RGBA(0))
-    public static let card = ShadowStyle(y: 4, blur: 16, color: PaletteColor.black.rgba.opacity(0.18))
-    public static let raised = ShadowStyle(y: 8, blur: 28, color: PaletteColor.black.rgba.opacity(0.28))
+    public static let none = BoxShadow(y: 0, blur: 0, color: RGBA(0))
+    public static let card = BoxShadow(y: 4, blur: 16, color: PaletteColor.black.rgba.opacity(0.18))
+    public static let raised = BoxShadow(y: 8, blur: 28, color: PaletteColor.black.rgba.opacity(0.28))
 
     /// Renkli parıltı: öne çıkan düğme ve rozetler (web: shadow.glow(hex, strength))
-    public static func glow(_ color: PaletteColor, strength: Double = 0.38) -> ShadowStyle {
-        ShadowStyle(y: 8, blur: 28, color: color.rgba.opacity(strength))
+    public static func glow(_ color: PaletteColor, strength: Double = 0.38) -> BoxShadow {
+        BoxShadow(y: 8, blur: 28, color: color.rgba.opacity(strength))
     }
 }
 
@@ -162,7 +162,7 @@ public enum Touch {
 }
 
 /// Düzen ölçüleri
-public enum Layout {
+public enum Metrics {
     /// Tablette okunur içerik genişliği (web: ui/TabletColumn varsayılanı)
     public static let tabletColumn: Double = 680
 }

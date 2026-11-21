@@ -40,14 +40,14 @@ extension ThemeMode {
     }
 }
 
-extension ShadowStyle {
+extension BoxShadow {
     /// CSS box-shadow bulanıklığı ≈ 2 × SwiftUI gölge yarıçapı
     var radius: Double { blur / 2 }
 }
 
 extension View {
     /// Tasarım sistemi gölgesi (web: shadow.card / shadow.raised / shadow.glow)
-    func shadow(_ style: ShadowStyle) -> some View {
+    func shadow(_ style: BoxShadow) -> some View {
         shadow(color: style.color.color, radius: style.radius, x: 0, y: style.y)
     }
 }
@@ -84,7 +84,7 @@ struct CSSLinearGradient: View {
     }
 }
 
-extension Category {
+extension CategoryColor {
     /// Konu ilerleme çubuğu dolgusu (web: categoryBar, 90°)
     var bar: CSSLinearGradient { CSSLinearGradient(angle: 90, [base.color, light.color]) }
 }

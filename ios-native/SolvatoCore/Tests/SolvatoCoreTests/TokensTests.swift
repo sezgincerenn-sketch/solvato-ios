@@ -50,8 +50,8 @@ final class TokensTests: XCTestCase {
         XCTAssertEqual(Brand.onPrimary.rgba.hex, onPrimary, "colors.onPrimary")
 
         let category = dict("category")
-        XCTAssertEqual(Set(category.keys), Set(Category.allCases.map(\.rawValue)), "konu adları")
-        for c in Category.allCases {
+        XCTAssertEqual(Set(category.keys), Set(CategoryColor.allCases.map(\.rawValue)), "konu adları")
+        for c in CategoryColor.allCases {
             let w = category[c.rawValue] as? [String: String] ?? [:]
             XCTAssertEqual(c.base.rgba.hex, w["base"], "category.\(c.rawValue).base")
             XCTAssertEqual(c.light.rgba.hex, w["light"], "category.\(c.rawValue).light")
@@ -92,13 +92,13 @@ final class TokensTests: XCTestCase {
     }
 
     func testShadowAndMotion() {
-        for (name, s) in [("card", ShadowStyle.card), ("raised", ShadowStyle.raised)] {
+        for (name, s) in [("card", BoxShadow.card), ("raised", BoxShadow.raised)] {
             let w = dict("shadow")[name] as? [String: Any] ?? [:]
             XCTAssertEqual(s.y, (w["y"] as? NSNumber)?.doubleValue, "shadow.\(name).y")
             XCTAssertEqual(s.blur, (w["blur"] as? NSNumber)?.doubleValue, "shadow.\(name).blur")
             XCTAssertEqual(s.color.hex, w["color"] as? String, "shadow.\(name).color")
         }
-        let glow = ShadowStyle.glow(.black)
+        let glow = BoxShadow.glow(.black)
         XCTAssertEqual(glow.y, number("glow", "y"))
         XCTAssertEqual(glow.blur, number("glow", "blur"))
         XCTAssertEqual(glow.color.hex, dict("glow")["alpha38"] as? String, "glow varsayılan güç 0.38")

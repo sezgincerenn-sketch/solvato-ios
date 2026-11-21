@@ -4,12 +4,9 @@
 import XCTest
 
 final class ScreenshotTests: XCTestCase {
-    override func setUp() {
-        continueAfterFailure = false
-    }
-
     @MainActor
     func testDesignSystem() {
+        continueAfterFailure = false
         for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
             let app = launch(theme: theme)
             let screen = app.descendants(matching: .any)["tasarim-sistemi"]
