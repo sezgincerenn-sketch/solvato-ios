@@ -116,9 +116,11 @@ incelemesi gerekir.
 
 ### 11. Sonraki sürümler
 
-- Claude'a **"TestFlight'a gönder"** yaz. Claude `testflight-1.0-<sıra>` adında bir git etiketi atar, Codemagic
-  derlemeyi kendisi başlatır.
-- Ya da Codemagic'te **Start new build**.
+- Codemagic'te **Start new build** → dal **main** → iş akışı **Native iOS → TestFlight** (native sürüm) ya da
+  **iOS → TestFlight** (eski React sürümü). Bulut oturumundaki Claude git etiketi gönderemediği için derlemeyi
+  etiketle başlatamaz.
+- **Native iOS → testler ve ekranlar** TestFlight'a yüklemez ve imza istemez; `ios-native/` klasörü `main`e
+  gönderilince kendiliğinden başlar. Ekran görüntüleri derleme sayfasında **Artifacts** › `native-ekranlar.zip`.
 - Her derleme 500 aylık ücretsiz dakikanın yaklaşık 15–20'sini kullanır (ayda ~25 derleme). Her küçük değişiklik için
   değil, denemeye değer bir grup değişiklik birikince gönder.
 - Yeni derleme işlenince TestFlight bildirim gönderir; **Update** ile güncellenir, ilerleme silinmez.
