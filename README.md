@@ -76,7 +76,8 @@ ios-native/
                        Logic/ (soru bankası, seviye, ünvan, yıldız, seri, tur sonu, öğretmen ve meydan okuma kodu,
                        oyunlar, soru seçimi, kulak soruları, akorlar ve akor turu, Ritmi Tut puanlama, haftalık rapor, kalıcı depolama), Resources/soru-bankasi.json. Testler: `swift test`
                        Notation/ (nota çizimi yerleşimi: Notation dili, portesi, akor ve hedef portesi → çizim listesi;
-                       Piano: klavye tuşları, durumları, renkleri),
+                       Piano: klavye tuşları, durumları, renkleri), App/ (ScreenStack: gezinme kuralları;
+                       AppModel: uygulama durumu ve tur akışı, web App.tsx),
                        Resources/smufl.json (Bravura sembol yolları, web'le aynı)
   Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
                        aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,

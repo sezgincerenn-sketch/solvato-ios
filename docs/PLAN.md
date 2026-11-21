@@ -119,7 +119,9 @@ yedek dışı son ders) eklendi; 46 test. **0.3 tamam.** Sırada 0.4: nota çizi
 web'in SVG çıktısıyla parça parça aynı. Piyano klavyeleri (soru turu 1–3 oktav, akor klavyesi) tuş tuş aynı; 57 test.
 Tasarım sistemi ekranında örnekler. 0.4'te kalan: ekranda React görüntüleriyle göz karşılaştırması (Codemagic).
 0.5 başladı (22 Kasım): ortak ekran parçaları (Avatar, BackButton, ScreenHeader, Toast, PlayChip, TopicLink, ExitConfirm,
-NavBar, TabletColumn) `Solvato/UI/Shell.swift`; tasarım sistemi ekranında örnekler. Sırada: uygulama iskeleti ve Pratik.
+NavBar, TabletColumn) `Solvato/UI/Shell.swift`; tasarım sistemi ekranında örnekler. Uygulama akışı çekirdekte:
+gezinme kuralları (`ScreenStack`) ve durum modeli (`AppModel`: tur başlat/bitir, oyun, sıfırlama, tanıtım); 66 test.
+Sırada: SwiftUI kök görünümü (sekmeler, kaydırarak geri) ve Pratik ekranı.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.
