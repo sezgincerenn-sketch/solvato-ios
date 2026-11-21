@@ -103,8 +103,9 @@ Toplam kabaca 25–30 oturum; Ceren'in TestFlight geri bildirimine bağlı olara
 
 **Durum:** 0.1 yazıldı (21 Kasım): `docs/ozellikler/native-ios.md` (19 kural, 18 ekran grubu, kabul ölçütleri) ve
 referans görüntü betiği `scripts/referans.mjs`. Altın tablolar 0.3'te, aynı dokümandaki listeye göre üretilir.
-0.2 başladı (21 Kasım): iskelet `ios-native/` (README "Native iOS"). Bekleyen: bulut oturumunda `swift test`
-(Swift çalıştırma izni), ilk Codemagic derlemesi (main'e `ios-native/` gönderimiyle kendiliğinden), `src/ui` ve `src/components` parçalarının taşınması.
+0.2 başladı (21 Kasım): iskelet `ios-native/` (README "Native iOS"). Codemagic `ios-native-test` yeşil: çekirdek
+testleri (web değerleriyle eşitlik) geçti, uygulama derlendi, 3 cihaz × 2 tema ekran görüntüsü alındı. Bekleyen:
+TestFlight için App Store imzalaması (rehber Bölüm A, B 5–7), `src/ui` ve `src/components` parçalarının taşınması.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.
