@@ -14,7 +14,7 @@ final class ScreenshotTests: XCTestCase {
             // Simülatörün ilk açılış bildirimleri (ör. Apple Intelligence) kaybolsun
             if theme == "dark" { Thread.sleep(forTimeInterval: 8) }
             // Ekran uzun: her kısa kaydırmada bir görüntü (iPad'de son görüntüler tekrar edebilir)
-            for shot in 1...8 {
+            for shot in 1...10 {
                 if shot > 1 { app.swipeUp(velocity: .slow) }
                 snap("tasarim-\(shot)-\(tr)")
             }

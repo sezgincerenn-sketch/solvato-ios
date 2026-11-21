@@ -16,6 +16,7 @@ struct DesignSystemScreen: View {
             VStack(alignment: .leading, spacing: Space.s6) {
                 header
                 themePicker
+                section("Nota çizimi") { notation }
                 section("Logo ve ikonlar") { logoAndIcons }
                 section("Seçim") { choices }
                 section("Rozet ve göstergeler") { badges }
@@ -42,6 +43,32 @@ struct DesignSystemScreen: View {
             Text("Tasarım sistemi")
                 .font(.ui(FontSize.sm, .medium))
                 .foregroundStyle(ThemeColor.textMuted.color)
+        }
+    }
+
+    /// 0.4: nota çizimleri (web Notation, MusicalStaff, ChordStaffSvg, GoalStaff, ClefIcon)
+    private var notation: some View {
+        VStack(alignment: .leading, spacing: Space.s4) {
+            HStack(spacing: Space.s3) {
+                MusicalStaffView(clef: .treble, noteY: 90, ledgerLines: [90], showLabel: true)
+                MusicalStaffView(clef: .bass, noteY: 45, accidental: .sharp, feedback: .correct)
+            }
+            GoalStaffView(done: 6, goal: 10)
+            NotationView(score: "ts:4/4 q ee ssss q ||")
+            NotationView(score: "ts:6/8 3eee e.s ses q~ q")
+            NotationView(score: "dyn:mf (q q@1 q@2 q@3) hair:<")
+            NotationView(score: "tx:Allegro q! q> q- h^ end:Fine")
+            HStack(spacing: Space.s3) {
+                ChordStaffView(chord: Chords.all.first { $0.id == "C#min" }!, color: .palette(.violet500))
+                ChordStaffView(chord: Chords.all.first { $0.id == "C13" }!)
+            }
+            HStack(spacing: Space.s2) {
+                ClefIconView(clef: .treble, size: 24)
+                ClefIconView(clef: .bass, size: 24)
+                Text("Sol ve Fa anahtarı")
+                    .font(.ui(FontSize.sm, .medium))
+            }
+            .foregroundStyle(ThemeColor.violetText.color)
         }
     }
 
