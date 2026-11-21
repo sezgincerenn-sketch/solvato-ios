@@ -197,13 +197,13 @@ Mevcut React sürümüne bundan sonra yeni özellik eklenmez; yalnızca TestFlig
 
 ## Kararlar
 
-| Konu                 | Karar                                                                                     |
-| -------------------- | ----------------------------------------------------------------------------------------- |
-| Veri modeli          | **Anonim analitik**: isim ve hesap yok, rastgele cihaz kimliği, Ayarlar'dan kapatılabilir |
-| Analitik zamanlaması | **1.1**: 1.0 veri toplamadan çıkar                                                        |
-| Web önizlemesi       | **TestFlight çalışınca** silinir                                                          |
-| Apple Developer      | **Hesap var**                                                                             |
-| Cihazlar             | iPhone + iPad                                                                             |
+| Konu                 | Karar                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| Veri modeli          | **Anonim analitik**: isim ve hesap yok, rastgele cihaz kimliği, Ayarlar'dan kapatılabilir   |
+| Analitik zamanlaması | **1.1**: 1.0 veri toplamadan çıkar                                                          |
+| Web önizlemesi       | **TestFlight çalışınca** silinir                                                            |
+| Apple Developer      | **Bireysel üyelik başvurusu yapıldı** (21 Kasım), onay bekleniyor; TestFlight onaydan sonra |
+| Cihazlar             | iPhone + iPad                                                                               |
 
 ## Hâlâ açık
 
