@@ -106,6 +106,9 @@ referans görüntü betiği `scripts/referans.mjs`. Altın tablolar 0.3'te, ayn�
 0.2 başladı (21 Kasım): iskelet `ios-native/` (README "Native iOS"). Codemagic `ios-native-test` yeşil: çekirdek
 testleri (web değerleriyle eşitlik) geçti, uygulama derlendi, 3 cihaz × 2 tema ekran görüntüsü alındı. Bekleyen:
 TestFlight için App Store imzalaması (rehber Bölüm A, B 5–7), `src/ui` ve `src/components` parçalarının taşınması.
+22 Kasım: imzalama kuruldu, ilk native derleme (`ios-native-testflight`) TestFlight'a yüklendi; ortak arayüz parçaları
+(ikon, logo, seçim, rozet, yıldız, gösterge, puan halkası) taşındı. 0.2'de kalan: Avatar, BackButton, ScreenHeader, Toast,
+ExitConfirm, TopicLink, PlayChip, NavBar, Coachmark (ekranlarla birlikte 0.5'te de yapılabilir).
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.
@@ -197,13 +200,13 @@ Mevcut React sürümüne bundan sonra yeni özellik eklenmez; yalnızca TestFlig
 
 ## Kararlar
 
-| Konu                 | Karar                                                                                       |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| Veri modeli          | **Anonim analitik**: isim ve hesap yok, rastgele cihaz kimliği, Ayarlar'dan kapatılabilir   |
-| Analitik zamanlaması | **1.1**: 1.0 veri toplamadan çıkar                                                          |
-| Web önizlemesi       | **TestFlight çalışınca** silinir                                                            |
-| Apple Developer      | **Bireysel üyelik başvurusu yapıldı** (21 Kasım), onay bekleniyor; TestFlight onaydan sonra |
-| Cihazlar             | iPhone + iPad                                                                               |
+| Konu                 | Karar                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| Veri modeli          | **Anonim analitik**: isim ve hesap yok, rastgele cihaz kimliği, Ayarlar'dan kapatılabilir |
+| Analitik zamanlaması | **1.1**: 1.0 veri toplamadan çıkar                                                        |
+| Web önizlemesi       | **TestFlight çalışınca** silinir                                                          |
+| Apple Developer      | **Bireysel üyelik** (22 Kasım onaylandı); imzalama ve TestFlight kurulu                   |
+| Cihazlar             | iPhone + iPad                                                                             |
 
 ## Hâlâ açık
 
