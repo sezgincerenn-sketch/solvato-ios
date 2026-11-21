@@ -108,7 +108,7 @@ testleri (web değerleriyle eşitlik) geçti, uygulama derlendi, 3 cihaz × 2 te
 TestFlight için App Store imzalaması (rehber Bölüm A, B 5–7), `src/ui` ve `src/components` parçalarının taşınması.
 22 Kasım: imzalama kuruldu, ilk native derleme (`ios-native-testflight`) TestFlight'a yüklendi; ortak arayüz parçaları
 (ikon, logo, seçim, rozet, yıldız, gösterge, puan halkası) taşındı. 0.2'de kalan: Avatar, BackButton, ScreenHeader, Toast,
-ExitConfirm, TopicLink, PlayChip, NavBar, Coachmark (ekranlarla birlikte 0.5'te de yapılabilir).
+ExitConfirm, TopicLink, PlayChip, NavBar, Coachmark (0.5'te yapıldı; Coachmark Pratik'le birlikte).
 0.3 başladı (22 Kasım): `scripts/altin.mjs` altın tabloları üretiyor; `SolvatoCore/Logic/` altında soru bankası ve
 seviyeler, ünvan, yıldız, takvim dönemleri, seri ve tur sonu istatistikleri, seviye atlama, kutlama, öğretmen kodu, meydan
 okuma kodu, günün meydan okuması, tohumlu oyun soruları, tur için soru seçimi, kulak soruları, zorlandığın notalar yazıldı;
@@ -118,6 +118,8 @@ yedek dışı son ders) eklendi; 46 test. **0.3 tamam.** Sırada 0.4: nota çizi
 0.4 başladı (22 Kasım): nota çizimi (Notation dili, tek nota portesi, akor portesi, günlük hedef portesi, anahtar ikonu)
 web'in SVG çıktısıyla parça parça aynı. Piyano klavyeleri (soru turu 1–3 oktav, akor klavyesi) tuş tuş aynı; 57 test.
 Tasarım sistemi ekranında örnekler. 0.4'te kalan: ekranda React görüntüleriyle göz karşılaştırması (Codemagic).
+0.5 başladı (22 Kasım): ortak ekran parçaları (Avatar, BackButton, ScreenHeader, Toast, PlayChip, TopicLink, ExitConfirm,
+NavBar, TabletColumn) `Solvato/UI/Shell.swift`; tasarım sistemi ekranında örnekler. Sırada: uygulama iskeleti ve Pratik.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.

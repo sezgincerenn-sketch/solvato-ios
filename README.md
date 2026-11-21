@@ -80,7 +80,8 @@ ios-native/
                        Resources/smufl.json (Bravura sembol yolları, web'le aynı)
   Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
                        aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,
-                       StatTile, StatPill, ScoreRing; SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
+                       StatTile, StatPill, ScoreRing; Shell.swift: Avatar, BackButton, ScreenHeader, Toast, PlayChip,
+                       TopicLink, ExitConfirm, NavBar, TabletColumn; SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
                        Canvas'a çizer; NotationView, MusicalStaffView, ChordStaffView, GoalStaffView, ClefIconView; PianoViews: QuizPianoView,
                        MultiPianoView), Screens/,
                        Resources/Fonts (Outfit, JetBrains Mono TTF), PrivacyInfo.xcprivacy
