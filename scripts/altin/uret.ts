@@ -3,6 +3,7 @@
 // bunu esbuild ile paketler ve sabit saat dilimiyle çalıştırır. src/ yalnızca okunur.
 import { writeFileSync, mkdirSync } from "node:fs"
 import { cizim } from "./cizim"
+import { piyano } from "./piyano"
 import { join } from "node:path"
 import { ALL_QUESTIONS, questionLevel } from "../../src/data/questions"
 import { rankFromXp, todayKey } from "../../src/utils/level"
@@ -812,5 +813,6 @@ else {
   write("ritmi-tut.json", ritmiTut())
   write("haftalik-rapor.json", haftalikRapor())
   write("cizim.json", cizim())
+  write("piyano.json", piyano())
   write("seri-" + TZ!.replace("/", "-") + ".json", seri())
 }
