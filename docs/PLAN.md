@@ -1,25 +1,16 @@
-# Plan: iOS yayını, repo ayrımı, test ortamı, analitik ve admin paneli
+# Plan: native iOS, App Store yayını, test ortamı, analitik ve admin paneli
 
 Tarih: 21 Kasım 2026. Durum: **onaylandı** (kararlar en altta).
 Hedef yayın (URUN.md): 23 Aralık – 5 Ocak.
 
 ## Önce bilinmesi gereken üç şey
 
-### 1. "Web kodu" uygulamanın kendisi
+### 1. Uygulama native iOS olarak yeniden yazılıyor (22 Kasım kararı)
 
-Solvato'nun tek bir kodu var: `src/` (React). iOS ve Android uygulamaları bu kodu telefonun içindeki bir web görünümünde
-çalıştırıyor (Capacitor). Yani `src/` silinirse iOS uygulaması da silinir. Ayrı bir "web sitesi" kodu yok.
-
-Silinebilecek "web" parçaları şunlar:
-
-| Parça                                                                             | Ne işe yarıyor                    | Öneri                                                |
-| --------------------------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------- |
-| Tek dosyalık önizleme (`build:single`, `vite.single.config.ts`, önizleme sayfası) | Senin tarayıcıda deneme bağlantın | TestFlight telefonunda çalışınca sil                 |
-| Tarayıcıya özel yedek kodlar (paylaşım, panoya kopyalama vb.)                     | Uygulama tarayıcıda açılırsa      | Sil (küçük temizlik)                                 |
-| Geliştirme sunucusu (`npm run dev`)                                               | Geliştirme ve ekran görüntüsü     | **Kalmalı**: Claude ekranları bununla kontrol ediyor |
-
-Önizlemeyi hemen silersek TestFlight kurulana kadar uygulamayı deneyecek bir yerin kalmaz. Ayrıca sonrasında her
-küçük değişikliği görmek için bir bulut derlemesi gerekir (~10–15 dk, ayda 500 ücretsiz dakika).
+Bugünkü uygulama web teknolojisiyle (React) yazılmış ve iPhone içinde bir web görünümünde çalışıyor (Capacitor).
+Ceren'in kararı: `solvato-ios` **tamamen native** (Swift / SwiftUI) olacak, güvenlik ve performans açısından tam
+optimize edilecek. Bu, aşağıdaki **Paket 0** ve birinci öncelik. Web kodu, native sürüm aynı işlevlere ulaşınca repodan
+kalkar; o güne kadar yeni ekranların neye benzeyeceğinin başvuru kaynağı olarak kalır.
 
 ### 2. Veri toplamak, bugünkü kararlarımızın tersi
 
@@ -49,6 +40,66 @@ Veritabanını A ile başlayıp B'ye genişleyebilecek şekilde tasarlarım (aş
 
 ## İş paketleri
 
+### Paket 0 — Native iOS uygulaması (1. öncelik)
+
+**Hedef:** Bugünkü uygulamanın bütün işlevleri, aynı tasarımla, Swift ve SwiftUI ile. Web görünümü yok, üçüncü taraf
+kütüphane yok (yalnızca Apple'ın kendi çatıları). iPhone + iPad, en düşük iOS 17.
+
+**Kapsam (bugünkü uygulamadaki her şey):** açılış ve tanıtım, Pratik (ana sayfa, günlük hedef portesi, seviye),
+soru turu (nota, ritim, terim, nota yazımı, kulak), akor turu, Ritmi Tut, tur sonucu ve yıldızlar, İlerleme (konular,
+yol, haftalık rapor, zorlandığın notalar), Profil (ünvan, geçmiş), Çalışma (Notalar, Ritim, Akorlar, Terimler, arama,
+"Kaldığın yer"), Oyunlar (günün meydan okuması, arkadaşına meydan oku, akor düellosu), Ayarlar, öğretmen kodu,
+Gizlilik ve Lisanslar, bildirim, titreşim, paylaşım, koyu/açık tema. Bugünkü kod yaklaşık 19.000 satır, 30 ekran.
+
+**Güvenlik:**
+
+- Ağ erişimi yok (1.1'deki anonim analitik hariç; o da yalnızca kendi sunucumuza, HTTPS ile).
+- Veriler cihazda, iOS veri koruması açık (cihaz kilitliyken şifreli). Hesap, şifre, anahtar yok.
+- Üçüncü taraf kod yok: tedarik zinciri riski ve gizlilik beyanı yükü sıfır.
+- Gizlilik bildirimi (privacy manifest) yalnızca gerçekten kullanılan API'lerle; öğretmen kodu ve meydan okuma kodu
+  gibi dışarıdan gelen her girdi doğrulanır.
+
+**Performans:**
+
+- Açılış süresi, kare hızı (ProMotion ekranlarda 120 Hz), bellek ve uygulama boyutu için ölçülebilir hedefler;
+  otomatik performans testleri her derlemede çalışır.
+- Ses: AVAudioEngine ile düşük gecikme. Ritmi Tut'un zamanlama doğruluğu bugünkünden iyi olmalı (en büyük kazanç).
+- Nota sembolleri Bravura yazı tipiyle doğrudan çizilir (bugünkü SVG yolları yerine).
+
+**Mac olmadan nasıl:**
+
+- Xcode projesi elle değil, bir yapılandırma dosyasından (XcodeGen) üretilir; proje dosyası bozulma riski kalkar.
+- Mantık (puanlama, seviye, seri, öğretmen kodu, ritim değerlendirme, soru seçimi) ayrı bir Swift paketi olur ve bu
+  bulut oturumunda testlerle doğrulanır. Bunun için oturum ortamına Swift kurulumu gerekir (`download.swift.org`
+  adresine izin; ilk native oturumda istenecek).
+- Ekranlar Codemagic'te derlenir; simülatörde UI testleri çalışır ve her ekranın iPhone / iPad, koyu / açık
+  görüntüleri derleme çıktısı olarak gelir. Ekran kontrolü bu görüntülerle yapılır.
+- Her ara sürüm TestFlight'a gider; Ceren telefonda dener.
+
+**Veri taşıma gerekmiyor:** uygulama henüz yayında değil.
+
+**Aşamalar:**
+
+| Aşama | İş                                                                                                                          | Tahmini süre |
+| ----- | --------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| 0.1   | Özellik envanteri: bugünkü uygulamanın her ekranı ve kuralı, kabul ölçütleriyle (`docs/ozellikler/native-ios.md`)           | 1–2 oturum   |
+| 0.2   | İskelet: XcodeGen projesi, Swift paketi, tasarım sistemi (renk, yazı, ölçüler), Codemagic + UI test görüntüleri, TestFlight | 2–3 oturum   |
+| 0.3   | Çekirdek mantık ve veri: soru bankası, seviye, seri, yıldız, öğretmen kodu, oyun kodları, depolama + testler                | 3–4 oturum   |
+| 0.4   | Nota çizimi (porte, anahtar, ritim, akor) ve piyano klavyesi                                                                | 3–4 oturum   |
+| 0.5   | Ekranlar: tanıtım, Pratik, soru ve akor turları, sonuç                                                                      | 4–5 oturum   |
+| 0.6   | Ses ve Ritmi Tut (düşük gecikme), kulak soruları                                                                            | 2–3 oturum   |
+| 0.7   | İlerleme, Profil, Çalışma, Oyunlar, Ayarlar, öğretmen kodu, bildirim, paylaşım                                              | 5–6 oturum   |
+| 0.8   | Performans ve güvenlik ölçümleri, erişilebilirlik (VoiceOver, Dinamik Yazı), iPad düzenleri                                 | 2–3 oturum   |
+| 0.9   | `inceleyici` ile envantere göre tam karşılaştırma, TestFlight'ta kapalı test, web kodunun silinmesi                         | 2 oturum     |
+
+Toplam kabaca 25–30 oturum; Ceren'in TestFlight geri bildirimine bağlı olarak **5–7 hafta**.
+
+**Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
+2027**. Analitik (1.1) native sürümün üstüne yazılır.
+
+**Android:** `solvato-android` bugünkü React kopyası olarak donmuş kalır. Android'e geçildiğinde aynı karar
+(native Kotlin mi, mevcut kod mu) o gün verilir.
+
 ### Paket 1 — Repo ayrımı (1 oturum)
 
 Önerilen yapı:
@@ -67,7 +118,7 @@ Veritabanını A ile başlayıp B'ye genişleyebilecek şekilde tasarlarım (aş
 - **Senin yapman gereken:** GitHub'da boş `solvato-android` ve `solvato-admin` repolarını oluşturmak. Yeni
   repo açma yetkim yok; açınca bu oturuma eklerim.
 
-### Paket 2 — iOS App Store hazırlığı (2–3 oturum)
+### Paket 2 — iOS App Store hazırlığı (2–3 oturum, native sürüm için yeniden)
 
 İlk kontrol `docs/APP-STORE-KONTROL.md`'de. Kalanlar:
 
@@ -118,23 +169,20 @@ dağılımı, iPhone / iPad / Android oranı, sürüm dağılımı, tek cihazın
 
 Bu paket ürün kararı içerdiği için önce `ozellik` becerisiyle özellik dokümanı yazılır, onayından sonra kodlanır.
 
-## Önerilen sıra
+## Sıra (22 Kasım'da güncellendi)
 
-| Sıra | İş                                                                           | Neden bu sırada                            |
-| ---- | ---------------------------------------------------------------------------- | ------------------------------------------ |
-| 1    | Apple Developer üyeliği başvurusu (sen)                                      | Onayı gün alabilir; her şey buna bağlı     |
-| 2    | Paket 1: repo ayrımı                                                         | Kısa, sonraki işleri sadeleştirir          |
-| 3    | Paket 3 + Paket 2/1: Codemagic + TestFlight + rehber                         | Telefonunda deneyebilmen her şeyden önemli |
-| 4    | Paket 2: iPad kontrolü, sessiz mod, gizlilik/destek sayfası                  | Mağaza engelleri                           |
-| 5    | Paket 4: analitik özellik dokümanı → sunucu ve veritabanı → uygulama → admin | Yayına yetişirse 1.0'a, yetişmezse 1.1'e   |
-| 6    | Web önizlemesinin silinmesi                                                  | TestFlight çalışınca                       |
-| 7    | App Store'a gönderim                                                         | `magaza-kontrol` temiz olunca              |
+| Sıra | İş                                                                                     | Not                                                |
+| ---- | -------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| 1    | Paket 3: Codemagic + TestFlight kurulumu (Ceren, rehberle)                             | Native sürümün her aşaması da TestFlight'a gidecek |
+| 2    | **Paket 0: native iOS** (aşama 0.1'den başlayarak)                                     | **1. öncelik**                                     |
+| 3    | Paket 2: gizlilik/destek sayfası, iPad görselleri, mağaza kontrolü (native sürüm için) | Gizlilik sayfası Paket 0'la paralel yapılabilir    |
+| 4    | App Store'a 1.0 gönderimi (native, veri toplamadan)                                    | Ocak sonu – Şubat ortası 2027                      |
+| 5    | Paket 4: analitik ve admin paneli (1.1)                                                | Native uygulamaya Swift ile eklenir                |
+| 6    | Android                                                                                | iOS yayından sonra                                 |
 
-Yayın tarihine dair uyarı: analitik 1.0'a girerse gizlilik beyanları ve inceleme riski artar, takvim sıkışır.
-Önerim 1.0'ı bugünkü gibi veri toplamadan çıkarmak, analitiği 1.1'de eklemek. Yine de 1.0'dan itibaren veri
-istiyorsan Paket 4'ü öne alırız.
+Mevcut React sürümüne bundan sonra yeni özellik eklenmez; yalnızca TestFlight kurulumunu denemek için kullanılabilir.
 
-## Kararlar (21 Kasım)
+## Kararlar
 
 | Konu                 | Karar                                                                                     |
 | -------------------- | ----------------------------------------------------------------------------------------- |

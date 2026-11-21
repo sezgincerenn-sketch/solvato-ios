@@ -22,6 +22,7 @@ ayarlar, öğrenci haftalık raporunu paylaşım menüsüyle öğretmenine gönd
 | Kaldırılanlar | İki Porte (iki notayı birlikte okuma) denendi, kaldırıldı. Ritmi Tut Oyunlar listesinden çıkarıldı (ana sayfada Ritim kartının altında). Ritim heceleri eklenmeyecek.                                                                                                                                              |
 | Seri          | Kutlama 1. günden başlar.                                                                                                                                                                                                                                                                                          |
 | Veri (1.1)    | Admin paneli için **anonim analitik**: isim/hesap yok, rastgele cihaz kimliği, Ayarlar'dan kapatılabilir, yalnızca kendi sunucumuz (Cloudflare). 1.0 veri toplamadan çıkar. Ayrıntı `docs/PLAN.md`.                                                                                                                |
+| Native iOS    | `solvato-ios` **Swift/SwiftUI ile native** yeniden yazılır; web görünümü ve üçüncü taraf kod yok, güvenlik ve performans tam optimize. **1. öncelik** (22 Kasım). Plan `docs/PLAN.md` Paket 0.                                                                                                                     |
 | Platform      | Önce iOS (iPhone + iPad), Android App Store'dan sonra. Web sürümü yok; tarayıcı önizlemesi TestFlight çalışınca kalkar.                                                                                                                                                                                            |
 | Instagram     | Yayından önce uygulamanın içeriği paylaşılmaz; genel nota ipuçları ve bilmeceler, sonunda "uygulama yolda, takipte kal".                                                                                                                                                                                           |
 
@@ -55,7 +56,7 @@ Kod borcu:
 
 ## Yayın planı
 
-- Hedef yayın: **23 Aralık – 5 Ocak**.
+- Hedef yayın: ~~23 Aralık – 5 Ocak~~ → **Ocak sonu – Şubat ortası 2027** (native iOS kararıyla kaydı).
 - Google Play kapalı testi: en az **12 test kullanıcısı, 14 gün**. Ankette 6 kişi test için e-posta bıraktı.
 - Mac yok: iOS derlemesi bulut servisiyle (Capawesome, Capgo ya da Codemagic; Ionic Appflow kapanıyor).
 - Mağaza ekran görüntüleri hazır (7 kare: ana sayfa, soru, tur sonucu, Ritmi Tut, arkadaşla yarış, öğretmen kodu,

@@ -18,6 +18,8 @@ Claude Code'un bu repoda nasıl çalışacağı. Kodun yapısı `README.md`'de, 
 ## Repolar
 
 - **Bu repo (`solvato-ios`)**: aktif geliştirme, iPhone + iPad. Değişiklikler buraya, `main`e.
+- **Native iOS'a geçiliyor (1. öncelik, `docs/PLAN.md` Paket 0):** Swift/SwiftUI, web görünümü ve üçüncü taraf kod yok.
+  Bugünkü React kodu (`src/`) native sürüm aynı işlevlere ulaşana kadar başvuru kaynağı; ona yeni özellik ekleme.
 - `solvato-android`: dondurulmuş kopya; Android işi başlayana kadar **kod yazma**. Başlayınca `src/` buradan alınır.
   Bu yüzden `src/` içindeki Android'e özel küçük parçaları (geri tuşu) silme.
 - `solvato-admin`: analitik sunucusu, veritabanı ve admin paneli (1.1, `docs/PLAN.md`).
