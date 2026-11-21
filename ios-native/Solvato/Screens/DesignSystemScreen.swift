@@ -16,6 +16,7 @@ struct DesignSystemScreen: View {
             VStack(alignment: .leading, spacing: Space.s6) {
                 header
                 themePicker
+                section("Ekran parçaları") { shellParts }
                 section("Nota çizimi") { notation }
                 section("Logo ve ikonlar") { logoAndIcons }
                 section("Seçim") { choices }
@@ -43,6 +44,34 @@ struct DesignSystemScreen: View {
             Text("Tasarım sistemi")
                 .font(.ui(FontSize.sm, .medium))
                 .foregroundStyle(ThemeColor.textMuted.color)
+        }
+    }
+
+    /// 0.5: ekran iskeleti parçaları (web Avatar, ScreenHeader, TopicLink, ExitConfirm, Toast, NavBar)
+    private var shellParts: some View {
+        VStack(alignment: .leading, spacing: Space.s4) {
+            HStack(spacing: Space.s3) {
+                Avatar(name: "ada", color: "violet")
+                Avatar(name: "Çağrı", color: "amber")
+                Avatar(name: "", color: "cyan")
+                ForEach(Avatar.colors.map(\.key), id: \.self) { Avatar(name: "S", color: $0, size: 28) }
+            }
+            ScreenHeader(title: "Ayarlar", flush: true, onBack: {})
+            TopicLink(color: .chords, icon: .piano, title: "Akor", sub: "Tanı, tuşlara bas", stars: 2) {}
+            NavBar(active: .home) { _ in }
+            ZStack {
+                ThemeColor.bgDeep.color
+                ExitConfirm(onStay: {}, onExit: {})
+            }
+            .frame(height: 220)
+            .clipShape(RoundedRectangle(cornerRadius: Radius.lg))
+            Text("Kopyalandı")
+                .font(.ui(FontSize.sm, .semibold))
+                .foregroundStyle(PaletteColor.violet100.color)
+                .padding(.vertical, 10)
+                .padding(.horizontal, Space.s4)
+                .background(RoundedRectangle(cornerRadius: Radius.md).fill(PaletteColor.violet950.color))
+                .shadow(BoxShadow.raised)
         }
     }
 
