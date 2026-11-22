@@ -160,6 +160,10 @@ metronom tıkı, ritim notası); web'in Chromium'da ürettiği seslerle 5 ms'lik
 soruları (kendiliğinden çalma, "Sesi aç"), akor turu "Dinle", düello, tanıtım denemeleri, tur sonu ve kutlama, piyano
 tuşları, nota ve akor dersleri, Ritmi Tut metronomu. 119 test. Kalan: cihazda kulakla karşılaştırma (G-07 kabul) ve Ritmi
 Tut gecikmesinin telefonda ölçülmesi.
+Codemagic'te doğrulama (22 Kasım akşamı): uygulama derleniyor; UI testleri simülatörde ses motoru açılırken düşüyordu
+(Codemagic simülatöründe iOS ses servisi yanıt vermiyor: `AURemoteIO::Initialize` zaman aşımı, çökme raporu). Testler artık
+`-UITestNoAudio` ile sessiz koşuyor; sesin telefonda TestFlight'la denenmesi gerekiyor. Codemagic'in aylık ücretsiz dakikası
+bittiği için son düzeltmeler (test ve TestFlight) **Aralık başında** derlenecek. Ceren bu arada tasarım güncellemesi yapıyor.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.
