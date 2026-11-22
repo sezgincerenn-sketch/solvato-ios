@@ -4,6 +4,8 @@
 import { createElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
 import HomeScreen from "../../src/screens/HomeScreen"
+import ProgressScreen from "../../src/screens/ProgressScreen"
+import PathCard from "../../src/screens/progress/PathCard"
 import type { AppStats } from "../../src/types"
 
 const decode = (s: string) =>
@@ -42,6 +44,19 @@ export function home(stats: AppStats, dailyGoal: number) {
       onGames: () => {},
       onOpenProfile: () => {},
       onOpenProgress: () => {},
+    }),
+  )
+  return screenTexts(html)
+}
+
+export function progress(stats: AppStats) {
+  const html = renderToStaticMarkup(
+    createElement(ProgressScreen, {
+      stats,
+      onStartQuiz: () => {},
+      onPracticeWeak: () => {},
+      onPracticeCategory: () => {},
+      header: createElement(PathCard, { stats, onStart: () => {}, onChordQuiz: () => {} }),
     }),
   )
   return screenTexts(html)

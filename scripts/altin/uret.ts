@@ -4,7 +4,7 @@
 import { writeFileSync, mkdirSync } from "node:fs"
 import { cizim } from "./cizim"
 import { piyano } from "./piyano"
-import { home } from "./ekran"
+import { home, progress } from "./ekran"
 import { join } from "node:path"
 import { ALL_QUESTIONS, questionLevel } from "../../src/data/questions"
 import { rankFromXp, todayKey } from "../../src/utils/level"
@@ -832,6 +832,27 @@ function anaSayfa() {
   return rows
 }
 
+// ─── Ekran metinleri: İlerleme ───────────────────────────────────────────────
+function ilerleme() {
+  const rows = []
+  for (let i = 0; i < 50; i++) {
+    const settings = { level: (1 + (i % 3)) as 1 | 2 | 3, dailyGoal: pick(GOALS), levelProgress: { n: 0, c: 0 } }
+    resetSettings(settings)
+    const t = at(2026, 1 + int(12), 1 + int(28), pick([0, 1, 9, 13, 20, 23]), int(60))
+    let stats: AppStats = JSON.parse(JSON.stringify(DEFAULT_STATS))
+    const rounds = i === 0 ? 0 : i % 7 === 3 ? 1 + int(3) : 3 + int(40)
+    for (let k = 0; k < rounds; k++) {
+      NOW = t - int(40) * 86400000 * (gen() < 0.5 ? 0 : 1) - int(20) * 3600000
+      const r = randomRound(0.3 + gen() * 0.7)
+      stats = (r.kind === "quiz" ? completeQuiz(stats, r) : completeSpecial(stats, r)).stats
+    }
+    resetSettings(settings)
+    NOW = t
+    rows.push({ now: t, settings: getSettings(), stats, ...progress(stats) })
+  }
+  return rows
+}
+
 // ─── Çalıştır ────────────────────────────────────────────────────────────────
 const only = process.argv[3]
 if (only === "seri") write(`seri-${TZ!.replace("/", "-")}.json`, seri())
@@ -853,5 +874,6 @@ else {
   write("cizim.json", cizim())
   write("piyano.json", piyano())
   write("ana-sayfa.json", anaSayfa())
+  write("ilerleme.json", ilerleme())
   write("seri-" + TZ!.replace("/", "-") + ".json", seri())
 }

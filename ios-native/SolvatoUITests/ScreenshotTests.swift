@@ -145,6 +145,24 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// İlerleme sekmesi (web "ilerleme-bos", "ilerleme", "ilerleme-alt")
+    @MainActor
+    func testIlerleme() throws {
+        continueAfterFailure = false
+        for name in ["ilerleme-bos", "ilerleme", "ilerleme-alt"] {
+            for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+                let app = try launch(theme: theme, scenario: name)
+                XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
+                app.buttons.matching(NSPredicate(format: "label CONTAINS 'İlerleme'")).firstMatch.tap()
+                Thread.sleep(forTimeInterval: 0.6)
+                if name == "ilerleme-alt" { for _ in 0..<5 { app.swipeUp() } }
+                Thread.sleep(forTimeInterval: 0.4)
+                snap("\(name)-\(tr)")
+                app.terminate()
+            }
+        }
+    }
+
     /// Akor turu (web "akor"): Pratik'ten Akor bağlantısı
     @MainActor
     func testAkor() throws {
