@@ -41,6 +41,13 @@ definitions:
         done < /tmp/devices.txt
         ls build/ekranlar | grep -q png || { echo "Ekran görüntüsü yok"; exit 1; }
         cd build && zip -qr native-ekranlar.zip ekranlar
+        # Sohbete gönderilebilecek küçük kopya (30 MB altı): yalnız iPhone, yarı boyut, JPEG
+        mkdir -p ekranlar-kucuk
+        for f in ekranlar/*-iphone-koyu.png ekranlar/*-iphone-acik.png; do
+          sips -s format jpeg -s formatOptions 70 --resampleWidth 600 "$f" --out "ekranlar-kucuk/$(basename "${f%.png}").jpg" > /dev/null
+        done
+        zip -qr native-ekranlar-kucuk.zip ekranlar-kucuk
+        ls -lh native-ekranlar*.zip
 
 workflows:
   ios-testflight:
@@ -135,6 +142,7 @@ workflows:
       - *ui_ekranlar
     artifacts:
       - build/native-ekranlar.zip
+      - build/native-ekranlar-kucuk.zip
       - /tmp/xcodebuild_logs/*.log
 
   ios-native-testflight:
@@ -166,6 +174,7 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
       - build/native-ekranlar.zip
+      - build/native-ekranlar-kucuk.zip
       - /tmp/xcodebuild_logs/*.log
     publishing:
       app_store_connect:
