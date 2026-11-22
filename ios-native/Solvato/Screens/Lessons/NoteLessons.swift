@@ -50,7 +50,6 @@ struct StaffStudyLesson: View {
                     .background(ThemeColor.staffPanel.color)
                     .clipShape(RoundedRectangle(cornerRadius: Radius.md))
                     .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(ThemeColor.border.color, lineWidth: 1))
-                    .accessibilityLabel(st.title)
                 MiniPiano(st: st, color: (color ?? .violet400).rgba) { n, o, sharp in st.pick(n, o, sharp: sharp) }
             }
             .padding(20)

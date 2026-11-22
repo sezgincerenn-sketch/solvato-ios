@@ -153,12 +153,17 @@ struct MusicalStaffView: View {
     var showLabel = false
     var feedback: Staves.Feedback?
     var maxHeight: Double?
+    /// Ekran okuyucu için ad (web aria-label "Müzik portesi"; derste notanın adı)
+    var label = "Müzik portesi"
     var body: some View {
         let d = Staves.note(
             clef: clef, noteY: noteY, ledgerLines: ledgerLines, accidental: accidental, showLabel: showLabel,
             feedback: feedback, maxHeight: maxHeight)
         // Cevaptan sonra nota zıplar (doğru) ya da titrer (yanlış)
         NoteMotion(feedback: feedback.map { $0 == .correct }) { m in DrawingView(drawing: d, motion: m) }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(label)
+            .accessibilityAddTraits(.isImage)
     }
 }
 
@@ -167,14 +172,24 @@ struct ChordStaffView: View {
     let chord: Chord
     var color: Paint = .theme(.violetText)
     var maxWidth: Double = 310
-    var body: some View { DrawingView(drawing: Staves.chord(chord, color: color, maxWidth: maxWidth)) }
+    var body: some View {
+        DrawingView(drawing: Staves.chord(chord, color: color, maxWidth: maxWidth))
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Portede akor")
+            .accessibilityAddTraits(.isImage)
+    }
 }
 
 /// Web <GoalStaff /> (Pratik › Bugün)
 struct GoalStaffView: View {
     let done: Int
     let goal: Int
-    var body: some View { DrawingView(drawing: Staves.goal(done: done, goal: goal)) }
+    var body: some View {
+        DrawingView(drawing: Staves.goal(done: done, goal: goal))
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Günlük hedef: \(goal) sorudan \(min(done, goal)) tanesi tamam")
+            .accessibilityAddTraits(.isImage)
+    }
 }
 
 /// Web <ClefIcon />: yazının içinde küçük anahtar; rengi çevredeki yazı rengi

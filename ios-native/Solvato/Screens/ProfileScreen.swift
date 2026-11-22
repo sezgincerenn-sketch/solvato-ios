@@ -59,6 +59,9 @@ struct ProfileScreen: View {
                                 .accessibilityAddTraits(s.avatarColor == c.key ? .isSelected : [])
                             }
                         }
+                        // Web role="radiogroup" aria-label="Profil rengi"
+                        .accessibilityElement(children: .contain)
+                        .accessibilityLabel("Profil rengi")
                         Text(ProfileText.subtitle(rankLabel: rank.label, joinedAt: s.joinedAt, clock: model.now.clock))
                             .font(.ui(FontSize.sm))
                             .foregroundStyle(ThemeColor.textMuted.color)
