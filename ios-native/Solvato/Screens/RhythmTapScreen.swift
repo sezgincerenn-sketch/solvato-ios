@@ -205,7 +205,7 @@ struct RhythmTimelineView: View {
         GeometryReader { g in
             let w = g.size.width
             let h = g.size.height
-            let x = { (b: Double) in max(-0.25, min(4.25, b)) / 4 * w }
+            let x = { (b: Double) -> Double in max(-0.25, min(4.25, b)) / 4 * w }
             let beatMs = 60000 / Double(bpm)
             ZStack(alignment: .topLeading) {
                 ForEach(1...3, id: \.self) { b in

@@ -26,6 +26,7 @@ private struct GamePage<C: View>: View {
     }
 }
 
+@MainActor
 private func muted(_ t: String) -> some View {
     Text(t)
         .font(.ui(FontSize.sm))
