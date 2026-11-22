@@ -128,7 +128,12 @@ geri, ana sayfa ipuçları (Coachmark), açılış ve tanıtım, soru turu.
 Soru turu (E-05): akış çekirdekte (`QuizRound`: eş sesli siyah tuş, çok oktavda oktav kontrolü, açıklama, ipucu, süre, üç
 doğruda alev; testli), SwiftUI `QuizScreen` (porte / ritim / terim / yazım / kulak, klavye ya da şıklar, yan ekranda iki
 sütun) ve UI testinde `soru-*` görüntüleri; 74 test. Ses/titreşim 0.6'da; sallanma/nabız animasyonları ve "yan çevir"
-ipucu sonra. Sırada: tur sonucu ve kutlama, sonra açılış kökü Pratik olur.
+ipucu sonra.
+Tur sonucu (E-08) ve kutlama (E-09): yazılar çekirdekte (`ResultContent`, `Celebration.rows`; testli), SwiftUI
+`ResultScreen`, `CelebrationView` (konfeti), Solfie (SVG'den birebir). **Açılış artık Pratik** (`AppRoot`): Pratik → tur →
+sonuç → Bitir akışı çalışır; henüz taşınmayan ekranlarda yalnız başlık ve "Bu ekran native sürüme henüz taşınmadı." notu.
+Tasarım sistemi yalnız UI testinde (`-UITestDesignSystem`). 78 test. Sırada: açılış animasyonu ve tanıtım, ana sayfa
+ipuçları, kaydırarak geri; sonra akor turu ve İlerleme.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.
