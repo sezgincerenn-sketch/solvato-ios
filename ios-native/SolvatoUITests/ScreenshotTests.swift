@@ -412,7 +412,8 @@ final class ScreenshotTests: XCTestCase {
     @MainActor
     private func launch(theme: String, scenario: String? = nil, designSystem: Bool = false) throws -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["-UITestTheme", theme] + (designSystem ? ["-UITestDesignSystem"] : [])
+        // Ses motoru açılmaz: Codemagic simülatöründe ses servisi yanıt vermiyor (Audio.swift)
+        app.launchArguments = ["-UITestTheme", theme, "-UITestNoAudio"] + (designSystem ? ["-UITestDesignSystem"] : [])
         if let scenario {
             // senaryolar.json: `node scripts/referans.mjs --json ios-native/SolvatoUITests/senaryolar.json`
             let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "senaryolar", withExtension: "json"))

@@ -5,6 +5,8 @@
 // (ilk açılışta, ses açıksa önceden). Ses iş parçacığındaki kod hiçbir aktöre bağlı değildir (AudioOutput).
 // Ayarlar › Ses / Titreşim kapalıysa hiçbiri çalmaz; AppRoot ayarı `enabled`'a yansıtır.
 // Ritmi Tut için ses saati: `now` (şu an çıkışa verilen örneğin zamanı) ve `latency` (çıkış gecikmesi).
+// UI testleri `-UITestNoAudio` ile açar: Codemagic simülatöründe iOS ses servisi yanıt vermiyor, ses birimi açılırken
+// zaman aşımıyla uygulama kapanıyor (çökme raporu: AURemoteIO::Initialize, _ReportRPCTimeout). Testte motor hiç açılmaz.
 import AVFoundation
 import QuartzCore
 import SolvatoCore
@@ -33,7 +35,9 @@ enum Sound {
     static func stopAll() { AudioOutput.shared.mixer.stopAll() }
 
     /// Ses saati (sn): şu an çıkışa verilen örneğin zamanı; zamanlama ve dokunuş ölçümü için tek kaynak
-    static var now: Double { AudioOutput.shared.mixer.clock(host: CACurrentMediaTime()) }
+    static var now: Double {
+        AudioOutput.disabled ? CACurrentMediaTime() : AudioOutput.shared.mixer.clock(host: CACurrentMediaTime())
+    }
 
     /// Zamanlanan sesin kulağa ulaşma gecikmesi (sn); dokunuş bununla düzeltilir (web audioLatency)
     static var latency: Double { AudioOutput.shared.latency }
@@ -43,6 +47,8 @@ enum Sound {
 /// parçacığında (SynthMixer kilitli). Karıştırıcı 48 kHz tek kanal üretir; çıkışa dönüştürmeyi motor yapar.
 final class AudioOutput: @unchecked Sendable {
     static let shared = AudioOutput()
+    /// UI testinde ses çıkışı yok (bkz. dosya başı)
+    static let disabled = ProcessInfo.processInfo.arguments.contains("-UITestNoAudio")
 
     let mixer = SynthMixer(sampleRate: 48000)
     private let queue = DispatchQueue(label: "solvato.audio")
@@ -60,6 +66,7 @@ final class AudioOutput: @unchecked Sendable {
 
     /// Motor çalışmıyorsa kendi kuyruğunda kurar ve başlatır (çağıran beklemez)
     func warmUp() {
+        guard !Self.disabled else { return }
         queue.async { self.startIfNeeded() }
     }
 
