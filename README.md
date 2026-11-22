@@ -105,6 +105,8 @@ ios-native/
   - `ios-native-test`, imzasız: `swift test`, `xcodegen generate`, iPhone / küçük iPhone / iPad simülatörlerinde UI
     testleri ve ekran görüntüleri (`native-ekranlar.zip`, adlar web referanslarıyla aynı:
     `<senaryo>-<cihaz>-<koyu|acik>.png`). main'e `ios-native/` değişikliği gönderilince kendiliğinden başlar.
+    Uygulama bir kez derlenir, testler derlemeden koşar. Hangi testlerin hangi cihazlarda koşacağı
+    `ios-native/ui-testleri.txt`'te (hepsi üç cihazda 90 dakikayı aşıyor; her adımda değişen ekranlar seçilir).
   - `ios-native-testflight`: aynı adımlar + imzalı derleme ve TestFlight; elle başlatılır. Build numarası 1000 +
     Codemagic sayacı (React derlemeleriyle çakışmaz). Aynı uygulama kaydı (`com.solvato.app`).
 - Kalıcı veriler web'le aynı anahtar adlarıyla Application Support/Solvato altında dosya (`Persistence.swift`; veri

@@ -31,18 +31,33 @@ definitions:
         cat /tmp/devices.txt
         [ "$(wc -l < /tmp/devices.txt)" -ge 3 ] || { echo "Üç simülatör bulunamadı"; exit 1; }
         mkdir -p build/ekranlar
+        # Hangi cihazlar ve testler: ios-native/ui-testleri.txt (boş test listesi = hepsi)
+        CIHAZLAR=$(sed -n 's/^cihazlar:[[:space:]]*//p' ios-native/ui-testleri.txt)
+        TESTLER=$(sed -n 's/^testler:[[:space:]]*//p' ios-native/ui-testleri.txt)
+        SADECE=""
+        for t in $TESTLER; do SADECE="$SADECE -only-testing:SolvatoUITests/ScreenshotTests/$t"; done
+        echo "Cihazlar: ${CIHAZLAR:-hepsi} · Testler: ${TESTLER:-hepsi}"
+        # Bir kez derle, her cihazda derlemeden koş
+        xcodebuild build-for-testing -project ios-native/Solvato.xcodeproj -scheme Solvato \
+          -destination "generic/platform=iOS Simulator" -derivedDataPath build/dd \
+          CODE_SIGNING_ALLOWED=NO < /dev/null > build/xcodebuild-derleme.log 2>&1 || true
+        echo "── derleme: hatalar ──"
+        grep -E "error:|: error" build/xcodebuild-derleme.log | sort -u | head -80 || true
+        grep -q "TEST BUILD SUCCEEDED" build/xcodebuild-derleme.log || { tail -25 build/xcodebuild-derleme.log; exit 1; }
         while IFS='|' read -r SLUG TYPE RUNTIME; do
+          if [ -n "$CIHAZLAR" ] && ! echo " $CIHAZLAR " | grep -q " $SLUG "; then continue; fi
           UDID=$(xcrun simctl create "solvato-$SLUG" "$TYPE" "$RUNTIME")
           echo "$SLUG: $TYPE ($UDID)"
-          # Tam çıktı dosyaya; ekrana önce derleme hataları ve düşen testler, sonra son satırlar
-          xcodebuild test -project ios-native/Solvato.xcodeproj -scheme Solvato \
-            -destination "platform=iOS Simulator,id=$UDID" \
-            -resultBundlePath "build/ui-$SLUG.xcresult" CODE_SIGNING_ALLOWED=NO < /dev/null > "build/xcodebuild-$SLUG.log" 2>&1 || true
+          # Tam çıktı dosyaya; ekrana önce düşen testler, sonra son satırlar. Takılan test 10 dakikada kesilir.
+          xcodebuild test-without-building -project ios-native/Solvato.xcodeproj -scheme Solvato \
+            -destination "platform=iOS Simulator,id=$UDID" -derivedDataPath build/dd $SADECE \
+            -test-timeouts-enabled YES -maximum-test-execution-time-allowance 600 \
+            -resultBundlePath "build/ui-$SLUG.xcresult" < /dev/null > "build/xcodebuild-$SLUG.log" 2>&1 || true
           echo "── $SLUG: hatalar ──"
           grep -E "error:|: error|failed \(|XCTAssert|Test Case .* failed" "build/xcodebuild-$SLUG.log" | sort -u | head -80 || true
           echo "── $SLUG: son satırlar ──"
           tail -25 "build/xcodebuild-$SLUG.log"
-          python3 scripts/native-ekranlar.py "build/ui-$SLUG.xcresult" "$SLUG" build/ekranlar
+          python3 scripts/native-ekranlar.py "build/ui-$SLUG.xcresult" "$SLUG" build/ekranlar || true
         done < /tmp/devices.txt
         ls build/ekranlar | grep -q png || { echo "Ekran görüntüsü yok"; exit 1; }
         cd build && zip -qr native-ekranlar.zip ekranlar
