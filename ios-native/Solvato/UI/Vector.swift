@@ -34,6 +34,7 @@ enum ParsedPaths {
     static let star: [PathCommand] = (try? SVGPath.parse(starPath)) ?? []
 }
 
+@MainActor
 extension IconName {
     var shape: SVGShape { SVGShape(commands: ParsedPaths.icons[self] ?? []) }
 }

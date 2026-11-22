@@ -30,6 +30,7 @@ struct Solfie: View {
     }
 }
 
+@MainActor
 private enum SolfieDrawing {
     static let ink = Color(red: 0x1E / 255, green: 0x1B / 255, blue: 0x2E / 255)
     static let line = PaletteColor.violet300.color

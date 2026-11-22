@@ -31,6 +31,7 @@ struct DrawingView: View {
     }
 }
 
+@MainActor
 enum DrawingRenderer {
     /// Bravura yolları: uygulama boyunca bir kez
     nonisolated(unsafe) static let glyphPaths: [String: Path] = Smufl.glyphs.mapValues { path($0.path) }

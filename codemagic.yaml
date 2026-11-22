@@ -34,9 +34,14 @@ definitions:
         while IFS='|' read -r SLUG TYPE RUNTIME; do
           UDID=$(xcrun simctl create "solvato-$SLUG" "$TYPE" "$RUNTIME")
           echo "$SLUG: $TYPE ($UDID)"
+          # Tam çıktı dosyaya; ekrana önce derleme hataları ve düşen testler, sonra son satırlar
           xcodebuild test -project ios-native/Solvato.xcodeproj -scheme Solvato \
             -destination "platform=iOS Simulator,id=$UDID" \
-            -resultBundlePath "build/ui-$SLUG.xcresult" CODE_SIGNING_ALLOWED=NO < /dev/null | tail -40
+            -resultBundlePath "build/ui-$SLUG.xcresult" CODE_SIGNING_ALLOWED=NO < /dev/null > "build/xcodebuild-$SLUG.log" 2>&1 || true
+          echo "── $SLUG: hatalar ──"
+          grep -E "error:|: error|failed \(|XCTAssert|Test Case .* failed" "build/xcodebuild-$SLUG.log" | sort -u | head -80 || true
+          echo "── $SLUG: son satırlar ──"
+          tail -25 "build/xcodebuild-$SLUG.log"
           python3 scripts/native-ekranlar.py "build/ui-$SLUG.xcresult" "$SLUG" build/ekranlar
         done < /tmp/devices.txt
         ls build/ekranlar | grep -q png || { echo "Ekran görüntüsü yok"; exit 1; }
@@ -143,6 +148,7 @@ workflows:
     artifacts:
       - build/native-ekranlar.zip
       - build/native-ekranlar-kucuk.zip
+      - build/xcodebuild-*.log
       - /tmp/xcodebuild_logs/*.log
 
   ios-native-testflight:
@@ -175,6 +181,7 @@ workflows:
       - build/ios/ipa/*.ipa
       - build/native-ekranlar.zip
       - build/native-ekranlar-kucuk.zip
+      - build/xcodebuild-*.log
       - /tmp/xcodebuild_logs/*.log
     publishing:
       app_store_connect:

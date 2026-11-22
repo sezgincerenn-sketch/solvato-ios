@@ -44,19 +44,20 @@ final class ScreenshotTests: XCTestCase {
     @MainActor
     func testSoru() throws {
         continueAfterFailure = false
-        let steps: [(String, String, (XCUIApplication) -> Void)] = [
-            ("soru-nota", "Sol Anahtarı", { _ in }),
-            ("soru-nota-ipucu", "Sol Anahtarı", { $0.buttons["İpucu"].firstMatch.tap() }),
-            ("soru-nota-yanlis", "Sol Anahtarı", { app in Self.answerUntil(app, wrong: true) }),
-            ("soru-nota-dogru", "Sol Anahtarı", { app in Self.answerUntil(app, wrong: false) }),
-            ("soru-nota-siklar", "Fa Anahtarı", { _ in }),
-            ("soru-diyez", "Diyez & Bemol", { _ in }),
-            ("soru-ritim", "Ritim & Ölçü", { _ in }),
-            ("soru-terim", "Müzik Terimleri", { _ in }),
-            ("soru-yazim", "Nota Yazımı", { _ in }),
-            ("soru-kulak", "Kulak", { _ in }),
-            ("soru-sure", "Sol Anahtarı", { _ in }),
-            ("soru-cikis", "Sol Anahtarı", { $0.buttons["Çık"].firstMatch.tap() }),
+        // (senaryo, dokunulacak konu, sonra yapılacak: ipucu / yanlis / dogru / cikis / boş)
+        let steps: [(String, String, String)] = [
+            ("soru-nota", "Sol Anahtarı", ""),
+            ("soru-nota-ipucu", "Sol Anahtarı", "ipucu"),
+            ("soru-nota-yanlis", "Sol Anahtarı", "yanlis"),
+            ("soru-nota-dogru", "Sol Anahtarı", "dogru"),
+            ("soru-nota-siklar", "Fa Anahtarı", ""),
+            ("soru-diyez", "Diyez & Bemol", ""),
+            ("soru-ritim", "Ritim & Ölçü", ""),
+            ("soru-terim", "Müzik Terimleri", ""),
+            ("soru-yazim", "Nota Yazımı", ""),
+            ("soru-kulak", "Kulak", ""),
+            ("soru-sure", "Sol Anahtarı", ""),
+            ("soru-cikis", "Sol Anahtarı", "cikis"),
         ]
         for (name, topic, action) in steps {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
@@ -66,7 +67,13 @@ final class ScreenshotTests: XCTestCase {
                 if !card.isHittable { app.swipeUp() }
                 card.tap()
                 XCTAssertTrue(app.buttons["Çık"].waitForExistence(timeout: 5), "\(name): soru açılmadı")
-                action(app)
+                switch action {
+                case "ipucu": app.buttons["İpucu"].firstMatch.tap()
+                case "yanlis": answerUntil(app, wrong: true)
+                case "dogru": answerUntil(app, wrong: false)
+                case "cikis": app.buttons["Çık"].firstMatch.tap()
+                default: break
+                }
                 Thread.sleep(forTimeInterval: 0.5)
                 snap("\(name)-\(tr)")
                 app.terminate()
@@ -102,7 +109,7 @@ final class ScreenshotTests: XCTestCase {
 
     /// Klavyede "Do tuşu"na ya da son şıkka basarak yanlış (ya da doğru) cevaplanan ilk soruda durur
     @MainActor
-    private static func answerUntil(_ app: XCUIApplication, wrong: Bool) {
+    private func answerUntil(_ app: XCUIApplication, wrong: Bool) {
         for _ in 0..<10 {
             let key = app.buttons["Do tuşu"]
             if key.exists { key.tap() } else { app.buttons.allElementsBoundByIndex.last { $0.isEnabled && $0.isHittable }?.tap() }

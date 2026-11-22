@@ -84,6 +84,7 @@ struct CSSLinearGradient: View {
     }
 }
 
+@MainActor
 extension CategoryColor {
     /// Konu ilerleme çubuğu dolgusu (web: categoryBar, 90°)
     var bar: CSSLinearGradient { CSSLinearGradient(angle: 90, [base.color, light.color]) }
