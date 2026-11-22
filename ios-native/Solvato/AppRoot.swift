@@ -99,6 +99,9 @@ struct AppRoot: View {
         case .settings: TabletColumn { SettingsScreen(model: model) }
         case .chordquiz: ChordQuizScreen(model: model).id(model.quizToken)
         case .result: TabletColumn { ResultScreen(model: model) }
+        case .teacher: TabletColumn { TeacherScreen(model: model) }
+        case .privacy: TabletColumn { LegalScreen(model: model, page: .privacy) }
+        case .licenses: TabletColumn { LegalScreen(model: model, page: .licenses) }
         default: PendingScreen(view: v) { v.isTab ? model.go(.home) : model.back() }
         }
     }

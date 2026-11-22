@@ -185,6 +185,51 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Öğretmen kodu, Gizlilik ve Lisanslar (web "ogretmen-kodu…", "gizlilik", "lisanslar"): Profil › Ayarlar'dan açılır
+    @MainActor
+    func testOgretmenHukuk() throws {
+        continueAfterFailure = false
+        func open(_ app: XCUIApplication, _ row: String) {
+            XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
+            app.buttons["Profil"].firstMatch.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            app.buttons["Ayarlar"].firstMatch.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            let link = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", row)).firstMatch
+            for _ in 0..<8 where !(link.exists && link.isHittable) { app.swipeUp() }
+            link.tap()
+            Thread.sleep(forTimeInterval: 0.6)
+        }
+        for name in ["ogretmen-kodu", "ogretmen-kodu-alt", "ogretmen-kodu-hata", "ogretmen-kodu-uygulandi", "gizlilik", "lisanslar"] {
+            for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+                let app = try launch(theme: theme, scenario: name)
+                switch name {
+                case "gizlilik": open(app, "Gizlilik")
+                case "lisanslar": open(app, "Lisanslar")
+                default:
+                    open(app, "Öğretmen kodu")
+                    let field = app.textFields["Öğretmen kodu"]
+                    XCTAssertTrue(field.waitForExistence(timeout: 5), "öğretmen kodu ekranı açılmadı")
+                    if name == "ogretmen-kodu-alt" { for _ in 0..<6 { app.swipeUp() } }
+                    if name == "ogretmen-kodu-hata" || name == "ogretmen-kodu-uygulandi" {
+                        var code = "ABC-DEF"
+                        if name == "ogretmen-kodu-uygulandi" {
+                            let shown = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Öğrencinin gireceği kod '")).firstMatch
+                            code = String(shown.label.suffix(7))
+                        }
+                        field.tap()
+                        field.typeText(code)
+                        app.buttons["Uygula"].tap()
+                        Thread.sleep(forTimeInterval: 0.5)
+                    }
+                }
+                Thread.sleep(forTimeInterval: 0.4)
+                snap("\(name)-\(tr)")
+                app.terminate()
+            }
+        }
+    }
+
     /// Akor turu (web "akor"): Pratik'ten Akor bağlantısı
     @MainActor
     func testAkor() throws {

@@ -44,4 +44,31 @@ writeFileSync(join(out, "soru-bankasi.json"), JSON.stringify(fixture) + "\n")
 const { SMUFL } = await import(join(root, "src/data/smufl.ts"))
 writeFileSync(join(dirname(bankOut), "smufl.json"), JSON.stringify(SMUFL) + "\n")
 
-execFileSync("du", ["-sh", out, bankOut], { stdio: "inherit" })
+// Gizlilik ve Lisanslar metinleri (src/data/legal.ts): native sayfalar aynı metni gösterir. `?raw` içe aktarmaları
+// (lisans dosyaları) metin olarak paketlenir.
+const legalTmp = join(root, "node_modules/.cache/altin/legal.mjs")
+await build({
+  entryPoints: [join(root, "src/data/legal.ts")],
+  bundle: true,
+  platform: "node",
+  format: "esm",
+  outfile: legalTmp,
+  logLevel: "warning",
+  plugins: [
+    {
+      name: "raw",
+      setup(b) {
+        b.onResolve({ filter: /\?raw$/ }, async (a) => {
+          const r = await b.resolve(a.path.slice(0, -4), { resolveDir: a.resolveDir, kind: "import-statement" })
+          return { path: r.path, namespace: "raw" }
+        })
+        b.onLoad({ filter: /.*/, namespace: "raw" }, (a) => ({ contents: readFileSync(a.path, "utf8"), loader: "text" }))
+      },
+    },
+  ],
+})
+const { PRIVACY, LICENSES } = await import(legalTmp)
+const legalOut = join(dirname(bankOut), "hukuk.json")
+writeFileSync(legalOut, JSON.stringify({ privacy: PRIVACY, licenses: LICENSES }) + "\n")
+
+execFileSync("du", ["-sh", out, bankOut, legalOut], { stdio: "inherit" })

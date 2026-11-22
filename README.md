@@ -77,13 +77,14 @@ ios-native/
                        oyunlar, soru seçimi, kulak soruları, akorlar ve akor turu, Ritmi Tut puanlama, haftalık rapor, kalıcı depolama), Resources/soru-bankasi.json. Testler: `swift test`
                        Notation/ (nota çizimi yerleşimi: Notation dili, portesi, akor ve hedef portesi → çizim listesi;
                        Piano: klavye tuşları, durumları, renkleri), App/ (ScreenStack: gezinme kuralları;
-                       AppModel: uygulama durumu ve tur akışı, web App.tsx; HomeContent, QuizRound, ResultContent: ekran içerikleri;
+                       AppModel: uygulama durumu ve tur akışı, web App.tsx; HomeContent, QuizRound, ResultContent, TeacherFlow: ekran içerikleri;
+                       Legal: Gizlilik/Lisanslar metinleri, Resources/hukuk.json `node scripts/altin.mjs` ile legal.ts'den;
                        TestScenario: UI test senaryosu, bellekte depo),
                        Resources/smufl.json (Bravura sembol yolları, web'le aynı)
   Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
                        aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,
                        StatTile, StatPill, ScoreRing; Shell.swift: Avatar, BackButton, ScreenHeader, Toast, PlayChip,
-                       TopicLink, ExitConfirm, NavBar, TabletColumn; SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
+                       TopicLink, ExitConfirm, NavBar, TabletColumn; FlowLayout; SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
                        Canvas'a çizer; NotationView, MusicalStaffView, ChordStaffView, GoalStaffView, ClefIconView; PianoViews: QuizPianoView,
                        MultiPianoView), Screens/,
                        Resources/Fonts (Outfit, JetBrains Mono TTF), PrivacyInfo.xcprivacy

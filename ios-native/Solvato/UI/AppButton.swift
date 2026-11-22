@@ -17,6 +17,8 @@ struct AppButton<Icon: View>: View {
     /// Satırı doldur
     var block = false
     var disabled = false
+    /// Verilirse düğme bu metni sistemin paylaşım menüsüyle paylaşır (web shareWithToast)
+    var shareText: String?
     let icon: Icon
     let action: () -> Void
 
@@ -42,27 +44,35 @@ struct AppButton<Icon: View>: View {
     private var shape: RoundedRectangle { RoundedRectangle(cornerRadius: radius, style: .circular) }
 
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: Space.s2) {
-                icon
-                Text(title)
+        Group {
+            if let shareText {
+                ShareLink(item: shareText) { label }
+            } else {
+                Button(action: action) { label }
             }
-            .font(.ui(FontSize.md, .bold))
-            .foregroundStyle(foreground)
-            .padding(.vertical, size == .lg ? Space.s4 : Space.s3)
-            .padding(.horizontal, size == .lg ? Space.s5 : Space.s4)
-            .frame(minHeight: Touch.min)
-            .frame(maxWidth: block ? .infinity : nil)
-            .background { fill.clipShape(shape) }
-            .overlay {
-                if variant == .secondary { shape.strokeBorder(ThemeColor.border.color, lineWidth: 1) }
-            }
-            .shadow(variant == .primary ? BoxShadow.glow(Brand.primary, strength: 0.45) : BoxShadow.none)
-            .contentShape(shape)
         }
         .buttonStyle(.plain)
         .disabled(disabled)
         .opacity(disabled ? 0.5 : 1)
+    }
+
+    private var label: some View {
+        HStack(spacing: Space.s2) {
+            icon
+            Text(title)
+        }
+        .font(.ui(FontSize.md, .bold))
+        .foregroundStyle(foreground)
+        .padding(.vertical, size == .lg ? Space.s4 : Space.s3)
+        .padding(.horizontal, size == .lg ? Space.s5 : Space.s4)
+        .frame(minHeight: Touch.min)
+        .frame(maxWidth: block ? .infinity : nil)
+        .background { fill.clipShape(shape) }
+        .overlay {
+            if variant == .secondary { shape.strokeBorder(ThemeColor.border.color, lineWidth: 1) }
+        }
+        .shadow(variant == .primary ? BoxShadow.glow(Brand.primary, strength: 0.45) : BoxShadow.none)
+        .contentShape(shape)
     }
 
     private var foreground: Color {
@@ -85,6 +95,12 @@ struct AppButton<Icon: View>: View {
 }
 
 extension AppButton where Icon == EmptyView {
+    /// İkonsuz paylaşım düğmesi
+    init(_ title: String, block: Bool = false, share text: String) {
+        self.init(title, block: block, action: {}) { EmptyView() }
+        shareText = text
+    }
+
     /// İkonsuz düğme
     init(
         _ title: String,

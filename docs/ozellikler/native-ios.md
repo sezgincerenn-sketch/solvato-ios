@@ -493,6 +493,8 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 ### E-13 Öğretmen kodu
 
+- [x] Native'de yapıldı (22 Kasım): kurallar çekirdekte `TeacherFlow` (testli), ekran `TeacherScreen`.
+
 - Kaynak: `screens/TeacherScreen.tsx`.
 - Açıklama. **Öğrenci** kartı: kod alanı (büyük harf, en çok 7, "ABC-DEF"), Uygula; hata "Kod geçersiz. 6 karakteri
   kontrol et."; uygulanınca "Ayarların güncellendi (K7M-2QX)" + ayar listesi.
@@ -501,6 +503,9 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 - Görüntü: `ogretmen-kodu`, `ogretmen-kodu-alt`, `ogretmen-kodu-uygulandi`, `ogretmen-kodu-hata`.
 
 ### E-14 Gizlilik ve Lisanslar
+
+- [x] Native'de yapıldı (22 Kasım): metinler `node scripts/altin.mjs` ile `legal.ts`'den birebir `hukuk.json`'a aktarılır;
+  lisanslarda yalnız Bravura, Outfit, JetBrains Mono.
 
 - Kaynak: `screens/LegalScreen.tsx`, metinler `data/legal.ts`. Lisanslar: her biri için "Lisans metnini göster/gizle".
 - Native'de lisans listesi değişir: React, Capacitor ve web paketleri çıkar; Outfit, JetBrains Mono, Bravura kalır.

@@ -8,7 +8,7 @@ let package = Package(
     platforms: [.iOS(.v17), .macOS(.v14)],
     products: [.library(name: "SolvatoCore", targets: ["SolvatoCore"])],
     targets: [
-        .target(name: "SolvatoCore", resources: [.copy("Resources/soru-bankasi.json"), .copy("Resources/smufl.json")]),
+        .target(name: "SolvatoCore", resources: [.copy("Resources/soru-bankasi.json"), .copy("Resources/smufl.json"), .copy("Resources/hukuk.json")]),
         .testTarget(
             name: "SolvatoCoreTests",
             dependencies: ["SolvatoCore"],
