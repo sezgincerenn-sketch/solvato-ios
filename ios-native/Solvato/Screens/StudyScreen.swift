@@ -25,6 +25,7 @@ struct StudyScreen: View {
                         Text("Bir konu seç; notaları, ritmi ve akorları adım adım öğren.")
                             .font(.ui(FontSize.sm))
                             .foregroundStyle(ThemeColor.textMuted.color)
+                            .lineHeight(1.5, size: FontSize.sm)
                     }
                     searchField
                 }
@@ -116,7 +117,9 @@ struct StudyScreen: View {
                         .font(.ui(FontSize.xs, .bold))
                         .tracking(em: Tracking.label, size: FontSize.xs)
                         .foregroundStyle(ThemeColor.violetText.color)
+                        .lineHeight(1.5, size: FontSize.xs)
                     Text(l.title).font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color)
+                        .lineHeight(1.5, size: FontSize.md)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Text("›").font(.ui(FontSize.xl)).foregroundStyle(ThemeColor.violetText.color).accessibilityHidden(true)
@@ -140,7 +143,9 @@ struct StudyScreen: View {
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 0) {
                     Text(l.title).font(.ui(FontSize.md, .semibold)).foregroundStyle(ThemeColor.text.color)
+                        .lineHeight(1.5, size: FontSize.md)
                     Text(l.sub).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color).lineLimit(1).truncationMode(.tail)
+                        .lineHeight(1.5, size: FontSize.sm)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Text("›").font(.ui(FontSize.lg)).foregroundStyle(ThemeColor.textFaint.color).accessibilityHidden(true)

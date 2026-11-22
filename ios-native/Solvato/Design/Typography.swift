@@ -49,3 +49,12 @@ extension View {
         tracking(em * size)
     }
 }
+
+extension View {
+    /// CSS line-height: satır kutusu `multiple × size`. Outfit'in doğal satır yüksekliği 1,26 em (hhea 1000/−260);
+    /// fark satır arasına ve (yarısı) üste/alta eklenir. Örnek: .lineHeight(1.5, size: FontSize.sm)
+    func lineHeight(_ multiple: Double, size: Double, natural: Double = 1.26) -> some View {
+        let extra = max(0, (multiple - natural) * size)
+        return lineSpacing(extra).padding(.vertical, extra / 2)
+    }
+}

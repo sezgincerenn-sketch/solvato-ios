@@ -126,6 +126,7 @@ struct TeacherScreen: View {
                 muted("Öğrencinin gireceği kod", size: FontSize.xs)
                 Text(teacherCode)
                     .font(.mono(FontSize.xxl, .heavy))
+                    .lineHeight(1.5, size: FontSize.xxl, natural: 1.32)
                     .tracking(4)
                     .foregroundStyle(ThemeColor.text.color)
                     .accessibilityLabel("Öğrencinin gireceği kod \(teacherCode)")
@@ -145,17 +146,16 @@ struct TeacherScreen: View {
     // MARK: Parçalar
     private func setupList(_ s: TeacherSetup) -> some View {
         VStack(alignment: .leading, spacing: 0) {
+            // Web <ul>: madde işareti yok (Tailwind sıfırlaması), soldan 18 boşluk
             ForEach(TeacherCode.describe(s), id: \.self) { line in
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text("•").accessibilityHidden(true)
-                    Text(line).fixedSize(horizontal: false, vertical: true)
-                }
-                .font(.ui(FontSize.sm))
-                .foregroundStyle(ThemeColor.textMuted.color)
-                .lineSpacing(FontSize.sm * 0.5 - 4)
+                Text(line)
+                    .font(.ui(FontSize.sm))
+                    .foregroundStyle(ThemeColor.textMuted.color)
+                    .lineHeight(1.5, size: FontSize.sm)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(.leading, 6)
+        .padding(.leading, 18)
     }
 
     private func title(_ t: String) -> some View {
@@ -170,7 +170,7 @@ struct TeacherScreen: View {
         Text(t)
             .font(.ui(size, weight))
             .foregroundStyle(color ?? ThemeColor.textMuted.color)
-            .lineSpacing(size * 0.5 - 4)
+            .lineHeight(1.5, size: size)
             .fixedSize(horizontal: false, vertical: true)
     }
 }

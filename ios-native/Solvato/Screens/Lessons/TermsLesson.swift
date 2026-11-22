@@ -14,12 +14,15 @@ struct TermsLesson: View {
                         .font(.custom("Georgia-BoldItalic", size: FontSize.md))
                         .tracking(em: 0.01, size: FontSize.md)
                         .foregroundStyle(group.color.color)
+                        .lineHeight(1.5, size: FontSize.md, natural: 1.14)
                         .frame(minWidth: 52, alignment: .leading)
                     VStack(alignment: .leading, spacing: 2) {
                         if item.name.lowercased() != item.symbol.lowercased() {
                             Text(item.name).font(.ui(FontSize.sm, .semibold)).foregroundStyle(ThemeColor.textSecondary.color)
+                                .lineHeight(1.5, size: FontSize.sm)
                         }
                         Text(item.meaning).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color)
+                            .lineHeight(1.5, size: FontSize.sm)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }

@@ -58,10 +58,10 @@ final class ScreenshotTests: XCTestCase {
         for (name, taps) in steps {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: name)
-                XCTAssertTrue(app.buttons["Atla"].waitForExistence(timeout: 10), "\(name): tanıtım açılmadı")
+                try must(app, app.buttons["Atla"], "\(name): tanıtım açılmadı", shot: "\(name)-hata-\(tr)")
                 for label in taps {
                     let b = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", label)).firstMatch
-                    XCTAssertTrue(b.waitForExistence(timeout: 3), "\(name): \(label) yok")
+                    try must(app, b, "\(name): \(label) yok", shot: "\(name)-hata-\(tr)", timeout: 3)
                     b.tap()
                     Thread.sleep(forTimeInterval: 0.35)
                 }
@@ -78,7 +78,7 @@ final class ScreenshotTests: XCTestCase {
         for (name, nexts) in [("pratik-ipucu-1", 0), ("pratik-ipucu-5", 4)] {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: name)
-                XCTAssertTrue(app.buttons["Sıradaki"].waitForExistence(timeout: 10), "\(name): ipucu açılmadı")
+                try must(app, app.buttons["Sıradaki"], "\(name): ipucu açılmadı", shot: "\(name)-hata-\(tr)")
                 for _ in 0..<nexts {
                     app.buttons["Sıradaki"].tap()
                     Thread.sleep(forTimeInterval: 0.4)
@@ -354,6 +354,14 @@ final class ScreenshotTests: XCTestCase {
     }
 
     @MainActor
+    /// Öğe gelmezse o anki ekranı (ad: `<senaryo>-hata-<tema>`) ve erişilebilirlik ağacını kayda yazıp testi durdurur
+    private func must(_ app: XCUIApplication, _ el: XCUIElement, _ msg: String, shot: String, timeout: Double = 10) throws {
+        if el.waitForExistence(timeout: timeout) { return }
+        snap(shot)
+        print("── \(msg) · ekran ağacı ──\n\(app.debugDescription)")
+        XCTFail(msg)
+    }
+
     private func snap(_ name: String) {
         let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         shot.name = name

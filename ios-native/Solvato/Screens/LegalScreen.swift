@@ -37,14 +37,14 @@ struct LegalScreen: View {
 }
 
 @MainActor private func legalHeading(_ t: String) -> some View {
-    Text(t).font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color)
+    Text(t).font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color).lineHeight(1.5, size: FontSize.md)
 }
 
 @MainActor private func legalBody(_ t: String, color: Color? = nil) -> some View {
     Text(t)
         .font(.ui(FontSize.sm))
         .foregroundStyle(color ?? ThemeColor.textSecondary.color)
-        .lineSpacing(FontSize.sm * 0.55 - 4)
+        .lineHeight(1.55, size: FontSize.sm)
         .fixedSize(horizontal: false, vertical: true)
 }
 
@@ -72,7 +72,7 @@ private struct LicenseCard: View {
                         Text(text)
                             .font(.mono(FontSize.xs))
                             .foregroundStyle(ThemeColor.textMuted.color)
-                            .lineSpacing(FontSize.xs * 0.5 - 3)
+                            .lineHeight(1.5, size: FontSize.xs, natural: 1.32)
                             .fixedSize(horizontal: false, vertical: true)
                             .padding(Space.s3)
                             .frame(maxWidth: .infinity, alignment: .leading)

@@ -84,12 +84,13 @@ struct RhythmValuesLesson: View {
                 memoCard {
                     VStack(alignment: .leading, spacing: 0) {
                         Text("Temel fikir").font(.ui(FontSize.sm, .bold)).foregroundStyle(ThemeColor.textSoft.color)
+                            .lineHeight(1.6, size: FontSize.sm)
                         (Text("Her nota ne kadar süreceğini söyler. Süre “vuruş” ile sayılır. Her nota bir öncekinin ")
                             + Text("yarısı").font(.ui(FontSize.sm, .bold))
                             + Text(" kadar sürer. Aşağıdaki örneklerde dörtlük nota = 1 vuruş kabul edilir (4/4 ölçüde)."))
                             .font(.ui(FontSize.sm))
                             .foregroundStyle(ThemeColor.textSecondary.color)
-                            .lineSpacing(FontSize.sm * 0.6 - 4)
+                            .lineHeight(1.6, size: FontSize.sm)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
@@ -160,7 +161,7 @@ struct MemoSub: View {
         Text(text)
             .font(.ui(FontSize.sm))
             .foregroundStyle(ThemeColor.textMuted.color)
-            .lineSpacing(FontSize.sm * 0.5 - 4)
+            .lineHeight(1.5, size: FontSize.sm)
             .fixedSize(horizontal: false, vertical: true)
     }
 }
@@ -232,7 +233,7 @@ struct DottedCard: View {
                 .font(.ui(FontSize.sm))
                 .foregroundStyle(ThemeColor.textMuted.color)
                 .multilineTextAlignment(.center)
-                .lineSpacing(FontSize.sm * 0.5 - 4)
+                .lineHeight(1.5, size: FontSize.sm)
                 .frame(maxWidth: .infinity)
                 .padding(.top, -6)
         }
