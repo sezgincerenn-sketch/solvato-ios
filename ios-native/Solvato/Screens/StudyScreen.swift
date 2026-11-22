@@ -176,7 +176,7 @@ struct LessonScreen: View {
                             .padding(.horizontal, 2)
                             .padding(.bottom, Space.s4)
                     }
-                    if let lesson { LessonContent(lesson: lesson) }
+                    if let lesson { LessonContent(lesson: lesson, chordLevel: model.settings.effectiveChordLevel) }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, Space.s4)
@@ -192,12 +192,19 @@ struct LessonScreen: View {
 /// Dersin içeriği (web lessons.tsx `render`)
 private struct LessonContent: View {
     let lesson: Lesson
+    /// Majör/minör dersindeki formül listesi öğrencinin akor seviyesine göre uzar (web effectiveChordLevel)
+    let chordLevel: Int
 
     var body: some View {
         switch lesson.id {
         case "rhythm-values": RhythmValuesLesson()
         case "rhythm-rests": RestsCard()
         case "rhythm-dotted": DottedCard()
+        case "chords-build": ChordBuildLesson(level: chordLevel)
+        case "chords-1": ChordCardsLesson(level: 1)
+        case "chords-2": ChordCardsLesson(level: 2)
+        case "chords-3": ChordCardsLesson(level: 3)
+        case "chords-4": ChordCardsLesson(level: 4)
         default:
             if let g = Terms.groups.first(where: { "terms-\($0.group)" == lesson.id }) {
                 TermsLesson(group: g)

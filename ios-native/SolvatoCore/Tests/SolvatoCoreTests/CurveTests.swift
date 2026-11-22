@@ -17,4 +17,12 @@ final class CurveTests: XCTestCase {
         XCTAssertEqual(Curve.linear.progress(1.5, delay: 1, duration: 2), 0.25, accuracy: 1e-9)
         XCTAssertEqual(Curve.linear.progress(0.5, delay: 1, duration: 2), 0)
     }
+
+    func testTimeReaching() {
+        let c = Curve(0.16, 1, 0.3, 1)
+        let t = c.time(reaching: 0.5)
+        XCTAssertEqual(c.value(at: t), 0.5, accuracy: 1e-6)
+        XCTAssertLessThan(t, 0.2)
+        XCTAssertEqual(Curve.linear.time(reaching: 0.5), 0.5, accuracy: 1e-9)
+    }
 }

@@ -9,6 +9,7 @@ import MusicalStaff from "../../src/components/MusicalStaff"
 import ChordStaffSvg from "../../src/components/ChordStaffSvg"
 import GoalStaff from "../../src/components/GoalStaff"
 import { ClefIcon } from "../../src/components/Glyph"
+import { KeyIntervals } from "../../src/components/MemoVisuals"
 import { SMUFL } from "../../src/data/smufl"
 import { ALL_QUESTIONS } from "../../src/data/questions"
 import { ALL_CHORDS } from "../../src/data/chords"
@@ -262,5 +263,17 @@ export function cizim() {
       return { clef, size, width: +svg.attrs.width, height: +svg.attrs.height, ...flatten(svg) }
     }),
   )
-  return { notation, staff, chords, goal, clefIcons }
+  // Çalışma kartlarındaki şema klavye: dersteki örnekler + iki oktav, siyah kök, atla, kemersiz
+  const ki: { semis: number[]; color: string; names?: string[]; gaps?: boolean; skip?: number[]; octaves?: 1 | 2 }[] = [
+    { semis: [0, 4, 7], color: palette.violet500, names: ["Do", "Mi", "Sol"] },
+    { semis: [0, 3, 7], color: palette.red400, names: ["Do", "Mi♭", "Sol"] },
+    { semis: [1, 5, 8], color: palette.blue400 },
+    { semis: [0, 4, 7, 10, 14], color: palette.amber500 },
+    { semis: [2, 6, 9], color: palette.green400, gaps: false },
+    { semis: [0, 7], color: palette.cyan400, skip: [2, 4], octaves: 2 },
+    { semis: [10, 14, 17], color: palette.pink500, names: ["Si♭", "Re", "Fa"], gaps: false, octaves: 2 },
+    { semis: [3, 6, 10, 13], color: palette.violet400 },
+  ]
+  const keyIntervals = ki.map((p) => ({ ...p, names: p.names ?? null, ...render(createElement(KeyIntervals, p)) }))
+  return { notation, staff, chords, goal, clefIcons, keyIntervals }
 }

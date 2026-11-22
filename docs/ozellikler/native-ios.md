@@ -525,8 +525,9 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 ### E-16 Dersler
 
-- [ ] Native'de kısmen (22 Kasım): Ritim (nota değerleri, sus, noktalı) ve Terimler (6 grup) yapıldı; nota ve akor
-  dersleri sırada.
+- [ ] Native'de kısmen (22 Kasım): Ritim (nota değerleri, sus, noktalı), Terimler (6 grup) ve Akorlar (majör/minör
+  kurulumu, şema klavye altın tabloyla; 4 seviye akor kartı, 94 kartın yazıları altın tabloyla) yapıldı. Nota dersleri
+  sırada. Akor çalma düğmeleri ses aşamasında (0.6) bağlanacak.
 
 - Kaynak: `screens/study/LessonScreen.tsx` ve ders içerikleri:
   - Sol/Fa anahtarı notaları: ‹ › ile nota gezinme, porte + klavye, notayı çalma (`NotesStudy.tsx` `StaffStudy`).

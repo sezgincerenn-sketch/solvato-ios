@@ -4,10 +4,13 @@
 import { writeFileSync, mkdirSync } from "node:fs"
 import { cizim } from "./cizim"
 import { piyano } from "./piyano"
-import { home, progress } from "./ekran"
+import { home, progress, screenTexts } from "./ekran"
 import { join } from "node:path"
 import { readFileSync } from "node:fs"
 import { LESSONS } from "../../src/screens/study/lessons"
+import { ChordsStudy } from "../../src/screens/study/ChordsStudy"
+import { createElement } from "react"
+import { renderToStaticMarkup } from "react-dom/server"
 import { palette } from "../../src/design/tokens"
 import { ALL_QUESTIONS, questionLevel } from "../../src/data/questions"
 import { rankFromXp, todayKey } from "../../src/utils/level"
@@ -933,6 +936,15 @@ function calisma() {
   }
 }
 
+// ─── Çalışma › Akor kartları: her seviyenin açılış hali (ilk kök) ve bütün kartlar (arama " " hepsini getirir)
+function akorKartlari() {
+  return ([1, 2, 3, 4] as const).map((level) => ({
+    level,
+    initial: screenTexts(renderToStaticMarkup(createElement(ChordsStudy, { level }))).texts,
+    all: screenTexts(renderToStaticMarkup(createElement(ChordsStudy, { level, search: " " }))).texts,
+  }))
+}
+
 // ─── Çalıştır ────────────────────────────────────────────────────────────────
 const only = process.argv[3]
 if (only === "seri") write(`seri-${TZ!.replace("/", "-")}.json`, seri())
@@ -956,5 +968,6 @@ else {
   write("ana-sayfa.json", anaSayfa())
   write("ilerleme.json", ilerleme())
   write("calisma.json", calisma())
+  write("akor-kartlari.json", akorKartlari())
   write("seri-" + TZ!.replace("/", "-") + ".json", seri())
 }

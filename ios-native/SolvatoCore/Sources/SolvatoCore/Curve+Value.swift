@@ -43,4 +43,14 @@ extension Curve {
     public func progress(_ time: Double, delay: Double, duration: Double) -> Double {
         value(at: (time - delay) / duration)
     }
+
+    /// İlerlemenin ilk kez p'ye ulaştığı zaman oranı (0–1); ör. çevrilen kartta 90°'nin geçildiği an
+    public func time(reaching p: Double) -> Double {
+        var lo = 0.0, hi = 1.0
+        for _ in 0..<50 {
+            let mid = (lo + hi) / 2
+            if value(at: mid) < p { lo = mid } else { hi = mid }
+        }
+        return hi
+    }
 }

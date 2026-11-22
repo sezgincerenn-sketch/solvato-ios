@@ -71,6 +71,13 @@ public enum Terms {
     ]
 }
 
+/// Çalışma kartlarında nota adlarının renkleri (web study/shared.tsx NOTE_COLORS)
+public enum NoteColors {
+    public static let byName: [String: PaletteColor] = [
+        "Do": .red400, "Re": .orange400, "Mi": .amber400, "Fa": .lime400, "Sol": .green400, "La": .blue400, "Si": .violet400,
+    ]
+}
+
 public enum LessonSection: String, CaseIterable, Sendable {
     case notes = "Notalar", rhythm = "Ritim", chords = "Akorlar", terms = "Terimler"
 }

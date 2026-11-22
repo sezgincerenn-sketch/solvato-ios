@@ -59,6 +59,9 @@ public enum Piano {
     public static let ebonyBottom = RGBA(0x0E0C0A_FF)
     public static let ebonyEdge = RGBA(0x0A0808_FF)
     public static let ebonyLabel = RGBA(0x9A9080_FF)
+    /// Çalışma kartlarındaki küçük şema klavyeler
+    public static let diagramWhite = PaletteColor.slate50.rgba
+    public static let diagramBlack = RGBA(0x0B0B0F_FF)
 
     static func p(_ c: PaletteColor) -> RGBA { c.rgba }
     static func glow(_ blur: Double, _ c: RGBA) -> KeyShadow { KeyShadow(inset: false, x: 0, y: 0, blur: blur, color: c) }

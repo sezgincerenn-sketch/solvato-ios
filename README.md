@@ -76,8 +76,8 @@ ios-native/
                        Logic/ (soru bankası, seviye, ünvan, yıldız, seri, tur sonu, öğretmen ve meydan okuma kodu,
                        oyunlar, soru seçimi, kulak soruları, akorlar ve akor turu, Ritmi Tut puanlama, haftalık rapor, kalıcı depolama), Resources/soru-bankasi.json. Testler: `swift test`
                        Notation/ (nota çizimi yerleşimi: Notation dili, portesi, akor ve hedef portesi → çizim listesi;
-                       Piano: klavye tuşları, durumları, renkleri), App/ (ScreenStack: gezinme kuralları;
-                       AppModel: uygulama durumu ve tur akışı, web App.tsx; HomeContent, QuizRound, ResultContent, TeacherFlow, StudyContent (dersler, terimler, arama): ekran içerikleri;
+                       Piano: klavye tuşları, durumları, renkleri; Diagrams: Çalışma'daki şema klavye), App/ (ScreenStack: gezinme kuralları;
+                       AppModel: uygulama durumu ve tur akışı, web App.tsx; HomeContent, QuizRound, ResultContent, TeacherFlow, StudyContent (dersler, terimler, arama), ChordStudyContent (akor kartları): ekran içerikleri;
                        Legal: Gizlilik/Lisanslar metinleri, Resources/hukuk.json `node scripts/altin.mjs` ile legal.ts'den;
                        TestScenario: UI test senaryosu, bellekte depo),
                        Resources/smufl.json (Bravura sembol yolları, web'le aynı)

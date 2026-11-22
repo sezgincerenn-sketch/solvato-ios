@@ -141,6 +141,19 @@ final class NotationTests: XCTestCase {
         }
     }
 
+    /// Çalışma kartlarındaki şema klavye (web KeyIntervals)
+    func testKeyIntervals() throws {
+        for (i, r) in try XCTUnwrap(Golden.load("cizim")["keyIntervals"]?.array).enumerated() {
+            let hex = try XCTUnwrap(r["color"]?.string).dropFirst()
+            let d = Diagrams.keyIntervals(
+                semis: r["semis"]!.ints, color: RGBA(UInt32(hex, radix: 16)! << 8 | 0xFF),
+                names: r["names"]?.array.map { $0.compactMap(\.string) }, gaps: r["gaps"]?.bool ?? true,
+                skip: r["skip"]?.ints ?? [], octaves: r["octaves"]?.int)
+            check(d, r, "şema \(i)")
+            XCTAssertEqual(r["style"]?.string, "width:100%;display:block")
+        }
+    }
+
     func testClefIcons() throws {
         for r in try XCTUnwrap(Golden.load("cizim")["clefIcons"]?.array) {
             let d = Staves.clefIcon(Clef(rawValue: r["clef"]!.string!)!, size: r["size"]!.double!)

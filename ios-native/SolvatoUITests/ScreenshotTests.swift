@@ -257,6 +257,8 @@ final class ScreenshotTests: XCTestCase {
     func testDersler() throws {
         continueAfterFailure = false
         let lessons = [
+            ("chords-build", "Majör ve minör nasıl kurulur"), ("chords-1", "Akor kartları: Başlangıç"),
+            ("chords-2", "Akor kartları: Orta"), ("chords-3", "Akor kartları: İleri"), ("chords-4", "Akor kartları: Uzman"),
             ("rhythm-values", "Nota değerleri"), ("rhythm-rests", "Sus işaretleri"), ("rhythm-dotted", "Noktalı notalar"),
             ("terms-Dinamikler", "Dinamikler"), ("terms-Tempo", "Tempo"), ("terms-Değişim işaretleri", "Değişim işaretleri"),
             ("terms-Artikülasyon", "Artikülasyon"), ("terms-İfade", "İfade"), ("terms-Yapısal İşaretler", "Yapısal İşaretler"),
