@@ -125,6 +125,10 @@ Pratik ekranı (E-04): içerik çekirdekte (`HomeContent`; 60 durumda web'le ayn
 görünüm (`AppRoot`). UI testleri `referans.mjs --json` senaryolarıyla (aynı veri, aynı an) `pratik*` görüntülerini alır;
 uygulama normal açılışta hâlâ tasarım sistemiyle açılır (soru turu gelince kök AppRoot olur). 69 test. Sırada: kaydırarak
 geri, ana sayfa ipuçları (Coachmark), açılış ve tanıtım, soru turu.
+Soru turu (E-05): akış çekirdekte (`QuizRound`: eş sesli siyah tuş, çok oktavda oktav kontrolü, açıklama, ipucu, süre, üç
+doğruda alev; testli), SwiftUI `QuizScreen` (porte / ritim / terim / yazım / kulak, klavye ya da şıklar, yan ekranda iki
+sütun) ve UI testinde `soru-*` görüntüleri; 74 test. Ses/titreşim 0.6'da; sallanma/nabız animasyonları ve "yan çevir"
+ipucu sonra. Sırada: tur sonucu ve kutlama, sonra açılış kökü Pratik olur.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.
