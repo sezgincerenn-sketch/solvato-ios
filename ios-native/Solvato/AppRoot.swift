@@ -32,6 +32,9 @@ struct AppRoot: View {
             if let c = model.celebrate {
                 CelebrationView(data: c) { model.celebrate = nil }
             }
+            if model.showSplash {
+                SplashScreen { model.showSplash = false }.zIndex(10)
+            }
         }
         // iPad: içerik ortada, en geniş 1100 pt (G-03)
         .frame(maxWidth: 1100)

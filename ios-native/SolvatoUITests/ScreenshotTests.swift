@@ -40,6 +40,19 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Açılış animasyonu: başta, ortada (tuşlar) ve sonda (web referansı "acilis" son karesi)
+    @MainActor
+    func testAcilis() throws {
+        for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+            let app = try launch(theme: theme, scenario: "acilis")
+            Thread.sleep(forTimeInterval: 0.9)
+            snap("acilis-orta-\(tr)")
+            Thread.sleep(forTimeInterval: 0.8)
+            snap("acilis-\(tr)")
+            app.terminate()
+        }
+    }
+
     /// Soru turu: Pratik'ten konu kartına dokunup tur açılır (web referans senaryolarıyla aynı adlar ve adımlar)
     @MainActor
     func testSoru() throws {
