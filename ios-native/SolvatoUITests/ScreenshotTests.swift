@@ -40,6 +40,37 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// İlk açılış tanıtımı: web referans senaryolarıyla aynı adlar ve aynı dokunuşlar
+    @MainActor
+    func testTanitim() throws {
+        continueAfterFailure = false
+        let base = ["Devam", "Do tuşu", "Devam", "Sol tuşu", "Devam"]
+        let steps: [(String, [String])] = [
+            ("tanitim-1-merhaba", []),
+            ("tanitim-2-deneme", ["Devam"]),
+            ("tanitim-2-yanlis", ["Devam", "Re tuşu"]),
+            ("tanitim-2-dogru", ["Devam", "Do tuşu"]),
+            ("tanitim-4-anahtar", base),
+            ("tanitim-5-seviye", base + ["Devam"]),
+            ("tanitim-6-hatirlatma", base + ["Devam", "Devam"]),
+            ("tanitim-7-hazir", base + ["Devam", "Devam", "Şimdi değil", "Devam"]),
+        ]
+        for (name, taps) in steps {
+            for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+                let app = try launch(theme: theme, scenario: name)
+                XCTAssertTrue(app.buttons["Atla"].waitForExistence(timeout: 10), "\(name): tanıtım açılmadı")
+                for label in taps {
+                    let b = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", label)).firstMatch
+                    XCTAssertTrue(b.waitForExistence(timeout: 3), "\(name): \(label) yok")
+                    b.tap()
+                    Thread.sleep(forTimeInterval: 0.35)
+                }
+                snap("\(name)-\(tr)")
+                app.terminate()
+            }
+        }
+    }
+
     /// Açılış animasyonu: başta, ortada (tuşlar) ve sonda (web referansı "acilis" son karesi)
     @MainActor
     func testAcilis() throws {
