@@ -4,6 +4,7 @@
 import { writeFileSync, mkdirSync } from "node:fs"
 import { cizim } from "./cizim"
 import { piyano } from "./piyano"
+import { home } from "./ekran"
 import { join } from "node:path"
 import { ALL_QUESTIONS, questionLevel } from "../../src/data/questions"
 import { rankFromXp, todayKey } from "../../src/utils/level"
@@ -794,6 +795,43 @@ function haftalikRapor() {
   return cases
 }
 
+// ─── Ekran metinleri: Pratik ─────────────────────────────────────────────────
+function anaSayfa() {
+  const rows = []
+  for (let i = 0; i < 60; i++) {
+    const level = (1 + (i % 3)) as 1 | 2 | 3
+    const teacher = i % 5 === 2 ? TOPICS.filter(() => gen() < 0.45).map((t) => t.key as string) : []
+    const settings = {
+      level,
+      name: pick(["", "Ada", "  deniz  ", "İlke"]),
+      avatarColor: pick(["violet", "blue", "green", "amber", "pink", "cyan", "yok"]),
+      dailyGoal: pick(GOALS),
+      notes: i % 4 === 1 ? ALL_NOTES.filter(() => gen() < 0.6) : ALL_NOTES,
+      topics: teacher,
+      levelProgress: i % 6 === 0 ? { n: 0, c: 0 } : { n: int(70), c: 0 },
+    }
+    settings.levelProgress.c = int(settings.levelProgress.n + 1)
+    if (settings.notes.length === 0) settings.notes = ALL_NOTES
+    resetSettings(settings)
+    store.delete("notalik-daily")
+    const t = at(2026, 11, 18, pick([3, 7, 11, 12, 15, 17, 18, 22]), int(60))
+    let stats: AppStats = JSON.parse(JSON.stringify(DEFAULT_STATS))
+    const rounds = int(5)
+    for (let k = 0; k < rounds; k++) {
+      NOW = t - (rounds - k) * (gen() < 0.5 ? 3600000 : 86400000)
+      const r = randomRound(0.5 + gen() * 0.5)
+      stats = (r.kind === "quiz" ? completeQuiz(stats, r) : completeSpecial(stats, r)).stats
+    }
+    resetSettings(settings)
+    const daily = i % 3 === 0 ? { date: "2026-11-18", correct: int(11), sec: 60, marks: "" } : null
+    if (daily) store.set("notalik-daily", JSON.stringify({ [daily.date]: daily }))
+    NOW = t
+    rows.push({ now: t, settings: getSettings(), stats, daily, ...home(stats, settings.dailyGoal) })
+  }
+  store.delete("notalik-daily")
+  return rows
+}
+
 // ─── Çalıştır ────────────────────────────────────────────────────────────────
 const only = process.argv[3]
 if (only === "seri") write(`seri-${TZ!.replace("/", "-")}.json`, seri())
@@ -814,5 +852,6 @@ else {
   write("haftalik-rapor.json", haftalikRapor())
   write("cizim.json", cizim())
   write("piyano.json", piyano())
+  write("ana-sayfa.json", anaSayfa())
   write("seri-" + TZ!.replace("/", "-") + ".json", seri())
 }

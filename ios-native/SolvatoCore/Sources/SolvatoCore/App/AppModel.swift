@@ -80,6 +80,11 @@ public final class AppModel {
         sessionQuestions = Session.questions(.all, settings: s, random: random)
     }
 
+    /// Kuralların "şimdi"si (testlerde ve UI test senaryolarında sabit)
+    public var now: Now { clock() }
+    /// Bugünün meydan okuması oynandıysa ilk denemenin kaydı
+    public var todayDaily: DailyRecord? { persistence.loadDaily()[clock().todayKey] }
+
     /// Gösterilen seri (bugün ya da dün hedef tamamlanmadıysa 0)
     public var streak: Int { Progress.currentStreak(stats, now: clock()) }
     public var dailySolved: Int { stats.dailyQuestions[clock().todayKey] ?? 0 }

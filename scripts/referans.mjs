@@ -5,6 +5,8 @@
 //   node scripts/referans.mjs                    # bütün senaryolar
 //   node scripts/referans.mjs --sadece soru      # adı "soru" ile başlayanlar
 //   node scripts/referans.mjs --olcek 2          # 2x çözünürlük
+//   node scripts/referans.mjs --json ios-native/SolvatoUITests/senaryolar.json
+//                                                # senaryoların depolama verisini native UI testlerine yazar
 // Çıktı: ekran/referans/<senaryo>-<iphone|ipad|iphone-yatay>-<koyu|acik>.png (git'e girmez).
 // Sabitler: tarih 18 Kasım 2026 Çarşamba 10:00 (İstanbul), tohumlu Math.random, "Hareketi azalt" açık.
 import { createRequire } from "node:module"
@@ -15,9 +17,10 @@ const require = createRequire(import.meta.url)
 const { chromium } = require("playwright") // bulut oturumunda genel kurulu Playwright
 
 const args = process.argv.slice(2)
-const opt = { sadece: "", olcek: 1 }
+const opt = { sadece: "", olcek: 1, json: "" }
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--sadece") opt.sadece = args[++i]
+  else if (args[i] === "--json") opt.json = args[++i]
   else if (args[i] === "--olcek") opt.olcek = Number(args[++i])
   else throw new Error(`Bilinmeyen seçenek: ${args[i]}`)
 }
@@ -366,6 +369,22 @@ const SENARYOLAR = [
 
 // ─── Çalıştır ────────────────────────────────────────────────────────────────
 const secilen = SENARYOLAR.filter((s) => s.ad.startsWith(opt.sadece))
+
+// Native UI testleri aynı senaryoyu aynı veriyle açsın: depolama anahtarları ve değerleri (metin), tarih, tohum
+if (opt.json) {
+  const { writeFileSync } = await import("node:fs")
+  const out = {}
+  for (const s of secilen) {
+    const store = { pianote_settings_v1: JSON.stringify(s.ayar ?? AYAR_TEMEL), notalik_rotate_hint_v1: "99" }
+    if (s.stats) store.notausta_stats_v1 = JSON.stringify(s.stats)
+    if (s.daily) store["notalik-daily"] = JSON.stringify(s.daily)
+    if (s.ders) store.solvato_last_lesson_v1 = s.ders
+    out[s.ad] = { store, splash: !!s.splash, eylem: !!s.eylem, cihazlar: s.cihazlar ?? null }
+  }
+  writeFileSync(opt.json, JSON.stringify({ simdi: SIMDI, tohum: 20261118, senaryolar: out }, null, 1) + "\n")
+  console.log(`${Object.keys(out).length} senaryo → ${opt.json}`)
+  process.exit(0)
+}
 if (!secilen.length) throw new Error(`"${opt.sadece}" ile başlayan senaryo yok`)
 mkdirSync("ekran/referans", { recursive: true })
 const server = await preview({ preview: { port: 4180, strictPort: false }, logLevel: "silent" })

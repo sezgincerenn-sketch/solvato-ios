@@ -106,3 +106,22 @@ final class AppModelTests: XCTestCase {
         XCTAssertFalse(p.loadSettings().coachDone)
     }
 }
+
+@MainActor
+final class TestScenarioTests: XCTestCase {
+    /// referans.mjs'in yazdığı "pratik" senaryosu: Orta seviye, Deniz, 1.270 XP, 4 günlük seri (dün), bugün 8 soru
+    func testPratikScenario() async throws {
+        let url = URL(fileURLWithPath: #filePath).deletingLastPathComponent().appendingPathComponent("../../../SolvatoUITests/senaryolar.json")
+        let all = try JSON.parse(Data(contentsOf: url))
+        let sc = try XCTUnwrap(all["senaryolar"]?["pratik"]?["store"])
+        let env = [TestScenario.storeKey: sc.serialized, TestScenario.nowKey: all["simdi"]!.string!]
+        let m = try XCTUnwrap(TestScenario(environment: env)).makeModel()
+        XCTAssertFalse(m.showOnboarding)
+        XCTAssertFalse(m.showSplash)
+        XCTAssertEqual(m.settings.name, "Deniz")
+        XCTAssertEqual(m.stats.totalPoints, 1270)
+        XCTAssertEqual(m.streak, 4)
+        XCTAssertEqual(m.dailySolved, 8)
+        XCTAssertNil(TestScenario(environment: [:]))
+    }
+}
