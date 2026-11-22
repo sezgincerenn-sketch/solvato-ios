@@ -141,6 +141,7 @@ public final class AppModel {
 
     /// Sonuçta "Yeni tur" / "Tekrar"
     public func retry() {
+        quizToken += 1
         if let s = lastSpecial { nav.replace(s == .chords ? .chordquiz : .rhythmtap) } else { startQuiz(currentCategory) }
     }
 

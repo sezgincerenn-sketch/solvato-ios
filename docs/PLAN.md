@@ -136,7 +136,8 @@ Tasarım sistemi yalnız UI testinde (`-UITestDesignSystem`). 78 test. Açılı�
 `Curve.value`) ve ilk açılış tanıtımı (E-02, iki canlı deneme, anahtar, seviye/hedef, günlük hatırlatma bildirimi) yazıldı;
 UI testinde `acilis`, `tanitim-*`. Ana sayfa ipuçları (Coachmark, anchor tercihleriyle), kenardan kaydırarak geri (alt
 ekranlarda kayar, turlarda çıkış onayı), telefonda yalnız soru/akor turu yan döner (G-02, G-10). Kaydırma konumunun geri
-dönüşte korunması sonra. Sırada: akor turu, İlerleme, Profil, Ayarlar.
+dönüşte korunması sonra. Akor turu (E-06): akış çekirdekte (`ChordRound`, testli), SwiftUI `ChordQuizScreen` (üç soru türü,
+süre halkası, formül, seçilen tuşlar), UI testinde `akor`; 82 test. Sırada: İlerleme, Profil, Ayarlar.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.

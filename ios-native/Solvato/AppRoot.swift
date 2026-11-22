@@ -94,6 +94,7 @@ struct AppRoot: View {
                 timerSeconds: model.settings.timer && model.game == nil ? AppModel.timerSeconds : nil
             )
             .id(model.quizToken)
+        case .chordquiz: ChordQuizScreen(model: model).id(model.quizToken)
         case .result: TabletColumn { ResultScreen(model: model) }
         default: PendingScreen(view: v) { v.isTab ? model.go(.home) : model.back() }
         }

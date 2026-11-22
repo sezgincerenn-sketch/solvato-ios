@@ -145,6 +145,23 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Akor turu (web "akor"): Pratik'ten Akor bağlantısı
+    @MainActor
+    func testAkor() throws {
+        continueAfterFailure = false
+        for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+            let app = try launch(theme: theme, scenario: "akor")
+            XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
+            let link = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Akor'")).firstMatch
+            for _ in 0..<6 where !(link.exists && link.isHittable) { app.swipeUp(velocity: .slow) }
+            link.tap()
+            XCTAssertTrue(app.buttons["Çık"].waitForExistence(timeout: 5), "akor turu açılmadı")
+            Thread.sleep(forTimeInterval: 0.5)
+            snap("akor-\(tr)")
+            app.terminate()
+        }
+    }
+
     /// Tur sonucu ve kutlama: Pratik'te "Devam et" ile karma tur açılır, sonuna kadar oynanır (web turuBitir)
     @MainActor
     func testSonuc() throws {
