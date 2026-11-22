@@ -21,7 +21,10 @@ struct DrawingView: View {
         }
         .aspectRatio(vb.w / vb.h, contentMode: .fit)
         .frame(width: s.width.map { CGFloat($0) }, height: s.height.map { CGFloat($0) })
-        .frame(maxWidth: CGFloat(s.maxWidth ?? .infinity), maxHeight: CGFloat(s.maxHeight ?? .infinity))
+        // Sabit boyutlu çizim (anahtar ikonu) genişlemez; diğerleri kapsayıcıyı doldurur, en çok maxWidth/maxHeight
+        .frame(
+            maxWidth: s.maxWidth.map { CGFloat($0) } ?? (s.width == nil ? .infinity : nil),
+            maxHeight: s.maxHeight.map { CGFloat($0) } ?? (s.height == nil ? .infinity : nil))
         // Koyu temada notaların hafif mor parıltısı (web --notation-shadow; açık temada yok)
         .shadow(color: s.notationShadow && scheme == .dark ? PaletteColor.violet500.opacity(0.15) : .clear, radius: 4)
         .accessibilityHidden(true)

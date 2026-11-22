@@ -86,7 +86,8 @@ struct DesignSystemScreen: View {
             NotationView(score: "ts:4/4 q ee ssss q ||")
             NotationView(score: "ts:6/8 3eee e.s ses q~ q")
             NotationView(score: "dyn:mf (q q@1 q@2 q@3) hair:<")
-            NotationView(score: "tx:Allegro q! q> q- h^ end:Fine")
+            NotationView(score: "tx:Allegro q! q> q- h^ ||")
+            NotationView(score: "q q h || end:Fine")
             HStack(spacing: Space.s3) {
                 ChordStaffView(chord: Chords.all.first { $0.id == "C#min" }!, color: .palette(.violet500))
                 ChordStaffView(chord: Chords.all.first { $0.id == "C13" }!)
