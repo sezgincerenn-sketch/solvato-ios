@@ -31,6 +31,7 @@ public enum Staves {
         for ly in ledgerLines {
             items.append(.line(x1: noteX - 11, y1: Double(ly), x2: noteX + 11, y2: Double(ly), stroke: line, width: 1.5, round: true))
         }
+        let groupStart = items.count
         if let accidental {
             let name = accidental == .sharp ? "accidentalSharp" : "accidentalFlat"
             items.append(.glyph(name, x: noteX - 5.9 - 4 - Smufl.width(name), y: y, fill: noteColor))
@@ -42,12 +43,16 @@ public enum Staves {
         } else {
             items.append(.line(x1: noteX - 5.3, y1: y + 1.5, x2: noteX - 5.3, y2: max(y + 35, 60), stroke: noteColor, width: 1.3))
         }
+        // Nota grubu (işaret + baş + sap): cevaptan sonra zıplar ya da titrer (web note-bounce / note-wobble)
+        let group = groupStart..<items.count
+        let box = Smufl.box(items[group])!
         if showLabel {
             items.append(.text(clef == .treble ? "Sol Anahtarı" : "Fa Anahtarı", x: 13, y: 118, size: 9, fill: .theme(.staffLabel)))
         }
         return Drawing(
             viewBox: (0, top, 210, bottom - top), items: items,
-            sizing: maxHeight.map { .init(height: $0, notationShadow: true) } ?? .init(maxWidth: 384, notationShadow: true))
+            sizing: maxHeight.map { .init(height: $0, notationShadow: true) } ?? .init(maxWidth: 384, notationShadow: true),
+            group: (group, Point((box.minX + box.maxX) / 2, (box.minY + box.maxY) / 2)))
     }
 
     /// Akor portesi (web ChordStaffSvg): notalar üst üste, ikili aralıkta üstteki sağa kayar, işaretler sütunlara dizilir

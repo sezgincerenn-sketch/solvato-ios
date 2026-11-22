@@ -1,6 +1,7 @@
 // Çalışma › Notalar dersleri: Sol/Fa anahtarı notaları ve Diyez-bemol (‹ › ile gezinme, porte, mini piyano), ezber
 // cümleleri (renkli porte, tekerleme, aynı renkte klavye), diyez/bemol ezber kartları. Web src/screens/study/
-// NotesStudy.tsx ve shared.tsx (MiniPiano). Kurallar ve veri SolvatoCore NoteStudy / Mnemonics'te. Ses 0.6'da.
+// NotesStudy.tsx ve shared.tsx (MiniPiano). Kurallar ve veri SolvatoCore NoteStudy / Mnemonics'te. Oklarla geçince,
+// tuşlara ve "Dinle"ye dokununca notalar çalar.
 import SolvatoCore
 import SwiftUI
 
@@ -19,7 +20,7 @@ struct StaffStudyLesson: View {
                 Segmented(value: st.acc ?? .sharp, options: [(Accidental.sharp, "♯ Diyez"), (.flat, "♭ Bemol")], size: .sm) { st.setAcc($0) }
             }
             HStack(spacing: 10) {
-                arrow("‹", "Önceki nota") { st.go(-1) }
+                arrow("‹", "Önceki nota") { go(-1) }
                 VStack(spacing: 0) {
                     Text(st.counter).font(.mono(FontSize.xs)).foregroundStyle(ThemeColor.textSubtle.color)
                     Text("Oklarla ya da piyanoda bir tuşa basarak gez")
@@ -28,7 +29,7 @@ struct StaffStudyLesson: View {
                         .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity)
-                arrow("›", "Sonraki nota") { st.go(1) }
+                arrow("›", "Sonraki nota") { go(1) }
             }
             VStack(alignment: .leading, spacing: 16) {
                 HStack(spacing: 12) {
@@ -58,6 +59,12 @@ struct StaffStudyLesson: View {
         }
     }
 
+    /// ‹ › ile geçer ve yeni notayı çalar (web go)
+    private func go(_ delta: Int) {
+        st.go(delta)
+        Sound.note(st.playPitch.name, octave: st.playPitch.octave)
+    }
+
     private func arrow(_ t: String, _ label: String, _ action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(t)
@@ -77,6 +84,12 @@ private struct MiniPiano: View {
     let st: StaffStudyState
     let color: RGBA
     let onPick: (String, Int, Bool) -> Void
+
+    /// Tuşun sesi her zaman; geçilebilen tuşta o notaya geçilir (web shared.tsx press)
+    private func press(_ n: String, _ o: Int, _ sharp: Bool) {
+        Sound.note(sharp ? n + "#" : n, octave: o)
+        if st.available(n, o, sharp: sharp) { onPick(n, o, sharp) }
+    }
 
     var body: some View {
         let hi = st.highlighted
@@ -100,7 +113,7 @@ private struct MiniPiano: View {
                         let o = st.startOctave + i / 7
                         let on = hi.name == n && hi.octave == o && !hi.black
                         let ok = st.available(n, o, sharp: false)
-                        Button { onPick(n, o, false) } label: {
+                        Button { press(n, o, false) } label: {
                             ZStack(alignment: .bottom) {
                                 Rectangle().fill(on ? color.color : ok ? PaletteColor.slate50.color : PaletteColor.slate300.color)
                                 Text(n == "Do" ? "\(n)\(o)" : n)
@@ -123,7 +136,7 @@ private struct MiniPiano: View {
                         let on = hi.name == n && hi.octave == o && hi.black
                         let ok = st.available(n, o, sharp: true)
                         let shape = UnevenRoundedRectangle(bottomLeadingRadius: 4, bottomTrailingRadius: 4)
-                        Button { onPick(n, o, true) } label: {
+                        Button { press(n, o, true) } label: {
                             shape.fill(on ? color.color : Piano.diagramBlack.color)
                                 .overlay { if on { shape.stroke(PaletteColor.white.color, lineWidth: 2) } }
                         }
@@ -182,7 +195,8 @@ private struct MnemonicCardView: View {
                 Text(card.cardTitle).font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color)
                 Spacer(minLength: 0)
                 Button {
-                    // Ses 0.6'da (web: notalar 260 ms arayla)
+                    // Notalar 260 ms arayla (web MemoCard playAll)
+                    Sound.play(Sounds.notes(card.pitches(clef), gap: 0.26))
                 } label: {
                     HStack(spacing: 5) {
                         Icon(.speaker, size: 14)
@@ -242,7 +256,7 @@ private struct MnemonicCardView: View {
                         let i = card.noteNames.firstIndex(of: n)
                         let c = i.map { card.color($0) }
                         Button {
-                            // Ses 0.6'da
+                            Sound.note(n, octave: 4)
                         } label: {
                             ZStack(alignment: .bottom) {
                                 Rectangle().fill(c?.color ?? PaletteColor.slate50.color)
@@ -303,7 +317,7 @@ struct AccidentalMemoView: View {
                         ForEach(AccidentalMemoContent.blackKeys, id: \.self) { k in
                             Button {
                                 active = k
-                                // Ses 0.6'da
+                                Sound.note(k, octave: 4)
                             } label: {
                                 Text(Accidentals.blackKeyLabel(k))
                                     .font(.ui(FontSize.sm, .bold))

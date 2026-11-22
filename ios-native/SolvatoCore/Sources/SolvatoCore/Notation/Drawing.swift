@@ -48,6 +48,16 @@ public struct Drawing: Equatable, Sendable {
     public var items: [DrawItem]
     /// Ekrandaki boyut kuralları (web'deki svg stili)
     public var sizing: Sizing
+    /// Birlikte hareket eden parça (web'de cevaptan sonra zıplayan / titreyen nota grubu `<g>`): öğe aralığı ve
+    /// `transform-box: fill-box; transform-origin: center` için kutunun ortası. Karşılaştırmaya girmez.
+    public var group: (items: Range<Int>, center: Point)?
+
+    public init(viewBox: (x: Double, y: Double, w: Double, h: Double), items: [DrawItem], sizing: Sizing, group: (items: Range<Int>, center: Point)? = nil) {
+        self.viewBox = viewBox
+        self.items = items
+        self.sizing = sizing
+        self.group = group
+    }
 
     public struct Sizing: Equatable, Sendable {
         /// Genişlik kapsayıcıyı doldurur, en çok bu kadar (pt)
@@ -99,6 +109,25 @@ public enum Smufl {
         }
         return out
     }()
+
+    /// Öğelerin geometrik kutusu (SVG fill-box: çizgi kalınlığı hariç); sembol ve çizgi dışındakiler yok sayılır
+    public static func box(_ items: some Sequence<DrawItem>) -> (minX: Double, minY: Double, maxX: Double, maxY: Double)? {
+        var b: (minX: Double, minY: Double, maxX: Double, maxY: Double)?
+        func add(_ x0: Double, _ y0: Double, _ x1: Double, _ y1: Double) {
+            let n = (min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1))
+            b = b.map { (min($0.minX, n.0), min($0.minY, n.1), max($0.maxX, n.2), max($0.maxY, n.3)) } ?? n
+        }
+        for it in items {
+            switch it {
+            case let .line(x1, y1, x2, y2, _, _, _): add(x1, y1, x2, y2)
+            case let .glyph(name, x, y, sp, _, _, _):
+                guard let g = glyphs[name] else { continue }
+                add(x + g.southWest.x * sp, y - g.northEast.y * sp, x + g.northEast.x * sp, y - g.southWest.y * sp)
+            default: continue
+            }
+        }
+        return b
+    }
 
     /// Sembolün genişliği (web glyphWidth)
     public static func width(_ name: String, sp: Double = 10) -> Double { (glyphs[name]?.width ?? 0) * sp }

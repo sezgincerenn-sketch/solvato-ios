@@ -1,6 +1,7 @@
 // Çalışma › Akorlar dersleri: "Majör ve minör nasıl kurulur" (web MemoVisuals ChordMemoVisual, KeyIntervals) ve
 // "Akor kartları" (web study/ChordsStudy.tsx: kök filtresi, çevrilen kart, şerit klavye). İçerik ve kurallar
-// SolvatoCore ChordStudy / Diagrams'da (web'le altın tabloyla aynı). Akor çalma ses aşamasında (0.6) bağlanacak.
+// SolvatoCore ChordStudy / Diagrams'da (web'le altın tabloyla aynı). Şema klavyeye ve kartlardaki düğmelere dokununca akor
+// çalar (birlikte ya da 200 ms arayla arpej).
 import SolvatoCore
 import SwiftUI
 
@@ -14,7 +15,8 @@ struct KeyIntervalsView: View {
 
     var body: some View {
         Button {
-            // Ses 0.6'da (web playPianoNote, notalar 200 ms arayla)
+            // Notalar 200 ms arayla (web MemoVisuals KeyIntervals)
+            Sound.play(Sounds.notes(semis.map { Pitch(name: Chords.pcKey[$0 % 12], octave: 4 + $0 / 12) }, gap: 0.2))
         } label: {
             DrawingView(drawing: Diagrams.keyIntervals(semis: semis, color: color, names: names))
         }
@@ -136,6 +138,7 @@ struct ChordCardsLesson: View {
 struct ChordCardView: View {
     let card: ChordCardInfo
     @State private var flipped = false
+    @State private var playing = false
 
     private var c: RGBA { card.color }
 
@@ -147,6 +150,18 @@ struct ChordCardView: View {
         .accessibilityAddTraits(.isButton)
         .accessibilityHint(flipped ? "Kartın önüne dön" : "Örnek diziler için çevir")
         .padding(.bottom, 4)
+    }
+
+    /// Akoru çalar: birlikte ya da 200 ms arayla arpej (web ChordCard playChord); çalarken düğme renklenir
+    private func play(arpeggio: Bool) {
+        guard !playing else { return }
+        playing = true
+        let n = card.chord.notes
+        Sound.play(Sounds.notes(zip(card.playKeys, n).map { Pitch(name: $0, octave: $1.octave) }, gap: arpeggio ? 0.2 : 0))
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(arpeggio ? n.count * 200 + 300 : 600))
+            playing = false
+        }
     }
 
     private func face<C: View>(border: Int, glow: Int, glowRadius: Double, padding: Double, spacing: Double, @ViewBuilder _ content: () -> C) -> some View {
@@ -183,7 +198,7 @@ struct ChordCardView: View {
                     .tracking(em: -0.02, size: FontSize.md)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Button {
-                    // Ses 0.6'da (web playChord: notalar birlikte)
+                    play(arpeggio: false)
                 } label: {
                     Canvas { ctx, size in
                         let s = size.width / 24
@@ -192,12 +207,13 @@ struct ChordCardView: View {
                         p.addLine(to: CGPoint(x: 19 * s, y: 12 * s))
                         p.addLine(to: CGPoint(x: 5 * s, y: 21 * s))
                         p.closeSubpath()
-                        ctx.fill(p, with: .color(ThemeColor.textFaint.color))
+                        ctx.fill(p, with: .color(playing ? c.color : ThemeColor.textFaint.color))
                     }
                     .frame(width: 13, height: 13)
                     .frame(width: 34, height: 34)
-                    .background(RoundedRectangle(cornerRadius: Radius.sm).fill(ThemeColor.fillStrong.color))
-                    .overlay(RoundedRectangle(cornerRadius: Radius.sm).strokeBorder(ThemeColor.fillStronger.color, lineWidth: 1))
+                    .background(RoundedRectangle(cornerRadius: Radius.sm).fill(playing ? hexA(c, 0x33) : ThemeColor.fillStrong.color))
+                    .overlay(RoundedRectangle(cornerRadius: Radius.sm).strokeBorder(playing ? c.color : ThemeColor.fillStronger.color, lineWidth: 1))
+                    .animation(.easeInOut(duration: 0.15), value: playing)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Akoru dinle")
@@ -304,7 +320,7 @@ struct ChordCardView: View {
             }
             .frame(maxHeight: .infinity)
             Button {
-                // Ses 0.6'da (web arpej: notalar 200 ms arayla)
+                play(arpeggio: true)
             } label: {
                 HStack(spacing: 7) {
                     Icon(.speaker, size: 15).padding(.trailing, 6)

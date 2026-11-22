@@ -6,6 +6,8 @@ import SwiftUI
 
 struct DrawingView: View {
     let drawing: Drawing
+    /// Çizimdeki grubun (Drawing.group) hareketi: web'de `transform-origin: center` ile ölçek ve kaydırma
+    var motion = GroupMotion()
     @Environment(\.colorScheme) private var scheme
 
     var body: some View {
@@ -17,7 +19,17 @@ struct DrawingView: View {
             ctx.translateBy(x: (size.width - vb.w * scale) / 2, y: (size.height - vb.h * scale) / 2)
             ctx.scaleBy(x: scale, y: scale)
             ctx.translateBy(x: -vb.x, y: -vb.y)
-            for item in drawing.items { DrawingRenderer.draw(item, in: ctx, appearance: Appearance(scheme)) }
+            let a = Appearance(scheme)
+            // CSS "scale(s) translate(x, y)", merkez grubun kutusunun ortası
+            var moved = ctx
+            if let g = drawing.group {
+                moved.translateBy(x: g.center.x, y: g.center.y)
+                moved.scaleBy(x: motion.scale, y: motion.scale)
+                moved.translateBy(x: motion.x - g.center.x, y: motion.y - g.center.y)
+            }
+            for (i, item) in drawing.items.enumerated() {
+                DrawingRenderer.draw(item, in: drawing.group?.items.contains(i) == true ? moved : ctx, appearance: a)
+            }
         }
         .aspectRatio(vb.w / vb.h, contentMode: .fit)
         .frame(width: s.width.map { CGFloat($0) }, height: s.height.map { CGFloat($0) })
@@ -142,10 +154,11 @@ struct MusicalStaffView: View {
     var feedback: Staves.Feedback?
     var maxHeight: Double?
     var body: some View {
-        DrawingView(
-            drawing: Staves.note(
-                clef: clef, noteY: noteY, ledgerLines: ledgerLines, accidental: accidental, showLabel: showLabel,
-                feedback: feedback, maxHeight: maxHeight))
+        let d = Staves.note(
+            clef: clef, noteY: noteY, ledgerLines: ledgerLines, accidental: accidental, showLabel: showLabel,
+            feedback: feedback, maxHeight: maxHeight)
+        // Cevaptan sonra nota zıplar (doğru) ya da titrer (yanlış)
+        NoteMotion(feedback: feedback.map { $0 == .correct }) { m in DrawingView(drawing: d, motion: m) }
     }
 }
 

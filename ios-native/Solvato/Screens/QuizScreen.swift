@@ -1,7 +1,8 @@
 // Soru turu: üstte çıkış, adım noktaları ve doğru sayısı; soru kartı (porte, ritim, terim, yazım, kulak); altta
 // klavye ya da şıklar; yanlışta açıklama ve "Sıradaki". Web karşılığı src/screens/QuizSession.tsx. Akış ve bütün yazılar
 // SolvatoCore QuizRound'dan (testli); burada yalnızca çizim. iPad'de 2 oktav, yan ekranda 3 oktav ve iki sütun.
-// Ses ve titreşim 0.6'da; giriş animasyonları (sallanma, nabız) G-06 ile birlikte.
+// Doğruda "ting" + başarı titreşimi + şıkta yeşil nabız + notanın zıplaması; yanlışta "dum" + hata titreşimi + sallanma.
+// Telefonda klavyeyle cevaplarken ilk 3 turda "yan çevir" ipucu (6 sn; yan çevrilince bir daha çıkmaz).
 import SolvatoCore
 import SwiftUI
 import UIKit
@@ -16,6 +17,8 @@ struct QuizScreen: View {
     @State private var showExit = false
     @State private var flare = false
     @State private var startedAt = Date()
+    /// "Yan çevir" ipucu: klavyeyle cevaplarken ilk 3 turda (web: dokunmatik ekran + piano modu + sayaç < 3)
+    @State private var rotateHint: Bool
     @Environment(\.horizontalSizeClass) private var hClass
     @Environment(\.verticalSizeClass) private var vClass
 
@@ -28,6 +31,8 @@ struct QuizScreen: View {
             initialValue: QuizRound(
                 questions: questions, prefersPiano: model.settings.inputMode == .piano, keyLabels: model.settings.keyLabels,
                 noHints: noHints))
+        let hint = model.settings.inputMode == .piano && model.persistence.rotateHintCount() < 3
+        _rotateHint = State(initialValue: hint)
     }
 
     /// Telefon yan çevrilmiş (iki sütun, 3 oktav)
@@ -78,6 +83,18 @@ struct QuizScreen: View {
             }
         }
         .onChange(of: octaves, initial: true) { _, o in round.octaves = o }
+        // İpucu gösterildiyse sayaç bir artar; 6 sn sonra kapanır; telefon yan çevrilince bir daha çıkmaz
+        .onAppear { if rotateHint { model.persistence.bumpRotateHint() } }
+        .task(id: rotateHint) {
+            guard rotateHint else { return }
+            try? await Task.sleep(for: .seconds(6))
+            rotateHint = false
+        }
+        .onChange(of: land, initial: true) { _, l in
+            guard l else { return }
+            model.persistence.bumpRotateHint(done: true)
+            rotateHint = false
+        }
         // Kenardan kaydırma çıkış onayını açar
         .onChange(of: model.exitRequest) { _, _ in showExit = true }
     }
@@ -87,14 +104,19 @@ struct QuizScreen: View {
     private func finish(_ outcome: QuizRound.Outcome) {
         switch outcome {
         case let .correct(f):
-            if f { withAnimation(.easeOut(duration: 0.2)) { flare = true } }
+            Sound.play(Sounds.correctChime)
+            Haptics.success()
+            if f { flare = true }
             // Doğru cevapta 0,7 sn sonra sıradaki soru (alev de o kadar görünür)
             Task { @MainActor in
                 try? await Task.sleep(for: .milliseconds(700))
                 flare = false
                 next()
             }
-        default: break
+        case .wrong:
+            Sound.play(Sounds.wrongBuzz)
+            Haptics.error()
+        case .ignored: break
         }
     }
 
@@ -151,10 +173,9 @@ struct QuizScreen: View {
                     .overlay(Capsule().strokeBorder(PaletteColor.green500.opacity(0.25), lineWidth: 1))
                     .overlay(alignment: .top) {
                         if flare {
-                            Icon(.flame, size: 20, fill: true)
-                                .foregroundStyle(ThemeColor.orangeText.color)
+                            StreakFlare { Icon(.flame, size: 20, fill: true).foregroundStyle(ThemeColor.orangeText.color) }
                                 .offset(y: -24)
-                                .transition(.opacity.combined(with: .scale))
+                                .allowsHitTesting(false)
                         }
                     }
             }
@@ -210,7 +231,7 @@ struct QuizScreen: View {
                     .background(RoundedRectangle(cornerRadius: Radius.md).fill(PaletteColor.amber500.opacity(0.1)))
                     .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(PaletteColor.amber500.opacity(0.25), lineWidth: 1))
                     .padding([.horizontal, .bottom], 12)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .slideUpOnAppear()
             }
         }
         .padding(q.category == .writing ? EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14) : EdgeInsets())
@@ -229,10 +250,11 @@ struct QuizScreen: View {
                     .background(Capsule().fill(PaletteColor.green400.opacity(0.16)))
                     .overlay(Capsule().strokeBorder(PaletteColor.green400.opacity(0.45), lineWidth: 1))
                     .padding(.bottom, 14)
-                    .transition(.scale.combined(with: .opacity))
+                    .popInOnAppear()
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: Radius.lg))
+        .popInOnAppear()
         .id(round.index)
     }
 
@@ -241,7 +263,9 @@ struct QuizScreen: View {
         let q = round.question
         switch q.category {
         case .ear:
-            if let ear = q.ear { EarPromptView(prompt: ear, answerState: round.answerState, soundOn: model.settings.soundKeys) }
+            if let ear = q.ear {
+                EarPromptView(prompt: ear, answerState: round.answerState, soundOn: model.settings.soundKeys) { model.settings.soundKeys = true }
+            }
         case .writing:
             Text("Dört yazımdan sadece biri doğru. Doğru olanı seç.")
                 .font(.ui(FontSize.sm))
@@ -319,7 +343,7 @@ struct QuizScreen: View {
         .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(PaletteColor.red500.opacity(0.22), lineWidth: 1))
         .padding(.horizontal, 16)
         .padding(.bottom, 10)
-        .transition(.move(edge: .bottom).combined(with: .opacity))
+        .slideUpOnAppear()
     }
 
     /// Yan ekranda açıklama sol sütunda, kısa
@@ -338,11 +362,15 @@ struct QuizScreen: View {
         .background(RoundedRectangle(cornerRadius: Radius.md).fill(PaletteColor.red500.opacity(0.08)))
         .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(PaletteColor.red500.opacity(0.22), lineWidth: 1))
         .padding(.top, Space.s2)
+        .slideUpOnAppear()
     }
 
     // MARK: Cevap alanı
     private var answerArea: some View {
         VStack(spacing: 0) {
+            if !land && !tablet && rotateHint && round.usesPiano {
+                RotateHintView { rotateHint = false }
+            }
             if round.usesPiano {
                 QuizPianoView(
                     keys: round.pianoKeys,
@@ -423,6 +451,8 @@ struct QuizScreen: View {
                         }
                     }
                     .shadow(color: glow, radius: 7)
+                    .correctPulse(state == .correct, cornerRadius: Radius.lg)
+                    .shake(state == .wrong)
                 }
                 .buttonStyle(.plain)
                 .allowsHitTesting(round.answerState == .pending)
@@ -464,29 +494,47 @@ private struct TimerBar: View {
     }
 }
 
-/// Kulak sorusunun üst alanı (web EarPrompt): dinle düğmesi ve açıklama; ses 0.6'da bağlanır
+/// Kulak sorusunun üst alanı (web EarPrompt): açılınca 0,35 sn sonra bir kez çalar; dokununca tekrar. Nota → referans Do,
+/// ara, soru notası; akor → notalar tek tek, sonra birlikte. Çalarken halka yayılır. Ses kapalıysa "Sesi aç".
 struct EarPromptView: View {
     let prompt: EarPrompt
     let answerState: AnswerState
     let soundOn: Bool
+    let onEnableSound: () -> Void
+    @State private var playing = 0
 
     var body: some View {
         let base = CategoryColor.ear.base
         let size: Double = answerState == .pending ? 104 : 64
         if !soundOn {
-            VStack(spacing: 4) {
+            VStack(spacing: 0) {
                 Text("Ses kapalı").font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color)
-                Text("Kulak soruları için sesi açman gerek.").font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color).padding(.bottom, 10)
+                Text("Kulak soruları için sesi açman gerek.")
+                    .font(.ui(FontSize.sm))
+                    .foregroundStyle(ThemeColor.textMuted.color)
+                    .padding(.top, 4)
+                    .padding(.bottom, 14)
+                Button(action: onEnableSound) {
+                    Text("Sesi aç")
+                        .font(.ui(FontSize.md, .bold))
+                        .foregroundStyle(PaletteColor.white.color)
+                        .padding(.horizontal, 20)
+                        .frame(minHeight: 44)
+                        .background(Capsule().fill(PaletteColor.violet600.color))
+                }
+                .buttonStyle(.plain)
             }
+            .multilineTextAlignment(.center)
             .padding(20)
         } else {
             VStack(spacing: answerState == .pending ? 14 : 8) {
-                Button {} label: {
+                Button(action: play) {
                     Icon(.speaker, size: (size * 0.42).rounded())
                         .foregroundStyle(CategoryColor.ear.text.color)
                         .frame(width: size, height: size)
-                        .background(Circle().fill(base.opacity(0.12)))
+                        .background(Circle().fill(base.opacity(playing > 0 ? 0.22 : 0.12)))
                         .overlay(Circle().strokeBorder(base.opacity(0.5), lineWidth: 2))
+                        .overlay { if playing > 0 { EarPulse(color: base).padding(-8) } }
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Tekrar dinle")
@@ -499,8 +547,46 @@ struct EarPromptView: View {
                 .foregroundStyle(ThemeColor.textMuted.color)
                 .multilineTextAlignment(.center)
             }
-            .padding(answerState == .pending ? 16 : 10)
+            .padding(.vertical, answerState == .pending ? 16 : 10)
+            .padding(.horizontal, 16)
             .animation(.easeInOut(duration: 0.2), value: answerState)
+            .animation(.easeInOut(duration: 0.2), value: playing > 0)
+            // Soru açılınca kendiliğinden bir kez
+            .task(id: prompt) {
+                try? await Task.sleep(for: .milliseconds(350))
+                if !Task.isCancelled { play() }
+            }
+        }
+    }
+
+    private func play() {
+        let ear = Sounds.ear(prompt)
+        Sound.play(ear.voices)
+        playing += 1
+        let token = playing
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(ear.duration))
+            if playing == token { playing = 0 }
+        }
+    }
+}
+
+/// Çalarken düğmenin çevresinde yayılan halka (web earPulse: 1 sn, 0,92 → 1,25, saydamlaşarak, sürekli)
+private struct EarPulse: View {
+    let color: Color
+    @Environment(\.accessibilityReduceMotion) private var reduce
+
+    var body: some View {
+        if reduce {
+            Circle().strokeBorder(color.opacity(0.45), lineWidth: 2)
+        } else {
+            TimelineView(.animation) { tl in
+                let t = tl.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 1)
+                let e = UnitCurve.easeOut.value(at: t)
+                Circle().strokeBorder(color.opacity(0.45), lineWidth: 2)
+                    .scaleEffect(0.92 + (1.25 - 0.92) * e)
+                    .opacity(0.9 * (1 - e))
+            }
         }
     }
 }

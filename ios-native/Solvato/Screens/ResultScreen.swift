@@ -258,6 +258,7 @@ struct CelebrationView: View {
         .accessibilityAddTraits(.isModal)
         .accessibilityLabel("Kutlama")
         .onAppear {
+            Sound.play(data.sound)
             withAnimation(.spring(response: 0.45, dampingFraction: 0.7)) { shown = true }
         }
         .task {

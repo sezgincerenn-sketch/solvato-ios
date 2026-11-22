@@ -1,6 +1,6 @@
 // Akor düellosu: kurulum (iki isim, akor seviyesi, Başlayalım) → oyun (ekran ikiye bölünür, üst yarı karşıdaki
 // oyuncu için 180° ters; her yarıda akor ve şıklar) → sonuç (kazanan, skor, Çık / Rövanş). Web
-// src/screens/ChordDuel.tsx. Kurallar SolvatoCore DuelGame'de (sorular web'le altın tabloyla aynı). Ses/titreşim 0.6'da.
+// src/screens/ChordDuel.tsx. Kurallar SolvatoCore DuelGame'de (sorular web'le altın tabloyla aynı). Doğruda "ting" ve başarı, yanlışta "dum" ve hata titreşimi.
 import SolvatoCore
 import SwiftUI
 
@@ -108,6 +108,15 @@ struct ChordDuelScreen: View {
         guard var g = game else { return }
         let r = g.pick(p, id)
         game = g
+        switch r {
+        case .correct:
+            Sound.play(Sounds.correctChime)
+            Haptics.success()
+        case .wrong, .bothWrong:
+            Sound.play(Sounds.wrongBuzz)
+            Haptics.error()
+        case .ignored: break
+        }
         guard r == .correct || r == .bothWrong else { return }
         let at = g.index
         Task { @MainActor in
@@ -167,6 +176,7 @@ struct ChordDuelScreen: View {
             .frame(maxWidth: 340)
             .background(RoundedRectangle(cornerRadius: Radius.lg).fill(ThemeColor.surface.color))
             .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(ThemeColor.border.color, lineWidth: 1))
+            .popInOnAppear()
             .padding(24)
             // Kap adlı bir grup; içindeki düğmeler ayrı ayrı erişilebilir kalır
             .accessibilityElement(children: .contain)

@@ -1,7 +1,8 @@
 // Akor turu: üstte çıkış, adım noktaları ve XP; soru kartı (tür etiketi, seviye, isteğe bağlı 15 sn halkası, soru,
 // "Dinle", porte / basılı klavye / akor adı, cevaptan sonra "Formülü Göster"); şıklar ya da akor klavyesi ve "Seçilen"
 // satırı; altta yanlış/süre kutusu ve ana düğme. Web src/screens/ChordQuizSession.tsx. Akış ve yazılar SolvatoCore
-// ChordRound'dan (testli). Dinle sesi 0.6'da bağlanır.
+// ChordRound'dan (testli). "Dinle" akoru arpej çalar; doğruda başarı, yanlışta ve süre dolunca hata titreşimi; şıklarda
+// nabız / sallanma. Akoru basarken telefonda ilk turlarda "yan çevir" ipucu (yan çevrilince bir daha çıkmaz).
 import SolvatoCore
 import SwiftUI
 
@@ -11,13 +12,22 @@ struct ChordQuizScreen: View {
     @State private var showExit = false
     @State private var toast: String?
     @State private var shownAt = Date()
+    @State private var playingChord = false
+    /// "Yan çevir" ipucu (web: dokunmatik ekran + sayaç < 3; akor turunda sayaç artmaz, süre yok)
+    @State private var rotateHint: Bool
+    @Environment(\.horizontalSizeClass) private var hClass
+    @Environment(\.verticalSizeClass) private var vClass
     private let timerOn: Bool
 
     init(model: AppModel) {
         self.model = model
         timerOn = model.settings.timer
         _round = State(initialValue: ChordRound(level: model.settings.effectiveChordLevel))
+        _rotateHint = State(initialValue: model.persistence.rotateHintCount() < 3)
     }
+
+    private var land: Bool { vClass == .compact }
+    private var tablet: Bool { hClass == .regular && vClass == .regular }
 
     private var elapsed: Int { Int(Date().timeIntervalSince(shownAt) * 1000) }
 
@@ -52,11 +62,28 @@ struct ChordQuizScreen: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 88)
                 .frame(maxHeight: .infinity, alignment: .bottom)
-                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .slideUpOnAppear()
             }
             if showExit { ExitConfirm(onStay: { showExit = false }, onExit: { model.back() }) }
         }
         .onChange(of: model.exitRequest) { _, _ in showExit = true }
+        .onChange(of: land, initial: true) { _, l in
+            guard l else { return }
+            model.persistence.bumpRotateHint(done: true)
+            rotateHint = false
+        }
+    }
+
+    /// Akoru arpej çalar: notalar 0,22 sn arayla (web listenChord(true)); çalarken düğme koyulaşır
+    private func listenChord() {
+        guard !playingChord else { return }
+        playingChord = true
+        let notes = round.question.chord.notes
+        Sound.play(Sounds.notes(notes.map { Pitch(name: Chords.pcKey[$0.pc], octave: $0.octave) }, gap: 0.22))
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(notes.count * 220 + 300))
+            playingChord = false
+        }
     }
 
     // MARK: Üst çubuk
@@ -122,7 +149,11 @@ struct ChordQuizScreen: View {
                 Spacer()
                 Text(round.levelLabel).font(.ui(FontSize.xs, .semibold)).foregroundStyle(ThemeColor.textMuted.color)
                 if timerOn {
-                    CountdownRing(seconds: ChordRound.timerSeconds, running: round.pending) { round.timeout(timeMs: elapsed) }
+                    CountdownRing(seconds: ChordRound.timerSeconds, running: round.pending) {
+                        guard round.pending else { return }
+                        round.timeout(timeMs: elapsed)
+                        Haptics.error()
+                    }
                         .id(round.index)
                 }
             }
@@ -132,7 +163,7 @@ struct ChordQuizScreen: View {
                     .font(.ui(FontSize.md, .bold))
                     .foregroundStyle(ThemeColor.textSecondary.color)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Button {} label: {
+                Button(action: listenChord) {
                     HStack(spacing: 6) {
                         Icon(.speaker, size: 16)
                         Text("Dinle").font(.ui(FontSize.sm, .bold))
@@ -140,8 +171,10 @@ struct ChordQuizScreen: View {
                     .foregroundStyle(ThemeColor.violetText.color)
                     .padding(.vertical, 7)
                     .padding(.horizontal, 12)
-                    .background(RoundedRectangle(cornerRadius: Radius.md).fill(PaletteColor.violet500.opacity(0.12)))
-                    .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(PaletteColor.violet500.opacity(0.25), lineWidth: 1))
+                    .background(RoundedRectangle(cornerRadius: Radius.md).fill(PaletteColor.violet500.opacity(playingChord ? 0.25 : 0.12)))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Radius.md).strokeBorder(PaletteColor.violet500.opacity(playingChord ? 0.55 : 0.25), lineWidth: 1))
+                    .animation(.easeInOut(duration: 0.15), value: playingChord)
                 }
                 .buttonStyle(.plain)
             }
@@ -194,7 +227,7 @@ struct ChordQuizScreen: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(RoundedRectangle(cornerRadius: Radius.md).fill(PaletteColor.amber500.opacity(0.06)))
                             .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(PaletteColor.amber500.opacity(0.2), lineWidth: 1))
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                            .slideUpOnAppear()
                     }
                 }
                 .padding(.top, 10)
@@ -234,6 +267,8 @@ struct ChordQuizScreen: View {
                     .background(RoundedRectangle(cornerRadius: Radius.lg).fill(bg))
                     .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(border, lineWidth: 1))
                     .shadow(color: glow, radius: 6)
+                    .correctPulse(st == .correct, cornerRadius: Radius.lg)
+                    .shake(st == .wrong)
                 }
                 .buttonStyle(.plain)
                 .allowsHitTesting(round.pending)
@@ -245,6 +280,9 @@ struct ChordQuizScreen: View {
     // MARK: Akoru bas
     private var pianoArea: some View {
         VStack(spacing: 10) {
+            if !land && !tablet && rotateHint {
+                RotateHintView { rotateHint = false }.padding(.bottom, -10)
+            }
             HStack(spacing: 8) {
                 Text("SEÇİLEN")
                     .font(.ui(FontSize.xs, .bold))
@@ -300,7 +338,7 @@ struct ChordQuizScreen: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(RoundedRectangle(cornerRadius: Radius.md).fill(PaletteColor.red500.opacity(0.08)))
                 .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(PaletteColor.red500.opacity(0.22), lineWidth: 1))
-                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .slideUpOnAppear()
             }
             Button { mainAction() } label: {
                 Text(round.buttonTitle)
@@ -333,12 +371,15 @@ struct ChordQuizScreen: View {
         if round.pending {
             let correct = round.check(timeMs: elapsed)
             if correct {
+                Haptics.success()
                 withAnimation(.easeOut(duration: 0.2)) { toast = round.successToast }
                 let at = round.index
                 Task { @MainActor in
                     try? await Task.sleep(for: .milliseconds(1500))
                     if round.index == at && !round.pending { advance() }
                 }
+            } else if round.state == .wrong {
+                Haptics.error()
             }
         } else {
             advance()

@@ -264,8 +264,12 @@ private struct TryStep: View {
         picked = n
         if n == note {
             state = .correct
+            Sound.play(Sounds.correctChime)
+            Haptics.success()
         } else {
             state = .wrong
+            Sound.play(Sounds.wrongBuzz)
+            Haptics.error()
             Task { @MainActor in
                 try? await Task.sleep(for: .milliseconds(900))
                 if state == .wrong {

@@ -62,6 +62,7 @@ struct CoachmarkView: View {
                         .animation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.22), value: hole)
                 }
                 bubble(step)
+                    .popInOnAppear()
                     .frame(maxWidth: 420)
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, Space.s4)
@@ -69,7 +70,6 @@ struct CoachmarkView: View {
                     .padding(.top, rect != nil && below ? (hole!.maxY + 12) : 0)
                     .padding(.bottom, rect != nil && !below ? (H - hole!.minY + 12) : 0)
                     .id(index)
-                    .transition(.scale(scale: 0.94).combined(with: .opacity))
             }
         }
         .ignoresSafeArea(.keyboard)

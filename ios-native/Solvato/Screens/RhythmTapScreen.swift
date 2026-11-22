@@ -1,8 +1,8 @@
 // Ritmi Tut: tek ölçülük ritim; metronomla dört vuruş sayılır, öğrenci ritmi dokunarak çalar. Üstte 6 bölüm ve tempo,
 // partisyon ve zaman şeridi, vuruş ışıkları, büyük dokunma alanı, Dinle / Başla; sonuçta "5/6 vuruş yerinde · %72".
 // Web src/screens/RhythmTapSession.tsx ve components/RhythmTimeline.tsx. Akış SolvatoCore RhythmTapRound'da (testli).
-// Zaman CACurrentMediaTime ile; metronom sesi ve gecikme düzeltmesi ses aşamasında (0.6) eklenecek.
-import QuartzCore
+// Zaman ses saatiyle (Sound.now): metronom tıkları ve dinlerken ritmin notaları önceden zamanlanır, dokunuş aynı saatle
+// ölçülür ve çıkış gecikmesi düşülür (web audioNow − audioLatency). Çıkış onayı açılınca deneme ve sesleri durur.
 import SolvatoCore
 import SwiftUI
 
@@ -49,7 +49,10 @@ struct RhythmTapScreen: View {
         }
         .background(ThemeColor.bg.color)
         .onChange(of: model.exitRequest) { _, _ in askExit() }
-        .onDisappear { loop?.cancel() }
+        .onDisappear {
+            loop?.cancel()
+            Sound.stopAll()
+        }
     }
 
     // MARK: Üst bar
@@ -165,29 +168,41 @@ struct RhythmTapScreen: View {
             // Parmak değdiği an sayılır (web onPointerDown)
             .gesture(
                 DragGesture(minimumDistance: 0).onChanged { v in
-                    if v.translation == .zero, enabled { round.tap(now: CACurrentMediaTime()) }
+                    if v.translation == .zero, enabled { tap() }
                 })
             .accessibilityElement()
             .accessibilityLabel("Dokun")
             .accessibilityAddTraits(.isButton)
-            .accessibilityAction { round.tap(now: CACurrentMediaTime()) }
+            .accessibilityAction { tap() }
     }
 
     // MARK: Akış
     private func start(_ mode: RhythmTapRound.Mode) {
         loop?.cancel()
-        _ = round.start(mode, now: CACurrentMediaTime())
-        // Metronom tıkları ve (dinlerken) ritmin notaları 0.6'da çalınacak
+        Sound.stopAll()
+        let plan = round.start(mode, now: Sound.now)
+        for c in plan.clicks { Sound.play(Sounds.click(strong: c.accent), at: c.at) }
+        for b in plan.beats { Sound.play(Sounds.beat, at: b) }
+        // Görsel sayma ve oynatma çizgisi duyulan anı izler
+        let lat = Sound.latency
         loop = Task { @MainActor in
             while !Task.isCancelled {
-                if round.tick(now: CACurrentMediaTime()) { break }
+                if round.tick(now: Sound.now - lat) { break }
                 try? await Task.sleep(for: .milliseconds(16))
             }
         }
     }
 
+    /// Dokunuş: hafif titreşim; duyulan sese göre ölçülür (dokunuş anından ses gecikmesi düşülür)
+    private func tap() {
+        guard round.phase == .play || round.phase == .countin else { return }
+        Haptics.tap()
+        round.tap(now: Sound.now - Sound.latency)
+    }
+
     private func askExit() {
         loop?.cancel()
+        if round.busy { Sound.stopAll() }
         round.interrupt()
         showExit = true
     }

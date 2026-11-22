@@ -75,9 +75,11 @@ ios-native/
   SolvatoCore/         arayüzden bağımsız Swift paketi (Linux'ta da derlenir): tasarım değerleri, tema tercihi;
                        Logic/ (soru bankası, seviye, ünvan, yıldız, seri, tur sonu, öğretmen ve meydan okuma kodu,
                        oyunlar, soru seçimi, kulak soruları, akorlar ve akor turu, Ritmi Tut puanlama, haftalık rapor, kalıcı depolama), Resources/soru-bankasi.json. Testler: `swift test`
+                       Audio/Synth.swift (bütün sesler kodla: Sounds, web utils/audio.ts ile aynı dalga ve zarf; SynthMixer: örnek
+                       doğruluğunda zamanlama ve ses saati),
                        Notation/ (nota çizimi yerleşimi: Notation dili, portesi, akor ve hedef portesi → çizim listesi;
                        Piano: klavye tuşları, durumları, renkleri; Diagrams: Çalışma'daki şema klavye), App/ (ScreenStack: gezinme kuralları;
-                       AppModel: uygulama durumu ve tur akışı, web App.tsx; HomeContent, QuizRound, ResultContent, TeacherFlow, StudyContent (dersler, terimler, arama), ChordStudyContent (akor kartları), NoteStudyContent (nota ve ezber dersleri), GameScreensContent (oyunlar), DuelGame (akor düellosu), RhythmTapRound (Ritmi Tut akışı): ekran içerikleri;
+                       AppModel: uygulama durumu ve tur akışı, web App.tsx; ScrollMemory: geri dönünce kaydırma konumu; HomeContent, QuizRound, ResultContent, TeacherFlow, StudyContent (dersler, terimler, arama), ChordStudyContent (akor kartları), NoteStudyContent (nota ve ezber dersleri), GameScreensContent (oyunlar), DuelGame (akor düellosu), RhythmTapRound (Ritmi Tut akışı): ekran içerikleri;
                        Legal: Gizlilik/Lisanslar metinleri, Resources/hukuk.json `node scripts/altin.mjs` ile legal.ts'den;
                        TestScenario: UI test senaryosu, bellekte depo),
                        Resources/smufl.json (Bravura sembol yolları, web'le aynı)
@@ -86,7 +88,9 @@ ios-native/
                        StatTile, StatPill, ScoreRing; Shell.swift: Avatar, BackButton, ScreenHeader, Toast, PlayChip,
                        TopicLink, ExitConfirm, NavBar, TabletColumn; FlowLayout; CodeField (kod girişi); SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
                        Canvas'a çizer; NotationView, MusicalStaffView, ChordStaffView, GoalStaffView, ClefIconView; PianoViews: QuizPianoView,
-                       MultiPianoView), Screens/,
+                       MultiPianoView), Screens/, Audio.swift (AVAudioEngine çıkışı `Sound`, ses saati, titreşim `Haptics`),
+                       UI/Motion.swift (sallanma, nabız, kayarak/büyüyerek belirme, seri alevi, nota zıplaması, "yan çevir" ipucu),
+                       UI/ScrollMemoryProbe.swift (`.remembersScroll`: kaydırma alanının konumunu bildirir ve geri yükler),
                        Resources/Fonts (Outfit, JetBrains Mono TTF), PrivacyInfo.xcprivacy
   SolvatoUITests/      her ekranı koyu/açık açıp ekran görüntüsü alan testler
 ```
@@ -101,6 +105,9 @@ ios-native/
   Rastgelelik dışarıdan verilir (`RandomSource`; oyunlarda web'le aynı tohumlu üreteç). İstatistik JSON'u kendi küçük
   okuyucusuyla (`JSON.swift`) okunur, çünkü sözlüklerin ekleme sırası ekranda görünür (eşit yüzdeli zorlandığın notalar).
   Swift bulut oturumunda: `download.swift.org`'dan `/opt/swift`'e kurulur.
+- **Sesler web ile birebir:** `node scripts/altin-ses.mjs` web'in seslerini Chromium'da OfflineAudioContext ile 48 kHz'de
+  üretip 5 ms'lik RMS düzeylerini `Fixtures/ses.json`'a yazar; `SynthTests` SynthMixer'ın ürettiği sesle pencere pencere
+  karşılaştırır (perde, süre, sıra, zarf). `utils/audio.ts` değişirse betiği çalıştırın.
 - **Derleme (Codemagic, iki iş akışı):**
   - `ios-native-test`, imzasız: `swift test`, `xcodegen generate`, iPhone / küçük iPhone / iPad simülatörlerinde UI
     testleri ve ekran görüntüleri (`native-ekranlar.zip`, adlar web referanslarıyla aynı:

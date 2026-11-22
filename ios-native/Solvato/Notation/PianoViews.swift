@@ -1,6 +1,6 @@
 // Piyano klavyeleri ekranda: soru turu klavyesi (QuizPianoView) ve akor klavyesi (MultiPianoView).
 // Tuş listesi, konumlar, renkler ve yazılar SolvatoCore/Piano'dan gelir (web'le aynı olduğu testli); burada yalnızca
-// çizilir ve dokunma iletilir. Ses ve titreşim 0.6'da (onTap çağıran ekranda).
+// çizilir ve dokunma iletilir. Tuşa basınca notası çalar (soru klavyesinde hafif titreşim de).
 import SolvatoCore
 import SwiftUI
 
@@ -77,7 +77,7 @@ struct QuizPianoView: View {
             ZStack(alignment: .topLeading) {
                 HStack(spacing: 0) {
                     ForEach(Array(whites.enumerated()), id: \.offset) { _, k in
-                        Button { onTap(k) } label: {
+                        Button { press(k) } label: {
                             KeyFace(look: k.look, radius: 8)
                                 .overlay(alignment: .bottom) {
                                     VStack(spacing: 0) { KeyLabels(labels: k.labels) }.padding(.bottom, k.labels.first?.weight == 800 ? 6 : 8)
@@ -89,7 +89,7 @@ struct QuizPianoView: View {
                     }
                 }
                 ForEach(Array(blacks.enumerated()), id: \.offset) { _, k in
-                    Button { onTap(k) } label: {
+                    Button { press(k) } label: {
                         KeyFace(look: k.look, radius: 6)
                             .overlay(alignment: .bottom) { KeyLabels(labels: k.labels).padding(.bottom, 6) }
                     }
@@ -103,6 +103,14 @@ struct QuizPianoView: View {
         }
         .frame(height: height)
     }
+
+    /// Tuşun sesi, hafif titreşim, cevap (web QuizPiano onClick)
+    private func press(_ k: PianoKey) {
+        guard !disabled else { return }
+        Sound.note(k.note, octave: k.octave)
+        Haptics.tap()
+        onTap(k)
+    }
 }
 
 /// Akor klavyesi (web MultiPiano): Do3–Si4, çoklu seçim ya da yalnız gösterim, altında oktav adları
@@ -110,6 +118,13 @@ struct MultiPianoView: View {
     let keys: [PianoKey]
     var disabled = false
     let onTap: (PianoKey) -> Void
+
+    /// Tuşun sesi ve seçim (web MultiPiano onClick)
+    private func press(_ k: PianoKey) {
+        guard !disabled else { return }
+        Sound.note(k.note, octave: k.octave)
+        onTap(k)
+    }
 
     var body: some View {
         let whites = keys.filter { !$0.isBlack }
@@ -119,7 +134,7 @@ struct MultiPianoView: View {
                 ZStack(alignment: .topLeading) {
                     HStack(spacing: 0) {
                         ForEach(Array(whites.enumerated()), id: \.offset) { _, k in
-                            Button { onTap(k) } label: {
+                            Button { press(k) } label: {
                                 KeyFace(look: k.look, radius: 8)
                                     .overlay(alignment: .bottom) {
                                         ZStack(alignment: .bottom) {
@@ -140,7 +155,7 @@ struct MultiPianoView: View {
                         }
                     }
                     ForEach(Array(blacks.enumerated()), id: \.offset) { _, k in
-                        Button { onTap(k) } label: { KeyFace(look: k.look, radius: 5) }
+                        Button { press(k) } label: { KeyFace(look: k.look, radius: 5) }
                             .buttonStyle(.plain)
                             .allowsHitTesting(!disabled)
                             .accessibilityLabel("\(k.note)\(k.octave)")

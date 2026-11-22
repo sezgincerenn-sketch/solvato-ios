@@ -149,7 +149,17 @@ tabloyla aynı); 101 test. Çalma düğmeleri 0.6'da.
 Oyunlar (E-17): liste, günün meydan okuması, meydan oku, oyun sonucu (web'le 60 durumda aynı yazılar); 104 test.
 Akor düellosu (E-17): kurulum, ikiye bölünmüş oyun, sonuç, çıkış onayı (sorular web'le 200 tohumda aynı); 106 test.
 Ritmi Tut (E-07): akış çekirdekte (`RhythmTapRound`), ekran ve zaman şeridi; 109 test. Metronom sesi 0.6'da.
-0.5'te kalan: kaydırma konumunu hatırlama, "yan çevir" ipucu, sallanma/nabız animasyonları; ekran karşılaştırmaları.
+0.5'in kalanı (22 Kasım): kaydırma konumu geri dönünce korunuyor (`ScrollMemory`, testli; Pratik, İlerleme, Çalışma,
+ders, Profil, Ayarlar, Oyunlar, Öğretmen kodu, Gizlilik/Lisanslar), "yan çevir" ipucu (soru ve akor turu), ortak animasyonlar
+`UI/Motion.swift` (sallanma, doğru nabzı, kayarak/büyüyerek belirme, seri alevi, nota zıplaması/titremesi; CSS süre ve
+eğrileriyle). **0.5 tamam**; ekran karşılaştırmaları Codemagic görüntüleriyle sürüyor.
+0.6 (22 Kasım): sesler çekirdekte (`Audio/Synth.swift`: piyano notası, ting, dum, tur sonu, hedef/seviye/seri arpejleri,
+metronom tıkı, ritim notası); web'in Chromium'da ürettiği seslerle 5 ms'lik pencerelerde aynı (`scripts/altin-ses.mjs`,
+`SynthTests`). Uygulamada AVAudioEngine (`playback` + `mixWithOthers`), titreşim (`Haptics`), ses saati Ritmi Tut'ta
+(tıklar önceden zamanlanır, dokunuş cihaz saatiyle sürekli ölçülür, çıkış gecikmesi düşülür). Bağlananlar: soru turu, kulak
+soruları (kendiliğinden çalma, "Sesi aç"), akor turu "Dinle", düello, tanıtım denemeleri, tur sonu ve kutlama, piyano
+tuşları, nota ve akor dersleri, Ritmi Tut metronomu. 119 test. Kalan: cihazda kulakla karşılaştırma (G-07 kabul) ve Ritmi
+Tut gecikmesinin telefonda ölçülmesi.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.
