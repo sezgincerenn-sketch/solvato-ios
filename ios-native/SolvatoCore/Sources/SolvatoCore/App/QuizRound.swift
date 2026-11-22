@@ -1,7 +1,7 @@
 // Soru turu akışı (web src/screens/QuizSession.tsx): sıradaki soru, cevap kontrolü (eş sesli siyah tuş, çok oktavlı
 // klavyede oktav), doğru cevapta 0,7 sn sonra geçiş, yanlışta açıklama ve "Sıradaki", ipucu, süre, üç doğruda alev.
-// Ekranda gösterilecek her yazı ve durum buradan; SwiftUI ekranı (Screens/QuizScreen) yalnızca çizer, ses ve titreşim
-// 0.6'da eklenir.
+// Ekranda gösterilecek her yazı ve durum buradan; SwiftUI ekranı (Screens/QuizScreen) çizer, ses ve titreşimi
+// çalar.
 import Foundation
 
 public enum AnswerState: String, Sendable { case pending, correct, wrong }

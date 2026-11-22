@@ -79,4 +79,20 @@ final class NoteStudyTests: XCTestCase {
         XCTAssertEqual(a.counter, "3/10")
         XCTAssertFalse(a.available("Fa", 4, sharp: false))
     }
+
+    /// Derslerde çalınan notalar (web NotesStudy go / MemoCard octs)
+    func testLessonPitches() {
+        var st = StaffStudyState(clef: .treble, accidentalsMode: false)
+        XCTAssertEqual(st.playPitch, Pitch(name: st.note.name, octave: 4))
+        var acc = StaffStudyState(clef: .bass, accidentalsMode: true)
+        acc.setAcc(.flat)
+        // Bemollü ilk nota Re♭ → Do# tuşu
+        XCTAssertEqual(acc.playPitch.name, Accidentals.key(acc.note.name, .flat))
+        st.go(-1)
+        XCTAssertEqual(st.playPitch.octave, 5)
+        let cards = Mnemonics.cards(.treble)
+        XCTAssertEqual(cards[0].pitches(.treble).map(\.octave), [4, 4, 4, 5, 5])
+        XCTAssertEqual(cards[0].pitches(.treble).map(\.name), ["Mi", "Sol", "Si", "Re", "Fa"])
+        XCTAssertEqual(Mnemonics.cards(.bass)[1].pitches(.bass).map(\.octave), [2, 3, 3, 3])
+    }
 }

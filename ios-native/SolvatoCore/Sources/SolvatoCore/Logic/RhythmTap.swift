@@ -1,6 +1,6 @@
 // Ritmi Tut: 4/4'lük tek ölçülük ritimler, ritim metninin ayrıştırılması ve dokunuşların puanlanması.
-// Web karşılığı src/data/rhythmTap.ts (+ RhythmTapSession.tsx'teki erken/geç uyarısı). Ses zamanlaması 0.6'da;
-// buradaki puan kuralı değişmez: tam 1, yakın 0,6, ıska 0, fazla dokunuş −0,2; %70 ve üstü geçti.
+// Web karşılığı src/data/rhythmTap.ts (+ RhythmTapSession.tsx'teki erken/geç uyarısı). Ses zamanlaması uygulamada
+// (Solvato/Audio.swift ses saati); buradaki puan kuralı değişmez: tam 1, yakın 0,6, ıska 0, fazla dokunuş −0,2; %70 ve üstü geçti.
 
 public enum TapGrade: String, Sendable {
     case perfect, good, miss

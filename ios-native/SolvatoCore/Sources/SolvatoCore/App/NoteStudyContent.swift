@@ -115,6 +115,9 @@ public struct StaffStudyState: Equatable, Sendable {
     /// "1/13"
     public var counter: String { "\(pos + 1)/\(list.count)" }
 
+    /// ‹ › ile geçilen notanın sesi (web go: işaretliyse siyah tuş, "Re♭" → "Do#")
+    public var playPitch: Pitch { Pitch(name: acc.flatMap { Accidentals.key(note.name, $0) } ?? note.name, octave: octave) }
+
     /// ‹ › ile bir önceki / sonraki nota (başa sarar)
     public mutating func go(_ delta: Int) {
         let l = list
@@ -215,6 +218,12 @@ public struct MnemonicCard: Equatable, Sendable {
     public func color(_ i: Int) -> PaletteColor { NoteColors.byName[noteNames[i]] ?? backDotColor }
 
     public var cardTitle: String { lines ? "Çizgilerdeki notalar" : "Aralıklardaki notalar" }
+
+    /// "Dinle": kartın notaları porte üzerindeki oktavlarıyla (web MemoCard octs), 260 ms arayla çalınır
+    public func pitches(_ clef: Clef) -> [Pitch] {
+        let octs = clef == .treble ? (lines ? [4, 4, 4, 5, 5] : [4, 4, 5, 5]) : lines ? [2, 2, 3, 3, 3] : [2, 3, 3, 3]
+        return zip(noteNames, octs).map { Pitch(name: $0, octave: $1) }
+    }
 }
 
 public enum Mnemonics {
