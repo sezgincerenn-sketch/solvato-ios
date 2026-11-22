@@ -1,0 +1,23 @@
+# Native çekirdek testleri (ios-native/SolvatoCore: soru bankası, puan, seviye, seri, kodlar, nota çizimi, sesler) her
+# gönderimde GitHub'ın ücretsiz Linux sunucusunda koşar; Codemagic dakikası harcamaz. Arayüz (SwiftUI) burada derlenmez,
+# o Codemagic'te. Sonuç GitHub'da commit'in yanında yeşil tik / kırmızı çarpı olarak görünür.
+name: Çekirdek testleri
+on:
+  push:
+    paths: ["ios-native/SolvatoCore/**", ".github/workflows/cekirdek-testleri.yml"]
+  pull_request:
+    paths: ["ios-native/SolvatoCore/**"]
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift kur
+        run: |
+          curl -sSfL -o /tmp/swift.tgz https://download.swift.org/swift-6.1.2-release/ubuntu2404/swift-6.1.2-RELEASE/swift-6.1.2-RELEASE-ubuntu24.04.tar.gz
+          sudo mkdir -p /opt/swift && sudo tar xzf /tmp/swift.tgz -C /opt/swift --strip-components=1
+          echo "/opt/swift/usr/bin" >> "$GITHUB_PATH"
+      - name: swift test
+        working-directory: ios-native/SolvatoCore
+        run: swift test
