@@ -678,6 +678,42 @@ function akorTuru() {
   return { rounds, distractors: dist }
 }
 
+// ─── Akor düellosu: buildDuel kaynaktan okunur (dışa aktarılmıyor), tohumlu Math.random ile
+function duello() {
+  const src = readFileSync(join(process.cwd(), "src/screens/ChordDuel.tsx"), "utf8")
+  const start = src.indexOf("function buildDuel(")
+  const end = src.indexOf("\n}\n", start) + 2
+  const code = src
+    .slice(start, end)
+    .replace("(level: ChordLevel): DuelQ[]", "(level)")
+    .replace(/\(chord, i\) => \(\{/, "(chord, i) => ({")
+  const ROUNDS = 10
+  const build = new Function(
+    "chordsUpTo",
+    "shuffle",
+    "fitsKeyboard",
+    "distractors",
+    "ROUNDS",
+    `${code}; return buildDuel`,
+  )(chordsUpTo, chordShuffle, fitsKeyboard, distractors, ROUNDS) as (
+    l: ChordLevel,
+  ) => { chord: { id: string }; type: string; options: { id: string }[] }[]
+  const realRandom = Math.random
+  const rounds = []
+  for (let i = 0; i < 200; i++) {
+    const level = (1 + (i % 4)) as ChordLevel
+    const seed = int(2 ** 31)
+    Math.random = mulberry(seed)
+    rounds.push({
+      level,
+      seed,
+      questions: build(level).map((q) => ({ id: q.chord.id, type: q.type, options: q.options.map((o) => o.id) })),
+    })
+  }
+  Math.random = realRandom
+  return rounds
+}
+
 // ─── K-18 Ritmi Tut ──────────────────────────────────────────────────────────
 // RhythmTapSession.tsx'teki erken/geç uyarısının birebir kopyası (ekran dosyasında)
 function biasText(result: TapResult) {
@@ -1087,4 +1123,5 @@ else {
   write("seri-" + TZ!.replace("/", "-") + ".json", seri())
   // Rastgele sayı dizisini ve depoyu değiştirir: en sonda kalsın (önceki tablolar aynı kalır)
   write("oyun-ekranlari.json", oyunEkranlari())
+  write("duello.json", duello())
 }

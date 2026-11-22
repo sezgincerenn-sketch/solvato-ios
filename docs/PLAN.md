@@ -147,7 +147,8 @@ cevap yöntemi, ses, titreşim, tema, hatırlatma, sıfırlama); tema artık uyg
 Dersler (E-16): 19 dersin hepsi (nota, ezber, diyez-bemol, ritim, akor, terim; veriler ve çizimler web'le altın
 tabloyla aynı); 101 test. Çalma düğmeleri 0.6'da.
 Oyunlar (E-17): liste, günün meydan okuması, meydan oku, oyun sonucu (web'le 60 durumda aynı yazılar); 104 test.
-Sırada: Akor düellosu (E-17), Ritmi Tut.
+Akor düellosu (E-17): kurulum, ikiye bölünmüş oyun, sonuç, çıkış onayı (sorular web'le 200 tohumda aynı); 106 test.
+Sırada: Ritmi Tut.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.

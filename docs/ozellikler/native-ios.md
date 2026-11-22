@@ -541,8 +541,9 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 ### E-17 Oyunlar
 
-- [ ] Native'de kısmen (22 Kasım): liste, günün meydan okuması, arkadaşına meydan oku ve oyun sonucu yapıldı (yazılar
-  çekirdekte `GameScreens`, `GameResultContent`; altın tablo `oyun-ekranlari.json`, 60 durum). Akor düellosu sırada.
+- [x] Native'de yapıldı (22 Kasım): liste, günün meydan okuması, arkadaşına meydan oku, oyun sonucu (yazılar çekirdekte
+  `GameScreens`, `GameResultContent`; altın tablo `oyun-ekranlari.json`, 60 durum) ve akor düellosu (`DuelGame`; sorular
+  `duello.json`, 200 tohum). Ses ve titreşim 0.6'da.
 
 - Kaynak: `screens/GamesScreen.tsx`, `GameResultScreen.tsx`, `ChordDuel.tsx`.
 - **Liste**: Günün meydan okuması (durum: "Bugün henüz oynanmadı" / "Bugün oynandı · 7/10"), Arkadaşına meydan oku,

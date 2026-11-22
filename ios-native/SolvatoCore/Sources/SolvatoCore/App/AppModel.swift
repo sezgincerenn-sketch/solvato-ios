@@ -93,6 +93,9 @@ public final class AppModel {
     /// Yeni meydan okumanın tohumu (web newSeed: Math.random ile; testte tohumlu kaynak)
     public func newGameSeed() -> Int { Int(random() * 65536) }
 
+    /// Akor düellosunun soruları (web buildDuel: Math.random ile; testte tohumlu kaynak)
+    public func newDuel(level: Int) -> DuelGame { DuelGame(questions: DuelGame.build(level: level, random: random)) }
+
     /// Yeni meydan okuma: seçilen konu, öğrencinin seviyesi
     public func startNewChallenge(_ category: GameCategory) {
         startGame(.challenge(category: category, level: settings.level, seed: newGameSeed(), opponent: nil))

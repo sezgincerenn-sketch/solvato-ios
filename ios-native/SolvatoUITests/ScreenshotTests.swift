@@ -291,6 +291,7 @@ final class ScreenshotTests: XCTestCase {
             ("gunun-oyunu", ["Günün meydan okuması"]), ("gunun-oyunu-oynandi", ["Günün meydan okuması"]),
             ("meydan-oku", ["Arkadaşına meydan oku"]), ("meydan-oku-hata", ["Arkadaşına meydan oku"]),
             ("oyun-sonucu-gunluk", ["Günün meydan okuması", "Oyna"]), ("oyun-sonucu-kod", ["Arkadaşına meydan oku", "Başla"]),
+            ("duello-kurulum", ["Akor düellosu"]), ("duello-oyun", ["Akor düellosu", "Başlayalım"]),
         ]
         for (name, taps) in steps {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
