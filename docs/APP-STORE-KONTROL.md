@@ -137,6 +137,9 @@ Kural: uygulama "yeniden paketlenmiş bir web sitesinin" ötesine geçen özelli
   takılır.
 - Seçenekler: GitHub Pages (bu repoda `docs/` klasöründen tek sayfa, ücretsiz), Notion "web'de yayınla", Google Sites.
   İstersen GitHub Pages sayfasını ben hazırlarım; yalnızca ad ve e-posta lazım.
+- **22 Kasım:** sayfalar hazır: `node scripts/site.mjs` → `site/dist/` (ana sayfa, `/gizlilik/`, `/destek/`). Gizlilik
+  metni uygulamadaki `legal.ts` `PRIVACY`'den üretilir (tek kaynak). Kalan: `site/ayarlar.json`'a geliştirici adı ve
+  iletişim e-postası, alan adı (Cloudflare) ve Cloudflare Pages'te yayın.
 
 ## 3. Info.plist (`ios/App/App/Info.plist`)
 
