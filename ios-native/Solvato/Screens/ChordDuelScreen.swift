@@ -49,6 +49,7 @@ struct ChordDuelScreen: View {
             ForEach(0..<2, id: \.self) { i in
                 TextField("", text: Binding(get: { names[i] }, set: { names[i] = String($0.prefix(DuelGame.nameLimit)) }))
                     .font(.ui(FontSize.md))
+                    .lineHeight(1.5, size: FontSize.md)
                     .foregroundStyle(ThemeColor.text.color)
                     .autocorrectionDisabled()
                     .accessibilityLabel("\(i + 1). oyuncunun adı")
@@ -63,6 +64,7 @@ struct ChordDuelScreen: View {
             Button(action: start) {
                 Text("Başlayalım")
                     .font(.ui(FontSize.md, .bold))
+                    .lineHeight(1.5, size: FontSize.md)
                     .foregroundStyle(Brand.onPrimary.color)
                     .frame(maxWidth: .infinity)
                     .padding(16)
@@ -127,13 +129,13 @@ struct ChordDuelScreen: View {
             Text(g.scoreText).font(.mono(FontSize.xl, .heavy)).foregroundStyle(ThemeColor.text.color)
             HStack(spacing: 10) {
                 Button { model.back() } label: {
-                    Text("Çık").font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.textSecondary.color)
+                    Text("Çık").font(.ui(FontSize.md, .bold)).lineHeight(1.5, size: FontSize.md).foregroundStyle(ThemeColor.textSecondary.color)
                         .frame(maxWidth: .infinity).padding(14)
                         .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fillStrong.color))
                         .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(ThemeColor.border.color, lineWidth: 1))
                 }
                 Button(action: start) {
-                    Text("Rövanş").font(.ui(FontSize.md, .bold)).foregroundStyle(Brand.onPrimary.color)
+                    Text("Rövanş").font(.ui(FontSize.md, .bold)).lineHeight(1.5, size: FontSize.md).foregroundStyle(Brand.onPrimary.color)
                         .frame(maxWidth: .infinity).padding(14)
                         .background(CSSLinearGradient(.primaryFlat).clipShape(RoundedRectangle(cornerRadius: Radius.md)))
                 }

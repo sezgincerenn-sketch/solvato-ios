@@ -65,7 +65,8 @@ struct AppButton<Icon: View>: View {
     private var label: some View {
         HStack(spacing: Space.s2) {
             icon
-            Text(title)
+            // Web: düğme satır yüksekliği 1,5 (md düğme 48 pt)
+            Text(title).lineHeight(1.5, size: FontSize.md)
         }
         .font(.ui(FontSize.md, .bold))
         .foregroundStyle(foreground)

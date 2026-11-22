@@ -20,6 +20,7 @@ struct CodeField: View {
                 TextField("", text: $code, prompt: Text(placeholder).foregroundStyle(ThemeColor.textMuted.color))
                     .font(.mono(FontSize.md))
                     .tracking(2)
+                    .lineHeight(1.5, size: FontSize.md, natural: 1.32)
                     .foregroundStyle(ThemeColor.text.color)
                     .textInputAutocapitalization(.characters)
                     .autocorrectionDisabled()
