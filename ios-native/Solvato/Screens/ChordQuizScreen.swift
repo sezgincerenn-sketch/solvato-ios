@@ -66,7 +66,7 @@ struct ChordQuizScreen: View {
             }
             if showExit { ExitConfirm(onStay: { showExit = false }, onExit: { model.back() }) }
         }
-        .onChange(of: model.exitRequest) { _, _ in showExit = true }
+        .onChange(of: model.exitRequest) { _, _ in showExit.toggle() }
         .onChange(of: land, initial: true) { _, l in
             guard l else { return }
             model.persistence.bumpRotateHint(done: true)

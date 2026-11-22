@@ -19,6 +19,8 @@ struct QuizScreen: View {
     @State private var startedAt = Date()
     /// "Yan çevir" ipucu: klavyeyle cevaplarken ilk 3 turda (web: dokunmatik ekran + piano modu + sayaç < 3)
     @State private var rotateHint: Bool
+    /// iPad yatay ve en az 900 pt genişlikte (web tabletLand: dokunmatik, ≥900 px, yatay)
+    @State private var wide = false
     @Environment(\.horizontalSizeClass) private var hClass
     @Environment(\.verticalSizeClass) private var vClass
 
@@ -35,8 +37,8 @@ struct QuizScreen: View {
         _rotateHint = State(initialValue: hint)
     }
 
-    /// Telefon yan çevrilmiş (iki sütun, 3 oktav)
-    private var land: Bool { vClass == .compact }
+    /// İki sütun ve 3 oktav: telefon yan çevrilmiş ya da iPad yatay (web useTwoColumn)
+    private var land: Bool { vClass == .compact || (tablet && wide) }
     private var tablet: Bool { hClass == .regular && vClass == .regular }
     private var octaves: Int { land ? 3 : tablet ? 2 : 1 }
 
@@ -59,17 +61,17 @@ struct QuizScreen: View {
                                 }
                             }
                             .frame(width: (geo.size.width - 32 - 14) * 0.4)
-                            VStack(spacing: 0) {
-                                promptCard(height: geo.size.height).frame(maxHeight: .infinity)
-                                answerArea
-                            }
+                            promptCard(height: screenHeight).frame(maxHeight: .infinity)
                         }
                         .padding(.horizontal, Space.s4)
+                        // Web: klavye/şıklar ızgaranın altında, tam genişlikte
+                        answerArea.padding(.top, 6)
                     } else {
                         ScrollView {
                             VStack(alignment: .leading, spacing: 0) {
                                 header.padding(.horizontal, Space.s4)
-                                promptCard(height: geo.size.height).padding(.horizontal, Space.s4).padding(.bottom, 12)
+                                // Web clamp(…, 44vh, …): vh tam ekran yüksekliği
+                                promptCard(height: screenHeight).padding(.horizontal, Space.s4).padding(.bottom, 12)
                                 if round.showExplanation { explanation }
                             }
                         }
@@ -81,6 +83,7 @@ struct QuizScreen: View {
                     ExitConfirm(onStay: { showExit = false }, onExit: { model.back() })
                 }
             }
+            .onChange(of: geo.size, initial: true) { _, sz in wide = sz.width >= 900 && sz.width > sz.height }
         }
         .onChange(of: octaves, initial: true) { _, o in round.octaves = o }
         // İpucu gösterildiyse sayaç bir artar; 6 sn sonra kapanır; telefon yan çevrilince bir daha çıkmaz
@@ -95,8 +98,8 @@ struct QuizScreen: View {
             model.persistence.bumpRotateHint(done: true)
             rotateHint = false
         }
-        // Kenardan kaydırma çıkış onayını açar
-        .onChange(of: model.exitRequest) { _, _ in showExit = true }
+        // Kenardan kaydırma çıkış onayını açar; onay açıkken kaydırma "Devam et" gibi kapatır (web data-back)
+        .onChange(of: model.exitRequest) { _, _ in showExit.toggle() }
     }
 
     private var elapsed: Int { Int(Date().timeIntervalSince(startedAt) * 1000) }

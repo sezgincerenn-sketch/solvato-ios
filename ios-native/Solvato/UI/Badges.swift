@@ -37,10 +37,12 @@ struct IconBadge: View {
     }
 }
 
-/// 0–3 yıldız (tur sonucu, ana sayfa konu kartları, son turlar). Giriş animasyonu aşama 0.5'te (G-06).
+/// 0–3 yıldız (tur sonucu, ana sayfa konu kartları, son turlar). Tur sonucunda `animate`: yıldızlar sırayla büyüyerek
+/// belirir (web Stars animate, G-06).
 struct Stars: View {
     let value: Int
     var size: Double = 14
+    var animate = false
 
     var body: some View {
         HStack(spacing: size * 0.15) {
@@ -55,6 +57,7 @@ struct Stars: View {
                         style: StrokeStyle(lineWidth: line, lineJoin: .round))
                 }
                 .frame(width: size, height: size)
+                .modifier(StarEntrance(animate: animate, delay: 0.15 + Double(i) * 0.18))
             }
         }
         .accessibilityElement(children: .ignore)
@@ -132,5 +135,14 @@ struct StatPill<Leading: View>: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
+    }
+}
+
+/// Yıldızın girişi: yalnız `animate` açıkken
+private struct StarEntrance: ViewModifier {
+    let animate: Bool
+    let delay: Double
+    func body(content: Content) -> some View {
+        if animate { content.starPopIn(delay: delay) } else { content }
     }
 }

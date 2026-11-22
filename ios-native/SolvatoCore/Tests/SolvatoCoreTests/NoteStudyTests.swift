@@ -95,4 +95,13 @@ final class NoteStudyTests: XCTestCase {
         XCTAssertEqual(cards[0].pitches(.treble).map(\.name), ["Mi", "Sol", "Si", "Re", "Fa"])
         XCTAssertEqual(Mnemonics.cards(.bass)[1].pitches(.bass).map(\.octave), [2, 3, 3, 3])
     }
+
+    func testMnemonicTap() {
+        let lines = Mnemonics.cards(.treble)[0]
+        XCTAssertEqual(Mnemonics.noteIndex(lines, x: 96), 0)
+        XCTAssertEqual(Mnemonics.noteIndex(lines, x: 96 + 44 * 4 + 10), 4)
+        XCTAssertNil(Mnemonics.noteIndex(lines, x: 96 + 22))
+        XCTAssertNil(Mnemonics.noteIndex(lines, x: 40))
+        XCTAssertNil(Mnemonics.noteIndex(Mnemonics.cards(.treble)[1], x: 96 + 52 * 4))
+    }
 }

@@ -28,8 +28,16 @@ struct ChordDuelScreen: View {
                 exitDialog(g)
             }
         }
+        // Kenardan kaydırma: oyunda onay açar, onay açıkken "Devam et" gibi kapatır; kurulumda geri döner; sonuçta bir şey
+        // yapmaz (web: sonuç ekranında data-back yok)
         .onChange(of: model.exitRequest) { _, _ in
-            if let g = game, !g.finished { confirmExit = true } else { model.back() }
+            if confirmExit {
+                confirmExit = false
+            } else if let g = game {
+                if !g.finished { confirmExit = true }
+            } else {
+                model.back()
+            }
         }
     }
 

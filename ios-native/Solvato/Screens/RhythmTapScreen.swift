@@ -48,7 +48,7 @@ struct RhythmTapScreen: View {
             if showExit { ExitConfirm(onStay: { showExit = false }, onExit: { model.back() }) }
         }
         .background(ThemeColor.bg.color)
-        .onChange(of: model.exitRequest) { _, _ in askExit() }
+        .onChange(of: model.exitRequest) { _, _ in if showExit { showExit = false } else { askExit() } }
         .onDisappear {
             loop?.cancel()
             Sound.stopAll()

@@ -41,7 +41,8 @@ struct SplashScreen: View {
             }
         }
         .opacity(out ? 0 : 1)
-        .animation(.easeInOut(duration: Self.fade), value: out)
+        // CSS `ease` = cubic-bezier(0.25, 0.1, 0.25, 1)
+        .animation(.timingCurve(0.25, 0.1, 0.25, 1, duration: Self.fade), value: out)
         .contentShape(Rectangle())
         .onTapGesture { finish() }
         .accessibilityHidden(true)
@@ -143,7 +144,8 @@ private enum SplashDrawing {
         // Anahtar deliği: yaylanarak
         let k = Motion.spring.progress(t, delay: 1.12, duration: 0.4)
         var lc = ctx
-        transform(&lc, cx: 613, cy: 676, scale: 0.55 + 0.45 * k, rotate: -8 * (1 - k))
+        // Web fill-box ortası: daire üstü 604, ayak altı 716 → 660
+        transform(&lc, cx: 613, cy: 660, scale: 0.55 + 0.45 * k, rotate: -8 * (1 - k))
         lc.opacity = clamp(k)
         lc.fill(LogoMark.keyhole, with: .color(PaletteColor.violet950.color))
         // Çalınan tuşun halkası: yayılıp söner

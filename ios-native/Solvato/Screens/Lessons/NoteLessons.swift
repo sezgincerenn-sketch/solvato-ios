@@ -213,6 +213,19 @@ private struct MnemonicCardView: View {
             }
             .padding(.bottom, 4)
             DrawingView(drawing: Mnemonics.staff(card, clef: clef))
+                // Notaya dokununca çalar (web MemoCard: her notanın <g onClick>'i); çizim 300×118 kutuya sığdırılmış
+                .overlay {
+                    GeometryReader { g in
+                        Color.clear.contentShape(Rectangle()).onTapGesture { p in
+                            let k = min(g.size.width / 300, g.size.height / 118)
+                            let x = (Double(p.x) - (Double(g.size.width) - 300 * k) / 2) / k
+                            if let i = Mnemonics.noteIndex(card, x: x) {
+                                let pitch = card.pitches(clef)[i]
+                                Sound.note(pitch.name, octave: pitch.octave)
+                            }
+                        }
+                    }
+                }
                 .accessibilityElement()
                 .accessibilityLabel("\(card.title): \(card.noteNames.joined(separator: ", "))")
             mnemonicLine

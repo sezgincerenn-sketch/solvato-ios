@@ -48,8 +48,11 @@ struct ProfileScreen: View {
                                     CSSLinearGradient([c.stops.0.color, c.stops.1.color])
                                         .clipShape(Circle())
                                         .frame(width: 28, height: 28)
-                                        .padding(2)
+                                        // Web outline 2 px, outlineOffset 2: halka renkten 2 pt açıkta
+                                        .padding(4)
                                         .overlay(Circle().strokeBorder(s.avatarColor == c.key ? ThemeColor.text.color : .clear, lineWidth: 2))
+                                        // Web'de halka yer kaplamaz: yerleşimde 28 pt
+                                        .padding(-4)
                                 }
                                 .buttonStyle(.plain)
                                 .accessibilityLabel(c.key)
@@ -80,8 +83,10 @@ struct ProfileScreen: View {
                         }
                         .font(.ui(FontSize.md, .bold))
                         .foregroundStyle(Brand.onPrimary.color)
-                        .frame(maxWidth: .infinity, minHeight: 48)
+                        .frame(maxWidth: .infinity, minHeight: Touch.min)
                         .background(CSSLinearGradient(.primaryFlat).clipShape(RoundedRectangle(cornerRadius: Radius.md)))
+                        // Web birincil Button: shadow.glow
+                        .shadow(BoxShadow.glow(Brand.primary, strength: 0.45))
                     }
                     AppButton("Tüm ilerleme", variant: .secondary, block: true) { model.go(.dashboard) }
                     AppButton("Ayarlar", variant: .secondary, block: true, action: { model.go(.settings) }) {

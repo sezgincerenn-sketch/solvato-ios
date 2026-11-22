@@ -2,6 +2,7 @@
 // seviye ve günlük hedef → hatırlatma → hazırsın. Üstte adım noktaları ve "Atla". Metinler web'den harfi harfine.
 import SolvatoCore
 import SwiftUI
+import UIKit
 
 struct OnboardingScreen: View {
     let model: AppModel
@@ -225,6 +226,11 @@ private func primary(_ title: String, enabled: Bool = true, action: @escaping ()
 
 /// Canlı deneme: gerçek porte, gerçek klavye; doğru tuşu bulunca "Devam" açılır, yanlışta 0,9 sn sonra yeniden denenir
 private struct TryStep: View {
+    /// Web 21vh (en çok 190): vh tam ekran yüksekliği
+    static var screenHeight: Double {
+        Double((UIApplication.shared.connectedScenes.first as? UIWindowScene)?.screen.bounds.height ?? 844)
+    }
+
     let note: String
     let noteY: Int
     let ledger: [Int]
@@ -253,7 +259,9 @@ private struct TryStep: View {
             Spacer(minLength: 0)
             QuizPianoView(
                 keys: Piano.quizKeys(answerState: state.rawValue, selectedNote: picked, showLabels: true),
-                height: Piano.quizHeight(screenHeight: 844, tall: false)
+                height: Piano.quizHeight(screenHeight: Self.screenHeight, tall: false),
+                // Web: cevap beklenmiyorken (doğru ya da yanlışın 0,9 sn'si) klavye kapalı
+                disabled: state != .pending
             ) { key in answer(key.answer) }
             primary("Devam", enabled: state == .correct, action: onPass).padding(.top, 0)
         }

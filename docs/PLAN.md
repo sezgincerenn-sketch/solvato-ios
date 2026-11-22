@@ -164,6 +164,11 @@ Codemagic'te doğrulama (22 Kasım akşamı): uygulama derleniyor; UI testleri s
 (Codemagic simülatöründe iOS ses servisi yanıt vermiyor: `AURemoteIO::Initialize` zaman aşımı, çökme raporu). Testler artık
 `-UITestNoAudio` ile sessiz koşuyor; sesin telefonda TestFlight'la denenmesi gerekiyor. Codemagic'in aylık ücretsiz dakikası
 bittiği için son düzeltmeler (test ve TestFlight) **Aralık başında** derlenecek. Ceren bu arada tasarım güncellemesi yapıyor.
+`inceleyici` ile kod üzerinden karşılaştırma (22 Kasım): iPad yatayda iki sütun ve 3 oktav, yan ekranda klavye tam genişlikte
+altta, Ritmi Tut iPad'de 680 pt, ipuçları bitince sayfa başa kayar, seri alevi titrer, sonuçta yıldızlar sırayla belirir ve
+ekran aşağıdan gelir, ezber portesinde notaya dokununca çalar, onay açıkken kaydırma onayı kapatır, düello sonucunda
+kaydırma bir şey yapmaz ve birkaç küçük ölçü/renk farkı düzeltildi. Açık: İlerleme ve Çalışma'nın üst boşluğu (çentikli
+iPhone'da ~27 pt fark olabilir) ekran görüntüsüyle kontrol edilecek. Çekirdek testleri GitHub Actions'ta da koşuyor.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.

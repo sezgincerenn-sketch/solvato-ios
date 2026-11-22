@@ -253,6 +253,15 @@ public enum Mnemonics {
     ]
 
     /// Kartın portesi (web MemoCard svg, 300×118): renkli notalar, altında adları; aralık notalarında renkli bant
+    /// Ezber portesinde dokunulan nota (çizim birimiyle x; web her notanın <g onClick>'i): nota başı, çizgisi ve adı
+    /// sütununda, notanın ortasından en çok yarım aralık uzakta
+    public static func noteIndex(_ card: MnemonicCard, x: Double) -> Int? {
+        let dx: Double = card.lines ? 44 : 52
+        let i = ((x - 96) / dx).rounded()
+        guard i >= 0, Int(i) < card.noteNames.count, abs(x - (96 + i * dx)) <= 18 else { return nil }
+        return Int(i)
+    }
+
     public static func staff(_ card: MnemonicCard, clef: Clef) -> Drawing {
         let ys: [Double] = card.lines ? [80, 70, 60, 50, 40] : [75, 65, 55, 45]
         let x0 = 96.0

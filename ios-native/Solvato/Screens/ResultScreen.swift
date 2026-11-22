@@ -18,7 +18,7 @@ struct ResultScreen: View {
         let c = content
         ScrollView {
             VStack(spacing: 0) {
-                Stars(value: c.stars, size: 52).padding(.bottom, 14)
+                Stars(value: c.stars, size: 52, animate: true).padding(.bottom, 14)
                 Text(c.title)
                     .font(.ui(FontSize.xl, .heavy))
                     .tracking(em: -0.03, size: FontSize.xl)
@@ -80,6 +80,8 @@ struct ResultScreen: View {
             .padding(.horizontal, 20)
         }
         .scrollIndicators(.hidden)
+        // Web: ekran 16 pt aşağıdan belirir (.animate-fade-in-up)
+        .fadeInUpOnAppear()
         .background(alignment: .top) {
             RadialGradient(colors: [PaletteColor.violet500.opacity(0.3), .clear], center: .center, startRadius: 0, endRadius: 160 * 0.7)
                 .frame(width: 320, height: 220)

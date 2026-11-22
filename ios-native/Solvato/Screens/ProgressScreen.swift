@@ -357,7 +357,7 @@ private struct WeekCard: View {
             ShareLink(item: text) {
                 Text("Öğretmenine haftalık rapor gönder")
                     .font(.ui(FontSize.md, .bold))
-                    .foregroundStyle(ThemeColor.text.color)
+                    .foregroundStyle(ThemeColor.textSecondary.color)
                     .frame(maxWidth: .infinity, minHeight: 48)
                     .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fillStrong.color))
                     .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(ThemeColor.border.color, lineWidth: 1))

@@ -20,7 +20,7 @@ struct HomeScreen: View {
         ScrollViewReader { proxy in
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                topBar(c).padding(.bottom, 20)
+                topBar(c).padding(.bottom, 20).id("top")
                 if let g = c.greeting {
                     Text(g)
                         .font(.ui(FontSize.lg, .heavy))
@@ -52,8 +52,13 @@ struct HomeScreen: View {
             .remembersScroll(model, .home)
         }
         .scrollIndicators(.hidden)
-        .onChange(of: coachTarget, initial: true) { _, t in
-            guard let t, t != "nav" else { return }
+        .onChange(of: coachTarget, initial: true) { old, t in
+            // İpuçları bitince (Atla / Anladım) sayfa başa kayar (web Coachmark)
+            guard let t else {
+                if old != nil { withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo("top", anchor: .top) } }
+                return
+            }
+            guard t != "nav" else { return }
             withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo(t, anchor: .center) }
         }
         }
@@ -75,7 +80,7 @@ struct HomeScreen: View {
             Spacer(minLength: Space.s2)
             HStack(spacing: Space.s2) {
                 StatPill(tone: c.streak > 0 ? .orange : .muted, value: String(c.streak), label: c.streakLabel, action: { model.go(.dashboard) }) {
-                    Icon(.flame, size: 17, fill: c.streak > 0).opacity(c.streak > 0 ? 1 : 0.6)
+                    Icon(.flame, size: 17, fill: c.streak > 0).opacity(c.streak > 0 ? 1 : 0.6).flameFlicker(c.streak > 0)
                 }
                 StatPill(tone: .amber, value: c.xpValue, label: c.xpLabel, action: { model.go(.profile) }) {
                     Text(String(c.rank.rank))

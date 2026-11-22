@@ -92,8 +92,12 @@ private struct SlideUp: ViewModifier {
     }
 }
 
-/// Görünürken büyüyerek belirir (web .animate-pop-in: 0,82 → 1,05 → 1)
+/// Görünürken büyüyerek belirir (web .animate-pop-in / @keyframes popIn: 0,82 → %65'te 1,05 → 1, saydamdan).
+/// Varsayılan 0,3 sn ease-out; yıldızlarda 0,45 sn yaylı eğri ve gecikme (CSS animation-delay, "both": önce görünmez).
 private struct PopIn: ViewModifier {
+    var duration = 0.3
+    var curve: UnitCurve = .easeOut
+    var delay = 0.0
     @State private var runs = 0
     @Environment(\.accessibilityReduceMotion) private var reduce
 
@@ -111,13 +115,60 @@ private struct PopIn: ViewModifier {
                     c.scaleEffect(v.scale).opacity(v.opacity)
                 } keyframes: { _ in
                     KeyframeTrack(\.scale) {
-                        LinearKeyframe(1.05, duration: 0.3 * 0.65, timingCurve: .easeOut)
-                        LinearKeyframe(1, duration: 0.3 * 0.35, timingCurve: .easeOut)
+                        LinearKeyframe(0.82, duration: delay)
+                        LinearKeyframe(1.05, duration: duration * 0.65, timingCurve: curve)
+                        LinearKeyframe(1, duration: duration * 0.35, timingCurve: curve)
                     }
                     // opaklık 0 → 1 tüm süre boyunca (65 %'te ara kare yok)
-                    KeyframeTrack(\.opacity) { LinearKeyframe(1, duration: 0.3, timingCurve: .easeOut) }
+                    KeyframeTrack(\.opacity) {
+                        LinearKeyframe(0, duration: delay)
+                        LinearKeyframe(1, duration: duration, timingCurve: curve)
+                    }
                 }
                 .onAppear { runs += 1 }
+        }
+    }
+}
+
+/// Görünürken 16 pt aşağıdan belirir (web .animate-fade-in-up: 0,32 sn ease-out; tur sonucu ekranı)
+private struct FadeInUp: ViewModifier {
+    @State private var shown = false
+    @Environment(\.accessibilityReduceMotion) private var reduce
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(shown || reduce ? 1 : 0)
+            .offset(y: shown || reduce ? 0 : 16)
+            .onAppear { withAnimation(.easeOut(duration: 0.32)) { shown = true } }
+    }
+}
+
+/// Seri alevi titrer (web .flame-live: 1,1 sn, ölçek 1 → 1,12, dönüş −2° → 3°, alt-orta eksende, sürekli)
+private struct FlameFlicker: ViewModifier {
+    let on: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduce
+
+    private struct V {
+        var scale = 1.0
+        var r = -2.0
+    }
+
+    func body(content: Content) -> some View {
+        if on && !reduce {
+            content.keyframeAnimator(initialValue: V(), repeating: true) { c, v in
+                c.scaleEffect(v.scale, anchor: UnitPoint(x: 0.5, y: 0.9)).rotationEffect(.degrees(v.r), anchor: UnitPoint(x: 0.5, y: 0.9))
+            } keyframes: { _ in
+                KeyframeTrack(\.scale) {
+                    LinearKeyframe(1.12, duration: 0.55, timingCurve: .easeInOut)
+                    LinearKeyframe(1, duration: 0.55, timingCurve: .easeInOut)
+                }
+                KeyframeTrack(\.r) {
+                    LinearKeyframe(3, duration: 0.55, timingCurve: .easeInOut)
+                    LinearKeyframe(-2, duration: 0.55, timingCurve: .easeInOut)
+                }
+            }
+        } else {
+            content
         }
     }
 }
@@ -131,6 +182,14 @@ extension View {
     func slideUpOnAppear() -> some View { modifier(SlideUp()) }
     /// Büyüyerek belirme
     func popInOnAppear() -> some View { modifier(PopIn()) }
+    /// Yıldızların belirmesi (web Stars animate: 0,45 sn, yaylı eğri, `delay` sn sonra)
+    func starPopIn(delay: Double) -> some View {
+        modifier(PopIn(duration: 0.45, curve: bezier(0.34, 1.56, 0.64, 1), delay: delay))
+    }
+    /// Ekranın aşağıdan belirmesi
+    func fadeInUpOnAppear() -> some View { modifier(FadeInUp()) }
+    /// Seri alevinin titremesi (seri > 0)
+    func flameFlicker(_ on: Bool) -> some View { modifier(FlameFlicker(on: on)) }
 }
 
 /// Üç doğruda skorun üstünde yükselip kaybolan alev (web .animate-streak-flare)
