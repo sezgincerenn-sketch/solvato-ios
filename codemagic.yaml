@@ -48,7 +48,8 @@ definitions:
         cd build && zip -qr native-ekranlar.zip ekranlar
         # Sohbete gönderilebilecek küçük kopya (30 MB altı): yalnız iPhone, yarı boyut, JPEG
         mkdir -p ekranlar-kucuk
-        for f in ekranlar/*-iphone-koyu.png ekranlar/*-iphone-acik.png; do
+        for f in ekranlar/*-iphone-koyu.png ekranlar/*-iphone-acik.png ekranlar/hata-*-iphone-*.png; do
+          [ -e "$f" ] || continue
           sips -s format jpeg -s formatOptions 70 --resampleWidth 600 "$f" --out "ekranlar-kucuk/$(basename "${f%.png}").jpg" > /dev/null
         done
         zip -qr native-ekranlar-kucuk.zip ekranlar-kucuk
