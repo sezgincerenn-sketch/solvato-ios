@@ -143,7 +143,7 @@ workflows:
   # İki iş akışı:
   # - ios-native-test: imzasız. Çekirdek paket testleri, iPhone / küçük iPhone / iPad simülatöründe UI testleri ve
   #   ekran görüntüleri. main'e `ios-native/` klasörünü değiştiren her gönderimde kendiliğinden başlar.
-  # - ios-native-testflight: aynı adımlar + imzalı derleme ve TestFlight. Elle başlatılır ("Start new build");
+  # - ios-native-testflight: çekirdek testleri + imzalı derleme ve TestFlight (UI testleri yok). Elle başlatılır;
   #   App Store imzalaması kurulu olmalı (docs/IOS-TEST-REHBERI.md, Bölüm A ve B 5–7).
   # Ekran görüntüleri derleme çıktısında `native-ekranlar.zip` (<senaryo>-<iphone|iphone-kucuk|ipad>-<koyu|acik>.png).
   # (Bulut oturumları git etiketi gönderemediği için etiketle başlatma yok.)
@@ -193,7 +193,7 @@ workflows:
       - *xcode_kontrol
       - *cekirdek_test
       - *xcodegen
-      - *ui_ekranlar
+      # UI testleri ve ekran görüntüleri burada koşmaz (ios-native-test'te): yükleme ~20 dakika daha kısa sürer
       - name: İmzalama ayarları
         script: xcode-project use-profiles --project ios-native/Solvato.xcodeproj
       - name: Build numarası (her derlemede artar)
@@ -206,9 +206,6 @@ workflows:
         script: xcode-project build-ipa --project ios-native/Solvato.xcodeproj --scheme Solvato
     artifacts:
       - build/ios/ipa/*.ipa
-      - build/native-ekranlar.zip
-      - build/native-ekranlar-kucuk.zip
-      - build/xcodebuild-*.log
       - /tmp/xcodebuild_logs/*.log
     publishing:
       app_store_connect:
