@@ -61,8 +61,13 @@ definitions:
           { grep -E "error:|: error|failed \(|XCTAssert|Test Case .* failed|crash|Fatal error" "build/xcodebuild-$SLUG.log" | sort -u | head -80
             echo "── son satırlar ──"; tail -40 "build/xcodebuild-$SLUG.log"; } > "build/ekranlar/xcodebuild-$SLUG.txt" || true
           python3 scripts/native-ekranlar.py "build/ui-$SLUG.xcresult" "$SLUG" build/ekranlar || true
+          # Uygulama kapandıysa simülatörün çökme raporları (hangi satırda, hangi iş parçacığında) zip'e girer
+          for r in ~/Library/Logs/DiagnosticReports/Solvato*.ips; do
+            [ -e "$r" ] && cp "$r" "build/ekranlar/cokme-$SLUG-$(basename "$r" .ips).txt"
+          done
         done < /tmp/devices.txt
-        ls build/ekranlar | grep -q png || { echo "Ekran görüntüsü yok"; exit 1; }
+        # Görüntü olmasa da zip'ler üretilir (hata dosyaları ve çökme raporları içinde); adım sonda düşer
+        mkdir -p build/ekranlar
         cd build && zip -qr native-ekranlar.zip ekranlar
         # Sohbete gönderilebilecek küçük kopya (30 MB altı): yalnız iPhone, yarı boyut, JPEG
         mkdir -p ekranlar-kucuk
@@ -74,6 +79,7 @@ definitions:
         cp ekranlar/*.txt ekranlar-kucuk/ 2>/dev/null || true
         zip -qr native-ekranlar-kucuk.zip ekranlar-kucuk
         ls -lh native-ekranlar*.zip
+        ls ekranlar | grep -q png || { echo "Ekran görüntüsü yok"; exit 1; }
 
 workflows:
   ios-testflight:
