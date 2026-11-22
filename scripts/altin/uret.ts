@@ -9,6 +9,8 @@ import { join } from "node:path"
 import { readFileSync } from "node:fs"
 import { LESSONS } from "../../src/screens/study/lessons"
 import { ChordsStudy } from "../../src/screens/study/ChordsStudy"
+import { MnemonicsStudy } from "../../src/screens/study/NotesStudy"
+import { parseXml, flatten } from "./cizim"
 import { createElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
 import { palette } from "../../src/design/tokens"
@@ -945,6 +947,53 @@ function akorKartlari() {
   }))
 }
 
+// ─── Çalışma › Nota dersleri: veri (kaynaktan), açılış yazıları ve ezber kartı portesi
+type XEl = { tag: string; attrs: Record<string, string>; children: (XEl | string)[] }
+function notaDersleri() {
+  const src = readFileSync(join(process.cwd(), "src/screens/study/NotesStudy.tsx"), "utf8")
+  const lit = (name: string) => {
+    const start = src.indexOf(`const ${name} = `) + `const ${name} = `.length
+    let depth = 0
+    let i = start
+    for (; i < src.length; i++) {
+      if (src[i] === "[" || src[i] === "{") depth++
+      if (src[i] === "]" || src[i] === "}") depth--
+      if (depth === 0) break
+    }
+    const code = src.slice(start, i + 1).replace(/ as const/g, "")
+    return new Function("palette", `return ${code}`)(palette)
+  }
+  const named = (v: unknown): unknown =>
+    typeof v === "string" && v.startsWith("#")
+      ? paletteName(v)
+      : Array.isArray(v)
+        ? v.map(named)
+        : v && typeof v === "object"
+          ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, named(x)]))
+          : v
+  const screens = ["notes-treble", "notes-bass", "accidentals", "mnemonic-treble", "mnemonic-bass"].map((id) => {
+    const l = LESSONS.find((x) => x.id === id)!
+    return { id, ...screenTexts(renderToStaticMarkup(l.render() as Parameters<typeof renderToStaticMarkup>[0])) }
+  })
+  const memo = (["treble", "bass"] as const).map((clef) => {
+    const root = parseXml(renderToStaticMarkup(createElement(MnemonicsStudy, { clef }))) as XEl
+    const svgs: XEl[] = []
+    const walk = (e: XEl) => {
+      if (e.tag === "svg" && e.attrs.viewBox === "0 0 300 118") svgs.push(e)
+      for (const c of e.children) if (typeof c !== "string") walk(c)
+    }
+    walk(root)
+    return { clef, cards: svgs.map((s) => ({ label: s.attrs["aria-label"], ...flatten(s) })) }
+  })
+  return {
+    treble: lit("TREBLE_REF"),
+    bass: lit("BASS_REF"),
+    mnemonics: named(lit("MNEMONICS_DATA")),
+    screens,
+    memo,
+  }
+}
+
 // ─── Çalıştır ────────────────────────────────────────────────────────────────
 const only = process.argv[3]
 if (only === "seri") write(`seri-${TZ!.replace("/", "-")}.json`, seri())
@@ -969,5 +1018,6 @@ else {
   write("ilerleme.json", ilerleme())
   write("calisma.json", calisma())
   write("akor-kartlari.json", akorKartlari())
+  write("nota-dersleri.json", notaDersleri())
   write("seri-" + TZ!.replace("/", "-") + ".json", seri())
 }

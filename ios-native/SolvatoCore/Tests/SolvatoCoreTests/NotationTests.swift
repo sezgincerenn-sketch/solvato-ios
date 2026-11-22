@@ -154,6 +154,19 @@ final class NotationTests: XCTestCase {
         }
     }
 
+    /// Ezber kartı portesi (web NotesStudy MemoCard)
+    func testMnemonicStaves() throws {
+        for m in try XCTUnwrap(Golden.load("nota-dersleri")["memo"]?.array) {
+            let clef = try XCTUnwrap(Clef(rawValue: m["clef"]?.string ?? ""))
+            let cards = try XCTUnwrap(m["cards"]?.array)
+            XCTAssertEqual(cards.count, 2)
+            for (w, card) in zip(cards, Mnemonics.cards(clef)) {
+                check(Mnemonics.staff(card, clef: clef), w, "ezber \(clef) \(card.title)")
+                XCTAssertEqual(w["label"]?.string, "\(card.title): \(card.noteNames.joined(separator: ", "))")
+            }
+        }
+    }
+
     func testClefIcons() throws {
         for r in try XCTUnwrap(Golden.load("cizim")["clefIcons"]?.array) {
             let d = Staves.clefIcon(Clef(rawValue: r["clef"]!.string!)!, size: r["size"]!.double!)

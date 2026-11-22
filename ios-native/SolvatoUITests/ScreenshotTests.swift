@@ -252,11 +252,14 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
-    /// Çalışma dersleri (web "ders-<id>"): Çalışma'dan başlığa dokunarak açılır. Native'e taşınan dersler.
+    /// Çalışma dersleri (web "ders-<id>"): Çalışma'dan başlığa dokunarak açılır (19 ders)
     @MainActor
     func testDersler() throws {
         continueAfterFailure = false
         let lessons = [
+            ("notes-treble", "Sol anahtarı notaları"), ("notes-bass", "Fa anahtarı notaları"),
+            ("mnemonic-treble", "Ezber cümleleri: Sol anahtarı"), ("mnemonic-bass", "Ezber cümleleri: Fa anahtarı"),
+            ("accidentals", "Diyez ve bemol"),
             ("chords-build", "Majör ve minör nasıl kurulur"), ("chords-1", "Akor kartları: Başlangıç"),
             ("chords-2", "Akor kartları: Orta"), ("chords-3", "Akor kartları: İleri"), ("chords-4", "Akor kartları: Uzman"),
             ("rhythm-values", "Nota değerleri"), ("rhythm-rests", "Sus işaretleri"), ("rhythm-dotted", "Noktalı notalar"),

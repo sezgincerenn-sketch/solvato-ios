@@ -144,8 +144,9 @@ cevap yöntemi, ses, titreşim, tema, hatırlatma, sıfırlama); tema artık uyg
 Öğretmen kodu, Gizlilik ve Lisanslar, Çalışma, Oyunlar, Ritmi Tut.
 Öğretmen kodu (E-13; kurallar `TeacherFlow`), Gizlilik ve Lisanslar (E-14; metinler `legal.ts`'den `hukuk.json`'a birebir); 90 test.
 Çalışma sekmesi (E-15): ders listesi, arama ve Kaldığın yer (`Lessons`, altın tablo `calisma.json`); 94 test.
-Dersler (E-16): Ritim, Terimler ve Akorlar dersleri yapıldı (akor kartları ve şema klavye web'le altın tabloyla aynı); 97 test.
-Sırada: nota dersleri (E-16), Oyunlar (E-17), Ritmi Tut.
+Dersler (E-16): 19 dersin hepsi (nota, ezber, diyez-bemol, ritim, akor, terim; veriler ve çizimler web'le altın
+tabloyla aynı); 101 test. Çalma düğmeleri 0.6'da.
+Sırada: Oyunlar (E-17), Ritmi Tut.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.

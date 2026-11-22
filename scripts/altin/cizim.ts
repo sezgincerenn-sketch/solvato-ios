@@ -33,6 +33,8 @@ function paint(v: string | undefined): string | null {
   return `?${t}`
 }
 
+const alphaHex = (hex: string, op: number) => hex.slice(0, 7) + hex2(Math.round(op * 255))
+
 const decode = (s: string) =>
   s
     .replace(/&#x27;/g, "'")
@@ -43,7 +45,7 @@ const decode = (s: string) =>
 
 type El = { tag: string; attrs: Record<string, string>; children: (El | string)[] }
 
-function parseXml(xml: string): El {
+export function parseXml(xml: string): El {
   const root: El = { tag: "#root", attrs: {}, children: [] }
   const stack = [root]
   for (const m of xml.matchAll(/<(\/?)([\w:-]+)((?:\s+[\w:-]+="[^"]*")*)\s*(\/?)>|([^<]+)/g)) {
@@ -76,7 +78,7 @@ function style(s: string | undefined): Record<string, string> {
 }
 
 /** SVG → { viewBox, svgStyle, items } (gruplar düzleştirilir, translate koordinatlara eklenir) */
-function flatten(svg: El) {
+export function flatten(svg: El) {
   const items: Record<string, unknown>[] = []
   const walk = (el: El, dx: number, dy: number, glow: string | null) => {
     const a = el.attrs
@@ -102,6 +104,8 @@ function flatten(svg: El) {
         })
         return
       case "rect":
+        // opacity özniteliği dolgunun saydamlığına katılır (native tek renkle çizer)
+        if (op !== undefined && a.fill?.startsWith("#")) a.fill = alphaHex(a.fill, op)
         items.push({
           t: "rect",
           x: +a.x + dx,

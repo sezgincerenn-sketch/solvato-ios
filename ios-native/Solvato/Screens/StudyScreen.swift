@@ -197,6 +197,15 @@ private struct LessonContent: View {
 
     var body: some View {
         switch lesson.id {
+        case "notes-treble": StaffStudyLesson(clef: .treble, accidentals: false)
+        case "notes-bass": StaffStudyLesson(clef: .bass, accidentals: false)
+        case "mnemonic-treble": MnemonicsLesson(clef: .treble)
+        case "mnemonic-bass": MnemonicsLesson(clef: .bass)
+        case "accidentals":
+            VStack(spacing: 16) {
+                StaffStudyLesson(clef: .treble, accidentals: true)
+                AccidentalMemoView()
+            }
         case "rhythm-values": RhythmValuesLesson()
         case "rhythm-rests": RestsCard()
         case "rhythm-dotted": DottedCard()
@@ -208,10 +217,6 @@ private struct LessonContent: View {
         default:
             if let g = Terms.groups.first(where: { "terms-\($0.group)" == lesson.id }) {
                 TermsLesson(group: g)
-            } else {
-                Text("Bu ders native sürüme henüz taşınmadı.")
-                    .font(.ui(FontSize.sm))
-                    .foregroundStyle(ThemeColor.textSubtle.color)
             }
         }
     }
