@@ -62,7 +62,7 @@ struct HomeScreen: View {
     // MARK: Üst çubuk
     private func topBar(_ c: HomeContent) -> some View {
         HStack {
-            Logo(size: 30).accessibilityAddTraits(.isHeader)
+            Logo(size: 30).accessibilityAddTraits(.isHeader).layoutPriority(-1)
             Spacer(minLength: Space.s2)
             HStack(spacing: Space.s2) {
                 StatPill(tone: c.streak > 0 ? .orange : .muted, value: String(c.streak), label: c.streakLabel, action: { model.go(.dashboard) }) {

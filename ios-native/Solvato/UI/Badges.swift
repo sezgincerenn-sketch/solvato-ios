@@ -120,7 +120,7 @@ struct StatPill<Leading: View>: View {
         Button(action: action) {
             HStack(spacing: 6) {
                 leading.frame(width: 26, height: 26)
-                Text(value).font(.mono(FontSize.sm, .bold)).lineLimit(1)
+                Text(value).font(.mono(FontSize.sm, .bold)).lineLimit(1).fixedSize()
             }
             .foregroundStyle(tone.text.color)
             .padding(.leading, 6)
