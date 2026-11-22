@@ -29,6 +29,7 @@ struct LegalScreen: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, Space.s5)
                 .padding(.bottom, Space.s6 * 2)
+                .remembersScroll(model, page == .privacy ? .privacy : .licenses)
             }
             .scrollIndicators(.hidden)
         }

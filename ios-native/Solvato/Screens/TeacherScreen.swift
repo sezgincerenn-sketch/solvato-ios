@@ -28,6 +28,7 @@ struct TeacherScreen: View {
                 .padding(.horizontal, Space.s4)
                 .padding(.top, Space.s2)
                 .padding(.bottom, Space.s6)
+                .remembersScroll(model, .teacher)
             }
             .scrollIndicators(.hidden)
             .scrollDismissesKeyboard(.interactively)

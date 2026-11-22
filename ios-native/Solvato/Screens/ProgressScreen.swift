@@ -13,42 +13,45 @@ struct ProgressScreen: View {
     var body: some View {
         let c = ProgressContent(stats: model.stats, settings: model.settings, now: model.now)
         ScrollView {
-            if !c.hasAnswers {
-                VStack(spacing: 16) {
-                    PathCardView(c: c, model: model)
-                    EmptyProgress { model.go(.home) }
-                }
-                .padding(.horizontal, 16)
-                .padding(.top, 32)
-            } else if sizeClass == .regular {
-                HStack(alignment: .top, spacing: 16) {
+            Group {
+                if !c.hasAnswers {
+                    VStack(spacing: 16) {
+                        PathCardView(c: c, model: model)
+                        EmptyProgress { model.go(.home) }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 32)
+                } else if sizeClass == .regular {
+                    HStack(alignment: .top, spacing: 16) {
+                        VStack(spacing: 16) {
+                            accuracy(c)
+                            PathCardView(c: c, model: model)
+                            weak(c)
+                        }
+                        VStack(spacing: 16) {
+                            WeekCard(c: c, text: c.report.text)
+                            topics(c)
+                            rounds(c)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 32)
+                    .padding(.bottom, 28)
+                } else {
                     VStack(spacing: 16) {
                         accuracy(c)
-                        PathCardView(c: c, model: model)
-                        weak(c)
-                    }
-                    VStack(spacing: 16) {
                         WeekCard(c: c, text: c.report.text)
+                        PathCardView(c: c, model: model)
                         topics(c)
+                        weak(c)
                         rounds(c)
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 32)
+                    .padding(.bottom, 28)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 32)
-                .padding(.bottom, 28)
-            } else {
-                VStack(spacing: 16) {
-                    accuracy(c)
-                    WeekCard(c: c, text: c.report.text)
-                    PathCardView(c: c, model: model)
-                    topics(c)
-                    weak(c)
-                    rounds(c)
-                }
-                .padding(.horizontal, 16)
-                .padding(.top, 32)
-                .padding(.bottom, 28)
             }
+            .remembersScroll(model, .dashboard)
         }
         .scrollIndicators(.hidden)
         .background(ThemeColor.bg.color)

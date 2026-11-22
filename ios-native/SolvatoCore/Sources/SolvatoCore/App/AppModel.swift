@@ -61,6 +61,8 @@ public final class AppModel {
     public private(set) var lastStars: (stars: Int, best: Int?) = (0, nil)
     /// Her yeni turda artar: soru ekranı sıfırdan kurulsun (aynı ekrandan yeni tura geçişte de)
     public private(set) var quizToken = 0
+    /// Her tur bitişinde artar: kutlama yoksa tur sonu sesi çalınır (web `if (!cel) playSessionDone()`)
+    public private(set) var roundsCompleted = 0
 
     public init(
         persistence: Persistence = Persistence(), random: @escaping RandomSource = systemRandom,
@@ -118,14 +120,20 @@ public final class AppModel {
     public private(set) var exitRequest = 0
     public func requestExit() { exitRequest += 1 }
 
-    public func go(_ v: AppView) { nav.go(v) }
-    public func back() { nav.back() }
+    /// Kaydırma hafızası: geri dönülen ekran kalınan yerden açılır (gözlenmez; kaydırırken ekran yeniden çizilmez)
+    @ObservationIgnored public let scroll = ScrollMemory()
+
+    public func go(_ v: AppView) {
+        scroll.willGo(from: nav.current, to: v)
+        nav.go(v)
+    }
+    public func back() { scroll.didBack(to: nav.back()) }
 
     /// Çalışma'dan bir ders açar; son açılan ders "Kaldığın yer" için bu cihazda hatırlanır (yedeğe girmez)
     public func openLesson(_ id: String) {
         persistence.setLastLesson(id)
         lessonId = id
-        nav.go(.lesson)
+        go(.lesson)
     }
 
     /// Çalışma › Kaldığın yer: son açılan ders (bilinmeyen kimlik yok sayılır)
@@ -140,7 +148,7 @@ public final class AppModel {
         game = nil
         currentCategory = cat
         sessionQuestions = Session.questions(cat, settings: settings, random: random)
-        nav.go(.quiz)
+        go(.quiz)
     }
 
     public func startGame(_ ctx: GameContext) {
@@ -157,7 +165,7 @@ public final class AppModel {
         }
         game = ctx
         sessionQuestions = Games.questions(ctx.category, level: level, seed: seed)
-        nav.go(.quiz)
+        go(.quiz)
     }
 
     public func startWeakPractice(_ keys: [String]) {
@@ -168,7 +176,7 @@ public final class AppModel {
         game = nil
         currentCategory = .all
         sessionQuestions = qs
-        nav.go(.quiz)
+        go(.quiz)
     }
 
     /// Sonuçta "Yeni tur" / "Tekrar"
@@ -185,7 +193,7 @@ public final class AppModel {
         guard !qs.isEmpty else { return }
         sessionLabel = "Hataların tekrarı"
         sessionQuestions = qs
-        nav.go(.quiz)
+        go(.quiz)
     }
 
     // MARK: Tur sonu
@@ -202,6 +210,7 @@ public final class AppModel {
         lastStars = (out.stars, out.previousBest)
         celebrate = out.celebration
         stats = out.stats
+        roundsCompleted += 1
         if let game {
             if case let .daily(date, _, _, _) = game {
                 let sum = Games.summarize(results.map { ($0.correct, $0.timeMs) })
@@ -223,6 +232,7 @@ public final class AppModel {
         sessionQuestions = []  // bu turların "hataları tekrar et"i yok
         celebrate = out.celebration
         stats = out.stats
+        roundsCompleted += 1
         nav.replace(.result)
     }
 
@@ -233,13 +243,13 @@ public final class AppModel {
         s.history = []
         s.dailyAccuracy = OrderedMap()
         stats = s
-        nav.go(.home)
+        go(.home)
     }
 
     /// Ayarlar › Tanıtımı yeniden göster
     public func showTutorial() {
         settings.coachDone = false
-        nav.go(.home)
+        go(.home)
         showOnboarding = true
     }
 

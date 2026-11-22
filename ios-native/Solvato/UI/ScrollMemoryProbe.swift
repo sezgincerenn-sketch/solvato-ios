@@ -1,0 +1,74 @@
+// Kaydırma hafızasının ekran tarafı (G-10, web utils/scrollMemory.ts): kaydırma alanının içeriğine görünmez bir
+// görünüm eklenir; o görünüm çevreleyen UIScrollView'u bulur, konumunu AppModel.scroll'a bildirir ve açılışta saklanan
+// konumu uygular (içerik ilk karede tam çizilmemiş olabilir, web gibi birkaç kare dener).
+// Kullanım: ScrollView { içerik.remembersScroll(model, .profile) }; bir ekranda birden çok alan varsa `slot` ile.
+import SolvatoCore
+import SwiftUI
+import UIKit
+
+extension View {
+    /// Bu kaydırma alanının konumu, ileri gidip geri dönünce korunur
+    func remembersScroll(_ model: AppModel, _ view: AppView, slot: Int = 0) -> some View {
+        background(ScrollMemoryProbe(model: model, view: view, slot: slot).allowsHitTesting(false).accessibilityHidden(true))
+    }
+}
+
+private struct ScrollMemoryProbe: UIViewRepresentable {
+    let model: AppModel
+    let view: AppView
+    let slot: Int
+
+    func makeUIView(context: Context) -> ProbeView {
+        let v = ProbeView()
+        v.isUserInteractionEnabled = false
+        v.onAttach = { [model, view, slot] sv in
+            // Geri dönülen ya da kaydırırken altta görünen ekran: saklanan konuma git
+            if let y = model.scroll.restore(view, slot: slot, current: model.nav.current) { ProbeView.apply(y, to: sv, tries: 6) }
+        }
+        v.onScroll = { [model, view, slot] y in
+            // Yalnız görünen ekranın konumu saklanır (altta görünen kopya değil)
+            if model.nav.current == view { model.scroll.report(view, slot: slot, y: y) }
+        }
+        return v
+    }
+
+    func updateUIView(_ uiView: ProbeView, context: Context) {}
+}
+
+final class ProbeView: UIView {
+    var onAttach: ((UIScrollView) -> Void)?
+    var onScroll: ((Double) -> Void)?
+    private var observation: NSKeyValueObservation?
+    private weak var scrollView: UIScrollView?
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        guard window != nil, scrollView == nil else { return }
+        var s = superview
+        while let v = s, !(v is UIScrollView) { s = v.superview }
+        guard let sv = s as? UIScrollView else { return }
+        scrollView = sv
+        onAttach?(sv)
+        observation = sv.observe(\.contentOffset, options: [.new]) { [weak self] _, _ in
+            MainActor.assumeIsolated { self?.report() }
+        }
+    }
+
+    /// Üstten uzaklık (pt; içerik boşluğu düşülür)
+    private func report() {
+        guard let sv = scrollView else { return }
+        onScroll?(Double(sv.contentOffset.y + sv.adjustedContentInset.top))
+    }
+
+    /// Konumu uygular; içerik henüz o kadar uzun değilse sonraki karelerde yeniden dener
+    static func apply(_ y: Double, to sv: UIScrollView, tries: Int) {
+        sv.layoutIfNeeded()
+        let maxY = Double(sv.contentSize.height + sv.adjustedContentInset.top + sv.adjustedContentInset.bottom - sv.bounds.height)
+        sv.setContentOffset(CGPoint(x: sv.contentOffset.x, y: min(y, max(0, maxY)) - sv.adjustedContentInset.top), animated: false)
+        guard maxY < y - 2, tries > 1 else { return }
+        DispatchQueue.main.async { [weak sv] in
+            guard let sv else { return }
+            MainActor.assumeIsolated { apply(y, to: sv, tries: tries - 1) }
+        }
+    }
+}

@@ -8,6 +8,8 @@ import SwiftUI
 private struct GamePage<C: View>: View {
     let title: String
     let model: AppModel
+    /// Kaydırma hafızası için ekranın adı
+    let view: AppView
     @ViewBuilder let content: C
 
     var body: some View {
@@ -18,6 +20,7 @@ private struct GamePage<C: View>: View {
                     .padding(.horizontal, Space.s4)
                     .padding(.top, Space.s2)
                     .padding(.bottom, Space.s6)
+                    .remembersScroll(model, view)
             }
             .scrollIndicators(.hidden)
             .scrollDismissesKeyboard(.interactively)
@@ -41,7 +44,7 @@ struct GamesListScreen: View {
 
     var body: some View {
         let today = model.todayGame
-        GamePage(title: "Oyunlar", model: model) {
+        GamePage(title: "Oyunlar", model: model, view: .games) {
             muted("Bir oyun seç.")
             row(.calendar, CategoryColor.games.base, "Günün meydan okuması", GameScreens.dailySub(today), GameScreens.dailyStatus(model.todayDaily)) {
                 model.go(.gameDaily)
@@ -84,7 +87,7 @@ struct DailyGameScreen: View {
     var body: some View {
         let today = model.todayGame
         let played = model.todayDaily
-        GamePage(title: "Günün meydan okuması", model: model) {
+        GamePage(title: "Günün meydan okuması", model: model, view: .gameDaily) {
             AppCard(tone: CategoryColor.games.base) {
                 VStack(alignment: .leading, spacing: Space.s3) {
                     Text("BUGÜN · #\(today.number)")
@@ -124,7 +127,7 @@ struct ChallengeGameScreen: View {
 
     var body: some View {
         let level = model.settings.level
-        GamePage(title: "Arkadaşına meydan oku", model: model) {
+        GamePage(title: "Arkadaşına meydan oku", model: model, view: .gameChallenge) {
             AppCard {
                 VStack(alignment: .leading, spacing: Space.s3) {
                     Text("Yeni meydan okuma").font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color)

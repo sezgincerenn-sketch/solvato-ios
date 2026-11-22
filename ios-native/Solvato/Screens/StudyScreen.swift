@@ -64,6 +64,7 @@ struct StudyScreen: View {
             .padding(.horizontal, Space.s4)
             .padding(.top, 32)
             .padding(.bottom, Space.s8)
+            .remembersScroll(model, .study)
         }
         .scrollIndicators(.hidden)
         .scrollDismissesKeyboard(.interactively)
@@ -182,6 +183,7 @@ struct LessonScreen: View {
                 .padding(.horizontal, Space.s4)
                 .padding(.top, Space.s2)
                 .padding(.bottom, Space.s8)
+                .remembersScroll(model, .lesson)
             }
             .scrollIndicators(.hidden)
         }

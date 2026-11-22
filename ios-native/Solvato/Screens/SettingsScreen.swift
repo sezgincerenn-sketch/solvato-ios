@@ -78,6 +78,7 @@ struct SettingsScreen: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 32)
+                .remembersScroll(model, .settings)
             }
             .scrollIndicators(.hidden)
         }

@@ -49,6 +49,7 @@ struct HomeScreen: View {
             }
             .padding(.horizontal, Space.s4)
             .padding(.top, Space.s6)
+            .remembersScroll(model, .home)
         }
         .scrollIndicators(.hidden)
         .onChange(of: coachTarget, initial: true) { _, t in

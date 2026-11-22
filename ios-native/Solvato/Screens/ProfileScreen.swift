@@ -91,6 +91,7 @@ struct ProfileScreen: View {
                 .padding(.top, Space.s2)
                 .padding(.horizontal, Space.s4)
                 .padding(.bottom, Space.s8)
+                .remembersScroll(model, .profile)
             }
             .scrollIndicators(.hidden)
         }
