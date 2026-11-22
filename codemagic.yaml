@@ -57,6 +57,9 @@ definitions:
           grep -E "error:|: error|failed \(|XCTAssert|Test Case .* failed" "build/xcodebuild-$SLUG.log" | sort -u | head -80 || true
           echo "── $SLUG: son satırlar ──"
           tail -25 "build/xcodebuild-$SLUG.log"
+          mkdir -p build/ekranlar
+          { grep -E "error:|: error|failed \(|XCTAssert|Test Case .* failed|crash|Fatal error" "build/xcodebuild-$SLUG.log" | sort -u | head -80
+            echo "── son satırlar ──"; tail -40 "build/xcodebuild-$SLUG.log"; } > "build/ekranlar/xcodebuild-$SLUG.txt" || true
           python3 scripts/native-ekranlar.py "build/ui-$SLUG.xcresult" "$SLUG" build/ekranlar || true
         done < /tmp/devices.txt
         ls build/ekranlar | grep -q png || { echo "Ekran görüntüsü yok"; exit 1; }
@@ -67,6 +70,8 @@ definitions:
           [ -e "$f" ] || continue
           sips -s format jpeg -s formatOptions 70 --resampleWidth 600 "$f" --out "ekranlar-kucuk/$(basename "${f%.png}").jpg" > /dev/null
         done
+        # Hata mesajları ve test çıktısının özeti küçük zip'e de (sohbete gönderilince neden düştüğü görülsün)
+        cp ekranlar/*.txt ekranlar-kucuk/ 2>/dev/null || true
         zip -qr native-ekranlar-kucuk.zip ekranlar-kucuk
         ls -lh native-ekranlar*.zip
 
