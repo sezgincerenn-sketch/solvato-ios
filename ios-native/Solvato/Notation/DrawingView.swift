@@ -34,9 +34,9 @@ struct DrawingView: View {
 @MainActor
 enum DrawingRenderer {
     /// Bravura yolları: uygulama boyunca bir kez
-    nonisolated(unsafe) static let glyphPaths: [String: Path] = Smufl.glyphs.mapValues { path($0.path) }
+    static let glyphPaths: [String: Path] = Smufl.glyphs.mapValues { path($0.path) }
 
-    static func path(_ commands: [PathCommand]) -> Path {
+    nonisolated static func path(_ commands: [PathCommand]) -> Path {
         var p = Path()
         func pt(_ q: SolvatoCore.Point) -> CGPoint { CGPoint(x: q.x, y: q.y) }
         for c in commands {
