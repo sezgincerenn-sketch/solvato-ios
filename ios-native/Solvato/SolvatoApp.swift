@@ -1,14 +1,15 @@
 // Native Solvato'nun girişi. Tema tercihini (sistem / koyu / açık) web'le aynı anahtarda saklar ve uygular.
 // UI testleri `-UITestTheme dark|light` başlatma argümanıyla temayı zorlar (kayıtlı tercihi değiştirmeden).
-// UI test senaryosu (SOLVATO_SENARYO_* ortam değişkenleri, TestScenario) verilirse uygulama o veriyle bellekte açılır
-// ve kök görünüm (AppRoot) gösterilir; yoksa şimdilik tasarım sistemi ekranı (ekranlar 0.5'te tamamlanınca kök AppRoot).
+// Kök görünüm AppRoot (Pratik ile açılır). UI test senaryosu (SOLVATO_SENARYO_* ortam değişkenleri, TestScenario)
+// verilirse uygulama o veriyle bellekte ve sabit tarihle açılır; `-UITestDesignSystem` tasarım sistemi önizlemesini açar.
 import SolvatoCore
 import SwiftUI
 
 @main
 struct SolvatoApp: App {
     @AppStorage(ThemeMode.storageKey) private var storedTheme = ThemeMode.system.rawValue
-    @State private var scenarioModel: AppModel? = TestScenario(environment: ProcessInfo.processInfo.environment)?.makeModel()
+    /// UI test senaryosu varsa o veriyle bellekte; yoksa gerçek kayıtlarla
+    @State private var model: AppModel = TestScenario(environment: ProcessInfo.processInfo.environment)?.makeModel() ?? AppModel()
 
     private var themeMode: Binding<ThemeMode> {
         Binding(get: { ThemeMode(stored: storedTheme) }, set: { storedTheme = $0.rawValue })
@@ -22,10 +23,11 @@ struct SolvatoApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if let scenarioModel {
-                    AppRoot(model: scenarioModel)
-                } else {
+                // Tasarım sistemi önizlemesi yalnız UI testinde (-UITestDesignSystem)
+                if ProcessInfo.processInfo.arguments.contains("-UITestDesignSystem") {
                     DesignSystemScreen(themeMode: themeMode)
+                } else {
+                    AppRoot(model: model)
                 }
             }
             .preferredColorScheme(effectiveMode.colorScheme)
