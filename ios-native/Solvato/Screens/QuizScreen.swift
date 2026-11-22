@@ -534,7 +534,7 @@ struct EarPromptView: View {
                         .frame(width: size, height: size)
                         .background(Circle().fill(base.opacity(playing > 0 ? 0.22 : 0.12)))
                         .overlay(Circle().strokeBorder(base.opacity(0.5), lineWidth: 2))
-                        .overlay { if playing > 0 { EarPulse(color: base).padding(-8) } }
+                        .overlay { if playing > 0 { EarPulse(color: base.color).padding(-8) } }
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Tekrar dinle")
