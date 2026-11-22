@@ -68,6 +68,10 @@ final class AudioOutput: @unchecked Sendable {
         let session = AVAudioSession.sharedInstance()
         try? session.setCategory(.playback, mode: .default, options: [.mixWithOthers])
         try? session.setActive(true)
+        // Ses çıkışı yoksa (ör. derleme sunucusundaki simülatör) motor bağlanmaz: AVAudioEngine geçersiz çıkış biçiminde
+        // yakalanamayan bir istisnayla uygulamayı kapatır. Bir sonraki seste yeniden denenir.
+        let hw = engine.outputNode.outputFormat(forBus: 0)
+        guard hw.sampleRate > 0, hw.channelCount > 0 else { return }
         if !attached {
             guard let format = AVAudioFormat(standardFormatWithSampleRate: mixer.sampleRate, channels: 1) else { return }
             let node = makeSourceNode(mixer, format: format)
