@@ -514,6 +514,9 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 ### E-15 Çalışma
 
+- [x] Native'de yapıldı (22 Kasım): ders listesi, terim tablosu ve arama çekirdekte (`Lessons`, `Terms`; altın tablo
+  `calisma.json`, 35 aramada web'le aynı sonuç), ekran `StudyScreen`. Ders içerikleri E-16'da.
+
 - Kaynak: `screens/study/StudyScreen.tsx`, `lessons.tsx`.
 - Başlık, arama ("Konu ara: legato, Fa anahtarı…"; Türkçe harf ve aksan farkı yok sayılır, başlık/alt yazı/bölümde
   arar; temizle düğmesi), **Kaldığın yer** kartı (son ders, arama yokken), bölümler: Notalar, Ritim, Akorlar, Terimler

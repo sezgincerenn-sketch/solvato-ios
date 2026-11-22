@@ -28,7 +28,7 @@ await build({
 
 rmSync(out, { recursive: true, force: true })
 const run = (tz, ...args) =>
-  execFileSync(process.execPath, [tmp, out, ...args], { env: { ...process.env, TZ: tz }, stdio: "inherit" })
+  execFileSync(process.execPath, [tmp, out, ...args], { cwd: root, env: { ...process.env, TZ: tz }, stdio: "inherit" })
 run("Europe/Istanbul")
 // Seri "dün = şimdi − 24 saat" kuralı yaz saati olan bir yerde de aynı sonucu vermeli
 run("America/New_York", "seri")

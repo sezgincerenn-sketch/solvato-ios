@@ -28,6 +28,18 @@ final class AppModelTests: XCTestCase {
         qs.enumerated().map { SessionResult(question: $1, correct: correct($0), timeMs: 2000) }
     }
 
+    func testOpenLessonRemembersLast() async {
+        let m = model()
+        XCTAssertNil(m.lastLesson)
+        m.go(.study)
+        m.openLesson("mnemonic-treble")
+        XCTAssertEqual(m.nav.current, .lesson)
+        XCTAssertEqual(m.lessonId, "mnemonic-treble")
+        XCTAssertEqual(model().lastLesson?.title, "Ezber cümleleri: Sol anahtarı")
+        p.setLastLesson("silinmis-ders")
+        XCTAssertNil(model().lastLesson)
+    }
+
     func testFirstLaunch() async {
         let m = model()
         XCTAssertTrue(m.showOnboarding)

@@ -98,6 +98,16 @@ public final class AppModel {
 
     public func go(_ v: AppView) { nav.go(v) }
     public func back() { nav.back() }
+
+    /// Çalışma'dan bir ders açar; son açılan ders "Kaldığın yer" için bu cihazda hatırlanır (yedeğe girmez)
+    public func openLesson(_ id: String) {
+        persistence.setLastLesson(id)
+        lessonId = id
+        nav.go(.lesson)
+    }
+
+    /// Çalışma › Kaldığın yer: son açılan ders (bilinmeyen kimlik yok sayılır)
+    public var lastLesson: Lesson? { persistence.lastLesson().flatMap(Lessons.byId) }
     /// Bir kaplama (açılış, tanıtım, kutlama) açık mı: kenardan kaydırma çalışmaz
     public var overlayOpen: Bool { celebrate != nil || showOnboarding || showSplash }
 

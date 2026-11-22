@@ -6,6 +6,9 @@ import { cizim } from "./cizim"
 import { piyano } from "./piyano"
 import { home, progress } from "./ekran"
 import { join } from "node:path"
+import { readFileSync } from "node:fs"
+import { LESSONS } from "../../src/screens/study/lessons"
+import { palette } from "../../src/design/tokens"
 import { ALL_QUESTIONS, questionLevel } from "../../src/data/questions"
 import { rankFromXp, todayKey } from "../../src/utils/level"
 import { starsFor, nextStarHint } from "../../src/utils/stars"
@@ -853,6 +856,83 @@ function ilerleme() {
   return rows
 }
 
+// ─── Çalışma: ders listesi, arama ve terim tablosu ─────────────────────────────
+// Renkler palet adıyla (native PaletteColor). TERMS_REF dışa aktarılmadığı için kaynak metinden okunur.
+const paletteName = (hex: string) => Object.entries(palette).find(([, v]) => v === hex)![0]
+const studyNorm = (s: string) =>
+  s
+    .toLocaleLowerCase("tr")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ı/g, "i")
+function calisma() {
+  const src = readFileSync(join(process.cwd(), "src/screens/study/TermsStudy.tsx"), "utf8")
+  const lit = src.slice(src.indexOf("const TERMS_REF = [") + "const TERMS_REF = ".length, src.indexOf("\n]\n") + 2)
+  const terms = new Function("palette", `return ${lit}`)(palette) as {
+    group: string
+    color: string
+    items: { symbol: string; name: string; meaning: string }[]
+  }[]
+  const queries = [
+    "",
+    "  ",
+    "legato",
+    "fa anahtari",
+    "FA ANAHTARI",
+    "Fa anahtarı",
+    "ritim",
+    "RİTİM",
+    "akor",
+    "Akorlar",
+    "ezber",
+    "diyez",
+    "♯",
+    "dörtlük",
+    "dortluk",
+    "İFADE",
+    "ifade",
+    "tempo",
+    "xyz",
+    "sus",
+    "Uzman",
+    "caz",
+    "Reçel",
+    "recel",
+    "ISARET",
+    "işaret",
+    "Işık",
+    "yapisal",
+    "da capo",
+    "pianissimo",
+    "notalar",
+    "ı",
+    "i",
+    "I",
+    "İ",
+  ]
+  const SECTIONS = ["Notalar", "Ritim", "Akorlar", "Terimler"]
+  return {
+    lessons: LESSONS.map((l) => ({
+      id: l.id,
+      section: l.section,
+      title: l.title,
+      sub: l.sub,
+      icon: l.icon,
+      color: paletteName(l.color),
+    })),
+    terms: terms.map((g) => ({ group: g.group, color: paletteName(g.color), items: g.items })),
+    searches: queries.map((query) => {
+      const q = studyNorm(query.trim())
+      const ids = SECTIONS.flatMap((sec) =>
+        LESSONS.filter(
+          (l) => l.section === sec && (!q || studyNorm(`${l.title} ${l.sub} ${l.section}`).includes(q)),
+        ).map((l) => l.id),
+      )
+      return { query, ids }
+    }),
+  }
+}
+
 // ─── Çalıştır ────────────────────────────────────────────────────────────────
 const only = process.argv[3]
 if (only === "seri") write(`seri-${TZ!.replace("/", "-")}.json`, seri())
@@ -875,5 +955,6 @@ else {
   write("piyano.json", piyano())
   write("ana-sayfa.json", anaSayfa())
   write("ilerleme.json", ilerleme())
+  write("calisma.json", calisma())
   write("seri-" + TZ!.replace("/", "-") + ".json", seri())
 }

@@ -143,7 +143,8 @@ süre halkası, formül, seçilen tuşlar), UI testinde `akor`; 82 test. İlerle
 cevap yöntemi, ses, titreşim, tema, hatırlatma, sıfırlama); tema artık uygulama durumunda (Persistence); 85 test. Sırada:
 Öğretmen kodu, Gizlilik ve Lisanslar, Çalışma, Oyunlar, Ritmi Tut.
 Öğretmen kodu (E-13; kurallar `TeacherFlow`), Gizlilik ve Lisanslar (E-14; metinler `legal.ts`'den `hukuk.json`'a birebir); 90 test.
-Sırada: Çalışma sekmesi (E-15/E-16), Oyunlar (E-17), Ritmi Tut.
+Çalışma sekmesi (E-15): ders listesi, arama ve Kaldığın yer (`Lessons`, altın tablo `calisma.json`); 94 test.
+Sırada: ders içerikleri (E-16), Oyunlar (E-17), Ritmi Tut.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.

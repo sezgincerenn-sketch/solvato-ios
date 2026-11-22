@@ -230,6 +230,28 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Çalışma sekmesi (web "calisma", "calisma-arama", "calisma-kaldigin-yer")
+    @MainActor
+    func testCalisma() throws {
+        continueAfterFailure = false
+        for name in ["calisma", "calisma-arama", "calisma-kaldigin-yer"] {
+            for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+                let app = try launch(theme: theme, scenario: name)
+                XCTAssertTrue(app.buttons["Çalışma"].waitForExistence(timeout: 10))
+                app.buttons["Çalışma"].firstMatch.tap()
+                let field = app.textFields["Konu ara"]
+                XCTAssertTrue(field.waitForExistence(timeout: 5), "Çalışma açılmadı")
+                if name == "calisma-arama" {
+                    field.tap()
+                    field.typeText("legato")
+                }
+                Thread.sleep(forTimeInterval: 0.5)
+                snap("\(name)-\(tr)")
+                app.terminate()
+            }
+        }
+    }
+
     /// Akor turu (web "akor"): Pratik'ten Akor bağlantısı
     @MainActor
     func testAkor() throws {

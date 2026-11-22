@@ -99,6 +99,8 @@ struct AppRoot: View {
         case .settings: TabletColumn { SettingsScreen(model: model) }
         case .chordquiz: ChordQuizScreen(model: model).id(model.quizToken)
         case .result: TabletColumn { ResultScreen(model: model) }
+        case .study: TabletColumn(width: 820) { StudyScreen(model: model) }
+        case .lesson: TabletColumn(width: 820) { LessonScreen(model: model) }
         case .teacher: TabletColumn { TeacherScreen(model: model) }
         case .privacy: TabletColumn { LegalScreen(model: model, page: .privacy) }
         case .licenses: TabletColumn { LegalScreen(model: model, page: .licenses) }
