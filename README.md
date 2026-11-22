@@ -77,7 +77,8 @@ ios-native/
                        oyunlar, soru seçimi, kulak soruları, akorlar ve akor turu, Ritmi Tut puanlama, haftalık rapor, kalıcı depolama), Resources/soru-bankasi.json. Testler: `swift test`
                        Notation/ (nota çizimi yerleşimi: Notation dili, portesi, akor ve hedef portesi → çizim listesi;
                        Piano: klavye tuşları, durumları, renkleri), App/ (ScreenStack: gezinme kuralları;
-                       AppModel: uygulama durumu ve tur akışı, web App.tsx),
+                       AppModel: uygulama durumu ve tur akışı, web App.tsx; HomeContent: Pratik içeriği;
+                       TestScenario: UI test senaryosu, bellekte depo),
                        Resources/smufl.json (Bravura sembol yolları, web'le aynı)
   Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
                        aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,
@@ -108,7 +109,9 @@ ios-native/
 - Kalıcı veriler web'le aynı anahtar adlarıyla Application Support/Solvato altında dosya (`Persistence.swift`; veri
   korumalı, son ders yedek dışı). Tema bugün uygulamada `pianote_theme_v1` ile UserDefaults'tan okunuyor; 0.5'te bu katmana geçer. UI testleri `-UITestTheme dark|light` ile
   temayı zorlar.
-- Henüz tek ekran var: tasarım sistemi önizlemesi. Gerçek ekranlar aşama 0.5'te.
+- Ekranlar 0.5'te geliyor: Pratik hazır (`Screens/HomeScreen.swift`, kök `AppRoot.swift`). Normal açılış şimdilik tasarım
+  sistemi; UI testleri `scripts/referans.mjs` senaryolarını (`--json` → `SolvatoUITests/senaryolar.json`) ortam
+  değişkeniyle verir, uygulama o veriyle bellekte ve sabit tarihle açılır, görüntüler web referanslarıyla aynı adı taşır.
 
 ## Klasör yapısı
 

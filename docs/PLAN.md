@@ -121,7 +121,10 @@ Tasarım sistemi ekranında örnekler. 0.4'te kalan: ekranda React görüntüler
 0.5 başladı (22 Kasım): ortak ekran parçaları (Avatar, BackButton, ScreenHeader, Toast, PlayChip, TopicLink, ExitConfirm,
 NavBar, TabletColumn) `Solvato/UI/Shell.swift`; tasarım sistemi ekranında örnekler. Uygulama akışı çekirdekte:
 gezinme kuralları (`ScreenStack`) ve durum modeli (`AppModel`: tur başlat/bitir, oyun, sıfırlama, tanıtım); 66 test.
-Sırada: SwiftUI kök görünümü (sekmeler, kaydırarak geri) ve Pratik ekranı.
+Pratik ekranı (E-04): içerik çekirdekte (`HomeContent`; 60 durumda web'le aynı yazılar, aynı sıra), SwiftUI ekranı ve kök
+görünüm (`AppRoot`). UI testleri `referans.mjs --json` senaryolarıyla (aynı veri, aynı an) `pratik*` görüntülerini alır;
+uygulama normal açılışta hâlâ tasarım sistemiyle açılır (soru turu gelince kök AppRoot olur). 69 test. Sırada: kaydırarak
+geri, ana sayfa ipuçları (Coachmark), açılış ve tanıtım, soru turu.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.
