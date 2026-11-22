@@ -59,6 +59,8 @@ public final class AppModel {
     public private(set) var lastSpecial: SpecialRound?
     public private(set) var lastPoints = 0
     public private(set) var lastStars: (stars: Int, best: Int?) = (0, nil)
+    /// Her yeni turda artar: soru ekranı sıfırdan kurulsun (aynı ekrandan yeni tura geçişte de)
+    public private(set) var quizToken = 0
 
     public init(
         persistence: Persistence = Persistence(), random: @escaping RandomSource = systemRandom,
@@ -97,6 +99,7 @@ public final class AppModel {
 
     // MARK: Tur başlatma
     public func startQuiz(_ cat: FilterCategory) {
+        quizToken += 1
         sessionLabel = nil
         game = nil
         currentCategory = cat
@@ -105,6 +108,7 @@ public final class AppModel {
     }
 
     public func startGame(_ ctx: GameContext) {
+        quizToken += 1
         let level: Int
         let seed: Int
         switch ctx {
@@ -121,6 +125,7 @@ public final class AppModel {
     }
 
     public func startWeakPractice(_ keys: [String]) {
+        quizToken += 1
         let qs = Session.weakQuestions(keys, random: random)
         guard !qs.isEmpty else { return }
         sessionLabel = "Zayıf notalar"
@@ -137,6 +142,7 @@ public final class AppModel {
 
     /// Sonuçta "Hataları tekrar et": son turda yanlış yapılan sorular, aynı sırayla
     public func retryWrong() {
+        quizToken += 1
         let wrong = Set(lastResults.filter { !$0.correct }.map(\.questionId))
         let qs = sessionQuestions.filter { wrong.contains($0.id) }
         guard !qs.isEmpty else { return }
