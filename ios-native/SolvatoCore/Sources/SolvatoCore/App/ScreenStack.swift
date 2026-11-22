@@ -22,6 +22,9 @@ public enum AppView: String, Sendable, CaseIterable {
         default: false
         }
     }
+
+    /// Kendi çıkış onayı olan tur ekranları: kenardan kaydırma onayı açar (ekran kaymaz)
+    public var confirmsExit: Bool { self == .quiz || self == .chordquiz || self == .rhythmtap || self == .duel }
 }
 
 public struct ScreenStack: Equatable, Sendable {

@@ -71,6 +71,25 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Ana sayfa ipuçları: ilk adım ve son adım (web "pratik-ipucu-1", "pratik-ipucu-5")
+    @MainActor
+    func testIpucu() throws {
+        continueAfterFailure = false
+        for (name, nexts) in [("pratik-ipucu-1", 0), ("pratik-ipucu-5", 4)] {
+            for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+                let app = try launch(theme: theme, scenario: name)
+                XCTAssertTrue(app.buttons["Sıradaki"].waitForExistence(timeout: 10), "\(name): ipucu açılmadı")
+                for _ in 0..<nexts {
+                    app.buttons["Sıradaki"].tap()
+                    Thread.sleep(forTimeInterval: 0.4)
+                }
+                Thread.sleep(forTimeInterval: 0.4)
+                snap("\(name)-\(tr)")
+                app.terminate()
+            }
+        }
+    }
+
     /// Açılış animasyonu: başta, ortada (tuşlar) ve sonda (web referansı "acilis" son karesi)
     @MainActor
     func testAcilis() throws {

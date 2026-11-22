@@ -134,7 +134,9 @@ Tur sonucu (E-08) ve kutlama (E-09): yazılar çekirdekte (`ResultContent`, `Cel
 sonuç → Bitir akışı çalışır; henüz taşınmayan ekranlarda yalnız başlık ve "Bu ekran native sürüme henüz taşınmadı." notu.
 Tasarım sistemi yalnız UI testinde (`-UITestDesignSystem`). 78 test. Açılış animasyonu (E-01, CSS eğrileri çekirdekte:
 `Curve.value`) ve ilk açılış tanıtımı (E-02, iki canlı deneme, anahtar, seviye/hedef, günlük hatırlatma bildirimi) yazıldı;
-UI testinde `acilis`, `tanitim-*`. Sırada: ana sayfa ipuçları, kaydırarak geri; sonra akor turu ve İlerleme.
+UI testinde `acilis`, `tanitim-*`. Ana sayfa ipuçları (Coachmark, anchor tercihleriyle), kenardan kaydırarak geri (alt
+ekranlarda kayar, turlarda çıkış onayı), telefonda yalnız soru/akor turu yan döner (G-02, G-10). Kaydırma konumunun geri
+dönüşte korunması sonra. Sırada: akor turu, İlerleme, Profil, Ayarlar.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.

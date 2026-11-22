@@ -92,6 +92,10 @@ public final class AppModel {
     public var dailySolved: Int { stats.dailyQuestions[clock().todayKey] ?? 0 }
 
     // MARK: Gezinme
+    /// Turlarda kenardan kaydırma: ekranın kendi çıkış onayını açması istenir (sayaç her istekte artar)
+    public private(set) var exitRequest = 0
+    public func requestExit() { exitRequest += 1 }
+
     public func go(_ v: AppView) { nav.go(v) }
     public func back() { nav.back() }
     /// Bir kaplama (açılış, tanıtım, kutlama) açık mı: kenardan kaydırma çalışmaz

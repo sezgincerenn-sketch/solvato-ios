@@ -1,48 +1,162 @@
-// Uygulamanın kök görünümü: o anki ekran (AppModel.nav), sekme ekranlarında alt menü, kutlama penceresi.
-// Web App.tsx renderScreen. Hazır ekranlar: Pratik, soru turu, tur sonucu. Diğerleri (İlerleme, Çalışma, Profil,
-// Ayarlar, Oyunlar, akor turu, Ritmi Tut …) 0.5–0.7'de gelir; o güne kadar yerlerinde yalnızca başlık ve kısa not var.
+// Uygulamanın kök görünümü: o anki ekran (AppModel.nav), sekme ekranlarında alt menü, kutlama, tanıtım, açılış.
+// Web App.tsx renderScreen + utils/swipeBack.tsx: sol kenardan (28 pt) sağa kaydırınca ekran parmakla kayar, altında
+// önceki ekran görünür; %35'i geçince ya da hızlı bırakınca geri dönülür. Turlarda ekran kaymaz, ~80 pt kaydırma ekranın
+// çıkış onayını açar. Telefonda yalnız soru ve akor turu yan döner (G-02).
+// Hazır ekranlar: Pratik, soru turu, tur sonucu. Diğerleri 0.5–0.7'de; yerlerinde başlık ve kısa not.
 import SolvatoCore
 import SwiftUI
 
 struct AppRoot: View {
     let model: AppModel
+    @State private var dragX: Double = 0
+    @State private var underlay: AppView?
+    @State private var arrow: Double = 0
+    @State private var coach = 0
+
+    static let edge = 28.0
+    static let trigger = 80.0
 
     var body: some View {
         let v = model.nav.current
-        ZStack {
-            VStack(spacing: 0) {
-                Group {
-                    switch v {
-                    case .home: HomeScreen(model: model)
-                    case .quiz:
-                        QuizScreen(
-                            model: model, questions: model.sessionQuestions, noHints: model.game != nil,
-                            timerSeconds: model.settings.timer && model.game == nil ? AppModel.timerSeconds : nil
-                        )
-                        .id(model.quizToken)
-                    case .result: TabletColumn { ResultScreen(model: model) }
-                    default: PendingScreen(view: v) { v.isTab ? model.go(.home) : model.back() }
+        GeometryReader { geo in
+            let w = geo.size.width
+            ZStack {
+                // Kaydırırken alttan görünen önceki ekran
+                if let u = underlay {
+                    let p = min(1, max(0, dragX / max(w, 1)))
+                    screenWithNav(u)
+                        .allowsHitTesting(false)
+                        .offset(x: -0.3 * w * (1 - p))
+                        .overlay(PaletteColor.black.color.opacity(0.35 * (1 - p)).ignoresSafeArea().allowsHitTesting(false))
+                }
+                screenWithNav(v)
+                    .background(ThemeColor.bg.color.ignoresSafeArea())
+                    .offset(x: dragX)
+                    .shadow(color: dragX > 0 ? .black.opacity(0.25) : .clear, radius: 12, x: -8)
+                if arrow > 0 { SwipeBackIndicator(progress: arrow) }
+                if let c = model.celebrate {
+                    CelebrationView(data: c) { model.celebrate = nil }
+                }
+                if model.showOnboarding && !model.showSplash {
+                    OnboardingScreen(model: model) { model.finishOnboarding() }.zIndex(5)
+                }
+                if model.showSplash {
+                    SplashScreen { model.showSplash = false }.zIndex(10)
+                }
+            }
+            // Ana sayfa ipuçları: hedeflerin konumu ekranlardan toplanır
+            .overlayPreferenceValue(CoachTargets.self) { anchors in
+                if showCoach {
+                    GeometryReader { p in
+                        CoachmarkView(
+                            steps: CoachStep.home, index: coach,
+                            rect: anchors[CoachStep.home[coach].target].map { p[$0] },
+                            onNext: { withAnimation(.easeOut(duration: 0.2)) { coach += 1 } },
+                            onDone: {
+                                model.settings.coachDone = true
+                                coach = 0
+                            })
                     }
                 }
-                .frame(maxHeight: .infinity)
-                if v.isTab {
-                    NavBar(active: NavTab(rawValue: v.rawValue) ?? .home) { model.go(AppView(rawValue: $0.rawValue) ?? .home) }
-                }
             }
-            if let c = model.celebrate {
-                CelebrationView(data: c) { model.celebrate = nil }
-            }
-            if model.showOnboarding && !model.showSplash {
-                OnboardingScreen(model: model) { model.finishOnboarding() }.zIndex(5)
-            }
-            if model.showSplash {
-                SplashScreen { model.showSplash = false }.zIndex(10)
-            }
+            .simultaneousGesture(edgeSwipe(width: w))
         }
         // iPad: içerik ortada, en geniş 1100 pt (G-03)
         .frame(maxWidth: 1100)
         .frame(maxWidth: .infinity)
         .background(ThemeColor.bg.color.ignoresSafeArea())
+        .onChange(of: v, initial: true) { _, nv in Orientation.allowLandscape(nv.allowsLandscape) }
+    }
+
+    @ViewBuilder
+    private func screenWithNav(_ v: AppView) -> some View {
+        VStack(spacing: 0) {
+            screen(v).frame(maxHeight: .infinity)
+            if v.isTab {
+                NavBar(active: NavTab(rawValue: v.rawValue) ?? .home) { model.go(AppView(rawValue: $0.rawValue) ?? .home) }
+                    .coachTarget("nav")
+            }
+        }
+    }
+
+    /// Ana sayfa ipuçları: Pratik'te, açılış/tanıtım/kutlama kapalıyken, bir kez (settings.coachDone)
+    private var showCoach: Bool {
+        model.nav.current == .home && !model.showSplash && !model.showOnboarding && model.celebrate == nil && !model.settings.coachDone
+    }
+
+    @ViewBuilder
+    private func screen(_ v: AppView) -> some View {
+        switch v {
+        case .home: HomeScreen(model: model, coachTarget: showCoach ? CoachStep.home[coach].target : nil)
+        case .quiz:
+            QuizScreen(
+                model: model, questions: model.sessionQuestions, noHints: model.game != nil,
+                timerSeconds: model.settings.timer && model.game == nil ? AppModel.timerSeconds : nil
+            )
+            .id(model.quizToken)
+        case .result: TabletColumn { ResultScreen(model: model) }
+        default: PendingScreen(view: v) { v.isTab ? model.go(.home) : model.back() }
+        }
+    }
+
+    // MARK: Kenardan kaydırma
+    private func edgeSwipe(width w: Double) -> some Gesture {
+        DragGesture(minimumDistance: 10)
+            .onChanged { g in
+                guard g.startLocation.x <= Self.edge else { return }
+                let dx = g.translation.width
+                let dy = abs(g.translation.height)
+                let cur = model.nav.current
+                if underlay == nil && arrow == 0 {
+                    // Dikey hareket önce geldiyse kaydırma değil
+                    if dy > 14 && dy > dx { return }
+                    guard dx > 10 else { return }
+                }
+                if model.nav.canSwipeBack(overlayOpen: model.overlayOpen) {
+                    if underlay == nil { underlay = model.nav.backTarget }
+                    dragX = max(0, dx)
+                } else if cur.confirmsExit && !model.overlayOpen {
+                    arrow = min(1, max(0, dx / Self.trigger))
+                }
+            }
+            .onEnded { g in
+                guard g.startLocation.x <= Self.edge else { return }
+                let dx = g.translation.width
+                if arrow > 0 {
+                    if dx >= Self.trigger && abs(g.translation.height) < dx * 0.7 { model.requestExit() }
+                    withAnimation(.easeOut(duration: 0.15)) { arrow = 0 }
+                    return
+                }
+                guard underlay != nil else { return }
+                let fast = g.predictedEndTranslation.width - dx > 120 && dx > 40
+                if dx > w * 0.35 || fast {
+                    withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.22)) { dragX = w } completion: {
+                        model.back()
+                        underlay = nil
+                        dragX = 0
+                    }
+                } else {
+                    withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.22)) { dragX = 0 } completion: { underlay = nil }
+                }
+            }
+    }
+}
+
+/// Turlarda kenardan kaydırırken soldaki ok (web SwipeBackIndicator)
+private struct SwipeBackIndicator: View {
+    let progress: Double
+    var body: some View {
+        Image(systemName: "chevron.left")
+            .font(.system(size: 16, weight: .bold))
+            .foregroundStyle(PaletteColor.white.color)
+            .frame(width: 40, height: 40)
+            .background(Circle().fill(PaletteColor.violet600.opacity(0.4 + 0.5 * progress)))
+            .scaleEffect(0.6 + 0.4 * progress)
+            .opacity(progress)
+            .offset(x: -20 + 36 * progress)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
     }
 }
 

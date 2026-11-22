@@ -78,6 +78,8 @@ struct QuizScreen: View {
             }
         }
         .onChange(of: octaves, initial: true) { _, o in round.octaves = o }
+        // Kenardan kaydırma çıkış onayını açar
+        .onChange(of: model.exitRequest) { _, _ in showExit = true }
     }
 
     private var elapsed: Int { Int(Date().timeIntervalSince(startedAt) * 1000) }

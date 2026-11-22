@@ -7,6 +7,7 @@ import SwiftUI
 
 @main
 struct SolvatoApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @AppStorage(ThemeMode.storageKey) private var storedTheme = ThemeMode.system.rawValue
     /// UI test senaryosu varsa o veriyle bellekte; yoksa gerçek kayıtlarla
     @State private var model: AppModel = TestScenario(environment: ProcessInfo.processInfo.environment)?.makeModel() ?? AppModel()

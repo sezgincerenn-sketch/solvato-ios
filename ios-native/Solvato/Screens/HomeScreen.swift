@@ -6,6 +6,8 @@ import SwiftUI
 
 struct HomeScreen: View {
     let model: AppModel
+    /// Tanıtım sırasında aydınlatılan öğe: görünür alana kaydırılır
+    var coachTarget: String?
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var showRest = false
 
@@ -15,6 +17,7 @@ struct HomeScreen: View {
 
     var body: some View {
         let c = content
+        ScrollViewReader { proxy in
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 topBar(c).padding(.bottom, 20)
@@ -27,9 +30,9 @@ struct HomeScreen: View {
                         .padding(.top, -4)
                         .padding(.bottom, 12)
                 }
-                LevelCardView(content: c) { model.go(.profile) }.padding(.bottom, Space.s3)
+                LevelCardView(content: c) { model.go(.profile) }.coachTarget("level").id("level").padding(.bottom, Space.s3)
                 todayCard(c).padding(.bottom, Space.s4)
-                gamesCard(c).padding(.bottom, 20)
+                gamesCard(c).coachTarget("games").id("games").padding(.bottom, 20)
                 Text(c.sectionTitle.uppercased(with: Locale(identifier: "tr")))
                     .font(.ui(FontSize.xs, .bold))
                     .tracking(em: 0.08, size: FontSize.xs)
@@ -48,6 +51,11 @@ struct HomeScreen: View {
             .padding(.top, Space.s6)
         }
         .scrollIndicators(.hidden)
+        .onChange(of: coachTarget, initial: true) { _, t in
+            guard let t, t != "nav" else { return }
+            withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo(t, anchor: .center) }
+        }
+        }
         .background(alignment: .topLeading) {
             // Solda hafif ortam rengi (web radial-gradient rgba(99,102,241,0.12))
             // CSS radial-gradient(circle): yarıçap en uzak köşe (110·√2), %70te saydam
@@ -125,6 +133,8 @@ struct HomeScreen: View {
                 .shadow(color: PaletteColor.violet600.opacity(0.38), radius: 14, y: 8)
             }
             .buttonStyle(.plain)
+            .coachTarget("today")
+            .id("today")
         }
         .padding(20)
         .background(RoundedRectangle(cornerRadius: 24).fill(ThemeColor.fill.color))
@@ -186,7 +196,9 @@ struct HomeScreen: View {
         LazyVGrid(columns: columns, spacing: sizeClass == .regular ? 12 : 10) {
             ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
                 switch row {
-                case let .category(cat): CategoryCard(cat: cat) { model.startQuiz(cat.key) }
+                case let .category(cat):
+                    CategoryCard(cat: cat) { model.startQuiz(cat.key) }
+                        .modifier(CoachIf(on: cat.key == .treble, name: "categories"))
                 case let .link(l):
                     TopicLink(color: l.color, icon: l.icon, title: l.title, sub: l.sub, stars: l.stars) {
                         model.go(l.round == .chords ? .chordquiz : .rhythmtap)
@@ -320,5 +332,14 @@ struct PlayShape: Shape {
         p.addLine(to: CGPoint(x: r.minX + 5 * s, y: r.minY + 21 * s))
         p.closeSubpath()
         return p
+    }
+}
+
+/// Yalnız seçili öğeyi tanıtım hedefi yapar (web data-coach yalnız Sol anahtarı kartında)
+private struct CoachIf: ViewModifier {
+    let on: Bool
+    let name: String
+    func body(content: Content) -> some View {
+        if on { content.coachTarget(name).id(name) } else { content }
     }
 }
