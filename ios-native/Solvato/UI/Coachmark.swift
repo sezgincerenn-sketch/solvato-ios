@@ -73,6 +73,8 @@ struct CoachmarkView: View {
             }
         }
         .ignoresSafeArea(.keyboard)
+        // Kap adlı bir grup; içindeki düğmeler ayrı ayrı erişilebilir kalır
+        .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isModal)
         .accessibilityLabel("Kısa tanıtım")
     }

@@ -253,6 +253,8 @@ struct ExitConfirm: View {
             .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(ThemeColor.border.color, lineWidth: 1))
             .padding(24)
         }
+        // Kap adlı bir grup; içindeki düğmeler ayrı ayrı erişilebilir kalır
+        .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isModal)
         .accessibilityLabel("Turdan çık")
     }

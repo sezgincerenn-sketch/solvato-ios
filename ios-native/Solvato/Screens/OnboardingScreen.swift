@@ -57,6 +57,8 @@ struct OnboardingScreen: View {
         .frame(maxWidth: 600)
         .frame(maxWidth: .infinity)
         .background(ThemeColor.bg.color.ignoresSafeArea())
+        // Kap adlı bir grup; içindeki düğmeler ayrı ayrı erişilebilir kalır
+        .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isModal)
         .accessibilityLabel("Hoş geldin")
     }

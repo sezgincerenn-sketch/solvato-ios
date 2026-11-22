@@ -253,6 +253,8 @@ struct CelebrationView: View {
             .offset(y: shown || reduceMotion ? 0 : 14)
             .opacity(shown || reduceMotion ? 1 : 0)
         }
+        // Kap adlı bir grup; içindeki düğmeler ayrı ayrı erişilebilir kalır
+        .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isModal)
         .accessibilityLabel("Kutlama")
         .onAppear {
