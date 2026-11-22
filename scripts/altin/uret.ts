@@ -10,6 +10,10 @@ import { readFileSync } from "node:fs"
 import { LESSONS } from "../../src/screens/study/lessons"
 import { ChordsStudy } from "../../src/screens/study/ChordsStudy"
 import { MnemonicsStudy } from "../../src/screens/study/NotesStudy"
+import GamesScreen, { ChallengeGameScreen, DailyGameScreen } from "../../src/screens/GamesScreen"
+import GameResultScreen from "../../src/screens/GameResultScreen"
+import { dailyShareText, type GameCtx } from "../../src/screens/gameShared"
+import { dailyInfo as gameDailyInfo, summarize as gameSummarize, todayStr as gameToday } from "../../src/utils/games"
 import { parseXml, flatten } from "./cizim"
 import { createElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
@@ -994,6 +998,67 @@ function notaDersleri() {
   }
 }
 
+// ─── Oyunlar ekranları: liste, günün meydan okuması, meydan oku, oyun sonucu (günlük / kod / karşılaştırma)
+function oyunEkranlari() {
+  const rows = []
+  const noop = () => {}
+  for (let i = 0; i < 60; i++) {
+    NOW = Date.UTC(2026, int(12), 1 + int(28), int(24), int(60))
+    store.clear()
+    const today = gameDailyInfo(gameToday())
+    // Geçmiş oyunlar: bugünden geriye art arda birkaç gün (+ arada boşluk), bugün oynandı mı
+    const daily: Record<string, { correct: number; sec: number; marks: string }> = {}
+    const playedToday = i % 3 !== 0
+    const back = int(6)
+    for (let k = playedToday ? 0 : 1; k <= back; k++) {
+      if (k > 3 && gen() < 0.3) continue
+      const d = new RealDate(NOW - k * 86400000 + 3 * 3600000)
+      const key = gameToday(d)
+      const c = int(11)
+      daily[key] = { correct: c, sec: pick([5, 42, 59, 60, 61, 125, 300]), marks: "🟩".repeat(c) + "🟥".repeat(10 - c) }
+    }
+    store.set("notalik-daily", JSON.stringify(daily))
+    const level = 1 + int(3)
+    const name = pick(["", "Ayşe", "  ", "Can"])
+    resetSettings({ level: level as 1 | 2 | 3, name })
+    const results = Array.from({ length: 10 }, (_, k) => ({
+      questionId: k,
+      correct: gen() < 0.7,
+      timeMs: 500 + int(9000),
+    }))
+    const me = gameSummarize(results)
+    const cat = pick(GAME_CATS).key
+    const seed = int(65536)
+    const oppCorrect = pick([me.correct, me.correct, int(11)])
+    const oppSec = pick([me.sec, me.sec + 1, Math.max(0, me.sec - 1), int(400)])
+    const ctxs: GameCtx[] = [
+      { mode: "daily", ...today },
+      { mode: "challenge", cat, level, seed },
+      { mode: "challenge", cat, level, seed, opp: { cat, level, seed, correct: oppCorrect, sec: oppSec } },
+    ]
+    const html = (el: ReturnType<typeof createElement>) => screenTexts(renderToStaticMarkup(el))
+    rows.push({
+      now: NOW,
+      daily,
+      level,
+      name,
+      results: results.map((r) => r.correct),
+      timesMs: results.map((r) => r.timeMs),
+      cat,
+      seed,
+      opp: { correct: oppCorrect, sec: oppSec },
+      list: html(createElement(GamesScreen, { onBack: noop, onOpen: noop })),
+      dailyScreen: html(createElement(DailyGameScreen, { onBack: noop, onPlay: noop })),
+      dailyShare: daily[today.date] ? dailyShareText(today.no, today.cat, daily[today.date]) : null,
+      challenge: html(createElement(ChallengeGameScreen, { onBack: noop, onPlay: noop })),
+      result: ctxs.map((ctx) =>
+        html(createElement(GameResultScreen, { ctx, results, onNewChallenge: noop, onExit: noop })),
+      ),
+    })
+  }
+  return rows
+}
+
 // ─── Çalıştır ────────────────────────────────────────────────────────────────
 const only = process.argv[3]
 if (only === "seri") write(`seri-${TZ!.replace("/", "-")}.json`, seri())
@@ -1020,4 +1085,6 @@ else {
   write("akor-kartlari.json", akorKartlari())
   write("nota-dersleri.json", notaDersleri())
   write("seri-" + TZ!.replace("/", "-") + ".json", seri())
+  // Rastgele sayı dizisini ve depoyu değiştirir: en sonda kalsın (önceki tablolar aynı kalır)
+  write("oyun-ekranlari.json", oyunEkranlari())
 }

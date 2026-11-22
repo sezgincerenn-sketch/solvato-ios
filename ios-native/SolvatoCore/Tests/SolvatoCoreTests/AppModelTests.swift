@@ -88,8 +88,25 @@ final class AppModelTests: XCTestCase {
         XCTAssertEqual(m.nav.current, .gameresult)
         XCTAssertEqual(p.loadDaily()["2026-11-18"]?.correct, 5)
         XCTAssertEqual(m.stats.history?.first?.label, "Oyun · \(info.category.label)")
+        XCTAssertEqual(m.todayGame, info)
+        XCTAssertEqual(m.todayDaily?.correct, 5)
+        XCTAssertEqual(m.gameResult?.title, "Günün meydan okuması #\(info.number)")
+        XCTAssertEqual(m.gameResult?.dailyStreak, 1)
         m.back()
         XCTAssertEqual(m.nav.current, .gameDaily)
+    }
+
+    func testNewChallengeUsesSettingsLevelAndSeededRandom() async {
+        let m = model()
+        m.settings.level = 3
+        m.startNewChallenge(.rhythm)
+        guard case let .challenge(cat, level, seed, opp) = m.game else { return XCTFail() }
+        XCTAssertEqual(cat, .rhythm)
+        XCTAssertEqual(level, 3)
+        XCTAssertNil(opp)
+        XCTAssertEqual(m.sessionQuestions.map(\.id), Games.questions(.rhythm, level: 3, seed: seed).map(\.id))
+        m.completeQuiz(answer(m.sessionQuestions) { _ in true })
+        XCTAssertEqual(m.gameResult?.title, "Meydan okuman hazır")
     }
 
     func testSpecialRoundAndRetry() async {

@@ -282,6 +282,55 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Oyunlar (web "oyunlar…", "gunun-oyunu…", "meydan-oku…", "oyun-sonucu-…"): Pratik'teki Oyunlar kartından
+    @MainActor
+    func testOyunlar() throws {
+        continueAfterFailure = false
+        let steps: [(String, [String])] = [
+            ("oyunlar", []), ("oyunlar-oynandi", []),
+            ("gunun-oyunu", ["Günün meydan okuması"]), ("gunun-oyunu-oynandi", ["Günün meydan okuması"]),
+            ("meydan-oku", ["Arkadaşına meydan oku"]), ("meydan-oku-hata", ["Arkadaşına meydan oku"]),
+            ("oyun-sonucu-gunluk", ["Günün meydan okuması", "Oyna"]), ("oyun-sonucu-kod", ["Arkadaşına meydan oku", "Başla"]),
+        ]
+        for (name, taps) in steps {
+            for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+                let app = try launch(theme: theme, scenario: name)
+                XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
+                let games = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Oyunlar'")).firstMatch
+                for _ in 0..<8 where !(games.exists && games.isHittable) { app.swipeUp() }
+                try must(app, games, "\(name): Oyunlar kartı yok", shot: "\(name)-hata-\(tr)")
+                games.tap()
+                Thread.sleep(forTimeInterval: 0.5)
+                for t in taps {
+                    let b = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", t)).firstMatch
+                    try must(app, b, "\(name): \(t) yok", shot: "\(name)-hata-\(tr)", timeout: 5)
+                    b.tap()
+                    Thread.sleep(forTimeInterval: 0.5)
+                }
+                if name == "meydan-oku-hata" {
+                    let field = app.textFields["Meydan okuma kodu"]
+                    field.tap()
+                    field.typeText("ABCD-EFGH")
+                    app.buttons["Kabul et"].tap()
+                }
+                if name.hasPrefix("oyun-sonucu") {
+                    for _ in 0..<40 {
+                        if app.buttons["Kapat"].exists { break }
+                        let next = app.buttons.matching(NSPredicate(format: "label IN {'Sıradaki', 'Turu bitir'}")).firstMatch
+                        if next.exists { next.tap() } else {
+                            let key = app.buttons["Do tuşu"]
+                            if key.exists { key.tap() } else { app.buttons.allElementsBoundByIndex.last { $0.isEnabled && $0.isHittable }?.tap() }
+                        }
+                        Thread.sleep(forTimeInterval: 0.9)
+                    }
+                }
+                Thread.sleep(forTimeInterval: 0.6)
+                snap("\(name)-\(tr)")
+                app.terminate()
+            }
+        }
+    }
+
     /// Akor turu (web "akor"): Pratik'ten Akor bağlantısı
     @MainActor
     func testAkor() throws {

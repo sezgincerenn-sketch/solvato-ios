@@ -86,6 +86,22 @@ public final class AppModel {
     public var now: Now { clock() }
     /// Bugünün meydan okuması oynandıysa ilk denemenin kaydı
     public var todayDaily: DailyRecord? { persistence.loadDaily()[clock().todayKey] }
+    /// Bugünün meydan okuması (konu, tohum, numara)
+    public var todayGame: DailyInfo { Games.dailyInfo(clock().todayKey) }
+    /// Oyun serisi: art arda oynanan gün
+    public var gameStreak: Int { persistence.dailyStreak(now: clock()) }
+    /// Yeni meydan okumanın tohumu (web newSeed: Math.random ile; testte tohumlu kaynak)
+    public func newGameSeed() -> Int { Int(random() * 65536) }
+
+    /// Yeni meydan okuma: seçilen konu, öğrencinin seviyesi
+    public func startNewChallenge(_ category: GameCategory) {
+        startGame(.challenge(category: category, level: settings.level, seed: newGameSeed(), opponent: nil))
+    }
+
+    /// Oyun sonucu ekranının içeriği (son oyun turu)
+    public var gameResult: GameResultContent? {
+        game.map { GameResultContent(ctx: $0, results: lastResults, name: settings.name, dailyStreak: gameStreak) }
+    }
 
     /// Gösterilen seri (bugün ya da dün hedef tamamlanmadıysa 0)
     public var streak: Int { Progress.currentStreak(stats, now: clock()) }

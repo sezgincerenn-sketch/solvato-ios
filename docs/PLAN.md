@@ -146,7 +146,8 @@ cevap yöntemi, ses, titreşim, tema, hatırlatma, sıfırlama); tema artık uyg
 Çalışma sekmesi (E-15): ders listesi, arama ve Kaldığın yer (`Lessons`, altın tablo `calisma.json`); 94 test.
 Dersler (E-16): 19 dersin hepsi (nota, ezber, diyez-bemol, ritim, akor, terim; veriler ve çizimler web'le altın
 tabloyla aynı); 101 test. Çalma düğmeleri 0.6'da.
-Sırada: Oyunlar (E-17), Ritmi Tut.
+Oyunlar (E-17): liste, günün meydan okuması, meydan oku, oyun sonucu (web'le 60 durumda aynı yazılar); 104 test.
+Sırada: Akor düellosu (E-17), Ritmi Tut.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.

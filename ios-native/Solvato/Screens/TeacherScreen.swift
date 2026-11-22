@@ -10,7 +10,6 @@ struct TeacherScreen: View {
     @State private var err = ""
     @State private var applied: (code: String, setup: TeacherSetup)?
     @State private var setup: TeacherSetup
-    @FocusState private var focused: Bool
 
     init(model: AppModel) {
         self.model = model
@@ -45,34 +44,9 @@ struct TeacherScreen: View {
                 setupList(applied.setup)
                 muted("İstediğin zaman Ayarlar'dan değiştirebilirsin.")
             } else {
-                HStack(spacing: Space.s2) {
-                    TextField("", text: $code, prompt: Text("ABC-DEF").foregroundStyle(ThemeColor.textMuted.color))
-                        .font(.mono(FontSize.md))
-                        .tracking(2)
-                        .foregroundStyle(ThemeColor.text.color)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
-                        .submitLabel(.done)
-                        .focused($focused)
-                        .onSubmit(apply)
-                        .onChange(of: code) { _, v in
-                            let clean = TeacherFlow.sanitize(v)
-                            if clean != v { code = clean }
-                            err = ""
-                        }
-                        .accessibilityLabel("Öğretmen kodu")
-                        .padding(.vertical, Space.s3)
-                        .padding(.horizontal, 14)
-                        .frame(minHeight: 44)
-                        .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fillStrong.color))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: Radius.md)
-                                .strokeBorder(err.isEmpty ? ThemeColor.borderStrong.color : PaletteColor.red500.color, lineWidth: 1.5))
-                    AppButton("Uygula", variant: .secondary, disabled: code.trimmingCharacters(in: .whitespaces).isEmpty, action: apply)
-                }
-                if !err.isEmpty {
-                    Text(err).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.redText.color)
-                }
+                CodeField(
+                    code: $code, error: $err, placeholder: "ABC-DEF", label: "Öğretmen kodu", button: "Uygula",
+                    sanitize: TeacherFlow.sanitize, onSubmit: apply)
                 if !model.settings.teacherCode.isEmpty {
                     muted("Son uygulanan kod: \(model.settings.teacherCode)", size: FontSize.xs)
                 }
@@ -89,7 +63,6 @@ struct TeacherScreen: View {
         model.settings = s
         applied = r
         code = ""
-        focused = false
     }
 
     // MARK: 2) Öğretmen

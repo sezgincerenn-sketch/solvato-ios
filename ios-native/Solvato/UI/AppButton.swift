@@ -40,6 +40,12 @@ struct AppButton<Icon: View>: View {
         self.icon = icon()
     }
 
+    /// Paylaşım düğmesi: sistemin paylaşım menüsünü açar
+    init(_ title: String, variant: ButtonVariant = .primary, block: Bool = false, share text: String, @ViewBuilder icon: () -> Icon) {
+        self.init(title, variant: variant, block: block, action: {}, icon: icon)
+        shareText = text
+    }
+
     private var radius: Double { size == .lg ? Radius.lg : Radius.md }
     private var shape: RoundedRectangle { RoundedRectangle(cornerRadius: radius, style: .circular) }
 
@@ -96,9 +102,8 @@ struct AppButton<Icon: View>: View {
 
 extension AppButton where Icon == EmptyView {
     /// İkonsuz paylaşım düğmesi
-    init(_ title: String, block: Bool = false, share text: String) {
-        self.init(title, block: block, action: {}) { EmptyView() }
-        shareText = text
+    init(_ title: String, variant: ButtonVariant = .primary, block: Bool = false, share text: String) {
+        self.init(title, variant: variant, block: block, share: text) { EmptyView() }
     }
 
     /// İkonsuz düğme
