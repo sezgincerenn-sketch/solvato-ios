@@ -64,7 +64,8 @@ final class ScreenshotTests: XCTestCase {
                 let app = try launch(theme: theme, scenario: name)
                 XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10), "\(name): Pratik açılmadı")
                 let card = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", topic)).firstMatch
-                if !card.isHittable { app.swipeUp() }
+                // Kart görünene kadar kaydır (alttaki konular ilk ekranda yok)
+                for _ in 0..<6 where !(card.exists && card.isHittable) { app.swipeUp(velocity: .slow) }
                 card.tap()
                 XCTAssertTrue(app.buttons["Çık"].waitForExistence(timeout: 5), "\(name): soru açılmadı")
                 switch action {

@@ -84,7 +84,7 @@ struct QuizPianoView: View {
                                 }
                         }
                         .buttonStyle(.plain)
-                        .disabled(disabled)
+                        .allowsHitTesting(!disabled)
                         .accessibilityLabel(k.accessibilityLabel ?? k.note)
                     }
                 }
@@ -94,7 +94,7 @@ struct QuizPianoView: View {
                             .overlay(alignment: .bottom) { KeyLabels(labels: k.labels).padding(.bottom, 6) }
                     }
                     .buttonStyle(.plain)
-                    .disabled(disabled)
+                    .allowsHitTesting(!disabled)
                     .accessibilityLabel(k.accessibilityLabel ?? k.note)
                     .frame(width: g.size.width * (k.widthPct ?? 0) / 100, height: g.size.height * 0.62)
                     .offset(x: g.size.width * (k.leftPct ?? 0) / 100)
@@ -135,14 +135,14 @@ struct MultiPianoView: View {
                                     }
                             }
                             .buttonStyle(.plain)
-                            .disabled(disabled)
+                            .allowsHitTesting(!disabled)
                             .accessibilityLabel("\(k.note)\(k.octave)")
                         }
                     }
                     ForEach(Array(blacks.enumerated()), id: \.offset) { _, k in
                         Button { onTap(k) } label: { KeyFace(look: k.look, radius: 5) }
                             .buttonStyle(.plain)
-                            .disabled(disabled)
+                            .allowsHitTesting(!disabled)
                             .accessibilityLabel("\(k.note)\(k.octave)")
                             .frame(width: g.size.width * (k.widthPct ?? 0) / 100, height: g.size.height * 0.62)
                             .offset(x: g.size.width * (k.leftPct ?? 0) / 100)

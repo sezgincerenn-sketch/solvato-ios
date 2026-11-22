@@ -122,7 +122,7 @@ struct QuizScreen: View {
                             .shadow(color: i == round.index ? PaletteColor.violet500.opacity(0.6) : .clear, radius: 4)
                     }
                 }
-                Text("\(round.index + 1)/\(round.questions.count)")
+                Text(verbatim: "\(round.index + 1)/\(round.questions.count)")
                     .font(.mono(FontSize.sm, .bold))
                     .foregroundStyle(ThemeColor.textMuted.color)
                     .padding(.leading, 2)
@@ -140,7 +140,7 @@ struct QuizScreen: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel("Çık")
                 Spacer()
-                Text("✓ \(round.score)")
+                Text(verbatim: "✓ \(round.score)")
                     .font(.mono(FontSize.sm, .bold))
                     .foregroundStyle(ThemeColor.greenText.color)
                     .padding(.vertical, 5)
@@ -423,7 +423,7 @@ struct QuizScreen: View {
                     .shadow(color: glow, radius: 7)
                 }
                 .buttonStyle(.plain)
-                .disabled(round.answerState != .pending)
+                .allowsHitTesting(round.answerState == .pending)
             }
         }
         .padding(.horizontal, 16)
@@ -444,7 +444,7 @@ private struct TimerBar: View {
             let pct = Double(left) / Double(max(seconds, 1)) * 100
             let color = (pct > 50 ? PaletteColor.green500 : pct > 25 ? PaletteColor.amber500 : PaletteColor.red500).color
             HStack(spacing: 10) {
-                Text("\(left)").font(.mono(FontSize.sm, .bold)).foregroundStyle(color).frame(minWidth: 16)
+                Text(verbatim: "\(left)").font(.mono(FontSize.sm, .bold)).foregroundStyle(color).frame(minWidth: 16)
                 GeometryReader { g in
                     ZStack(alignment: .leading) {
                         Capsule().fill(ThemeColor.fillStrong.color)

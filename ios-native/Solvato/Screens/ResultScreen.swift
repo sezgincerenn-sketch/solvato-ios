@@ -35,7 +35,9 @@ struct ResultScreen: View {
                     .padding(.bottom, 20)
                 ScoreRing(value: c.correct, max: c.total, label: "%\(c.pct)", caption: "Doğruluk", detail: "\(c.correct)/\(c.total) doğru")
                     .background {
-                        RadialGradient(colors: [PaletteColor.violet500.opacity(0.4), .clear], center: .center, startRadius: 0, endRadius: 110)
+                        // web: inset −10 daire, radial-gradient(circle, violet .4 0%, saydam 65%); yarıçap en uzak köşe 80·√2
+                        RadialGradient(colors: [PaletteColor.violet500.opacity(0.4), .clear], center: .center, startRadius: 0, endRadius: 80 * 2.0.squareRoot() * 0.65)
+                            .clipShape(Circle())
                             .padding(-10)
                             .allowsHitTesting(false)
                     }
@@ -134,14 +136,14 @@ struct RankCardView: View {
                     .background(Circle().fill(PaletteColor.amber400.color))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("ÜNVAN · \(r.rank)/\(Ranks.all.count)")
+                    Text(verbatim: "ÜNVAN · \(r.rank)/\(Ranks.all.count)")
                         .font(.ui(FontSize.xs, .bold))
                         .tracking(em: Tracking.label, size: FontSize.xs)
                         .foregroundStyle(ThemeColor.textSubtle.color)
                     Text(r.label).font(.ui(FontSize.lg, .heavy)).foregroundStyle(ThemeColor.text.color)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                Text("\(content.totalXp) XP").font(.mono(FontSize.sm, .bold)).foregroundStyle(ThemeColor.amberText.color).lineLimit(1)
+                Text(verbatim: "\(content.totalXp) XP").font(.mono(FontSize.sm, .bold)).foregroundStyle(ThemeColor.amberText.color).lineLimit(1)
             }
             GeometryReader { g in
                 ZStack(alignment: .leading) {
