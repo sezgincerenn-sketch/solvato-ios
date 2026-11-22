@@ -525,6 +525,9 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 ### E-16 Dersler
 
+- [ ] Native'de kısmen (22 Kasım): Ritim (nota değerleri, sus, noktalı) ve Terimler (6 grup) yapıldı; nota ve akor
+  dersleri sırada.
+
 - Kaynak: `screens/study/LessonScreen.tsx` ve ders içerikleri:
   - Sol/Fa anahtarı notaları: ‹ › ile nota gezinme, porte + klavye, notayı çalma (`NotesStudy.tsx` `StaffStudy`).
   - Ezber cümleleri: renkli notalar, aynı renkte klavye, kart çevirme (`MnemonicsStudy`, `MemoCard`).

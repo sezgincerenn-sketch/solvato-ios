@@ -154,7 +154,7 @@ struct StudyScreen: View {
     }
 }
 
-/// Tek bir ders: başlık, alt yazı ve dersin içeriği (web LessonScreen.tsx). İçerikler E-16'da taşınıyor.
+/// Tek bir ders: başlık, alt yazı ve dersin içeriği (web LessonScreen.tsx)
 struct LessonScreen: View {
     let model: AppModel
 
@@ -171,9 +171,7 @@ struct LessonScreen: View {
                             .padding(.horizontal, 2)
                             .padding(.bottom, Space.s4)
                     }
-                    Text("Bu ders native sürüme henüz taşınmadı.")
-                        .font(.ui(FontSize.sm))
-                        .foregroundStyle(ThemeColor.textSubtle.color)
+                    if let lesson { LessonContent(lesson: lesson) }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, Space.s4)
@@ -183,5 +181,26 @@ struct LessonScreen: View {
             .scrollIndicators(.hidden)
         }
         .background(ThemeColor.bg.color)
+    }
+}
+
+/// Dersin içeriği (web lessons.tsx `render`)
+private struct LessonContent: View {
+    let lesson: Lesson
+
+    var body: some View {
+        switch lesson.id {
+        case "rhythm-values": RhythmValuesLesson()
+        case "rhythm-rests": RestsCard()
+        case "rhythm-dotted": DottedCard()
+        default:
+            if let g = Terms.groups.first(where: { "terms-\($0.group)" == lesson.id }) {
+                TermsLesson(group: g)
+            } else {
+                Text("Bu ders native sürüme henüz taşınmadı.")
+                    .font(.ui(FontSize.sm))
+                    .foregroundStyle(ThemeColor.textSubtle.color)
+            }
+        }
     }
 }

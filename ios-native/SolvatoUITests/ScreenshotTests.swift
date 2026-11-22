@@ -252,6 +252,31 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Çalışma dersleri (web "ders-<id>"): Çalışma'dan başlığa dokunarak açılır. Native'e taşınan dersler.
+    @MainActor
+    func testDersler() throws {
+        continueAfterFailure = false
+        let lessons = [
+            ("rhythm-values", "Nota değerleri"), ("rhythm-rests", "Sus işaretleri"), ("rhythm-dotted", "Noktalı notalar"),
+            ("terms-Dinamikler", "Dinamikler"), ("terms-Tempo", "Tempo"), ("terms-Değişim işaretleri", "Değişim işaretleri"),
+            ("terms-Artikülasyon", "Artikülasyon"), ("terms-İfade", "İfade"), ("terms-Yapısal İşaretler", "Yapısal İşaretler"),
+        ]
+        for (id, title) in lessons {
+            for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+                let app = try launch(theme: theme, scenario: "ders-\(id)")
+                XCTAssertTrue(app.buttons["Çalışma"].waitForExistence(timeout: 10))
+                app.buttons["Çalışma"].firstMatch.tap()
+                let row = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", title)).firstMatch
+                XCTAssertTrue(row.waitForExistence(timeout: 5), "ders satırı yok: \(title)")
+                for _ in 0..<8 where !row.isHittable { app.swipeUp() }
+                row.tap()
+                Thread.sleep(forTimeInterval: 0.6)
+                snap("ders-\(id)-\(tr)")
+                app.terminate()
+            }
+        }
+    }
+
     /// Akor turu (web "akor"): Pratik'ten Akor bağlantısı
     @MainActor
     func testAkor() throws {
