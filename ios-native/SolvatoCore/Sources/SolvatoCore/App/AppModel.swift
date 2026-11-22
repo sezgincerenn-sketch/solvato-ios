@@ -93,6 +93,9 @@ public final class AppModel {
     /// Yeni meydan okumanın tohumu (web newSeed: Math.random ile; testte tohumlu kaynak)
     public func newGameSeed() -> Int { Int(random() * 65536) }
 
+    /// Ritmi Tut turu: öğrencinin seviyesi, 6 ritim (web pickPatterns: Math.random ile; testte tohumlu kaynak)
+    public func newRhythmRound() -> RhythmTapRound { RhythmTapRound(level: settings.level, random: random) }
+
     /// Akor düellosunun soruları (web buildDuel: Math.random ile; testte tohumlu kaynak)
     public func newDuel(level: Int) -> DuelGame { DuelGame(questions: DuelGame.build(level: level, random: random)) }
 

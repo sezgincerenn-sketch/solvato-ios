@@ -430,6 +430,9 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 ### E-07 Ritmi Tut
 
+- [x] Native'de yapıldı (22 Kasım): akış çekirdekte `RhythmTapRound` (sayma, çalma, dokunuş kaydı, değerlendirme, çıkışta
+  durma; testli), ekran `RhythmTapScreen` + `RhythmTimelineView`. Metronom sesi ve ses gecikmesi düzeltmesi 0.6'da.
+
 - Kaynak: `screens/RhythmTapSession.tsx`, `components/RhythmTimeline.tsx`.
 - Üst: çıkış (onay), 6 bölüm (geçilen yeşil, geçilmeyen amber, şimdiki mor), "76 BPM".
 - "Ritmi Tut · 2/6", başlık "Dört vuruş say, sonra ritmi dokunarak çal" / "Ritim yerinde!" / "Bir daha deneyelim".

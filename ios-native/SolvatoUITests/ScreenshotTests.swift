@@ -332,6 +332,26 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Ritmi Tut (web "ritmi-tut", "ritmi-tut-ses-kapali"): Pratik'teki Ritmi Tut bağlantısından
+    @MainActor
+    func testRitmiTut() throws {
+        continueAfterFailure = false
+        for name in ["ritmi-tut", "ritmi-tut-ses-kapali"] {
+            for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+                let app = try launch(theme: theme, scenario: name)
+                XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
+                let link = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Ritmi Tut'")).firstMatch
+                for _ in 0..<6 where !(link.exists && link.isHittable) { app.swipeUp(velocity: .slow) }
+                try must(app, link, "\(name): Ritmi Tut bağlantısı yok", shot: "\(name)-hata-\(tr)")
+                link.tap()
+                try must(app, app.buttons["Turdan çık"], "\(name): Ritmi Tut açılmadı", shot: "\(name)-hata-\(tr)", timeout: 5)
+                Thread.sleep(forTimeInterval: 0.5)
+                snap("\(name)-\(tr)")
+                app.terminate()
+            }
+        }
+    }
+
     /// Akor turu (web "akor"): Pratik'ten Akor bağlantısı
     @MainActor
     func testAkor() throws {

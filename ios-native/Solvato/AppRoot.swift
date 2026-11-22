@@ -106,6 +106,7 @@ struct AppRoot: View {
         case .gameChallenge: TabletColumn { ChallengeGameScreen(model: model) }
         case .gameresult: TabletColumn { GameResultScreen(model: model) }
         case .duel: ChordDuelScreen(model: model)
+        case .rhythmtap: RhythmTapScreen(model: model).id(model.quizToken)
         case .teacher: TabletColumn { TeacherScreen(model: model) }
         case .privacy: TabletColumn { LegalScreen(model: model, page: .privacy) }
         case .licenses: TabletColumn { LegalScreen(model: model, page: .licenses) }

@@ -148,7 +148,8 @@ Dersler (E-16): 19 dersin hepsi (nota, ezber, diyez-bemol, ritim, akor, terim; v
 tabloyla aynı); 101 test. Çalma düğmeleri 0.6'da.
 Oyunlar (E-17): liste, günün meydan okuması, meydan oku, oyun sonucu (web'le 60 durumda aynı yazılar); 104 test.
 Akor düellosu (E-17): kurulum, ikiye bölünmüş oyun, sonuç, çıkış onayı (sorular web'le 200 tohumda aynı); 106 test.
-Sırada: Ritmi Tut.
+Ritmi Tut (E-07): akış çekirdekte (`RhythmTapRound`), ekran ve zaman şeridi; 109 test. Metronom sesi 0.6'da.
+0.5'te kalan: kaydırma konumunu hatırlama, "yan çevir" ipucu, sallanma/nabız animasyonları; ekran karşılaştırmaları.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.
