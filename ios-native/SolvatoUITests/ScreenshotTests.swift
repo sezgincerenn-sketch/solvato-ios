@@ -40,6 +40,54 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Soru turu: Pratik'ten konu kartına dokunup tur açılır (web referans senaryolarıyla aynı adlar ve adımlar)
+    @MainActor
+    func testSoru() throws {
+        continueAfterFailure = false
+        let steps: [(String, String, (XCUIApplication) -> Void)] = [
+            ("soru-nota", "Sol Anahtarı", { _ in }),
+            ("soru-nota-ipucu", "Sol Anahtarı", { $0.buttons["İpucu"].firstMatch.tap() }),
+            ("soru-nota-yanlis", "Sol Anahtarı", { app in Self.answerUntil(app, wrong: true) }),
+            ("soru-nota-dogru", "Sol Anahtarı", { app in Self.answerUntil(app, wrong: false) }),
+            ("soru-nota-siklar", "Fa Anahtarı", { _ in }),
+            ("soru-diyez", "Diyez & Bemol", { _ in }),
+            ("soru-ritim", "Ritim & Ölçü", { _ in }),
+            ("soru-terim", "Müzik Terimleri", { _ in }),
+            ("soru-yazim", "Nota Yazımı", { _ in }),
+            ("soru-kulak", "Kulak", { _ in }),
+            ("soru-sure", "Sol Anahtarı", { _ in }),
+            ("soru-cikis", "Sol Anahtarı", { $0.buttons["Çık"].firstMatch.tap() }),
+        ]
+        for (name, topic, action) in steps {
+            for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+                let app = try launch(theme: theme, scenario: name)
+                XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10), "\(name): Pratik açılmadı")
+                let card = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", topic)).firstMatch
+                if !card.isHittable { app.swipeUp() }
+                card.tap()
+                XCTAssertTrue(app.buttons["Çık"].waitForExistence(timeout: 5), "\(name): soru açılmadı")
+                action(app)
+                Thread.sleep(forTimeInterval: 0.5)
+                snap("\(name)-\(tr)")
+                app.terminate()
+            }
+        }
+    }
+
+    /// Klavyede "Do tuşu"na ya da son şıkka basarak yanlış (ya da doğru) cevaplanan ilk soruda durur
+    @MainActor
+    private static func answerUntil(_ app: XCUIApplication, wrong: Bool) {
+        for _ in 0..<10 {
+            let key = app.buttons["Do tuşu"]
+            if key.exists { key.tap() } else { app.buttons.allElementsBoundByIndex.last { $0.isEnabled && $0.isHittable }?.tap() }
+            Thread.sleep(forTimeInterval: 0.3)
+            let isWrong = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Doğru cevap:'")).firstMatch.exists
+            if isWrong == wrong { return }
+            if isWrong { app.buttons.matching(NSPredicate(format: "label IN {'Sıradaki', 'Turu bitir'}")).firstMatch.tap() }
+            Thread.sleep(forTimeInterval: 0.9)
+        }
+    }
+
     @MainActor
     private func launch(theme: String, scenario: String? = nil) throws -> XCUIApplication {
         let app = XCUIApplication()

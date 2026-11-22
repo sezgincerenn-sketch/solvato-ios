@@ -13,6 +13,12 @@ struct AppRoot: View {
             Group {
                 switch v {
                 case .home: HomeScreen(model: model)
+                case .quiz:
+                    QuizScreen(
+                        model: model, questions: model.sessionQuestions, noHints: model.game != nil,
+                        timerSeconds: model.settings.timer && model.game == nil ? AppModel.timerSeconds : nil
+                    )
+                    .id(model.quizToken)
                 default:
                     // Ekran henüz yok: geri dönülebilsin
                     VStack(spacing: Space.s4) {
