@@ -67,10 +67,7 @@ struct AppRoot: View {
         .background(ThemeColor.bg.color.ignoresSafeArea())
         .onChange(of: v, initial: true) { _, nv in Orientation.allowLandscape(nv.allowsLandscape) }
         // Ayarlar › Ses / Titreşim (G-07, G-08): kapalıysa hiçbir ses ya da titreşim yok
-        .onChange(of: model.settings.soundKeys, initial: true) { _, on in
-            Sound.shared.enabled = on
-            if !on { Sound.stopAll() }
-        }
+        .onChange(of: model.settings.soundKeys, initial: true) { _, on in Sound.enabled = on }
         .onChange(of: model.settings.haptics, initial: true) { _, on in Haptics.enabled = on }
         // Tur bitti: kutlama yoksa üç notalık melodi (kutlamanın kendi sesi CelebrationView'da)
         .onChange(of: model.roundsCompleted) { _, _ in if model.celebrate == nil { Sound.play(Sounds.sessionDone) } }

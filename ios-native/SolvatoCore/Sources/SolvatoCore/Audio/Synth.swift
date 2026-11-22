@@ -193,6 +193,13 @@ public final class SynthMixer: @unchecked Sendable {
         return Double(a.frame) / sampleRate + (host - a.host)
     }
 
+    /// Çıkış yeniden başlarken: eski cihaz saati bağı unutulur (ses saati kaldığı yerden devam eder)
+    public func resetAnchor() {
+        lock.lock()
+        anchor = nil
+        lock.unlock()
+    }
+
     /// Sesi ses saatinde `at` anında (verilmezse hemen) çalar
     public func schedule(_ voices: [Voice], at: Double? = nil) {
         lock.lock()
