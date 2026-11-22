@@ -48,7 +48,7 @@ struct ResultScreen: View {
                     statBox(icon: AnyView(ClockIcon().frame(width: 20, height: 20)), value: c.timeValue, label: c.timeLabel, text: .blueText, tint: .blue400)
                 }
                 .padding(.bottom, 16)
-                RankCardView(content: c).padding(.bottom, 16)
+                RankCardView(xp: c.totalXp, gained: c.points).padding(.bottom, 16)
                 VStack(spacing: 10) {
                     Button { c.hasWrong ? model.retryWrong() : model.retry() } label: {
                         HStack(spacing: 8) {
@@ -121,15 +121,17 @@ private struct ClockIcon: View {
     }
 }
 
-/// Ünvan kartı, tur sonucundaki kısa hali (web RankCard): rozet, "Ünvan · 5/15", ad, XP, ilerleme ve kalan XP
+/// Ünvan kartı (web RankCard): rozet, "Ünvan · 5/15", ad, XP, ilerleme ve kalan XP; profilde ünvan listesiyle (detailed)
 struct RankCardView: View {
-    let content: ResultContent
+    let xp: Int
+    var gained = 0
+    var detailed = false
 
     var body: some View {
-        let r = content.rank
+        let r = Ranks.from(xp: xp)
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: Space.s3) {
-                Text(String(r.rank))
+                Text(verbatim: String(r.rank))
                     .font(.ui(FontSize.lg, .heavy))
                     .foregroundStyle(PaletteColor.black.color)
                     .frame(width: 40, height: 40)
@@ -143,7 +145,7 @@ struct RankCardView: View {
                     Text(r.label).font(.ui(FontSize.lg, .heavy)).foregroundStyle(ThemeColor.text.color)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                Text(verbatim: "\(content.totalXp) XP").font(.mono(FontSize.sm, .bold)).foregroundStyle(ThemeColor.amberText.color).lineLimit(1)
+                Text(verbatim: "\(xp) XP").font(.mono(FontSize.sm, .bold)).foregroundStyle(ThemeColor.amberText.color).lineLimit(1)
             }
             GeometryReader { g in
                 ZStack(alignment: .leading) {
@@ -155,11 +157,46 @@ struct RankCardView: View {
             }
             .frame(height: 6)
             .padding(.top, Space.s3)
-            Text(content.rankNote).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color).padding(.top, Space.s2)
+            Text(
+                (gained > 0 ? "Bu turda +\(gained) XP. " : "")
+                    + (r.nextLabel.map { "\($0) ünvanına \(r.toNext) XP kaldı." } ?? "En üst ünvandasın.")
+            )
+            .font(.ui(FontSize.sm))
+            .foregroundStyle(ThemeColor.textMuted.color)
+            .padding(.top, Space.s2)
+            if detailed { list(r) }
         }
         .padding(Space.s4)
         .background(RoundedRectangle(cornerRadius: Radius.lg).fill(PaletteColor.amber500.opacity(0.07)))
         .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(PaletteColor.amber500.opacity(0.25), lineWidth: 1))
+    }
+
+    private func list(_ r: RankInfo) -> some View {
+        let vis = ProfileText.visibleRanks(r.rank)
+        return VStack(alignment: .leading, spacing: 6) {
+            ForEach(Array(vis.enumerated()), id: \.offset) { k, i in
+                if k > 0 && i - vis[k - 1] > 1 {
+                    Text("⋮").foregroundStyle(ThemeColor.textFaint.color).padding(.leading, 5).accessibilityHidden(true)
+                }
+                let done = i + 1 < r.rank
+                let cur = i + 1 == r.rank
+                HStack(spacing: Space.s2) {
+                    Text(verbatim: done ? "✓" : String(i + 1))
+                        .font(.ui(11, .bold))
+                        .foregroundStyle(cur ? PaletteColor.black.color : ThemeColor.amberText.color)
+                        .frame(width: 18, height: 18)
+                        .background(Circle().fill(cur ? PaletteColor.amber400.color : done ? PaletteColor.amber500.opacity(0.25) : ThemeColor.fillStrong.color))
+                        .accessibilityHidden(true)
+                    Text(Ranks.all[i].label).frame(maxWidth: .infinity, alignment: .leading)
+                    Text(verbatim: "\(trNumber(Double(Ranks.all[i].min))) XP").font(.mono(FontSize.xs)).foregroundStyle(ThemeColor.textFaint.color)
+                }
+                .font(.ui(FontSize.sm, cur ? .bold : .medium))
+                .foregroundStyle((cur ? ThemeColor.text : done ? ThemeColor.textMuted : ThemeColor.textFaint).color)
+            }
+        }
+        .padding(.top, Space.s3)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("\(Ranks.all.count) ünvandan \(r.rank).")
     }
 }
 

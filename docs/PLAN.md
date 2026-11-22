@@ -139,7 +139,9 @@ ekranlarda kayar, turlarda çıkış onayı), telefonda yalnız soru/akor turu y
 dönüşte korunması sonra. Akor turu (E-06): akış çekirdekte (`ChordRound`, testli), SwiftUI `ChordQuizScreen` (üç soru türü,
 süre halkası, formül, seçilen tuşlar), UI testinde `akor`; 82 test. İlerleme (E-10): içerik çekirdekte (`ProgressContent`;
 50 durumda web'le aynı yazılar), SwiftUI ekranı (telefonda tek, iPad'de iki sütun; haftalık rapor paylaşımı), UI testinde
-`ilerleme*`; 83 test. Sırada: Profil, Ayarlar.
+`ilerleme*`; 83 test. Profil (E-11: ad, renk, seviye, ünvan listesi, rapor) ve Ayarlar (E-12: hedef, seviye, anahtar, notalar,
+cevap yöntemi, ses, titreşim, tema, hatırlatma, sıfırlama); tema artık uygulama durumunda (Persistence); 85 test. Sırada:
+Öğretmen kodu, Gizlilik ve Lisanslar, Çalışma, Oyunlar, Ritmi Tut.
 
 **Takvime etkisi:** 23 Aralık – 5 Ocak yayın hedefi tutmaz. Gerçekçi yeni hedef **Ocak sonu – Şubat ortası
 2027**. Analitik (1.1) native sürümün üstüne yazılır.

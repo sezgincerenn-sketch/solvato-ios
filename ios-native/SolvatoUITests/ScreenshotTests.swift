@@ -163,6 +163,28 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Profil ve Ayarlar (web "profil", "profil-alt", "ayarlar", "ayarlar-alt")
+    @MainActor
+    func testProfilAyarlar() throws {
+        continueAfterFailure = false
+        for name in ["profil", "profil-alt", "ayarlar", "ayarlar-alt"] {
+            for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+                let app = try launch(theme: theme, scenario: name)
+                XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
+                app.buttons["Profil"].firstMatch.tap()
+                Thread.sleep(forTimeInterval: 0.5)
+                if name.hasPrefix("ayarlar") {
+                    app.buttons["Ayarlar"].firstMatch.tap()
+                    Thread.sleep(forTimeInterval: 0.5)
+                }
+                if name.hasSuffix("-alt") { for _ in 0..<6 { app.swipeUp() } }
+                Thread.sleep(forTimeInterval: 0.4)
+                snap("\(name)-\(tr)")
+                app.terminate()
+            }
+        }
+    }
+
     /// Akor turu (web "akor"): Pratik'ten Akor bağlantısı
     @MainActor
     func testAkor() throws {

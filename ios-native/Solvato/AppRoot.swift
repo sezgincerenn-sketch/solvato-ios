@@ -95,6 +95,8 @@ struct AppRoot: View {
             )
             .id(model.quizToken)
         case .dashboard: ProgressScreen(model: model)
+        case .profile: TabletColumn { ProfileScreen(model: model) }
+        case .settings: TabletColumn { SettingsScreen(model: model) }
         case .chordquiz: ChordQuizScreen(model: model).id(model.quizToken)
         case .result: TabletColumn { ResultScreen(model: model) }
         default: PendingScreen(view: v) { v.isTab ? model.go(.home) : model.back() }

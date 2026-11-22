@@ -8,12 +8,12 @@ import SwiftUI
 @main
 struct SolvatoApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @AppStorage(ThemeMode.storageKey) private var storedTheme = ThemeMode.system.rawValue
     /// UI test senaryosu varsa o veriyle bellekte; yoksa gerçek kayıtlarla
     @State private var model: AppModel = TestScenario(environment: ProcessInfo.processInfo.environment)?.makeModel() ?? AppModel()
 
+    /// Tema tercihi uygulama durumunda (Persistence, `pianote_theme_v1`)
     private var themeMode: Binding<ThemeMode> {
-        Binding(get: { ThemeMode(stored: storedTheme) }, set: { storedTheme = $0.rawValue })
+        Binding(get: { model.themeMode }, set: { model.themeMode = $0 })
     }
 
     /// Test argümanı varsa o tema; yoksa kullanıcının tercihi
