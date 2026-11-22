@@ -378,7 +378,7 @@ struct QuizScreen: View {
     }
 
     private var screenHeight: Double {
-        (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.screen.bounds.height ?? 844
+        Double((UIApplication.shared.connectedScenes.first as? UIWindowScene)?.screen.bounds.height ?? 844)
     }
 
     private var choices: some View {
