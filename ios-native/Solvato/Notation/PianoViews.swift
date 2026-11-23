@@ -50,15 +50,25 @@ private struct KeyFace: View {
     }
 }
 
+/// Tuş yazıları. Web'deki gibi yalnız boşlukta alt satıra geçer ("Orta Do" → "Orta / Do"), kelimenin ortasında
+/// bölünmez ("Ort / a / Do" olmaz); dar tuşta kelime sığmazsa taşar.
 private struct KeyLabels: View {
     let labels: [KeyLabel]
     var body: some View {
         ForEach(Array(labels.enumerated()), id: \.offset) { _, l in
-            Text(l.text)
-                .font(.ui(l.size, FontWeight(rawValue: l.weight) ?? .regular))
-                .foregroundStyle(l.color.color)
-                .multilineTextAlignment(.center)
-                .lineSpacing(0)
+            let font = Font.ui(l.size, FontWeight(rawValue: l.weight) ?? .regular)
+            ViewThatFits(in: .horizontal) {
+                Text(l.text).fixedSize()
+                VStack(spacing: 0) {
+                    ForEach(Array(l.text.split(whereSeparator: { $0 == " " || $0 == "\n" }).enumerated()), id: \.offset) { _, w in
+                        Text(String(w)).fixedSize()
+                    }
+                }
+            }
+            .font(font)
+            .foregroundStyle(l.color.color)
+            .multilineTextAlignment(.center)
+            .lineSpacing(0)
         }
     }
 }
