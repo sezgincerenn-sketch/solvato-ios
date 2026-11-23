@@ -2,8 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!--
   Solvato gizlilik bildirimi (Apple privacy manifest), native sürüm.
-  Uygulama veri toplamaz ve takip yapmaz. Tek "required reason API" kullanımı UserDefaults:
-  tema tercihi ve (aşama 0.3'ten itibaren) ilerleme yalnızca bu cihazda saklanır (CA92.1).
+  Uygulama veri toplamaz ve takip yapmaz. "Required reason API" kullanımları:
+  - UserDefaults: yalnızca bu uygulamanın kendi ayarları (UI testinde tema; CA92.1).
+  - Sistem açılış saati (CACurrentMediaTime / ses birimi saati): Ritmi Tut'ta metronom ile dokunuş arasındaki süreyi
+    uygulama içinde ölçmek için (35F9.1). Cihaz dışına çıkmaz.
 -->
 <plist version="1.0">
 <dict>
@@ -21,6 +23,14 @@
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
 				<string>CA92.1</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>35F9.1</string>
 			</array>
 		</dict>
 	</array>
