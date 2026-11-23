@@ -163,7 +163,11 @@ Tut gecikmesinin telefonda ölçülmesi.
 Codemagic'te doğrulama (22 Kasım akşamı): uygulama derleniyor; UI testleri simülatörde ses motoru açılırken düşüyordu
 (Codemagic simülatöründe iOS ses servisi yanıt vermiyor: `AURemoteIO::Initialize` zaman aşımı, çökme raporu). Testler artık
 `-UITestNoAudio` ile sessiz koşuyor; sesin telefonda TestFlight'la denenmesi gerekiyor. Codemagic'in aylık ücretsiz dakikası
-bittiği için son düzeltmeler (test ve TestFlight) **Aralık başında** derlenecek. Ceren bu arada tasarım güncellemesi yapıyor.
+bittiği için son düzeltmeler (test ve TestFlight) **Aralık başında** derlenecek.
+**Telefonda doğrulandı (23 Kasım, TestFlight 1012 = `a72df92`):** uygulama açılıyor ve kullanımda kapanmıyor; doğru/yanlış
+sesleri, piyano tuşları, kulak sorusunun kendiliğinden çalması, sessiz düğmesi açıkken ses, Spotify'ı kesmeme, titreşim,
+Ritmi Tut metronomu ve zamanlaması, sallanma/nabız/nota animasyonları çalışıyor. Sonraki derleme (yeni ses motoru, inceleyici
+düzeltmeleri) aynı listeyle yeniden denenecek. Ceren bu arada tasarım güncellemesi yapıyor.
 `inceleyici` ile kod üzerinden karşılaştırma (22 Kasım): iPad yatayda iki sütun ve 3 oktav, yan ekranda klavye tam genişlikte
 altta, Ritmi Tut iPad'de 680 pt, ipuçları bitince sayfa başa kayar, seri alevi titrer, sonuçta yıldızlar sırayla belirir ve
 ekran aşağıdan gelir, ezber portesinde notaya dokununca çalar, onay açıkken kaydırma onayı kapatır, düello sonucunda

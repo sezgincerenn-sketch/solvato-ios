@@ -91,7 +91,7 @@ alır ve bitince işaretler.
   (`ios/App/App/AppDelegate.swift`).
 - Kabul:
   - [ ] Her ses React sürümüyle kulakla karşılaştırıldığında aynı (perde, süre, sıra).
-  - [ ] Sessiz düğmesi açıkken ses geliyor; Spotify çalarken uygulama sesi müziği kesmiyor.
+  - [x] Sessiz düğmesi açıkken ses geliyor; Spotify çalarken uygulama sesi müziği kesmiyor. (Ceren, TestFlight 1012, 23 Kasım)
   - [ ] Ses kapalıyken hiçbir ses çalmıyor.
 
 ### G-08 Titreşim
