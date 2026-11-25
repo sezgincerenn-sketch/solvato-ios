@@ -1,6 +1,13 @@
 # Hesap ve cihazlar arası ilerleme
 
-Durum: taslak, Ceren'le kararlar alındı (22 Kasım 2026). Sürüm: **1.1** (1.0 hesapsız çıkar). Native iOS'a yazılır
+Durum: taslak, Ceren'le kararlar alındı (22 Kasım 2026). Sürüm: ~~1.1~~ → **1.0** (Ceren, 25 Kasım: "çekilsin").
+
+> **25 Kasım değişikliği (doküman buna göre yeniden yazılacak):** hesap 1.0'a alındı. Giriş seçenekleri **Misafir,
+> Apple ve Google**; e-posta ile giriş yok. Misafir uygulamayı tam kullanır, ilerlemesi yalnız o cihazda kalır; bunu
+> giriş ekranında açıkça söyleriz ("kaydedilmez" değil, "yalnız bu telefonda saklanır"). Sunucunun (Cloudflare,
+> `solvato-admin`), gizlilik politikasının ve mağaza gizlilik beyanının yayından önce hazır olması gerekir.
+
+Önceki not: Native iOS'a yazılır
 (`ios-native/`); React sürümüne eklenmez. Sunucu `solvato-admin` reposunda (Paket 4'teki Cloudflare altyapısı).
 
 ## Amaç

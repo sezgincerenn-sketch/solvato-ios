@@ -15,19 +15,45 @@ bağımsız maddeler daha erken girebilir.
 - **onaylandı**: ne yapılacağı net, uygulanabilir
 - **uygulandı**: kodda, TestFlight bekliyor (derleme numarası)
 - **tamam**: telefonda denendi
+- **beklemede**: Ceren şimdilik seçmedi; ileride yeniden bakılabilir
 
 ## Revizeler
 
-| No  | Ekran(lar) | Ne değişiyor                                                                                             | Durum  | Not                                                   |
-| --- | ---------- | -------------------------------------------------------------------------------------------------------- | ------ | ----------------------------------------------------- |
-| R1  | Soru turu  | Yanlışta açıklama kartı "Senin cevabın: Fa · Doğru cevap: Sol" der; nota sorusunda ikisi de dinlenebilir | taslak | Benchmark: Pitch Trainer, Clefs                       |
-| R2  | Soru turu  | Üstteki 10 nokta cevaplanınca yeşil (doğru) ya da kırmızı (yanlış) olur                                  | taslak | Benchmark: Notahop                                    |
-| R3  | Pratik     | Bugün kartı ne çalışılacağını ve süresini söyler: "Sol Anahtarı · 10 soru · ~3 dk"                       | taslak | Kaydırmayı azaltma önerisiyle birlikte ele alınabilir |
-| R4  | Tanıtım    | Seviye adımına isteğe bağlı kısa yerleştirme denemesi ("Bilmiyorum" seçenekli), sonuçta seviye önerisi   | taslak | Benchmark: Clefs, Notahop, Pitch Trainer; ürün kararı |
-| R5  | Tanıtım    | Yeni adım: "Öğretmenle mi çalışıyorsun?" Evet derse öğretmen kodu alanı                                  | taslak | Benchmark: Notaforte, Tomplay                         |
-| R6  | İlerleme   | Anahtar başına "Okuman" portesi: her nota üç renkte (eminsin / öğreniyorsun / henüz değil)               | taslak | Benchmark: Notahop; anketin 1 numaralı isteği         |
-| R7  | İlerleme   | Boş ekranda 3 adımlı başlangıç listesi (ilk tur, ilk hedef, 2 gün üst üste)                              | taslak | Benchmark: Pitch Trainer                              |
-| R8  | Tur sonucu | Hatırlatma kapalıyken ilk seri günü "Serini koru, hatırlatayım mı?" kartı                                | taslak | Benchmark: Clefs                                      |
+| No  | Ekran(lar)                    | Ne değişiyor                                                                                                            | Durum     | Not                                                   |
+| --- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------- | ----------------------------------------------------- |
+| R1  | Soru turu                     | Yanlışta açıklama kartı "Senin cevabın: Fa · Doğru cevap: Sol" der; nota sorusunda ikisi de dinlenebilir                | beklemede | Benchmark: Pitch Trainer, Clefs                       |
+| R2  | Soru turu                     | Üstteki 10 nokta cevaplanınca yeşil (doğru) ya da kırmızı (yanlış) olur                                                 | onaylandı | Benchmark: Notahop                                    |
+| R3  | Pratik                        | Bugün kartı ne çalışılacağını ve süresini söyler: "Sol Anahtarı · 10 soru · ~3 dk"                                      | onaylandı | Kaydırmayı azaltma önerisiyle birlikte ele alınabilir |
+| R4  | Tanıtım                       | Seviye adımına isteğe bağlı kısa yerleştirme denemesi ("Bilmiyorum" seçenekli), sonuçta seviye önerisi                  | beklemede | Benchmark: Clefs, Notahop, Pitch Trainer; ürün kararı |
+| R5  | Tanıtım                       | Yeni adım: "Öğretmenle mi çalışıyorsun?" Evet derse öğretmen kodu alanı; "Ben öğretmenim" kod hazırlama ekranına        | onaylandı | Benchmark: Notaforte, Tomplay; Ceren'in notu          |
+| R6  | İlerleme                      | Anahtar başına "Okuman" portesi: her nota üç renkte (eminsin / öğreniyorsun / henüz değil)                              | beklemede | Benchmark: Notahop; anketin 1 numaralı isteği         |
+| R7  | İlerleme                      | Boş ekranda 3 adımlı başlangıç listesi (ilk tur, ilk hedef, 2 gün üst üste)                                             | beklemede | Benchmark: Pitch Trainer                              |
+| R8  | Tur sonucu                    | Hatırlatma kapalıyken ilk seri günü "Serini koru, hatırlatayım mı?" kartı                                               | onaylandı | Benchmark: Clefs                                      |
+| R9  | Ayarlar, Tanıtım              | Hatırlatma saati iki yerde de sistemin saat seçicisiyle (alarm kurar gibi, bütün saatler)                               | onaylandı | Hata: iki listenin saatleri farklıydı                 |
+| R10 | Çalışma › Diyez ve bemol      | Bemol sekmesindeyken siyah tuşa basınca sekme bemolde kalır                                                             | onaylandı | Hata                                                  |
+| R11 | Açılış                        | Açılıştan sonra ekran bir an geniş görünmez                                                                             | onaylandı | Hata (web sürümünde); native'de kabul ölçütü          |
+| R12 | Tanıtım, Pratik               | Tanıtım bitince Pratik en üstten açılır                                                                                 | onaylandı | Hata                                                  |
+| R13 | Alt menü, tüm sekmeler        | Sekmeler Ana sayfa · İlerleme · Öğren · Profil; yüzen kapsül; Profil sağda, kullanıcı simgesiyle; üstteki avatar kalkar | onaylandı | Önce özellik dokümanı (gezinme)                       |
+| R14 | Profil, Ayarlar               | Ayarlar yalnız Profil'in sağ üstünde (alttaki düğme kalkar); öğretmen kodu Profil'in içinde                             | onaylandı | R13 ile birlikte                                      |
+| R15 | Pratik                        | Seri hapı basılmaz, yalnız bilgi verir                                                                                  | onaylandı | R17 analizine de girer                                |
+| R16 | Soru, akor, Ritmi Tut turları | Sol üstte hep çarpı (✕); kaydırarak geri gitme kapalı kalır                                                             | onaylandı |                                                       |
+| R17 | Tümü                          | Basılabilir / basılamaz kart analizi; sonuçlar yeni revizelere dönüşür                                                  | onaylandı | Analiz işi                                            |
+| R18 | Pratik                        | Bugün kartındaki porte yerine başka gösterim (10 bölmeli çubuk, halka ya da tek çizgide nota başları)                   | taslak    | Üç seçenek çizilip gösterilecek                       |
+| R19 | Pratik                        | Kategorilerdeki yıldızların yerine yüzde halkası                                                                        | taslak    | Ceren: benchmark'taki yüzde grafiklerine bak          |
+| R20 | Pratik, Profil                | Öğretmen kodundan sonra öğrenci düzeni değiştirebilir ve kodu kaldırabilir                                              | taslak    | Nasıl değiştireceği netleşecek                        |
+| R21 | Soru turu                     | Karma tura Nota Yazımı soruları da girer                                                                                | onaylandı | Kulak ve akor girmez (Ceren seçmedi)                  |
+| R22 | Ritmi Tut                     | Dokununca daha güçlü titreşim                                                                                           | onaylandı |                                                       |
+| R23 | İlerleme                      | Üstte "İlerleme" başlığı                                                                                                | onaylandı |                                                       |
+| R24 | İlerleme                      | Sıradaki (öğrenme yolu) kartı kalkar                                                                                    | onaylandı |                                                       |
+| R25 | İlerleme                      | Konular satırlarında konuya tur başlatıldığı belli olur ("Çalış ▶")                                                     | onaylandı |                                                       |
+| R26 | İlerleme                      | Konular başlığının altındaki çizgi kalkar                                                                               | onaylandı |                                                       |
+| R27 | Tanıtım                       | İlk ekranda uygulamanın ne olduğu tek cümleyle                                                                          | taslak    | "Öğretmeninle birlikte" geçmesin; metin önerilecek    |
+| R28 | Tanıtım                       | Adımlar arasında geri dönüş (sol üstte geri oku)                                                                        | onaylandı |                                                       |
+| R29 | Pratik (ipucu turu)           | İpucu adımları en üstten başlayıp sırayla aşağı iner, bitince sayfa en üste döner                                       | taslak    | Bugünkü sıra ve kaydırma kontrol edilecek             |
+| R30 | Öğretmen kodu, Oyunlar        | Paylaşılan mesajda kod en üstte, tek başına; uygulamada "Kodu yapıştır" düğmesi                                         | onaylandı |                                                       |
+| R31 | Öğretmen kodu, Oyunlar        | Kod yazılırken tire kendiliğinden eklenir                                                                               | onaylandı | Kod tiresiz de çalışıyor                              |
+| R32 | Paylaşım mesajları            | App Store indirme bağlantısı eklenir                                                                                    | onaylandı | Bağlantı belli olunca                                 |
+| R33 | Çalışma                       | "Ezber" yerine "Kolay hatırla"                                                                                          | onaylandı | Ders başlıkları ve ipucu metinleri                    |
 
 <!-- Örnek satır:
 | R1 | Pratik | "Bugün" kartı kısalır, porte küçülür | taslak | Soru: hedef yazısı kartta kalsın mı? |
@@ -37,7 +63,10 @@ bağımsız maddeler daha erken girebilir.
 
 Her revize için: ekran görüntüsü ya da tarif, kararlar, açık sorular, etkilenen dosyalar, kabul ölçütü.
 
-R1–R8, Ceren'in benchmark dosyasından (25 Kasım, `docs/benchmark.md`) çıkan **öneriler**; hiçbiri onaylı değil.
+R1–R8, Ceren'in benchmark dosyasından (25 Kasım, `docs/benchmark.md`) çıkan öneriler. R9–R33 Ceren'in 25 Kasım
+notlarından. Seçimler yapılacaklar sayfasında işaretlendi (https://claude.ai/artifact/PCg3hK9cALADfXcqqGdxUi):
+R2, R3, R5, R8 onaylandı; R1, R4, R6, R7 beklemede. R5'e Ceren'in notu eklendi: "Ben öğretmenim" seçen kişi öğrenci
+kodu hazırlama ekranına gider. R9 ve sonrasının ayrıntıları uygulanırken bu bölüme yazılır.
 Görüntü numaraları Figma'daki "Piyano Benchmark" dosyasının katman adları (IMG_xxxx).
 
 ### R1 Yanlış cevapta "senin cevabın" ve dinleme
@@ -144,6 +173,13 @@ Görüntü numaraları Figma'daki "Piyano Benchmark" dosyasının katman adları
 ## Bekleyen öneriler
 
 - Kaydırmayı azaltmak (Ceren, 22 Kasım): hangi ekranlarda uzun kaydırmanın rahatsız ettiği netleşecek.
+- Ceren'in 25 Kasım seçimleri, revize değil yeni özellik (her biri `ozellik` dokümanıyla):
+  - **Hesap 1.0'a çekildi**: misafir, Apple ve Google ile giriş (`docs/ozellikler/hesap.md`).
+  - **Widget şimdi**: seri ve bugünkü hedef.
+  - Sonraya: sınıf içi sıralama (hesapla), klavyede tuş gösterip portedeki notayı sorma, nota adı seçimi
+    (Do Re Mi / C D E) ve dil desteği.
+  - Ad: marka ve App Store araştırması yapılacak (solvato.app başkasında).
+  - Kalanlar: günün meydan okumasındaki #sayı kalır; öğretmen kodu / oyun kodu ayrımı ve "Ota" notu açık.
 - Benchmark'tan, revize değil yeni özellik sayılacaklar (`docs/benchmark.md` "Sonraya not"): aralık ve kalıp okuma
   için Notaforte'nin referans nota ("landmark") yöntemi, sınav hazırlık için Müzik Prova, tur sonunda okunan notaların
   tanıdık bir melodiye dönüşmesi (Notahop), seri dondurma (Clefs). Her biri ürün kararı; `ozellik` dokümanıyla.

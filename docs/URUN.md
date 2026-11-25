@@ -1,6 +1,6 @@
 # Solvato: ürün kararları ve yol haritası
 
-Son güncelleme: 21 Kasım 2026. Bu dosya alınan kararları ve sıradaki işleri tutar; kod ayrıntısı `README.md`'de.
+Son güncelleme: 25 Kasım 2026. Bu dosya alınan kararları ve sıradaki işleri tutar; kod ayrıntısı `README.md`'de.
 
 ## Ne
 
@@ -22,6 +22,8 @@ ayarlar, öğrenci haftalık raporunu paylaşım menüsüyle öğretmenine gönd
 | Kaldırılanlar | İki Porte (iki notayı birlikte okuma) denendi, kaldırıldı. Ritmi Tut Oyunlar listesinden çıkarıldı (ana sayfada Ritim kartının altında). Ritim heceleri eklenmeyecek.                                                                                                                                              |
 | Seri          | Kutlama 1. günden başlar.                                                                                                                                                                                                                                                                                          |
 | Veri (1.1)    | Admin paneli için **anonim analitik**: isim/hesap yok, rastgele cihaz kimliği, Ayarlar'dan kapatılabilir, yalnızca kendi sunucumuz (Cloudflare). 1.0 veri toplamadan çıkar. Ayrıntı `docs/PLAN.md`.                                                                                                                |
+| Hesap         | **1.0'a çekildi** (25 Kasım): Misafir, Apple ve Google ile giriş; e-posta yok. Misafir tam kullanır, ilerlemesi yalnız o cihazda kalır. "Sunucu ve hesap yok" kararı hesap açanlar için değişir; sunucu, gizlilik politikası ve mağaza beyanı yayından önce hazır olmalı. Ayrıntı `docs/ozellikler/hesap.md`.      |
+| Sekmeler      | Ana sayfa · İlerleme · Öğren · Profil, yüzen kapsül alt menü (25 Kasım, revize R13).                                                                                                                                                                                                                               |
 | Native iOS    | `solvato-ios` **Swift/SwiftUI ile native** yeniden yazılır; web görünümü ve üçüncü taraf kod yok, güvenlik ve performans tam optimize. **1. öncelik** (22 Kasım). Plan `docs/PLAN.md` Paket 0.                                                                                                                     |
 | Platform      | Önce iOS (iPhone + iPad), Android App Store'dan sonra. Web sürümü yok; tarayıcı önizlemesi TestFlight çalışınca kalkar.                                                                                                                                                                                            |
 | Instagram     | Yayından önce uygulamanın içeriği paylaşılmaz; genel nota ipuçları ve bilmeceler, sonunda "uygulama yolda, takipte kal".                                                                                                                                                                                           |
