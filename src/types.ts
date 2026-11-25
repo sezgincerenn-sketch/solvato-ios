@@ -113,7 +113,7 @@ export const DEFAULT_STATS: AppStats = {
 }
 
 // Gezinme
-export type NavTab = "home" | "dashboard" | "study"
+export type NavTab = "home" | "dashboard" | "study" | "profile"
 export type View =
   | NavTab
   | "quiz"

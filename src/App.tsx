@@ -73,8 +73,8 @@ const COACH_STEPS: CoachStep[] = [
   { target: "games", title: "Oyunlar", text: "Günün meydan okumasını oyna ya da arkadaşına meydan oku." },
   {
     target: "nav",
-    title: "İlerleme ve Çalışma",
-    text: "Gelişimini ve son turlarını İlerleme'de gör; notaları Çalışma'da ezberle.",
+    title: "İlerleme, Öğren ve Profil",
+    text: "Gelişimini İlerleme'de gör, notaları Öğren'de çalış; öğretmen kodu ve ayarlar Profil'de.",
   },
 ]
 
@@ -91,7 +91,7 @@ export default function App() {
   /** Yeni ekrana git. Sonuç ekranlarından gidilirse sonuç ekranı yığına girmez. */
   const setView = useCallback((v: View) => {
     const cur = viewRef.current
-    if (v === "home" || v === "dashboard" || v === "study") {
+    if (v === "home" || v === "dashboard" || v === "study" || v === "profile") {
       stackRef.current = []
       forgetScroll()
     } else if (cur !== "result" && cur !== "gameresult" && cur !== v) {
@@ -348,7 +348,6 @@ export default function App() {
           "game-daily",
           "game-challenge",
           "gameresult",
-          "profile",
           "lesson",
           "teacher",
           "privacy",
@@ -367,7 +366,7 @@ export default function App() {
   }, [swipe.underlay])
 
   const shellBg = colors.bg
-  const isTabView = (v: View) => v === "home" || v === "dashboard" || v === "study"
+  const isTabView = (v: View) => v === "home" || v === "dashboard" || v === "study" || v === "profile"
   // Bir ekranı (içerik + gerekiyorsa alt menü) çizer; kaydırmada alttaki ekran için de kullanılır
   const renderScreen = (v: View) => (
     <>
@@ -380,7 +379,6 @@ export default function App() {
             onRhythmTap={() => setView("rhythmtap")}
             onGames={() => setView("games")}
             onOpenProfile={() => setView("profile")}
-            onOpenProgress={() => setView("dashboard")}
             dailyGoal={settings.dailyGoal}
           />
         )}
@@ -394,7 +392,6 @@ export default function App() {
           <TabletColumn width={680}>
             <ProfileScreen
               stats={stats}
-              onBack={goBack}
               onOpenSettings={() => setView("settings")}
               onOpenProgress={() => setView("dashboard")}
             />

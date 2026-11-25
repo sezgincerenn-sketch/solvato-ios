@@ -1,6 +1,7 @@
-// Ana sayfa (Pratik): günün çalışması, oyunlar ve konu kartları
+// Ana sayfa: günün çalışması, oyunlar ve konu kartları.
+// Revize önizlemesi: R3 (tur bilgisi), R15 (seri hapı basılmaz), R18 (hedef çubuğu), R19 (yüzde halkası).
 import LevelCard from "./profile/LevelCard"
-import { Avatar, PlayChip, StatPill, Stars, TopicLink } from "../ui"
+import { GoalBar, PercentRing, StatPill, TopicLink } from "../ui"
 import { currentStreak } from "../state/stats"
 import { Fragment, useState } from "react"
 import { allTopics } from "../utils/teacherCode"
@@ -12,7 +13,6 @@ import { rankFromXp, todayKey } from "../utils/level"
 import { getSettings } from "../utils/settings"
 import Icon from "../components/Icons"
 import { ClefIcon } from "../components/Glyph"
-import GoalStaff from "../components/GoalStaff"
 
 import { space, category, alpha, colors, font, gradient, palette, radius } from "../design/tokens"
 
@@ -28,7 +28,6 @@ export default function HomeScreen({
   onRhythmTap,
   onGames,
   onOpenProfile,
-  onOpenProgress,
   dailyGoal: dailyGoalProp,
 }: {
   dailyGoal: number
@@ -38,8 +37,6 @@ export default function HomeScreen({
   onRhythmTap: () => void
   onGames: () => void
   onOpenProfile: () => void
-  /** Seri hapına dokununca: İlerleme sekmesi (Bu hafta kartı) */
-  onOpenProgress: () => void
 }) {
   const lv = getSettings().level
   const tablet = useTablet()
@@ -167,7 +164,7 @@ export default function HomeScreen({
             <Logo size={30} />
           </h1>
           <div className="flex items-center gap-2">
-            {/* Seri (turuncu) ve XP (amber): ui/StatPill. Seriye dokununca İlerleme, XP'ye dokununca Profil.
+            {/* Seri (turuncu) ve XP (amber): ui/StatPill. Seri yalnız bilgi (R15), XP'ye dokununca Profil.
                 Rozetteki sayı ünvan sırası; "seviye" değil, seviye Başlangıç/Orta/İleri'dir. */}
             <StatPill
               tone={streak > 0 ? "orange" : "muted"}
@@ -180,8 +177,7 @@ export default function HomeScreen({
                 </span>
               }
               value={String(streak)}
-              label={streak > 0 ? `${streak} gün seri. Haftanı gör` : "Seri yok. Bugün bir tur çözünce başlar"}
-              onClick={onOpenProgress}
+              label={streak > 0 ? `${streak} gün seri` : "Seri yok. Bugün bir tur çözünce başlar"}
             />
             <StatPill
               tone="amber"
@@ -207,13 +203,6 @@ export default function HomeScreen({
               label={`${stats.totalPoints} XP, ${rank.rank}. ünvan: ${rank.label}. Profili aç`}
               onClick={onOpenProfile}
             />
-            <button
-              onClick={onOpenProfile}
-              aria-label="Profil"
-              style={{ padding: 0, border: "none", background: "none", cursor: "pointer", borderRadius: "50%" }}
-            >
-              <Avatar name={getSettings().name} color={getSettings().avatarColor} size={40} />
-            </button>
           </div>
         </div>
 
@@ -272,8 +261,8 @@ export default function HomeScreen({
                 {Math.min(dailySolved, 9999)}/{dailyGoal} soru
               </p>
             </div>
-            {/* Günlük hedef: portede notalar (components/GoalStaff) */}
-            <GoalStaff done={dailySolved} goal={dailyGoal} />
+            {/* Günlük hedef: 10 bölmeli çubuk (ui/GoalBar, R18) */}
+            <GoalBar done={dailySolved} goal={dailyGoal} />
             <p style={{ fontSize: font.size.sm, color: colors.textMuted, marginTop: 8 }}>
               {goalDone ? (
                 <>
@@ -306,9 +295,7 @@ export default function HomeScreen({
                 {goalDone ? "Bir tur daha" : dailySolved > 0 ? "Devam et" : "Bugünün çalışması"}
               </p>
               <p style={{ fontSize: font.size.sm, color: alpha(palette.violet100, 0.85), marginTop: 2 }}>
-                {teacherPick
-                  ? "Karma 10 soru · öğretmeninin seçtiği konulardan"
-                  : "Karma 10 soru · nota, ritim ve terimler"}
+                {teacherPick ? "Karma · 10 soru · ~3 dk · öğretmeninin konuları" : "Karma · 10 soru · ~3 dk"}
               </p>
             </div>
             <span
@@ -450,10 +437,8 @@ export default function HomeScreen({
                         </p>
                       </div>
 
-                      {/* Bu konudaki en iyi tur yıldızı (bir kez oynanınca görünür); doğruluk İlerleme'de */}
-                      {stats.bestStars?.[cat.key] !== undefined && <Stars value={stats.bestStars[cat.key]} size={13} />}
-
-                      <PlayChip />
+                      {/* Bu konudaki doğruluk (R19): yıldız ve oynat simgesi yerine yüzde halkası */}
+                      <PercentRing acc={cat.acc} color={cat.color} />
                     </button>
                   )}
                   {cat.key === "accidentals" && g.has("chords") && (
@@ -462,7 +447,7 @@ export default function HomeScreen({
                       icon="piano"
                       title="Akor"
                       sub="Tanı, tuşlara bas"
-                      stars={stats.bestStars?.chords}
+                      acc={ca.chords}
                       onClick={onChordQuiz}
                     />
                   )}
@@ -472,7 +457,7 @@ export default function HomeScreen({
                       icon="note"
                       title="Ritmi Tut"
                       sub="Metronomla dokunarak çal"
-                      stars={stats.bestStars?.rhythmtap}
+                      acc={stats.bestStars?.rhythmtap === undefined ? { correct: 0, total: 0 } : ca.rhythm}
                       onClick={onRhythmTap}
                     />
                   )}

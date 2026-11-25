@@ -1,4 +1,4 @@
-// Çalışma sekmesi: konu arama, "Kaldığın yer" kartı ve konu başlıklarının listesi.
+// Öğren sekmesi (eski adı Çalışma, revize R13): konu arama, "Kaldığın yer" kartı ve konu başlıklarının listesi.
 // Bir başlığa dokununca o ders kendi ekranında açılır (LessonScreen). Dersler lessons.tsx içinde tanımlı.
 // Son açılan ders yalnızca bu cihazda hatırlanır (LAST_KEY); yedeklenen veriler arasında değil.
 import { useState } from "react"
@@ -135,7 +135,7 @@ export default function StudyScreen({ onOpen }: { onOpen: (id: string) => void }
                 letterSpacing: font.tracking.tight,
               }}
             >
-              Çalışma
+              Öğren
             </h1>
             <p style={{ fontSize: font.size.sm, color: colors.textMuted, marginTop: 2 }}>
               Bir konu seç; notaları, ritmi ve akorları adım adım öğren.

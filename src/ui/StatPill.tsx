@@ -1,4 +1,5 @@
-// Üst bardaki küçük gösterge hapı: seri, XP. Hepsi aynı ölçüde, dokununca ilgili ekranı açar.
+// Üst bardaki küçük gösterge hapı: seri, XP. Hepsi aynı ölçüde; onClick verilirse dokununca ilgili ekranı açar,
+// verilmezse yalnız bilgi verir (revize R15: seri hapı basılmaz).
 // Renk anlamı tasarım sisteminde sabit: seri = turuncu, XP = amber, henüz yok = soluk.
 import type { ReactNode } from "react"
 import { alpha, colors, font, palette, radius } from "../design/tokens"
@@ -25,13 +26,15 @@ export default function StatPill({
   value: string
   /** Ekran okuyucu için tam cümle, ör. "12 gün seri. Haftanı gör" */
   label: string
-  onClick: () => void
+  onClick?: () => void
 }) {
   const t = TONES[tone]
+  const Tag = onClick ? "button" : "span"
   return (
-    <button
+    <Tag
       onClick={onClick}
       aria-label={label}
+      role={onClick ? undefined : "img"}
       style={{
         display: "inline-flex",
         alignItems: "center",
@@ -42,7 +45,7 @@ export default function StatPill({
         background: alpha(t.base, 0.12),
         border: `1px solid ${alpha(t.base, 0.3)}`,
         color: t.text,
-        cursor: "pointer",
+        cursor: onClick ? "pointer" : "default",
         whiteSpace: "nowrap",
         fontFamily: font.family.ui,
       }}
@@ -56,6 +59,6 @@ export default function StatPill({
       <span style={{ fontSize: font.size.sm, fontWeight: font.weight.bold, fontFamily: font.family.mono }}>
         {value}
       </span>
-    </button>
+    </Tag>
   )
 }

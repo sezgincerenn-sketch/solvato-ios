@@ -1,4 +1,4 @@
-// Alt ekran başlığı: geri düğmesi + başlık (+ sağda isteğe bağlı öğe).
+// Alt ekran başlığı: geri düğmesi + başlık (+ sağda isteğe bağlı öğe). onBack yoksa (sekme ekranı) geri düğmesi çizilmez.
 import type { ReactNode } from "react"
 import { colors, font, space } from "../design/tokens"
 import BackButton from "./BackButton"
@@ -10,7 +10,7 @@ export default function ScreenHeader({
   flush,
 }: {
   title: string
-  onBack: () => void
+  onBack?: () => void
   right?: ReactNode
   /** Kapsayıcı zaten iç boşluk veriyorsa yan boşluk ekleme */
   flush?: boolean
@@ -24,7 +24,7 @@ export default function ScreenHeader({
         padding: flush ? 0 : `${space[4]}px ${space[4]}px ${space[2]}px`,
       }}
     >
-      <BackButton onClick={onBack} />
+      {onBack && <BackButton onClick={onBack} />}
       <h1
         style={{
           flex: 1,

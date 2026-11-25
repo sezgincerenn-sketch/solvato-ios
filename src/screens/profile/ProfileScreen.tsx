@@ -1,4 +1,4 @@
-// Profil: isim ve renk, seviye, toplam ilerleme, son turlar, ayarlara geçiş
+// Profil sekmesi (revize R13): isim ve renk, seviye, toplam ilerleme; Ayarlar yalnız sağ üstte (R14)
 import { useState } from "react"
 import Icon from "../../components/Icons"
 import { colors, font, radius, space } from "../../design/tokens"
@@ -14,12 +14,10 @@ import LevelCard from "./LevelCard"
 
 export default function ProfileScreen({
   stats,
-  onBack,
   onOpenSettings,
   onOpenProgress,
 }: {
   stats: AppStats
-  onBack: () => void
   onOpenSettings: () => void
   onOpenProgress: () => void
 }) {
@@ -37,7 +35,6 @@ export default function ProfileScreen({
     <div style={{ height: "100%", display: "flex", flexDirection: "column", fontFamily: font.family.ui }}>
       <ScreenHeader
         title="Profil"
-        onBack={onBack}
         right={
           <button
             onClick={onOpenSettings}
@@ -146,9 +143,6 @@ export default function ProfileScreen({
         </Button>
         <Button variant="secondary" onClick={onOpenProgress}>
           Tüm ilerleme
-        </Button>
-        <Button variant="secondary" onClick={onOpenSettings} icon={<Icon name="settings" size={18} />}>
-          Ayarlar
         </Button>
       </div>
       {toast.el}

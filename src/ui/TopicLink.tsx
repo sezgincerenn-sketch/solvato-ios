@@ -5,6 +5,7 @@ import Icon from "../components/Icons"
 import { alpha, colors, font, radius } from "../design/tokens"
 import PlayChip from "./PlayChip"
 import Stars from "./Stars"
+import PercentRing from "./PercentRing"
 
 export default function TopicLink({
   color,
@@ -12,6 +13,7 @@ export default function TopicLink({
   title,
   sub,
   stars,
+  acc,
   onClick,
 }: {
   color: { base: string; text: string }
@@ -19,6 +21,8 @@ export default function TopicLink({
   title: string
   sub: string
   stars?: number
+  /** Verilirse yıldız ve oynat simgesi yerine yüzde halkası (revize R19) */
+  acc?: { correct: number; total: number }
   onClick: () => void
 }) {
   return (
@@ -69,8 +73,14 @@ export default function TopicLink({
         </p>
         <p style={{ fontSize: font.size.sm, color: colors.textMuted, fontWeight: font.weight.regular }}>{sub}</p>
       </div>
-      {stars !== undefined && <Stars value={stars} size={13} />}
-      <PlayChip />
+      {acc ? (
+        <PercentRing acc={acc} color={color.base} />
+      ) : (
+        <>
+          {stars !== undefined && <Stars value={stars} size={13} />}
+          <PlayChip />
+        </>
+      )}
     </button>
   )
 }
