@@ -11,7 +11,7 @@ import { alpha, category, colors, font, palette, radius, space } from "../design
 import type { RoundAnswer } from "../types"
 import { Button, ExitConfirm } from "../ui"
 import { audioLatency, audioNow, scheduleBeat, scheduleClick } from "../utils/audio"
-import { hapticTap } from "../utils/haptics"
+import { hapticTapStrong } from "../utils/haptics"
 import { getSettings, updateSettings, useSettings } from "../utils/settings"
 
 type Phase = "ready" | "listen" | "countin" | "play" | "result"
@@ -95,7 +95,7 @@ export default function RhythmTapSession({
 
   const tap = useCallback(() => {
     if (phase !== "play" && phase !== "countin") return
-    hapticTap()
+    hapticTapStrong()
     setPulse((p) => p + 1)
     // Duyulan sese göre: dokunuş anından ses gecikmesini çıkar
     const t = audioNow() - audioLatency() - measureStart.current

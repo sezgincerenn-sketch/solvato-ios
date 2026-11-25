@@ -11,6 +11,11 @@ export function hapticTap() {
   if (!ok()) return
   Haptics.impact({ style: ImpactStyle.Light }).catch(() => {})
 }
+/** Ritmi Tut dokunuşu: daha güçlü titreşim (revize R22) */
+export function hapticTapStrong() {
+  if (!ok()) return
+  Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {})
+}
 export function hapticSuccess() {
   if (!ok()) return
   Haptics.notification({ type: NotificationType.Success }).catch(() => {})

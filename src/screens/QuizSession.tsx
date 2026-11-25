@@ -294,7 +294,7 @@ export default function QuizSession({
               position: "relative",
             }}
           >
-            {/* Back */}
+            {/* Turdan çık: ✕ (revize R16) */}
             <button
               onClick={() => setShowExitConfirm(true)}
               style={{
@@ -321,7 +321,7 @@ export default function QuizSession({
                 strokeWidth={2.5}
                 strokeLinecap="round"
               >
-                <path d="M19 12H5M12 5l-7 7 7 7" />
+                <path d="M6 6l12 12M18 6L6 18" />
               </svg>
             </button>
 
@@ -345,9 +345,12 @@ export default function QuizSession({
                       width: i === idx ? 18 : 6,
                       height: 6,
                       borderRadius: radius.pill,
+                      // Cevaplanan sorular doğruysa yeşil, yanlışsa kırmızı (revize R2)
                       background:
                         i < idx
-                          ? palette.violet500
+                          ? results[i]?.correct
+                            ? palette.green500
+                            : palette.red500
                           : i === idx
                             ? `linear-gradient(90deg, ${palette.violet500}, ${palette.violet400})`
                             : colors.fillStronger,

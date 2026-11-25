@@ -3,6 +3,7 @@ import { Stars } from "../ui"
 import { SolfieSays } from "../components/Solfie"
 import { nextStarHint } from "../utils/stars"
 import RankCard from "./profile/RankCard"
+import StreakReminderCard from "./StreakReminderCard"
 import { ScoreRing } from "../ui"
 import type { FilterCategory, RoundAnswer, Question, SpecialRound } from "../types"
 import Icon from "../components/Icons"
@@ -32,6 +33,7 @@ export default function ResultScreen({
   totalXp,
   questions,
   category,
+  streak,
   onHome,
   onRetry,
   onRetryWrong,
@@ -254,6 +256,9 @@ export default function ResultScreen({
             </p>
           </div>
         </div>
+
+        {/* İlk seri gününde, hatırlatma kapalıysa bir kez: "Serini koru" (revize R8) */}
+        <StreakReminderCard streak={streak} />
 
         {/* Ünvan: XP ile ilerleme */}
         <div style={{ width: "100%", marginBottom: 16 }}>

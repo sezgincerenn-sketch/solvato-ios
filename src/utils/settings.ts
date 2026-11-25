@@ -27,6 +27,7 @@ export interface Settings {
   teacherCode: string // son uygulanan öğretmen kodu (utils/teacherCode.ts), yoksa ""
   topics: string[] // öğretmenin seçtiği konular (TOPICS); boş = hepsi
   showRestTopics: boolean // öğretmen kodu varken diğer konular da Ana sayfada açık (revize R20)
+  streakReminderOffered: boolean // ilk seri gününde "Serini koru" kartı bir kez gösterildi (revize R8)
 }
 
 export const ALL_NOTES = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"]
@@ -52,6 +53,7 @@ const DEFAULTS: Settings = {
   teacherCode: "",
   topics: [],
   showRestTopics: false,
+  streakReminderOffered: false,
 }
 
 let cache: Settings | null = null
