@@ -21,6 +21,9 @@ Widget galerisinde ad: **"Solvato · Bugün"**, açıklama: **"Günlük hedefin 
 - **Akşam uyarısı**: saat 18:00'den sonra, serisi 1 ya da daha fazla olan ve bugünkü hedefi henüz tamamlanmamış
   öğrencide alev turuncu ve parlak, alt satırda "5 gün · Serin bugün bitmesin". Bildirim değil, yalnız widget'taki
   yazı.
+- **Son uyarı** (Ceren, 25 Kasım): saat 22:00'den sonra aynı koşulda widget kırmızıya döner (kırmızı kenar, kırmızı
+  alev), alt satırda "Serini kaybedeceksin · 2 saat kaldı" (gece yarısına kalan tam saat; son saatte "1 saatten az
+  kaldı").
 
 ### Solfie
 
@@ -29,7 +32,7 @@ uygulamadaki Solfie'nin aynısı, hareketsiz. Poz duruma göre (rastgele değil)
 
 - **Normal** ve **seri 0**: sakin (idle).
 - **Hedef tamam**: kutlama (cheer, kollar havada, parıltılar).
-- **Akşam uyarısı** ve **ilk kullanım**: el sallar (wave).
+- **Akşam uyarısı**, **son uyarı** ve **ilk kullanım**: el sallar (wave).
 
 Bu, "Solfie az görünür" kuralının (CLAUDE.md) bilinçli bir istisnasıdır: widget uygulamanın dışında, ana ekranda
 durur ve Ceren onayladı.
@@ -60,7 +63,8 @@ sayfaya geçer.
   bugünün tarihine göre okur.
 - **Gece yarısı**: uygulama açılmasa da widget 00:00'da yeni güne geçer: halka "0/20", hafta şeridinde bugün bir
   sonraki gün. Dünkü hedef tutmadıysa ve önceki gün de seri günü değilse seri 0 görünür (K-07 ile aynı).
-- **18:00**: akşam uyarısı uygulama açılmadan devreye girer. Hedef tamamlanınca uyarı kalkar.
+- **18:00 ve 22:00**: akşam uyarısı ve son uyarı uygulama açılmadan devreye girer; 22:00'den sonra kalan saat her saat
+  başı güncellenir. Hedef tamamlanınca uyarı kalkar.
 - **Güncelleme**: her tur bittiğinde (soru, akor, Ritmi Tut, oyun) ve uygulama arka plana geçtiğinde widget yenilenir.
   Ayarlarda günlük hedef değişince ya da "İlerlemeyi sıfırla" yapılınca da yenilenir.
 - **Telefon kilitliyken**: uygulamanın kendi kayıt dosyaları kilitliyken okunamıyor (veri korumalı). Bu yüzden
@@ -70,10 +74,10 @@ sayfaya geçer.
   widget görünümlerinde halka ve alev vurgu rengini alır, yazılar okunur kalır.
 - **iPad**: aynı iki boyut, aynı içerik.
 - **Ses, titreşim, hareket**: widget'ta yok (Solfie de hareketsiz).
-- **Erişilebilirlik**: VoiceOver "Bugün 12/20 soru. Seri 5 gün." (uyarıda "Serin bugün bitmesin" eklenir; hafta için
+- **Erişilebilirlik**: VoiceOver "Bugün 12/20 soru. Seri 5 gün." (uyarıda "Serin bugün bitmesin", son uyarıda "Serini kaybedeceksin, 2 saat kaldı" eklenir; hafta için
   "Bu hafta 3 gün çalıştın"). Dinamik Yazı büyüdüğünde yazılar kısalır, taşmaz.
 - **Hesap (1.0)**: widget yalnız o telefondaki veriyi gösterir; misafir ve hesaplı kullanıcı için aynı.
-- **Yazım**: "12/20 soru", "5 gün", "Hedef tamam", "Seri yok", "Serin bugün bitmesin", "Bu hafta", "3 gün çalıştın",
+- **Yazım**: "12/20 soru", "5 gün", "Hedef tamam", "Seri yok", "Serin bugün bitmesin", "Serini kaybedeceksin · 2 saat kaldı", "Bu hafta", "3 gün çalıştın",
   "İlk turunu çöz".
 
 ## Kabul ölçütleri
@@ -87,6 +91,8 @@ sayfaya geçer.
 - [ ] Seri 0 iken soluk alev ve "Seri yok"; seri 5 iken "5 gün".
 - [ ] 18:00'den sonra seri ≥1 ve hedef tamamlanmamışsa "Serin bugün bitmesin"; hedef tamamsa ya da seri 0 ise yok;
       18:00'den önce yok.
+- [ ] 22:00'den sonra aynı koşulda kırmızı görünüm ve "Serini kaybedeceksin · N saat kaldı"; 23:00'te "1 saatten az
+      kaldı"; hedef tamamlanınca kalkıyor.
 - [ ] Uygulama açılmadan gece yarısı geçince halka "0/hedef" ve seri K-07'ye göre (dün seri günüyse aynı sayı, değilse 0).
 - [ ] Orta widget'ta hafta şeridinin dolu/yarım/boş/bugün/gelecek durumları İlerleme'deki şeritle aynı gün için aynı.
 - [ ] Tanıtım bitmemişken "0/10" ve "İlk turunu çöz".
@@ -95,7 +101,7 @@ sayfaya geçer.
 - [ ] VoiceOver metni yukarıdaki gibi.
 - [ ] Widget hiçbir ağ isteği yapmıyor; özette sayılardan başka veri yok.
 - [ ] Çekirdekte widget özetini hesaplayan kısım testli: aynı istatistik ve saat için halka, seri, uyarı ve hafta
-      şeridi sonuçları (gece yarısı, 17:59 / 18:00, hedef tam, seri 0, boş veri senaryoları).
+      şeridi sonuçları (gece yarısı, 17:59 / 18:00, 21:59 / 22:00 / 23:00, hedef tam, seri 0, boş veri senaryoları).
 
 ## Kapsam dışı
 
@@ -109,7 +115,7 @@ sayfaya geçer.
 
 - `ios-native/project.yml`: yeni hedef `SolvatoWidget` (widget uzantısı, `com.solvato.app.widget`), iki hedefe App
   Group yetkisi (`group.com.solvato.app`), uygulama hedefine uzantının gömülmesi.
-- `ios-native/SolvatoWidget/` (yeni): widget tanımı, zaman çizelgesi (00:00 ve 18:00 girişleri), Küçük ve Orta
+- `ios-native/SolvatoWidget/` (yeni): widget tanımı, zaman çizelgesi (00:00, 18:00, 22:00, 23:00 girişleri), Küçük ve Orta
   görünümler, `PrivacyInfo.xcprivacy`, Info.plist.
 - `ios-native/SolvatoCore/Sources/SolvatoCore/App/WidgetSnapshot.swift` (yeni): özetin biçimi ve "şu tarih ve saatte ne
   gösterilir" hesabı; testleri `Tests/SolvatoCoreTests/WidgetSnapshotTests.swift`.
