@@ -149,7 +149,6 @@ export default function SettingsScreen({
   onBack,
   onReset,
   onShowTutorial,
-  onOpenTeacher,
   onOpenPrivacy,
   onOpenLicenses,
 }: {
@@ -158,7 +157,6 @@ export default function SettingsScreen({
   onBack: () => void
   onReset: () => void
   onShowTutorial: () => void
-  onOpenTeacher: () => void
   onOpenPrivacy: () => void
   onOpenLicenses: () => void
 }) {
@@ -201,15 +199,6 @@ export default function SettingsScreen({
 
       <div style={{ padding: "0 20px 32px" }}>
         <Section>Çalışma</Section>
-        <LinkRow
-          title="Öğretmen kodu"
-          sub={
-            s.teacherCode
-              ? `Son uygulanan kod: ${s.teacherCode}`
-              : "Öğretmeninin gönderdiği kodu gir ya da öğrencine kod hazırla"
-          }
-          onClick={onOpenTeacher}
-        />
         <Block title="Günlük hedef" sub={GOAL_TEXT[s.dailyGoal] ?? ""}>
           <Segmented
             value={s.dailyGoal}

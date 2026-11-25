@@ -1,6 +1,6 @@
 // Uygulama kabuğu: ekranlar arası gezinme, tema, istatistiklerin güncellenmesi, kaydırarak geri.
 import TeacherScreen from "./screens/TeacherScreen"
-import { Coachmark, TabletColumn, type CoachStep } from "./ui"
+import { Coachmark, TabTitle, TabletColumn, type CoachStep } from "./ui"
 import ProfileScreen from "./screens/profile/ProfileScreen"
 import { useState, useEffect, useLayoutEffect, useCallback, useSyncExternalStore, useRef } from "react"
 import { forgetScroll, restoreScroll, saveScroll } from "./utils/scrollMemory"
@@ -32,7 +32,6 @@ import { shadow, colors, palette } from "./design/tokens"
 import NavBar from "./ui/NavBar"
 import HomeScreen from "./screens/HomeScreen"
 import ResultScreen from "./screens/ResultScreen"
-import PathCard from "./screens/progress/PathCard"
 import {
   loadStats,
   saveStats,
@@ -392,6 +391,7 @@ export default function App() {
           <TabletColumn width={680}>
             <ProfileScreen
               stats={stats}
+              onOpenTeacher={() => setView("teacher")}
               onOpenSettings={() => setView("settings")}
               onOpenProgress={() => setView("dashboard")}
             />
@@ -409,7 +409,6 @@ export default function App() {
               themeMode={themeMode}
               onThemeMode={setThemeMode}
               onBack={goBack}
-              onOpenTeacher={() => setView("teacher")}
               onOpenPrivacy={() => setView("privacy")}
               onOpenLicenses={() => setView("licenses")}
               onShowTutorial={() => {
@@ -528,11 +527,7 @@ export default function App() {
             onStartQuiz={() => setView("home")}
             onPracticeWeak={startWeakPractice}
             onPracticeCategory={(k) => (k === "chords" ? setView("chordquiz") : startQuiz(k))}
-            header={
-              <>
-                <PathCard stats={stats} onStart={startQuiz} onChordQuiz={() => setView("chordquiz")} />
-              </>
-            }
+            header={<TabTitle>İlerleme</TabTitle>}
           />
         )}
 

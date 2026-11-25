@@ -133,7 +133,7 @@ export default function HomeScreen({
         ]
       : []),
   ]
-  const [showRest, setShowRest] = useState(false)
+  const [showRest, setShowRest] = useState(getSettings().showRestTopics)
   const rank = rankFromXp(stats.totalPoints)
   const streak = currentStreak(stats)
   const dailyGoal = dailyGoalProp

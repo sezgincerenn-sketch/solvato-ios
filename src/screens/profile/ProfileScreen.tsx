@@ -14,10 +14,13 @@ import LevelCard from "./LevelCard"
 
 export default function ProfileScreen({
   stats,
+  onOpenTeacher,
   onOpenSettings,
   onOpenProgress,
 }: {
   stats: AppStats
+  /** Öğretmen kodu ekranı (revize R14: Ayarlar'dan Profil'e taşındı) */
+  onOpenTeacher: () => void
   onOpenSettings: () => void
   onOpenProgress: () => void
 }) {
@@ -126,6 +129,8 @@ export default function ProfileScreen({
           </p>
         </Card>
 
+        <TeacherCard onOpen={onOpenTeacher} onRemoved={() => toast.show("Öğretmen kodu kaldırıldı")} />
+
         <LevelCard detailed />
         <RankCard xp={stats.totalPoints} detailed />
 
@@ -147,5 +152,95 @@ export default function ProfileScreen({
       </div>
       {toast.el}
     </div>
+  )
+}
+
+// Öğretmen kodu kartı (revize R14, R20): kod yoksa koda götürür; varsa kodu, "Diğer konuları da göster" ve "Kodu kaldır".
+function TeacherCard({ onOpen, onRemoved }: { onOpen: () => void; onRemoved: () => void }) {
+  const s = getSettings()
+  const [showRest, setShowRest] = useState(s.showRestTopics)
+  const [code, setCode] = useState(s.teacherCode)
+  const rowBtn = {
+    padding: "8px 12px",
+    borderRadius: radius.md,
+    border: "none",
+    fontFamily: font.family.ui,
+    fontSize: font.size.sm,
+    fontWeight: font.weight.semibold,
+    cursor: "pointer",
+  } as const
+  return (
+    <Card>
+      <button
+        onClick={onOpen}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: space[3],
+          width: "100%",
+          padding: 0,
+          background: "none",
+          border: "none",
+          textAlign: "left",
+          cursor: "pointer",
+          fontFamily: font.family.ui,
+        }}
+      >
+        <span
+          aria-hidden="true"
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: radius.md,
+            background: colors.fillStrong,
+            color: colors.violetText,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Icon name="users" size={18} />
+        </span>
+        <span style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ display: "block", fontWeight: font.weight.bold, color: colors.text }}>Öğretmen kodu</span>
+          <span style={{ display: "block", fontSize: font.size.sm, color: colors.textMuted }}>
+            {code ? `Uygulandı · ${code}` : "Öğretmeninin kodunu gir ya da öğrencine kod hazırla"}
+          </span>
+        </span>
+        <span aria-hidden="true" style={{ color: colors.textMuted }}>
+          ›
+        </span>
+      </button>
+      {code && (
+        <div style={{ display: "flex", flexDirection: "column", gap: space[2], marginTop: space[3] }}>
+          <p style={{ fontSize: font.size.sm, color: colors.textMuted }}>
+            Öğretmeninin konuları Ana sayfada üstte. Diğer konuları da açık tutabilirsin.
+          </p>
+          <div style={{ display: "flex", gap: space[2], flexWrap: "wrap" }}>
+            <button
+              aria-pressed={showRest}
+              onClick={() => {
+                updateSettings({ showRestTopics: !showRest })
+                setShowRest(!showRest)
+              }}
+              style={{ ...rowBtn, background: showRest ? colors.fillStronger : colors.fillStrong, color: colors.text }}
+            >
+              {showRest ? "Diğer konular açık ✓" : "Diğer konuları da göster"}
+            </button>
+            <button
+              onClick={() => {
+                updateSettings({ teacherCode: "", topics: [], showRestTopics: false })
+                setCode("")
+                onRemoved()
+              }}
+              style={{ ...rowBtn, background: colors.fillStrong, color: colors.redText }}
+            >
+              Kodu kaldır
+            </button>
+          </div>
+        </div>
+      )}
+    </Card>
   )
 }

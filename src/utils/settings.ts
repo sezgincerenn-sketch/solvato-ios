@@ -26,6 +26,7 @@ export interface Settings {
   coachDone: boolean // ana sayfa tanıtımı gösterildi
   teacherCode: string // son uygulanan öğretmen kodu (utils/teacherCode.ts), yoksa ""
   topics: string[] // öğretmenin seçtiği konular (TOPICS); boş = hepsi
+  showRestTopics: boolean // öğretmen kodu varken diğer konular da Ana sayfada açık (revize R20)
 }
 
 export const ALL_NOTES = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"]
@@ -50,6 +51,7 @@ const DEFAULTS: Settings = {
   coachDone: false,
   teacherCode: "",
   topics: [],
+  showRestTopics: false,
 }
 
 let cache: Settings | null = null

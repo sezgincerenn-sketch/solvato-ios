@@ -1,4 +1,5 @@
-// İlerleme sekmesi, yukarıdan aşağı: Doğruluk · Bu hafta · Sıradaki (öğrenme yolu) · Konular · Zorlandığın notalar · Son turlar.
+// İlerleme sekmesi, yukarıdan aşağı: başlık · Doğruluk · Bu hafta · Konular · Zorlandığın notalar · Son turlar.
+// Revize önizlemesi: R23 başlık, R24 öğrenme yolu kaldırıldı, R25 "Çalış ▶", R26 Konular altındaki çizgi yok.
 // Her bilgi tek yerde: "ne çalışmalıyım" cevabı öğrenme yolunda, konular satıra dokununca açılır.
 import type { Period } from "../utils/dates"
 import WeeklyReportCard from "./progress/WeeklyReportCard"
@@ -11,13 +12,13 @@ import type { AppStats } from "../types"
 import MusicalStaff from "../components/MusicalStaff"
 import { useTablet } from "../utils/orientation"
 
-import { category, categoryBar, colors, font, gradient, palette, radius } from "../design/tokens"
+import { alpha, category, categoryBar, colors, font, gradient, palette, radius } from "../design/tokens"
 interface DashboardProps {
   stats: AppStats
   onStartQuiz: () => void
   onPracticeWeak: (keys: string[]) => void
   onPracticeCategory: (key: "treble" | "bass" | "rhythm" | "terms" | "chords" | "writing" | "ear") => void
-  header?: React.ReactNode // profil özeti ve öğrenme yolu (App'ten)
+  header?: React.ReactNode // sekme başlığı (App'ten)
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -38,12 +39,15 @@ function TopicRow({
   label,
   v,
   note,
+  first,
   onClick,
 }: {
   cat: TopicCat
   label: string
   v: { correct: number; total: number }
   note?: string
+  /** İlk satırın üst çizgisi yok (R26) */
+  first?: boolean
   onClick: () => void
 }) {
   const pct = v.total > 0 ? Math.round((v.correct / v.total) * 100) : null
@@ -53,7 +57,7 @@ function TopicRow({
       aria-label={`${label}: ${pct === null ? "henüz çözülmedi" : `yüzde ${pct}`}. Bu konuda tur başlat`}
       style={{
         display: "grid",
-        gridTemplateColumns: "minmax(0, 1fr) 72px 40px 12px",
+        gridTemplateColumns: "minmax(0, 1fr) 64px 40px auto",
         alignItems: "center",
         gap: 10,
         width: "100%",
@@ -61,7 +65,7 @@ function TopicRow({
         padding: "6px 0",
         background: "none",
         border: "none",
-        borderTop: `1px solid ${colors.border}`,
+        borderTop: first ? "none" : `1px solid ${colors.border}`,
         cursor: "pointer",
         textAlign: "left",
         fontFamily: font.family.ui,
@@ -99,8 +103,24 @@ function TopicRow({
       >
         {pct === null ? "—" : `%${pct}`}
       </span>
-      <span aria-hidden="true" style={{ color: colors.textMuted }}>
-        ›
+      <span
+        aria-hidden="true"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 4,
+          padding: "5px 10px",
+          borderRadius: radius.pill,
+          background: alpha(palette.violet500, 0.16),
+          color: colors.violetTextSoft,
+          fontSize: font.size.xs,
+          fontWeight: font.weight.bold,
+        }}
+      >
+        Çalış
+        <svg width={9} height={9} viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6 3l15 9-15 9z" />
+        </svg>
       </span>
     </button>
   )
@@ -362,14 +382,14 @@ export default function ProgressScreen({
     accuracy: <AccuracyCard stats={stats} />,
     // 2. Bu hafta: gün şeridi + öğretmene haftalık rapor
     week: <WeeklyReportCard stats={stats} />,
-    // 3. Sıradaki: öğrenme yolu (App'ten gelir)
+    // Sekme başlığı (App'ten gelir)
     path: header,
     // 4. Konular: tek satır, dokununca o konuda tur
     topics: (
       <div style={card}>
         <p style={cardTitle}>Konular</p>
-        {topics.map((t) => (
-          <TopicRow key={t.cat} {...t} onClick={() => onPracticeCategory(t.cat)} />
+        {topics.map((t, i) => (
+          <TopicRow key={t.cat} {...t} first={i === 0} onClick={() => onPracticeCategory(t.cat)} />
         ))}
       </div>
     ),
@@ -482,9 +502,9 @@ export default function ProgressScreen({
           </>
         ) : (
           <>
+            {sections.path}
             {sections.accuracy}
             {sections.week}
-            {sections.path}
             {sections.topics}
             {sections.weak}
             {sections.rounds}
