@@ -22,6 +22,18 @@ Widget galerisinde ad: **"Solvato · Bugün"**, açıklama: **"Günlük hedefin 
   öğrencide alev turuncu ve parlak, alt satırda "5 gün · Serin bugün bitmesin". Bildirim değil, yalnız widget'taki
   yazı.
 
+### Solfie
+
+Ceren'in isteğiyle (25 Kasım, tuval yorumu: "biraz sıkıcı olmuş") iki boyutta da sağ altta Solfie durur; çizim
+uygulamadaki Solfie'nin aynısı, hareketsiz. Poz duruma göre (rastgele değil):
+
+- **Normal** ve **seri 0**: sakin (idle).
+- **Hedef tamam**: kutlama (cheer, kollar havada, parıltılar).
+- **Akşam uyarısı** ve **ilk kullanım**: el sallar (wave).
+
+Bu, "Solfie az görünür" kuralının (CLAUDE.md) bilinçli bir istisnasıdır: widget uygulamanın dışında, ana ekranda
+durur ve Ceren onayladı.
+
 ### Orta widget (yatay)
 
 - **Sol yarı**: küçük widget'ın içeriği (halka + seri, aynı durumlar).
@@ -57,7 +69,7 @@ sayfaya geçer.
 - **Tema**: telefonun açık/koyu moduna uyar (uygulamanın açık ve koyu temasındaki renkler). iOS'un renkli ve şeffaf
   widget görünümlerinde halka ve alev vurgu rengini alır, yazılar okunur kalır.
 - **iPad**: aynı iki boyut, aynı içerik.
-- **Ses, titreşim, hareket**: widget'ta yok.
+- **Ses, titreşim, hareket**: widget'ta yok (Solfie de hareketsiz).
 - **Erişilebilirlik**: VoiceOver "Bugün 12/20 soru. Seri 5 gün." (uyarıda "Serin bugün bitmesin" eklenir; hafta için
   "Bu hafta 3 gün çalıştın"). Dinamik Yazı büyüdüğünde yazılar kısalır, taşmaz.
 - **Hesap (1.0)**: widget yalnız o telefondaki veriyi gösterir; misafir ve hesaplı kullanıcı için aynı.
@@ -66,6 +78,8 @@ sayfaya geçer.
 
 ## Kabul ölçütleri
 
+- [ ] Solfie'nin pozu: normal ve seri 0'da sakin, hedef tamamda kutlama, akşam uyarısında ve ilk kullanımda el
+      sallıyor; çizim uygulamadakiyle aynı.
 - [ ] Widget galerisinde "Solvato · Bugün" adıyla Küçük ve Orta boyut çıkıyor.
 - [ ] Bugün 12 soru çözülmüş, hedef 20 iken halkada "12/20" ve %60 dolu mor halka.
 - [ ] Hedef tamamlanınca halka yeşil ve tam dolu, altında "Hedef tamam"; bir tur bittikten sonra uygulamaya dönmeden
@@ -87,7 +101,7 @@ sayfaya geçer.
 
 - Kilit ekranı widget'ı, StandBy, Apple Watch, Büyük boyut.
 - Widget'tan tur başlatma, etkileşimli düğmeler.
-- Widget'ta Solfie, sıradaki konu, XP/ünvan, öğretmen bilgisi.
+- Widget'ta sıradaki konu, XP/ünvan, öğretmen bilgisi. Solfie'nin hareketli hâli (widget'ta animasyon yok).
 - Android widget'ı (Android işi başlayınca ayrıca).
 - React (web) sürümü.
 
