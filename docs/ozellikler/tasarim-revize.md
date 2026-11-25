@@ -175,7 +175,7 @@ Görüntü numaraları Figma'daki "Piyano Benchmark" dosyasının katman adları
 - Kaydırmayı azaltmak (Ceren, 22 Kasım): hangi ekranlarda uzun kaydırmanın rahatsız ettiği netleşecek.
 - Ceren'in 25 Kasım seçimleri, revize değil yeni özellik (her biri `ozellik` dokümanıyla):
   - **Hesap 1.0'a çekildi**: misafir, Apple ve Google ile giriş (`docs/ozellikler/hesap.md`).
-  - **Widget şimdi**: seri ve bugünkü hedef.
+  - **Widget şimdi**: seri ve bugünkü hedef (`docs/ozellikler/widget.md`).
   - Sonraya: sınıf içi sıralama (hesapla), klavyede tuş gösterip portedeki notayı sorma, nota adı seçimi
     (Do Re Mi / C D E) ve dil desteği.
   - Ad: marka ve App Store araştırması yapılacak (solvato.app başkasında).
