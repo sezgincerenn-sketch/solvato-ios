@@ -3,6 +3,7 @@
 //   DailyGameScreen      — günün meydan okuması
 //   ChallengeGameScreen  — kodla arkadaşa meydan okuma (başlat / kodu gir)
 // Akor düellosu kendi ekranında (ChordDuel). Oyun sonucu: GameResultScreen.
+import { formatCode, readClipboard } from "../utils/codeFormat"
 import { useState } from "react"
 import { LEVEL_LABELS } from "../data/questions"
 import { category, colors, font, palette, radius, space } from "../design/tokens"
@@ -250,7 +251,7 @@ export function ChallengeGameScreen({ onBack, onPlay }: { onBack: () => void; on
             <input
               value={code}
               onChange={(e) => {
-                setCode(e.target.value.toUpperCase().slice(0, 9))
+                setCode(formatCode(e.target.value, 4, 8))
                 setErr("")
               }}
               onKeyDown={(e) => e.key === "Enter" && accept()}
@@ -278,6 +279,30 @@ export function ChallengeGameScreen({ onBack, onPlay }: { onBack: () => void; on
               Kabul et
             </Button>
           </div>
+          <button
+            type="button"
+            onClick={async () => {
+              const t = await readClipboard()
+              if (t) {
+                setCode(formatCode(t, 4, 8))
+                setErr("")
+              } else setErr("Pano okunamadı; koda uzun basıp Yapıştır de.")
+            }}
+            style={{
+              alignSelf: "flex-start",
+              padding: "6px 0",
+              background: "none",
+              border: "none",
+              color: colors.violetText,
+              fontSize: font.size.sm,
+              fontWeight: font.weight.semibold,
+              fontFamily: font.family.ui,
+              cursor: "pointer",
+            }}
+          >
+            Panodan yapıştır
+          </button>
+
           {err && <p style={{ fontSize: font.size.sm, color: colors.redText }}>{err}</p>}
         </Card>
       </div>

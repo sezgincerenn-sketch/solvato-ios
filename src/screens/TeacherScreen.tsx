@@ -2,6 +2,7 @@
 //   1) Öğrenci: öğretmeninin gönderdiği kodu girer, çalışma ayarları kurulur
 //   2) Öğretmen: öğrencisi için ayarları seçer, kodu WhatsApp vb. ile gönderir
 // Kodun biçimi: utils/teacherCode.ts
+import { formatCode, readClipboard } from "../utils/codeFormat"
 import { useMemo, useState } from "react"
 import NotesPicker from "../components/NotesPicker"
 import { LEVEL_LABELS } from "../data/questions"
@@ -99,7 +100,7 @@ export default function TeacherScreen({ onBack }: { onBack: () => void }) {
                 <input
                   value={code}
                   onChange={(e) => {
-                    setCode(e.target.value.toUpperCase().slice(0, 7))
+                    setCode(formatCode(e.target.value, 3, 6))
                     setErr("")
                   }}
                   onKeyDown={(e) => e.key === "Enter" && apply()}
@@ -127,6 +128,29 @@ export default function TeacherScreen({ onBack }: { onBack: () => void }) {
                   Uygula
                 </Button>
               </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  const t = await readClipboard()
+                  if (t) {
+                    setCode(formatCode(t, 3, 6))
+                    setErr("")
+                  } else setErr("Pano okunamadı; koda uzun basıp Yapıştır de.")
+                }}
+                style={{
+                  alignSelf: "flex-start",
+                  padding: "6px 0",
+                  background: "none",
+                  border: "none",
+                  color: colors.violetText,
+                  fontSize: font.size.sm,
+                  fontWeight: font.weight.semibold,
+                  fontFamily: font.family.ui,
+                  cursor: "pointer",
+                }}
+              >
+                Panodan yapıştır
+              </button>
               {err && <p style={{ fontSize: font.size.sm, color: colors.redText }}>{err}</p>}
               {s.teacherCode && <p style={{ ...muted, fontSize: font.size.xs }}>Son uygulanan kod: {s.teacherCode}</p>}
             </>

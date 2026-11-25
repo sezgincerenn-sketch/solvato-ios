@@ -1,4 +1,5 @@
-// İlk açılış tanıtımı: seviye ve anahtar seçimi, örnek soru.
+// İlk açılış tanıtımı: uygulamanın ne olduğu, örnek soru, öğretmen sorusu, anahtar ve seviye, hatırlatma.
+// Revize önizlemesi: R27 ilk ekran, R28 geri oku, R5 öğretmen sorusu (kod istenmez), R9 saat seçici.
 import { useState } from "react"
 import MusicalStaff from "../components/MusicalStaff"
 import { QuizPiano } from "../components/piano/QuizPiano"
@@ -7,12 +8,12 @@ import { playCorrectChime, playWrongBuzz } from "../utils/audio"
 import { updateSettings } from "../utils/settings"
 import { SolfieSays } from "../components/Solfie"
 import { ClefIcon } from "../components/Glyph"
-import { Chip, ChoiceCard, Segmented } from "../ui"
+import { ChoiceCard, Segmented, TimeField } from "../ui"
+import Logo from "../components/Logo"
 import { enableReminder } from "../utils/reminder"
 
 import { colors, font, gradient, palette, radius } from "../design/tokens"
-type Step = "hello" | "try1" | "try2" | "clef" | "level" | "reminder" | "done"
-const REMINDER_HOURS = [17, 18, 19, 20, 21]
+type Step = "intro" | "hello" | "try1" | "try2" | "teacher" | "clef" | "level" | "reminder" | "done"
 
 const CARD: React.CSSProperties = {
   background: colors.fill,
@@ -138,16 +139,19 @@ const CLEFS: { key: "treble" | "bass" | "both"; label: string; sub: string; glyp
 ]
 
 export default function Onboarding({ onDone }: { onDone: () => void }) {
-  const [step, setStep] = useState<Step>("hello")
+  const [step, setStep] = useState<Step>("intro")
   const [level, setLevel] = useState(0)
   const [goal, setGoal] = useState(10)
   const [remind, setRemind] = useState(true)
   const [hour, setHour] = useState(19)
+  const [minute, setMinute] = useState(0)
+  const [role, setRole] = useState<"student" | "self" | "teacher">("student")
   const [name, setName] = useState("")
   const [clef, setClef] = useState<"treble" | "bass" | "both">("treble")
-  const order: Step[] = ["hello", "try1", "try2", "clef", "level", "reminder", "done"]
+  const order: Step[] = ["intro", "hello", "try1", "try2", "teacher", "clef", "level", "reminder", "done"]
   const idx = order.indexOf(step)
   const next = () => setStep(order[idx + 1])
+  const back = () => setStep(order[Math.max(0, idx - 1)])
 
   return (
     <div
@@ -175,13 +179,45 @@ export default function Onboarding({ onDone }: { onDone: () => void }) {
           marginBottom: 6,
         }}
       >
+        {/* Geri (R28): ikinci adımdan itibaren */}
+        <button
+          onClick={back}
+          aria-label="Geri"
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: radius.md,
+            border: "none",
+            background: idx > 0 ? colors.fillStrong : "none",
+            color: colors.textSecondary,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: idx > 0 ? "pointer" : "default",
+            visibility: idx > 0 ? "visible" : "hidden",
+          }}
+        >
+          <svg
+            width={18}
+            height={18}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
+        </button>
         <div style={{ display: "flex", gap: 6 }}>
           {order.map((_, k) => (
             <span
               key={k}
               style={{
-                width: k === idx ? 22 : 8,
-                height: 8,
+                width: k === idx ? 18 : 6,
+                height: 6,
                 borderRadius: radius.pill,
                 background: k <= idx ? palette.violet500 : colors.fillStronger,
                 transition: "all 0.2s",
@@ -189,7 +225,7 @@ export default function Onboarding({ onDone }: { onDone: () => void }) {
             />
           ))}
         </div>
-        {step !== "done" && (
+        {step !== "done" ? (
           <button
             onClick={onDone}
             style={{
@@ -203,8 +239,106 @@ export default function Onboarding({ onDone }: { onDone: () => void }) {
           >
             Atla
           </button>
+        ) : (
+          <span style={{ width: 44 }} />
         )}
       </div>
+
+      {step === "intro" && (
+        <>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: 18 }}>
+            <Logo size={48} />
+            <h1
+              style={{
+                fontSize: font.size.xxl,
+                fontWeight: font.weight.heavy,
+                color: colors.text,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.1,
+              }}
+            >
+              Her gün birkaç dakika, nota okumak kolaylaşsın
+            </h1>
+            <p style={{ fontSize: font.size.md, color: colors.textSoft, lineHeight: 1.5 }}>
+              Solvato, piyano öğrencileri için kısa pratik turları: nota, ritim, akor ve kulak. Ne kadar ilerlediğini de
+              gösterir.
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
+              {[
+                ["𝄞", "Nota okuma", palette.blue400],
+                ["♩", "Ritim", palette.amber400],
+                ["♬", "Akor", palette.green400],
+                ["◉", "Kulak", palette.pink400],
+              ].map(([g, t, c]) => (
+                <span
+                  key={t}
+                  style={{
+                    ...CARD,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "10px 12px",
+                    fontSize: font.size.md,
+                    fontWeight: font.weight.semibold,
+                    color: colors.text,
+                  }}
+                >
+                  <span style={{ color: c, fontSize: font.size.lg }}>{g}</span>
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+          <button onClick={next} style={PRIMARY}>
+            Başlayalım
+          </button>
+        </>
+      )}
+
+      {step === "teacher" && (
+        <>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12 }}>
+            <h1
+              style={{
+                fontSize: font.size.xl,
+                fontWeight: font.weight.heavy,
+                color: colors.text,
+                letterSpacing: "-0.03em",
+                marginBottom: 6,
+              }}
+            >
+              Bir öğretmenle mi çalışıyorsun?
+            </h1>
+            <ChoiceCard
+              selected={role === "student"}
+              onClick={() => setRole("student")}
+              title="Evet, öğretmenim var"
+              sub="Öğretmeninle birlikte çalışıyorsun"
+            />
+            <ChoiceCard
+              selected={role === "self"}
+              onClick={() => setRole("self")}
+              title="Hayır, kendi kendime"
+              sub="Anahtar ve seviyeyi birlikte seçelim"
+            />
+            <ChoiceCard
+              selected={role === "teacher"}
+              onClick={() => setRole("teacher")}
+              title="Ben öğretmenim"
+              sub="Öğrencilerim için kullanacağım"
+            />
+          </div>
+          <button
+            onClick={() => {
+              updateSettings({ teacherRole: role })
+              next()
+            }}
+            style={PRIMARY}
+          >
+            Devam
+          </button>
+        </>
+      )}
 
       {step === "hello" && (
         <>
@@ -414,13 +548,14 @@ export default function Onboarding({ onDone }: { onDone: () => void }) {
               sub="Her gün aynı saatte"
             />
             {remind && (
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", padding: "2px 0 4px" }}>
-                {REMINDER_HOURS.map((h) => (
-                  <Chip key={h} selected={hour === h} onClick={() => setHour(h)}>
-                    {h}:00
-                  </Chip>
-                ))}
-              </div>
+              <TimeField
+                hour={hour}
+                minute={minute}
+                onChange={(h, m) => {
+                  setHour(h)
+                  setMinute(m)
+                }}
+              />
             )}
             <ChoiceCard
               selected={!remind}
@@ -431,9 +566,9 @@ export default function Onboarding({ onDone }: { onDone: () => void }) {
           </div>
           <button
             onClick={async () => {
-              updateSettings({ reminderHour: hour })
+              updateSettings({ reminderHour: hour, reminderMinute: minute })
               // İzin yalnızca telefonda istenir; reddedilirse ya da önizlemedeyse kapalı kalır
-              if (remind) updateSettings({ reminder: await enableReminder(hour) })
+              if (remind) updateSettings({ reminder: await enableReminder(hour, minute) })
               next()
             }}
             style={PRIMARY}

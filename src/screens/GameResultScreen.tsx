@@ -116,7 +116,8 @@ export default function GameResultScreen({
     title = "Meydan okuman hazır"
     share = {
       label: "Kodu gönder",
-      text: `${name || "Bir arkadaşın"} sana meydan okuyor! 🎹\n${cat}: ${me.correct}/${GAME_LENGTH} · ${fmtSec(me.sec)}\nGeçebilir misin? Solvato'da Oyunlar › "Sana kod mu geldi?" kısmına yaz:\n${code}`,
+      // Revize R30/R32: kod tek başına ilk satırda, en altta indirme satırı
+      text: `${code}\n\n${name || "Bir arkadaşın"} sana meydan okuyor! 🎹\n${cat}: ${me.correct}/${GAME_LENGTH} · ${fmtSec(me.sec)}\nGeçebilir misin? Solvato'da Oyunlar › "Sana kod mu geldi?" kısmına yapıştır.\n\nUygulamayı indir: App Store'da "Solvato" diye arat.`,
     }
     body = (
       <>

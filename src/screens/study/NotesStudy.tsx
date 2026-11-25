@@ -299,7 +299,8 @@ export function StaffStudy({ clef, mode = "natural" }: { clef: "treble" | "bass"
             onPick={(n, o, sharp) => {
               const i = notes.findIndex((x, k) => x.name === n && octaves[k] === o)
               if (i < 0) return
-              if (sharp) setAcc("sharp")
+              // Revize R10: bemol sekmesindeyken siyah tuş sekmeyi diyeze çevirmesin
+              if (sharp && !acc) setAcc("sharp")
               setSelectedIdx(i)
             }}
           />

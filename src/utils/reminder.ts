@@ -5,7 +5,7 @@ import { LocalNotifications } from "@capacitor/local-notifications"
 const ID = 1001
 
 // Her gün seçilen saatte yerel bildirim planlar. Web'de hiçbir şey yapmaz.
-export async function enableReminder(hour: number): Promise<boolean> {
+export async function enableReminder(hour: number, minute = 0): Promise<boolean> {
   if (!Capacitor.isNativePlatform()) return false
   try {
     const perm = await LocalNotifications.requestPermissions()
@@ -17,7 +17,7 @@ export async function enableReminder(hour: number): Promise<boolean> {
           id: ID,
           title: "Piyano zamanı 🎹",
           body: "Serini kaybetme: bugün 5 dakika nota çalış.",
-          schedule: { on: { hour, minute: 0 }, allowWhileIdle: true },
+          schedule: { on: { hour, minute }, allowWhileIdle: true },
         },
       ],
     })

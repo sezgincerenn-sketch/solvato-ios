@@ -1,7 +1,7 @@
 // Profil sekmesi (revize R13): isim ve renk, seviye, toplam ilerleme; Ayarlar yalnız sağ üstte (R14)
 import { useState } from "react"
 import Icon from "../../components/Icons"
-import { colors, font, radius, space } from "../../design/tokens"
+import { alpha, colors, font, palette, radius, space } from "../../design/tokens"
 import { currentStreak } from "../../state/stats"
 import type { AppStats } from "../../types"
 import { AVATAR_COLORS, Avatar, Button, Card, ScreenHeader, StatTile, useToast } from "../../ui"
@@ -160,6 +160,22 @@ function TeacherCard({ onOpen, onRemoved }: { onOpen: () => void; onRemoved: () 
   const s = getSettings()
   const [showRest, setShowRest] = useState(s.showRestTopics)
   const [code, setCode] = useState(s.teacherCode)
+  // Tanıtımdaki öğretmen sorusuna göre kart öne çıkar (revize R5)
+  const title = code
+    ? "Öğretmen kodu"
+    : s.teacherRole === "teacher"
+      ? "Öğrenci kodu hazırla"
+      : s.teacherRole === "student"
+        ? "Öğretmen kodunu gir"
+        : "Öğretmen kodu"
+  const sub = code
+    ? `Uygulandı · ${code}`
+    : s.teacherRole === "teacher"
+      ? "Öğrencilerine konu, seviye ve hedef gönder"
+      : s.teacherRole === "student"
+        ? "Öğretmeninin gönderdiği kodu yaz"
+        : "Öğretmeninin kodunu gir ya da öğrencine kod hazırla"
+  const highlight = !code && (s.teacherRole === "student" || s.teacherRole === "teacher")
   const rowBtn = {
     padding: "8px 12px",
     borderRadius: radius.md,
@@ -170,7 +186,9 @@ function TeacherCard({ onOpen, onRemoved }: { onOpen: () => void; onRemoved: () 
     cursor: "pointer",
   } as const
   return (
-    <Card>
+    <Card
+      style={highlight ? { borderColor: palette.violet500, background: alpha(palette.violet500, 0.08) } : undefined}
+    >
       <button
         onClick={onOpen}
         style={{
@@ -203,10 +221,8 @@ function TeacherCard({ onOpen, onRemoved }: { onOpen: () => void; onRemoved: () 
           <Icon name="users" size={18} />
         </span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontWeight: font.weight.bold, color: colors.text }}>Öğretmen kodu</span>
-          <span style={{ display: "block", fontSize: font.size.sm, color: colors.textMuted }}>
-            {code ? `Uygulandı · ${code}` : "Öğretmeninin kodunu gir ya da öğrencine kod hazırla"}
-          </span>
+          <span style={{ display: "block", fontWeight: font.weight.bold, color: colors.text }}>{title}</span>
+          <span style={{ display: "block", fontSize: font.size.sm, color: colors.textMuted }}>{sub}</span>
         </span>
         <span aria-hidden="true" style={{ color: colors.textMuted }}>
           ›

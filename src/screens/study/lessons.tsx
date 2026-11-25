@@ -45,7 +45,7 @@ export const LESSONS: Lesson[] = [
   {
     id: "mnemonic-treble",
     section: "Notalar",
-    title: "Ezber cümleleri: Sol anahtarı",
+    title: "Kolay hatırla: Sol anahtarı",
     sub: "Misafir Sola Silgiyi Reçele Fırlattı",
     icon: "bookmark",
     color: category.treble.base,
@@ -54,7 +54,7 @@ export const LESSONS: Lesson[] = [
   {
     id: "mnemonic-bass",
     section: "Notalar",
-    title: "Ezber cümleleri: Fa anahtarı",
+    title: "Kolay hatırla: Fa anahtarı",
     sub: "Solucan Simit, Reçel, Fasulye, Lahana yedi",
     icon: "bookmark",
     color: category.bass.base,

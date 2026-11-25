@@ -100,7 +100,7 @@ export function RhythmMemo({ part }: { part: "learn" | "memo" }) {
   const title = { ...t, fontWeight: font.weight.bold, color: colors.textSoft } as const
   return (
     <div>
-      <div style={h}>{part === "learn" ? "Nota Değerleri ve Vuruş Süreleri" : "Süre Hesabı ve Ezber"}</div>
+      <div style={h}>{part === "learn" ? "Nota Değerleri ve Vuruş Süreleri" : "Süre Hesabı ve Kolay Hatırla"}</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {part === "learn" && (
           <>
@@ -209,7 +209,7 @@ export function RhythmMemo({ part }: { part: "learn" | "memo" }) {
             </div>
 
             <div style={card}>
-              <div style={title}>Ezber ipucu</div>
+              <div style={title}>Kolay hatırla</div>
               <div style={t}>
                 Pizza gibi düşün: birlik tam pizza, ikilik yarım, dörtlük çeyrek, sekizlik 1/8 dilim. Dilimler
                 küçüldükçe daha hızlı çalarsın, notanın ucuna kanca eklenir.

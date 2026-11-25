@@ -53,23 +53,24 @@ const TIMER_SECONDS = 5
 // ─── Home screen ───────────────────────────────────────────────────────────────
 
 // Ana sayfaya ilk girişte kısa tanıtım
+// Revize R29: ipuçları ekrandaki sırayla yukarıdan aşağı (Seviye → Bugün → Oyunlar → Konular → alt menü)
 const COACH_STEPS: CoachStep[] = [
-  {
-    target: "today",
-    title: "Buradan başla",
-    text: "Her gün karışık 10 soru. Günlük hedefini tamamlayınca serin bir gün artar.",
-  },
   {
     target: "level",
     title: "Seviyen",
     text: "Bu seviyede 50 soru çözüp %80 doğru yapınca bir üst seviyenin soruları açılır.",
   },
   {
+    target: "today",
+    title: "Buradan başla",
+    text: "Her gün karışık 10 soru. Günlük hedefini tamamlayınca serin bir gün artar.",
+  },
+  { target: "games", title: "Oyunlar", text: "Günün meydan okumasını oyna ya da arkadaşına meydan oku." },
+  {
     target: "categories",
     title: "Bir konuya odaklan",
     text: "Sadece Sol anahtarı, ritim ya da terim çalışmak istersen bir karta dokun.",
   },
-  { target: "games", title: "Oyunlar", text: "Günün meydan okumasını oyna ya da arkadaşına meydan oku." },
   {
     target: "nav",
     title: "İlerleme, Öğren ve Profil",
@@ -599,6 +600,8 @@ export default function App() {
             onDone={() => {
               updateSettings({ onboarded: true })
               setShowOnboarding(false)
+              // Revize R12: tanıtım bitince Ana sayfa en üstten başlasın
+              topRef.current?.querySelector<HTMLElement>(".overflow-y-auto")?.scrollTo(0, 0)
             }}
           />
         )}

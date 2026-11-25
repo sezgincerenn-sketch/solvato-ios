@@ -1,7 +1,7 @@
 // Ayarlar: profil, çalışma (hedef, seviye, anahtar, giriş), ses/titreşim, görünüm, daha fazla ayar.
 import NotesPicker, { notesSummary } from "../components/NotesPicker"
-import { Chip, Segmented } from "../ui"
-import { ScreenHeader } from "../ui"
+import { Segmented } from "../ui"
+import { ScreenHeader, TimeField } from "../ui"
 import { useState } from "react"
 import { updateSettings, useSettings } from "../utils/settings"
 import { enableReminder, disableReminder } from "../utils/reminder"
@@ -171,7 +171,7 @@ export default function SettingsScreen({
       setReminderMsg("")
       return
     }
-    const ok = await enableReminder(s.reminderHour)
+    const ok = await enableReminder(s.reminderHour, s.reminderMinute)
     if (ok) {
       updateSettings({ reminder: true })
       setReminderMsg("")
@@ -180,9 +180,9 @@ export default function SettingsScreen({
     }
   }
 
-  async function changeHour(h: number) {
-    updateSettings({ reminderHour: h })
-    if (s.reminder) await enableReminder(h)
+  async function changeTime(h: number, m: number) {
+    updateSettings({ reminderHour: h, reminderMinute: m })
+    if (s.reminder) await enableReminder(h, m)
   }
 
   return (
@@ -291,7 +291,11 @@ export default function SettingsScreen({
         <Section>Hatırlatma</Section>
         <Row
           title="Günlük hatırlatma"
-          sub={s.reminder ? `Her gün ${String(s.reminderHour).padStart(2, "0")}:00'de` : undefined}
+          sub={
+            s.reminder
+              ? `Her gün ${String(s.reminderHour).padStart(2, "0")}:${String(s.reminderMinute).padStart(2, "0")}'de`
+              : undefined
+          }
           on={s.reminder}
           onToggle={toggleReminder}
         />
@@ -301,12 +305,8 @@ export default function SettingsScreen({
           </p>
         )}
         {s.reminder && (
-          <div style={{ display: "flex", gap: 8, padding: "12px 0", flexWrap: "wrap" }}>
-            {[9, 12, 18, 20, 21].map((h) => (
-              <Chip key={h} selected={s.reminderHour === h} onClick={() => changeHour(h)}>
-                {String(h).padStart(2, "0")}:00
-              </Chip>
-            ))}
+          <div style={{ padding: "12px 0" }}>
+            <TimeField hour={s.reminderHour} minute={s.reminderMinute} onChange={changeTime} />
           </div>
         )}
 

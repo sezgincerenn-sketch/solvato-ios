@@ -130,12 +130,13 @@ export function describeTeacher(t: TeacherSetup): string[] {
 }
 
 export function teacherShareText(code: string, t: TeacherSetup) {
+  // Revize R30/R32: kod tek başına ilk satırda (uzun basınca yalnız kod seçilir), en altta indirme satırı
   return [
-    "🎹 Solvato · Öğretmen kodu",
-    `Kod: ${code}`,
+    code,
     "",
+    "Solvato öğretmen kodu. Uygulamada Profil › Öğretmen kodu'na yapıştır.",
     ...describeTeacher(t).map((l) => `• ${l}`),
     "",
-    "Solvato'da Ayarlar › Öğretmen kodu bölümüne bu kodu yaz.",
+    'Uygulamayı indir: App Store\'da "Solvato" diye arat.',
   ].join("\n")
 }
