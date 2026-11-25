@@ -362,3 +362,9 @@ input::placeholder {
     opacity: 0.35;
   }
 }
+
+/* Saat seçici (ui/TimeField): iOS Safari'de değer ortada dursun, alan kutudan taşmasın */
+.time-field::-webkit-date-and-time-value {
+  text-align: center;
+  margin: 0;
+}

@@ -16,6 +16,7 @@ export default function TimeField({
   return (
     <input
       type="time"
+      className="time-field"
       aria-label={label}
       value={`${p(hour)}:${p(minute)}`}
       onChange={(e) => {
@@ -23,8 +24,14 @@ export default function TimeField({
         if (Number.isFinite(h) && Number.isFinite(m)) onChange(h, m)
       }}
       style={{
+        display: "block",
         width: "100%",
+        maxWidth: "100%",
+        minWidth: 0,
         boxSizing: "border-box",
+        // iOS Safari saat alanına kendi genişliğini verir ve kutudan taşar; görünümü sıfırlanınca %100'e uyar
+        appearance: "none",
+        WebkitAppearance: "none",
         padding: "14px 16px",
         borderRadius: radius.lg,
         fontSize: font.size.xl,
