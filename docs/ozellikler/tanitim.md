@@ -89,16 +89,16 @@ Ekran, tanıtımdaki seçime (`teacherRole`) göre açılır:
 
 ## Kabul ölçütleri
 
-- [ ] Tanıtım "Her gün birkaç dakika, nota okumak kolaylaşsın" ekranıyla açılıyor; "Başlayalım" Merhaba adımına geçiyor.
-- [ ] İkinci adımdan itibaren sol üstte geri oku var; geri dönünce girilen ad ve seçimler duruyor; ilk adımda ok yok.
+- [x] Tanıtım "Her gün birkaç dakika, nota okumak kolaylaşsın" ekranıyla açılıyor; "Başlayalım" Merhaba adımına geçiyor.
+- [x] İkinci adımdan itibaren sol üstte geri oku var; geri dönünce girilen ad ve seçimler duruyor; ilk adımda ok yok.
 - [x] Öğretmen sorusunda üç seçenek; seçim `teacherRole`'e kaydediliyor (student / self / teacher).
-- [ ] "Ben öğretmenim" → Devam: anahtar/seviye/hatırlatma adımları gelmiyor, öğretmen kodu ekranı "Öğrenci kodu
+- [x] "Ben öğretmenim" → Devam: anahtar/seviye/hatırlatma adımları gelmiyor, öğretmen kodu ekranı "Öğrenci kodu
       hazırla" başlığıyla yalnız hazırlama bölümüyle açılıyor; geri dönünce Profil.
 - [ ] "Evet, öğretmenim var" ve "Kendi kendime": anahtar → seviye → hatırlatma → Hazırsın sırası bugünkü gibi.
 - [ ] Tanıtım (bitince ya da Atla ile) Ana sayfayı en üstten açıyor.
 - [ ] Hatırlatma saati tanıtımda ve Ayarlar'da aynı saat satırı; 07:45 gibi her saat seçilebiliyor; bildirim o saatte.
 - [x] Ayarlar'daki alt yazı dakikalı: "Her gün 07:45'te".
-- [ ] Öğretmen kodu ekranı: öğrenci yalnız kod girmeyi, öğretmen yalnız hazırlamayı, diğerleri ikisini görüyor.
+- [x] Öğretmen kodu ekranı: öğrenci yalnız kod girmeyi, öğretmen yalnız hazırlamayı, diğerleri ikisini görüyor.
 - [ ] Geçiş bağlantısı bölümü değiştiriyor; Profil kartının başlığı ve ekranın sonraki açılışı yeni rolü gösteriyor.
 - [ ] Koyu ve açık temada, iPhone SE ve iPad'de taşma yok (ekran görüntüleri: tanıtım giriş, öğretmen sorusu,
       hatırlatma; öğretmen kodu ekranının üç hâli).

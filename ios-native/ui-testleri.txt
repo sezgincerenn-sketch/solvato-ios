@@ -2,4 +2,4 @@
 # Hepsi üç cihazda 90 dakikayı aşıyor; o yüzden her adımda yalnız değişen ekranların testleri seçilir.
 # cihazlar: iphone, iphone-kucuk, ipad (boşluklu liste). testler: ScreenshotTests içindeki test adları; boşsa hepsi.
 cihazlar: iphone iphone-kucuk ipad
-testler: testSoru testAkor testRitmiTut testSonuc testOyunlar testOgretmenHukuk testCalisma testTanitim testProfilAyarlar testPratik testIlerleme testIpucu
+testler: testTanitim testTanitimDevam testTanitimOgretmen testProfilAyarlar testPratik testSoru testOyunlar testSonuc

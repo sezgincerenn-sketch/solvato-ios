@@ -54,7 +54,9 @@ private struct ValueRowLabel: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            RowTitle(title: title, sub: sub).layoutPriority(1)
+            RowTitle(title: title, sub: sub)
+            // Değer ve "›" önce yer alır (SE'de başlık bunları sıfıra itiyordu); uzun değer (notalar) sondan kısalır,
+            // en fazla satırın yarısı
             if let value {
                 Text(value)
                     .font(.ui(FontSize.md))
@@ -62,8 +64,9 @@ private struct ValueRowLabel: View {
                     .foregroundStyle(ThemeColor.textMuted.color)
                     .lineLimit(1)
                     .truncationMode(.tail)
+                    .layoutPriority(1)
             }
-            Text("›").font(.ui(FontSize.lg)).foregroundStyle(ThemeColor.textSubtle.color)
+            Text("›").font(.ui(FontSize.lg)).foregroundStyle(ThemeColor.textSubtle.color).fixedSize().layoutPriority(2)
         }
         .padding(.vertical, 12)
         .padding(.horizontal, 14)
