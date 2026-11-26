@@ -108,6 +108,9 @@ ios-native/
 - **Sesler web ile birebir:** `node scripts/altin-ses.mjs` web'in seslerini Chromium'da OfflineAudioContext ile 48 kHz'de
   üretip 5 ms'lik RMS düzeylerini `Fixtures/ses.json`'a yazar; `SynthTests` SynthMixer'ın ürettiği sesle pencere pencere
   karşılaştırır (perde, süre, sıra, zarf). `utils/audio.ts` değişirse betiği çalıştırın.
+- **TestFlight GitHub'dan (26 Kasım, Codemagic'in yerine):** `.github/workflows/testflight.yml`, elle başlatılır (Actions ›
+  TestFlight › Run workflow); imzalama codemagic-cli-tools ile, build 2000 + koşu numarası. Sırlar ve kurulum:
+  `docs/IOS-TEST-REHBERI.md` Bölüm B2. İlk yükleme 2002 (5 dakika).
 - **GitHub Actions (ücretsiz, her gönderimde):** `cekirdek-testleri.yml` Linux'ta `swift test`; `native-ekranlar.yml`
   `main`e `ios-native/` değişince Mac sunucusunda uygulamayı derler, UI testlerini koşar (`scripts/native-ui-testleri.sh`,
   seçim `ios-native/ui-testleri.txt`). Küçültülmüş görüntüler ve hata özetleri **`ekranlar` dalında** (her koşu baştan
