@@ -7,7 +7,8 @@ import { weakNotes } from "../state/weakNotes"
 import RoundHistory from "./profile/RoundHistory"
 import { Button, Chip, ScoreRing } from "../ui"
 import { accuracyFor } from "../state/stats"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { getSettings, updateSettings } from "../utils/settings"
 import type { AppStats } from "../types"
 import MusicalStaff from "../components/MusicalStaff"
 import { useTablet } from "../utils/orientation"
@@ -18,7 +19,111 @@ interface DashboardProps {
   onStartQuiz: () => void
   onPracticeWeak: (keys: string[]) => void
   onPracticeCategory: (key: "treble" | "bass" | "rhythm" | "terms" | "chords" | "writing" | "ear") => void
+  // Son turlar satırı (revize R38): kayıttaki ada göre aynı konudan yeni tur
+  onReplayRound: (label: string, weakKeys: string[]) => void
   header?: React.ReactNode // sekme başlığı (App'ten)
+}
+
+// ─── Başlangıç listesi (revize R7) ────────────────────────────────────────────
+// İlk turunu bitir · Günlük hedefini tamamla (seri sayılan gün) · 2 gün üst üste çalış (tur kaydında art arda iki gün).
+// Üçü bitince sessizce kaybolur ve bir daha gösterilmez (ilerleme sıfırlansa da).
+function startSteps(stats: AppStats) {
+  const days = new Set(
+    Object.keys(stats.dailyLog ?? {}).map((k) => Math.round(Date.parse(k + "T00:00:00Z") / 86400000)),
+  )
+  const twoDays = stats.streak >= 2 || [...days].some((d) => days.has(d + 1))
+  return [
+    { title: "İlk turunu bitir", done: stats.totalSessions > 0 || days.size > 0 },
+    { title: "Günlük hedefini tamamla", done: !!stats.lastPlayDate },
+    { title: "2 gün üst üste çalış", done: twoDays },
+  ]
+}
+
+function StartChecklist({ stats }: { stats: AppStats }) {
+  const steps = startSteps(stats)
+  const all = steps.every((s) => s.done)
+  useEffect(() => {
+    if (all && !getSettings().startChecklistDone) updateSettings({ startChecklistDone: true })
+  }, [all])
+  if (all || getSettings().startChecklistDone) return null
+  const done = steps.filter((s) => s.done).length
+  return (
+    <div
+      style={{
+        padding: 16,
+        borderRadius: radius.lg,
+        background: alpha(palette.violet500, 0.08),
+        border: `1px solid ${alpha(palette.violet500, 0.25)}`,
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+        textAlign: "left",
+        gridColumn: "1 / -1",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <p style={{ fontSize: font.size.md, fontWeight: font.weight.bold, color: colors.text }}>Başlangıç</p>
+        <p
+          style={{
+            fontSize: font.size.sm,
+            fontWeight: font.weight.bold,
+            color: colors.violetTextSoft,
+            fontFamily: font.family.mono,
+          }}
+        >
+          {done}/{steps.length}
+        </p>
+      </div>
+      {steps.map((s) => (
+        <div
+          key={s.title}
+          style={{ display: "flex", alignItems: "center", gap: 12 }}
+          aria-label={`${s.title}, ${s.done ? "tamamlandı" : "yapılmadı"}`}
+        >
+          <span
+            aria-hidden="true"
+            style={{
+              width: 22,
+              height: 22,
+              borderRadius: "50%",
+              flexShrink: 0,
+              boxSizing: "border-box",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: s.done ? palette.green500 : "transparent",
+              border: s.done ? "none" : `1.5px solid ${colors.borderStrong}`,
+            }}
+          >
+            {s.done && (
+              <svg
+                width={13}
+                height={13}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={palette.white}
+                strokeWidth={3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+            )}
+          </span>
+          <span
+            style={{
+              fontSize: font.size.sm,
+              fontWeight: s.done ? font.weight.regular : font.weight.semibold,
+              color: s.done ? colors.textMuted : colors.text,
+              textDecoration: s.done ? "line-through" : "none",
+            }}
+          >
+            {s.title}
+          </span>
+        </div>
+      ))}
+    </div>
+  )
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -204,6 +309,7 @@ export default function ProgressScreen({
   onStartQuiz,
   onPracticeWeak,
   onPracticeCategory,
+  onReplayRound,
   header,
 }: DashboardProps) {
   const tablet = useTablet()
@@ -371,6 +477,9 @@ export default function ProgressScreen({
           >
             İlk tura başla
           </button>
+          <div style={{ width: "100%", maxWidth: 420, marginTop: 24 }}>
+            <StartChecklist stats={stats} />
+          </div>
         </div>
       </div>
     )
@@ -461,7 +570,16 @@ export default function ProgressScreen({
             </button>
           )}
         </div>
-        <RoundHistory rounds={stats.history ?? []} limit={allRounds ? 30 : 3} />
+        <RoundHistory
+          rounds={stats.history ?? []}
+          limit={allRounds ? 30 : 3}
+          onReplay={(r) =>
+            onReplayRound(
+              r.label,
+              weakList.map((w) => w.key),
+            )
+          }
+        />
       </div>
     ),
   }
@@ -487,6 +605,7 @@ export default function ProgressScreen({
             : { display: "flex", flexDirection: "column" }),
         }}
       >
+        <StartChecklist stats={stats} />
         {tablet ? (
           <>
             <div style={column}>

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Icon from "../components/Icons"
 import { alpha, colors, font, palette, radius, space } from "../design/tokens"
-import { enableReminder } from "../utils/reminder"
+import { enableReminder, timeText } from "../utils/reminder"
 import { getSettings, updateSettings } from "../utils/settings"
 
 function nearestHour() {
@@ -27,7 +27,7 @@ export default function StreakReminderCard({ streak }: { streak: number }) {
     const ok = await enableReminder(hour)
     updateSettings({ streakReminderOffered: true, ...(ok ? { reminder: true, reminderHour: hour } : {}) })
     setVisible(false)
-    setNote(ok ? `Her gün ${hh}:00'de hatırlatacağım.` : "Bildirim izni verilmedi; Ayarlar'dan açabilirsin.")
+    setNote(ok ? `Her gün ${timeText(hour, 0)} hatırlatacağım.` : "Bildirim izni verilmedi; Ayarlar'dan açabilirsin.")
   }
 
   if (note)

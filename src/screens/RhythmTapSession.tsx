@@ -34,6 +34,8 @@ export default function RhythmTapSession({
   const [phase, setPhase] = useState<Phase>("ready")
   const [result, setResult] = useState<TapResult | null>(null)
   const [answers, setAnswers] = useState<RoundAnswer[]>([])
+  // En az bir ritim denendi mi (revize R34)
+  const answered = answers.length > 0 || result !== null
   const [count, setCount] = useState<number | null>(null) // sayma: 1..4
   const [progress, setProgress] = useState<number | null>(null)
   const [pulse, setPulse] = useState(0)
@@ -132,6 +134,8 @@ export default function RhythmTapSession({
 
   // Çıkış onayı: çalarken açılırsa deneme durur, "Devam et" ile aynı ritim baştan
   const askExit = () => {
+    // Hiç ritim denenmediyse sormadan çık (revize R34)
+    if (!answered) return onExit()
     if (phase !== "result" && phase !== "ready") {
       clearTimers()
       setCount(null)
@@ -170,6 +174,8 @@ export default function RhythmTapSession({
       <div style={{ display: "flex", alignItems: "center", gap: space[3] }}>
         <button
           onClick={askExit}
+          data-back
+          data-answered={answered ? "1" : undefined}
           aria-label="Turdan çık"
           style={{
             width: 40,

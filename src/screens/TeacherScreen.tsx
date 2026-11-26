@@ -3,12 +3,12 @@
 //   2) Öğretmen: öğrencisi için ayarları seçer, kodu WhatsApp vb. ile gönderir
 // Kodun biçimi: utils/teacherCode.ts
 import { formatCode, readClipboard } from "../utils/codeFormat"
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import NotesPicker from "../components/NotesPicker"
 import { LEVEL_LABELS } from "../data/questions"
 import { colors, font, palette, radius, space } from "../design/tokens"
 import { Button, Card, Chip, ScreenHeader, Segmented, useToast } from "../ui"
-import { getSettings, updateSettings } from "../utils/settings"
+import { getSettings, updateSettings, useSettings } from "../utils/settings"
 import {
   GOALS,
   TOPICS,
@@ -36,9 +36,33 @@ function SetupList({ setup }: { setup: TeacherSetup }) {
   )
 }
 
+// Tanıtımdaki seçime göre görünen bölüm (revize R35): öğrenci yalnız kod girer, öğretmen yalnız hazırlar, diğerleri ikisi
+const SECTIONS = {
+  enter: {
+    title: "Öğretmen kodunu gir",
+    intro:
+      "Öğretmenin hangi notaları ve hangi seviyede çalışacağını bir kodla gönderir. Kodu girince uygulaman o ayarlarla kurulur.",
+    link: { text: "Öğretmen misin? Öğrencin için kod hazırla", role: "teacher" as const },
+  },
+  prepare: {
+    title: "Öğrenci kodu hazırla",
+    intro: "Öğrencin için konu, seviye, hedef ve notaları seç; kodu WhatsApp ya da mesajla gönder.",
+    link: { text: "Öğrenci misin? Öğretmeninin kodunu gir", role: "student" as const },
+  },
+  both: {
+    title: "Öğretmen kodu",
+    intro:
+      "Öğretmenin hangi notaları ve hangi seviyede çalışacağını bir kodla gönderir. Kodu girince uygulaman o ayarlarla kurulur.",
+    link: null,
+  },
+}
+
 export default function TeacherScreen({ onBack }: { onBack: () => void }) {
   const toast = useToast()
-  const s = getSettings()
+  const s = useSettings()
+  const section = s.teacherRole === "student" ? "enter" : s.teacherRole === "teacher" ? "prepare" : "both"
+  const sec = SECTIONS[section]
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   // ── Öğrenci: kodu gir
   const [code, setCode] = useState("")
@@ -68,8 +92,9 @@ export default function TeacherScreen({ onBack }: { onBack: () => void }) {
 
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column", fontFamily: font.family.ui }}>
-      <ScreenHeader title="Öğretmen kodu" onBack={onBack} />
+      <ScreenHeader title={sec.title} onBack={onBack} />
       <div
+        ref={scrollRef}
         style={{
           flex: 1,
           minHeight: 0,
@@ -78,183 +103,210 @@ export default function TeacherScreen({ onBack }: { onBack: () => void }) {
           ...stack,
         }}
       >
-        <p style={muted}>
-          Öğretmenin hangi notaları ve hangi seviyede çalışacağını bir kodla gönderir. Kodu girince uygulaman o
-          ayarlarla kurulur.
-        </p>
+        <p style={muted}>{sec.intro}</p>
 
         {/* 1) Öğrenci */}
-        <Card as="section" style={stack}>
-          <p style={title}>Öğretmeninden kod mu geldi?</p>
-          {applied ? (
-            <>
-              <p style={{ ...muted, color: colors.greenText, fontWeight: font.weight.semibold }}>
-                Ayarların güncellendi ({applied.code})
-              </p>
-              <SetupList setup={applied.setup} />
-              <p style={muted}>İstediğin zaman Ayarlar'dan değiştirebilirsin.</p>
-            </>
-          ) : (
-            <>
-              <div style={{ display: "flex", gap: space[2] }}>
-                <input
-                  value={code}
-                  onChange={(e) => {
-                    setCode(formatCode(e.target.value, 3, 6))
-                    setErr("")
+        {section !== "prepare" && (
+          <Card as="section" style={stack}>
+            <p style={title}>Öğretmeninden kod mu geldi?</p>
+            {applied ? (
+              <>
+                <p style={{ ...muted, color: colors.greenText, fontWeight: font.weight.semibold }}>
+                  Ayarların güncellendi ({applied.code})
+                </p>
+                <SetupList setup={applied.setup} />
+                <p style={muted}>İstediğin zaman Ayarlar'dan değiştirebilirsin.</p>
+              </>
+            ) : (
+              <>
+                <div style={{ display: "flex", gap: space[2] }}>
+                  <input
+                    value={code}
+                    onChange={(e) => {
+                      setCode(formatCode(e.target.value, 3, 6))
+                      setErr("")
+                    }}
+                    onKeyDown={(e) => e.key === "Enter" && apply()}
+                    placeholder="ABC-DEF"
+                    aria-label="Öğretmen kodu"
+                    autoCapitalize="characters"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      minHeight: 44,
+                      padding: `${space[3]}px 14px`,
+                      borderRadius: radius.md,
+                      fontSize: font.size.md,
+                      fontFamily: font.family.mono,
+                      letterSpacing: 2,
+                      color: colors.text,
+                      background: colors.fillStrong,
+                      border: `1.5px solid ${err ? palette.red500 : colors.borderStrong}`,
+                      outline: "none",
+                    }}
+                  />
+                  <Button variant="secondary" onClick={apply} disabled={!code.trim()}>
+                    Uygula
+                  </Button>
+                </div>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const t = await readClipboard()
+                    if (t) {
+                      setCode(formatCode(t, 3, 6))
+                      setErr("")
+                    } else setErr("Pano okunamadı; koda uzun basıp Yapıştır de.")
                   }}
-                  onKeyDown={(e) => e.key === "Enter" && apply()}
-                  placeholder="ABC-DEF"
-                  aria-label="Öğretmen kodu"
-                  autoCapitalize="characters"
-                  autoCorrect="off"
-                  spellCheck={false}
                   style={{
-                    flex: 1,
-                    minWidth: 0,
-                    minHeight: 44,
-                    padding: `${space[3]}px 14px`,
-                    borderRadius: radius.md,
-                    fontSize: font.size.md,
-                    fontFamily: font.family.mono,
-                    letterSpacing: 2,
-                    color: colors.text,
-                    background: colors.fillStrong,
-                    border: `1.5px solid ${err ? palette.red500 : colors.borderStrong}`,
-                    outline: "none",
-                  }}
-                />
-                <Button variant="secondary" onClick={apply} disabled={!code.trim()}>
-                  Uygula
-                </Button>
-              </div>
-              <button
-                type="button"
-                onClick={async () => {
-                  const t = await readClipboard()
-                  if (t) {
-                    setCode(formatCode(t, 3, 6))
-                    setErr("")
-                  } else setErr("Pano okunamadı; koda uzun basıp Yapıştır de.")
-                }}
-                style={{
-                  alignSelf: "flex-start",
-                  padding: "6px 0",
-                  background: "none",
-                  border: "none",
-                  color: colors.violetText,
-                  fontSize: font.size.sm,
-                  fontWeight: font.weight.semibold,
-                  fontFamily: font.family.ui,
-                  cursor: "pointer",
-                }}
-              >
-                Panodan yapıştır
-              </button>
-              {err && <p style={{ fontSize: font.size.sm, color: colors.redText }}>{err}</p>}
-              {s.teacherCode && <p style={{ ...muted, fontSize: font.size.xs }}>Son uygulanan kod: {s.teacherCode}</p>}
-            </>
-          )}
-        </Card>
-
-        {/* 2) Öğretmen */}
-        <Card as="section" style={stack}>
-          <p style={title}>Öğretmensen: öğrencine kod hazırla</p>
-          <p style={muted}>
-            Seçimlerini yap, kodu öğrencine gönder. Her öğrenciye ya da her döneme ayrı kod verebilirsin.
-          </p>
-
-          <p style={label}>Konular</p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            <Chip selected={allTopics(setup.topics)} onClick={() => set({ topics: [] })}>
-              Hepsi
-            </Chip>
-            {TOPICS.map((x) => {
-              const on = !allTopics(setup.topics) && setup.topics.includes(x.key)
-              return (
-                <Chip
-                  key={x.key}
-                  selected={on}
-                  onClick={() => {
-                    const cur = allTopics(setup.topics) ? [] : setup.topics
-                    const next = on ? cur.filter((k) => k !== x.key) : [...cur, x.key]
-                    // Hiç konu kalmazsa "Hepsi"ne döner
-                    set({ topics: TOPICS.map((t) => t.key as string).filter((k) => next.includes(k)) })
+                    alignSelf: "flex-start",
+                    padding: "6px 0",
+                    background: "none",
+                    border: "none",
+                    color: colors.violetText,
+                    fontSize: font.size.sm,
+                    fontWeight: font.weight.semibold,
+                    fontFamily: font.family.ui,
+                    cursor: "pointer",
                   }}
                 >
-                  {x.label}
-                </Chip>
-              )
-            })}
-          </div>
-          <p style={{ ...muted, fontSize: font.size.xs, marginTop: -4 }}>
-            Seçilen konular öğrencinin ana sayfasında en üstte çıkar, günlük karışık tur da bunlardan gelir.
-          </p>
-          <p style={label}>Anahtar</p>
-          <Segmented
-            size="sm"
-            value={setup.clef}
-            options={[
-              ["treble", "Sol"],
-              ["bass", "Fa"],
-              ["both", "İkisi de"],
-            ]}
-            onChange={(clef) => set({ clef })}
-          />
-          <p style={label}>Seviye</p>
-          <Segmented
-            size="sm"
-            value={setup.level}
-            options={([1, 2, 3] as const).map((l) => [l, LEVEL_LABELS[l]] as const)}
-            onChange={(level) => set({ level })}
-          />
-          <p style={label}>Çalışılacak notalar</p>
-          <NotesPicker value={setup.notes} onChange={(notes) => set({ notes })} />
-          <p style={label}>Günlük hedef</p>
-          <Segmented
-            size="sm"
-            value={setup.dailyGoal}
-            options={GOALS.map((g) => [g, `${g} soru`] as const)}
-            onChange={(dailyGoal) => set({ dailyGoal })}
-          />
-          <p style={label}>Tuşlarda nota adları</p>
-          <Segmented
-            size="sm"
-            value={setup.keyLabels ? 1 : 0}
-            options={[
-              [0, "Gizli"],
-              [1, "Görünür"],
-            ]}
-            onChange={(v) => set({ keyLabels: v === 1 })}
-          />
+                  Panodan yapıştır
+                </button>
+                {err && <p style={{ fontSize: font.size.sm, color: colors.redText }}>{err}</p>}
+                {s.teacherCode && (
+                  <p style={{ ...muted, fontSize: font.size.xs }}>Son uygulanan kod: {s.teacherCode}</p>
+                )}
+              </>
+            )}
+          </Card>
+        )}
 
-          <div
-            style={{
-              marginTop: space[2],
-              padding: space[4],
-              borderRadius: radius.lg,
-              background: colors.fillStrong,
-              border: `1px dashed ${colors.borderStrong}`,
-              textAlign: "center",
-            }}
-          >
-            <p style={{ ...muted, fontSize: font.size.xs }}>Öğrencinin gireceği kod</p>
-            <p
-              aria-live="polite"
+        {/* 2) Öğretmen */}
+        {section !== "enter" && (
+          <Card as="section" style={stack}>
+            <p style={title}>Öğretmensen: öğrencine kod hazırla</p>
+            <p style={muted}>
+              Seçimlerini yap, kodu öğrencine gönder. Her öğrenciye ya da her döneme ayrı kod verebilirsin.
+            </p>
+
+            <p style={label}>Konular</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              <Chip selected={allTopics(setup.topics)} onClick={() => set({ topics: [] })}>
+                Hepsi
+              </Chip>
+              {TOPICS.map((x) => {
+                const on = !allTopics(setup.topics) && setup.topics.includes(x.key)
+                return (
+                  <Chip
+                    key={x.key}
+                    selected={on}
+                    onClick={() => {
+                      const cur = allTopics(setup.topics) ? [] : setup.topics
+                      const next = on ? cur.filter((k) => k !== x.key) : [...cur, x.key]
+                      // Hiç konu kalmazsa "Hepsi"ne döner
+                      set({ topics: TOPICS.map((t) => t.key as string).filter((k) => next.includes(k)) })
+                    }}
+                  >
+                    {x.label}
+                  </Chip>
+                )
+              })}
+            </div>
+            <p style={{ ...muted, fontSize: font.size.xs, marginTop: -4 }}>
+              Seçilen konular öğrencinin ana sayfasında en üstte çıkar, günlük karışık tur da bunlardan gelir.
+            </p>
+            <p style={label}>Anahtar</p>
+            <Segmented
+              size="sm"
+              value={setup.clef}
+              options={[
+                ["treble", "Sol"],
+                ["bass", "Fa"],
+                ["both", "İkisi de"],
+              ]}
+              onChange={(clef) => set({ clef })}
+            />
+            <p style={label}>Seviye</p>
+            <Segmented
+              size="sm"
+              value={setup.level}
+              options={([1, 2, 3] as const).map((l) => [l, LEVEL_LABELS[l]] as const)}
+              onChange={(level) => set({ level })}
+            />
+            <p style={label}>Çalışılacak notalar</p>
+            <NotesPicker value={setup.notes} onChange={(notes) => set({ notes })} />
+            <p style={label}>Günlük hedef</p>
+            <Segmented
+              size="sm"
+              value={setup.dailyGoal}
+              options={GOALS.map((g) => [g, `${g} soru`] as const)}
+              onChange={(dailyGoal) => set({ dailyGoal })}
+            />
+            <p style={label}>Tuşlarda nota adları</p>
+            <Segmented
+              size="sm"
+              value={setup.keyLabels ? 1 : 0}
+              options={[
+                [0, "Gizli"],
+                [1, "Görünür"],
+              ]}
+              onChange={(v) => set({ keyLabels: v === 1 })}
+            />
+
+            <div
               style={{
-                fontSize: font.size.xxl,
-                fontWeight: font.weight.heavy,
-                fontFamily: font.family.mono,
-                letterSpacing: 4,
-                color: colors.text,
-                marginTop: 4,
+                marginTop: space[2],
+                padding: space[4],
+                borderRadius: radius.lg,
+                background: colors.fillStrong,
+                border: `1px dashed ${colors.borderStrong}`,
+                textAlign: "center",
               }}
             >
-              {teacherCode}
-            </p>
-          </div>
-          <Button onClick={() => shareWithToast(teacherShareText(teacherCode, setup), toast.show)}>Kodu gönder</Button>
-        </Card>
+              <p style={{ ...muted, fontSize: font.size.xs }}>Öğrencinin gireceği kod</p>
+              <p
+                aria-live="polite"
+                style={{
+                  fontSize: font.size.xxl,
+                  fontWeight: font.weight.heavy,
+                  fontFamily: font.family.mono,
+                  letterSpacing: 4,
+                  color: colors.text,
+                  marginTop: 4,
+                }}
+              >
+                {teacherCode}
+              </p>
+            </div>
+            <Button onClick={() => shareWithToast(teacherShareText(teacherCode, setup), toast.show)}>
+              Kodu gönder
+            </Button>
+          </Card>
+        )}
+
+        {/* Diğer bölüme geçiş: seçim kalıcı değişir (revize R35) */}
+        {sec.link && (
+          <button
+            onClick={() => {
+              updateSettings({ teacherRole: sec.link!.role })
+              scrollRef.current?.scrollTo(0, 0)
+            }}
+            style={{
+              background: "none",
+              border: "none",
+              padding: `${space[2]}px 0`,
+              fontFamily: font.family.ui,
+              fontSize: font.size.sm,
+              fontWeight: font.weight.semibold,
+              color: colors.violetText,
+              cursor: "pointer",
+            }}
+          >
+            {sec.link.text}
+          </button>
+        )}
       </div>
       {toast.el}
     </div>

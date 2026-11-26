@@ -182,6 +182,8 @@ export default function ChordQuizSession({ onExit, onComplete }: ChordQuizSessio
   const [score, setScore] = useState(0)
   const [timerKey, setTimerKey] = useState(0)
   const [timerOn] = useState(() => getSettings().timer)
+  // En az bir soru cevaplandı ya da süresi doldu mu: yoksa ✕ ve kaydırma sormadan çıkar (revize R34)
+  const answered = idx > 0 || answerState !== "pending"
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null)
   const [playingChord, setPlayingChord] = useState(false)
   const [showHint, setShowHint] = useState(false)
@@ -307,7 +309,8 @@ export default function ChordQuizSession({ onExit, onComplete }: ChordQuizSessio
       {/* ── Top bar ── */}
       <div style={{ padding: "14px 16px 10px", display: "flex", alignItems: "center", gap: 10 }}>
         <button
-          onClick={() => setShowExitConfirm(true)}
+          onClick={() => (answered ? setShowExitConfirm(true) : onExit())}
+          data-answered={answered ? "1" : undefined}
           aria-label="Çık"
           data-back
           style={{

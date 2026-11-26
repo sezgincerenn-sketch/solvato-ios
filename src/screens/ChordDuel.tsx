@@ -156,6 +156,8 @@ export default function ChordDuel({ onExit }: { onExit: () => void }) {
   const [picked, setPicked] = useState<(string | null)[]>([null, null])
   const [reveal, setReveal] = useState(false)
   const [confirmExit, setConfirmExit] = useState(false)
+  // Düello sürüyor ve bir şıkka basıldı mı (revize R34)
+  const answered = idx > 0 || picked.some((p) => p !== null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(
@@ -363,19 +365,38 @@ export default function ChordDuel({ onExit }: { onExit: () => void }) {
           background: colors.fill,
         }}
       >
+        {/* Turdan çık: ✕ (revize R16, R34); hiç şıkka basılmadıysa sormadan çıkar */}
         <button
           data-back
-          onClick={() => setConfirmExit(true)}
+          data-answered={answered ? "1" : undefined}
+          aria-label="Turdan çık"
+          onClick={() => (answered ? setConfirmExit(true) : onExit())}
           style={{
-            fontSize: font.size.xs,
+            width: 44,
+            height: 44,
+            margin: "4px 0",
+            borderRadius: radius.md,
+            background: colors.fillStrong,
+            border: `1px solid ${colors.border}`,
             color: colors.textMuted,
-            background: "none",
-            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             cursor: "pointer",
-            padding: 6,
           }}
         >
-          Bitir
+          <svg
+            width={18}
+            height={18}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
         </button>
         <span
           style={{
@@ -387,7 +408,7 @@ export default function ChordDuel({ onExit }: { onExit: () => void }) {
         >
           {idx + 1}/{qs.length} · {q.type === "staff" ? "portedeki akor" : "basılı tuşlar"}
         </span>
-        <span style={{ width: 40 }} />
+        <span style={{ width: 44 }} />
       </div>
       <Half
         q={q}
@@ -406,6 +427,7 @@ export default function ChordDuel({ onExit }: { onExit: () => void }) {
         <div
           role="dialog"
           aria-modal="true"
+          data-exit-open
           aria-label="Düellodan çık"
           style={{
             position: "absolute",

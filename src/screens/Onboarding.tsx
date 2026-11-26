@@ -5,7 +5,7 @@ import MusicalStaff from "../components/MusicalStaff"
 import { QuizPiano } from "../components/piano/QuizPiano"
 import { hapticSuccess, hapticError } from "../utils/haptics"
 import { playCorrectChime, playWrongBuzz } from "../utils/audio"
-import { updateSettings } from "../utils/settings"
+import { getSettings, updateSettings } from "../utils/settings"
 import { SolfieSays } from "../components/Solfie"
 import { ClefIcon } from "../components/Glyph"
 import { ChoiceCard, Segmented, TimeField } from "../ui"
@@ -138,14 +138,16 @@ const CLEFS: { key: "treble" | "bass" | "both"; label: string; sub: string; glyp
   { key: "both", label: "İkisi de", sub: "İki elle çalıyorum", glyph: "𝄞𝄢" },
 ]
 
-export default function Onboarding({ onDone }: { onDone: () => void }) {
+// onDone(true): "Ben öğretmenim" yolu, tanıtım biter ve öğretmen kodu ekranı açılır (tanitim.md)
+export default function Onboarding({ onDone }: { onDone: (openTeacher?: boolean) => void }) {
   const [step, setStep] = useState<Step>("intro")
   const [level, setLevel] = useState(0)
   const [goal, setGoal] = useState(10)
   const [remind, setRemind] = useState(true)
   const [hour, setHour] = useState(19)
   const [minute, setMinute] = useState(0)
-  const [role, setRole] = useState<"student" | "self" | "teacher">("student")
+  // Tekrar gösterilince önceki seçim işaretli açılır
+  const [role, setRole] = useState<"student" | "self" | "teacher">(() => getSettings().teacherRole || "student")
   const [name, setName] = useState("")
   const [clef, setClef] = useState<"treble" | "bass" | "both">("treble")
   const order: Step[] = ["intro", "hello", "try1", "try2", "teacher", "clef", "level", "reminder", "done"]
@@ -227,7 +229,7 @@ export default function Onboarding({ onDone }: { onDone: () => void }) {
         </div>
         {step !== "done" ? (
           <button
-            onClick={onDone}
+            onClick={() => onDone()}
             style={{
               padding: "10px 4px",
               fontSize: font.size.md,
@@ -331,7 +333,9 @@ export default function Onboarding({ onDone }: { onDone: () => void }) {
           <button
             onClick={() => {
               updateSettings({ teacherRole: role })
-              next()
+              // Öğretmen: anahtar, seviye, hatırlatma ve Hazırsın atlanır
+              if (role === "teacher") onDone(true)
+              else next()
             }}
             style={PRIMARY}
           >
@@ -610,7 +614,7 @@ export default function Onboarding({ onDone }: { onDone: () => void }) {
               Günde {goal} soru yeter. Doğru cevapladıkça yeni sorular açılır.
             </p>
           </div>
-          <button onClick={onDone} style={PRIMARY}>
+          <button onClick={() => onDone()} style={PRIMARY}>
             Başlayalım
           </button>
         </>

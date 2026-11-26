@@ -111,6 +111,8 @@ export default function QuizSession({
   const [showExplanation, setShowExplanation] = useState(false)
   const [prefMode] = useState<"piano" | "choice">(() => getSettings().inputMode)
   const [showExitConfirm, setShowExitConfirm] = useState(false)
+  // En az bir soru cevaplandı mı: yoksa ✕ ve kaydırma sormadan çıkar (revize R34)
+  const answered = results.length > 0 || answerState !== "pending"
   const showKeyLabels = getSettings().keyLabels
   const [showHint, setShowHint] = useState(false)
   const land = useTwoColumn()
@@ -176,6 +178,18 @@ export default function QuizSession({
     : isRhythmQ
       ? Math.ceil(timerSeconds * 1.6)
       : timerSeconds
+  // Revize R1: nota sorusunda yanlışta "Senin cevabın: Fa" (süre dolunca ve oktav yanlışsa yok); oktav rakamı atılır
+  const yourAnswer =
+    isNoteQ && answerState === "wrong" && !wrongOctave && selectedAnswer && selectedAnswer !== "__timeout__"
+      ? selectedAnswer.replace(/\d+$/, "").replace("#", "♯")
+      : null
+  const yourAnswerEl = yourAnswer && (
+    <>
+      <span style={{ color: colors.textMuted }}>Senin cevabın: </span>
+      <span style={{ color: colors.redText, fontWeight: font.weight.bold }}>{yourAnswer}</span>
+      <span style={{ color: colors.textMuted, fontWeight: font.weight.regular }}> · </span>
+    </>
+  )
 
   useEffect(() => {
     setAnswerState("pending")
@@ -294,9 +308,10 @@ export default function QuizSession({
               position: "relative",
             }}
           >
-            {/* Turdan çık: ✕ (revize R16) */}
+            {/* Turdan çık: ✕ (revize R16). Cevap yoksa sormadan çıkar (revize R34) */}
             <button
-              onClick={() => setShowExitConfirm(true)}
+              onClick={() => (answered ? setShowExitConfirm(true) : onExit())}
+              data-answered={answered ? "1" : undefined}
               style={{
                 width: 44,
                 height: 44,
@@ -483,6 +498,7 @@ export default function QuizSession({
                 }}
               >
                 <p style={{ fontSize: font.size.sm, color: colors.redText, fontWeight: font.weight.semibold }}>
+                  {yourAnswerEl}
                   Doğru cevap:{" "}
                   <span style={{ color: colors.greenText, fontWeight: font.weight.bold }}>
                     {octaveMode && target ? target.key : q.correctAnswer}
@@ -689,6 +705,7 @@ export default function QuizSession({
                       marginBottom: 2,
                     }}
                   >
+                    {yourAnswerEl}
                     Doğru cevap:{" "}
                     <span style={{ color: colors.greenText, fontWeight: font.weight.bold }}>{q.correctAnswer}</span>
                   </p>

@@ -29,6 +29,7 @@ export interface Settings {
   showRestTopics: boolean // öğretmen kodu varken diğer konular da Ana sayfada açık (revize R20)
   reminderMinute: number // hatırlatma dakikası (revize R9: saat seçici)
   teacherRole: "" | "student" | "self" | "teacher" // tanıtımdaki öğretmen sorusu (revize R5)
+  startChecklistDone: boolean // İlerleme'deki başlangıç listesi bitti, bir daha gösterilmez (revize R7)
   streakReminderOffered: boolean // ilk seri gününde "Serini koru" kartı bir kez gösterildi (revize R8)
 }
 
@@ -55,6 +56,7 @@ const DEFAULTS: Settings = {
   teacherCode: "",
   topics: [],
   showRestTopics: false,
+  startChecklistDone: false,
   streakReminderOffered: false,
   reminderMinute: 0,
   teacherRole: "",

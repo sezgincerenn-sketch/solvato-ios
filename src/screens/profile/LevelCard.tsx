@@ -5,7 +5,16 @@ import { alpha, colors, font, palette, radius, space } from "../../design/tokens
 import { LEVEL_ACC, LEVEL_NEED } from "../../state/stats"
 import { getSettings } from "../../utils/settings"
 
-export default function LevelCard({ onClick, detailed }: { onClick?: () => void; detailed?: boolean }) {
+// onClick varsa sağ üstte "›" (revize R39, R37): Ana sayfada Profil'i, Profil'de Ayarlar'ı açar
+export default function LevelCard({
+  onClick,
+  detailed,
+  actionLabel = "Profili aç",
+}: {
+  onClick?: () => void
+  detailed?: boolean
+  actionLabel?: string
+}) {
   const s = getSettings()
   const lv = s.level
   const { n, c } = s.levelProgress
@@ -17,7 +26,7 @@ export default function LevelCard({ onClick, detailed }: { onClick?: () => void;
   const body = (
     <>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: space[2] }}>
-        <div style={{ minWidth: 0 }}>
+        <div style={{ minWidth: 0, flex: 1 }}>
           <p
             style={{
               fontSize: font.size.xs,
@@ -59,6 +68,11 @@ export default function LevelCard({ onClick, detailed }: { onClick?: () => void;
             </span>
           ))}
         </div>
+        {onClick && (
+          <span aria-hidden="true" style={{ color: colors.textFaint, fontSize: font.size.lg }}>
+            ›
+          </span>
+        )}
       </div>
       {!top && (
         <>
@@ -114,7 +128,7 @@ export default function LevelCard({ onClick, detailed }: { onClick?: () => void;
     <button
       onClick={onClick}
       style={{ ...box, cursor: "pointer" }}
-      aria-label={`Seviye: ${LEVEL_LABELS[lv]}. Profili aç`}
+      aria-label={`Seviye: ${LEVEL_LABELS[lv]}. ${actionLabel}`}
     >
       {body}
     </button>

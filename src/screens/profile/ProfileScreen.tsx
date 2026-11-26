@@ -131,7 +131,7 @@ export default function ProfileScreen({
 
         <TeacherCard onOpen={onOpenTeacher} onRemoved={() => toast.show("Öğretmen kodu kaldırıldı")} />
 
-        <LevelCard detailed />
+        <LevelCard detailed actionLabel="Ayarları aç" onClick={onOpenSettings} />
         <RankCard xp={stats.totalPoints} detailed />
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: space[2] }}>

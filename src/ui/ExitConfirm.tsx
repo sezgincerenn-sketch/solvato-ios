@@ -25,6 +25,7 @@ export default function ExitConfirm({
     <div
       role="dialog"
       aria-modal="true"
+      data-exit-open
       aria-label="Turdan çık"
       style={{
         position: "absolute",

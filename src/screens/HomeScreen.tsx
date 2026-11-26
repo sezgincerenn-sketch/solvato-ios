@@ -439,6 +439,10 @@ export default function HomeScreen({
 
                       {/* Bu konudaki doğruluk (R19): yıldız ve oynat simgesi yerine yüzde halkası */}
                       <PercentRing acc={cat.acc} color={cat.color} />
+                      {/* Basılınca tur başladığı belli olsun (revize R40) */}
+                      <svg width={10} height={10} viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
+                        <path d="M5 3l14 9-14 9V3z" fill={colors.textFaint} />
+                      </svg>
                     </button>
                   )}
                   {cat.key === "accidentals" && g.has("chords") && (

@@ -1,7 +1,6 @@
 // Geri hareketi (iOS / Instagram gibi): ekranın sol kenarından sağa kaydırınca
-// ekran parmakla birlikte kayar, altından bir önceki ekran görünür.
-// Ekranın kayamadığı yerlerde (test, düello) kenarda bir ok belirir ve
-// ekranın geri düğmesine (data-back) basılır; test ekranındaki onay korunur.
+// ekran parmakla birlikte kayar, altından bir önceki ekran görünür. Turlarda da kayar (revize R34): cevap verildiyse
+// bırakınca ekran yerine oturur ve ✕'e basılır (onay açılır). Onay açıkken kaydırma "Devam et"e basar.
 // Android'de telefonun geri tuşu da aynı geri düğmesine basar.
 import { useEffect, useRef, useState } from "react"
 import { flushSync } from "react-dom"
@@ -12,7 +11,7 @@ const EDGE = 28 // kenardan bu kadar içeride başlayan dokunuşlar
 const TRIGGER = 80 // ok modunda tetikleme mesafesi
 const ANIM = 220
 
-function visibleBack(root: HTMLElement | null): HTMLElement | null {
+export function visibleBack(root: HTMLElement | null): HTMLElement | null {
   if (!root) return null
   const els = Array.from(root.querySelectorAll<HTMLElement>("[data-back]"))
   for (let i = els.length - 1; i >= 0; i--) {
@@ -28,6 +27,9 @@ export function useSwipeBack<V>(opts: {
   under: React.RefObject<HTMLElement | null> // alttaki katman (önceki ekran)
   getTarget: () => V | null // kaydırarak dönülebilecek ekran, yoksa null
   commit: (v: V) => void
+  // Turlar (revize R34): bırakınca geri dönmek yerine ekran yerine oturup ekranın geri düğmesine (✕) basılsın mı.
+  // Turda cevap verildiyse ✕ "Turdan çıkılsın mı?" onayını açar.
+  confirmOnRelease?: () => boolean
 }) {
   const [underlay, setUnderlay] = useState<V | null>(null)
   const [drag, setDrag] = useState(0) // ok modu göstergesi 0..1
@@ -143,7 +145,15 @@ export function useSwipeBack<V>(opts: {
       const v = (t.clientX - s.lastX) / Math.max(1, e.timeStamp - s.lastT) // px/ms
       const go = dx > w * 0.35 || (v > 0.4 && dx > 40)
       busy.current = true
-      if (go) {
+      if (go && o.current.confirmOnRelease?.()) {
+        paint(0, w, true)
+        setTimeout(() => {
+          reset()
+          setUnderlay(null)
+          busy.current = false
+          pressBack()
+        }, ANIM)
+      } else if (go) {
         paint(w, w, true)
         setTimeout(() => {
           flushSync(() => {

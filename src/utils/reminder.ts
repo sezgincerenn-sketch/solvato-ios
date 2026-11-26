@@ -35,3 +35,12 @@ export async function disableReminder() {
     /* yoksay */
   }
 }
+
+/** "19:00'da", "07:45'te", "20:00'de": saat ve okunuşuna uyan bulunma eki (dakika sıfırsa saat, değilse dakika) */
+export function timeText(hour: number, minute: number): string {
+  const p = (n: number) => String(n).padStart(2, "0")
+  const n = minute === 0 ? hour : minute
+  const ones = ["da", "de", "de", "te", "te", "te", "da", "de", "de", "da"] // sıfır bir iki üç dört beş altı yedi sekiz dokuz
+  const tens = ["da", "da", "de", "da", "ta", "de"] // sıfır on yirmi otuz kırk elli
+  return `${p(hour)}:${p(minute)}'${n % 10 !== 0 ? ones[n % 10] : tens[Math.floor(n / 10) % 6]}`
+}

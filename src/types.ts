@@ -131,6 +131,7 @@ export type View =
   | "teacher"
   | "privacy"
   | "licenses"
+  | "notes"
 export type Theme = "dark" | "light"
 
 // Bir sorunun cevap durumu

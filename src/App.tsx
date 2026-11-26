@@ -10,7 +10,7 @@ import QuizSession from "./screens/QuizSession"
 import ChordQuizSession from "./screens/ChordQuizSession"
 import RhythmTapSession from "./screens/RhythmTapSession"
 import ChordDuel from "./screens/ChordDuel"
-import { useSwipeBack, SwipeBackIndicator } from "./utils/swipeBack"
+import { useSwipeBack, visibleBack } from "./utils/swipeBack"
 import GamesScreen, { ChallengeGameScreen, DailyGameScreen } from "./screens/GamesScreen"
 import GameResultScreen from "./screens/GameResultScreen"
 import type { GameCtx } from "./screens/gameShared"
@@ -21,7 +21,7 @@ import StudyScreen from "./screens/study/StudyScreen"
 import LessonScreen from "./screens/study/LessonScreen"
 import { playSessionDone } from "./utils/audio"
 import Celebration, { type CelebrationData } from "./components/Celebration"
-import SettingsScreen from "./screens/SettingsScreen"
+import SettingsScreen, { NotesSettings } from "./screens/SettingsScreen"
 import LegalScreen from "./screens/LegalScreen"
 import Onboarding from "./screens/Onboarding"
 import Splash from "./screens/Splash"
@@ -98,6 +98,8 @@ export default function App() {
       stackRef.current.push(cur)
       saveScroll(topRef.current, cur)
     }
+    // Aynı anda art arda iki gezinme (tanıtım → Profil → öğretmen kodu) yığını doğru kursun
+    viewRef.current = v
     setViewRaw(v)
   }, [])
   /** Bulunulan ekranın yerine geç (tur → sonuç) */
@@ -340,8 +342,15 @@ export default function App() {
     under: underRef,
     getTarget: () => {
       if (celebrate || showOnboarding || showSplash) return null
+      // Turdan çıkış onayı açıksa kaydırma ekranı kaydırmaz, "Devam et"e basar
+      if (shellRef.current?.querySelector("[data-exit-open]")) return null
       if (
         [
+          "quiz",
+          "chordquiz",
+          "rhythmtap",
+          "duel",
+          "notes",
           "settings",
           "result",
           "games",
@@ -355,9 +364,11 @@ export default function App() {
         ].includes(view)
       )
         return backTarget()
-      return null // test, akor turu, düello: ekranın kendi geri düğmesi (onaylı)
+      return null
     },
     commit: () => goBack(),
+    // Turda cevap verildiyse (✕ data-answered taşır) bırakınca ekran yerine oturur, onay açılır (revize R34)
+    confirmOnRelease: () => visibleBack(shellRef.current)?.dataset.answered === "1",
   })
 
   // Kaydırırken alttan görünen önceki ekran da kalınan yerde dursun
@@ -412,6 +423,7 @@ export default function App() {
               onBack={goBack}
               onOpenPrivacy={() => setView("privacy")}
               onOpenLicenses={() => setView("licenses")}
+              onOpenNotes={() => setView("notes")}
               onShowTutorial={() => {
                 updateSettings({ coachDone: false })
                 setView("home")
@@ -429,6 +441,12 @@ export default function App() {
                 setView("home")
               }}
             />
+          </TabletColumn>
+        )}
+
+        {v === "notes" && (
+          <TabletColumn width={680}>
+            <NotesSettings onBack={goBack} />
           </TabletColumn>
         )}
 
@@ -528,6 +546,17 @@ export default function App() {
             onStartQuiz={() => setView("home")}
             onPracticeWeak={startWeakPractice}
             onPracticeCategory={(k) => (k === "chords" ? setView("chordquiz") : startQuiz(k))}
+            onReplayRound={(label, weak) => {
+              // Revize R38: "Oyun · …" Oyunlar listesi; "Zayıf notalar" şimdiki zorlanılan notalar; tanınmayan ad karma tur
+              if (label.startsWith("Oyun · ")) setView("games")
+              else if (label === "Akorlar") setView("chordquiz")
+              else if (label === "Ritmi Tut") setView("rhythmtap")
+              else if (label === "Zayıf notalar") weak.length ? startWeakPractice(weak) : startQuiz("all")
+              else {
+                const cat = (Object.keys(ROUND_LABELS) as FilterCategory[]).find((k) => ROUND_LABELS[k] === label)
+                startQuiz(cat ?? "all")
+              }
+            }}
             header={<TabTitle>İlerleme</TabTitle>}
           />
         )}
@@ -597,11 +626,16 @@ export default function App() {
 
         {showOnboarding && !showSplash && (
           <Onboarding
-            onDone={() => {
+            onDone={(openTeacher) => {
               updateSettings({ onboarded: true })
               setShowOnboarding(false)
               // Revize R12: tanıtım bitince Ana sayfa en üstten başlasın
               topRef.current?.querySelector<HTMLElement>(".overflow-y-auto")?.scrollTo(0, 0)
+              // "Ben öğretmenim": öğretmen kodu ekranı (hazırlama); geri dönünce Profil
+              if (openTeacher) {
+                setView("profile")
+                setView("teacher")
+              }
             }}
           />
         )}
@@ -609,7 +643,6 @@ export default function App() {
         {view === "home" && !showSplash && !showOnboarding && !celebrate && !settings.coachDone && (
           <Coachmark steps={COACH_STEPS} onDone={() => updateSettings({ coachDone: true })} />
         )}
-        <SwipeBackIndicator drag={swipe.drag} />
         {celebrate && <Celebration data={celebrate} onClose={() => setCelebrate(null)} />}
       </div>
     </div>

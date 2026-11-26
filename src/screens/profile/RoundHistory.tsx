@@ -1,4 +1,4 @@
-// Son turlar: tarih, konu, doğru sayısı, süre
+// Son turlar: tarih, konu, doğru sayısı, süre. onReplay verilirse satıra dokununca aynı konudan yeni tur (revize R38)
 import { fmtSec } from "../../utils/games"
 import type { RoundRecord } from "../../types"
 import { colors, font, space } from "../../design/tokens"
@@ -15,7 +15,15 @@ function when(at: number) {
   return d.toLocaleDateString("tr-TR", { day: "numeric", month: "short" }) + ` ${hm}`
 }
 
-export default function RoundHistory({ rounds, limit }: { rounds: RoundRecord[]; limit?: number }) {
+export default function RoundHistory({
+  rounds,
+  limit,
+  onReplay,
+}: {
+  rounds: RoundRecord[]
+  limit?: number
+  onReplay?: (r: RoundRecord) => void
+}) {
   const list = limit ? rounds.slice(0, limit) : rounds
   if (list.length === 0)
     return <p style={{ fontSize: font.size.sm, color: colors.textMuted }}>Tamamladığın turlar burada listelenir.</p>
@@ -25,7 +33,13 @@ export default function RoundHistory({ rounds, limit }: { rounds: RoundRecord[];
         return (
           <li
             key={r.at + "-" + i}
+            role={onReplay ? "button" : undefined}
+            tabIndex={onReplay ? 0 : undefined}
+            aria-description={onReplay ? "Aynı konudan yeni tur" : undefined}
+            onClick={onReplay ? () => onReplay(r) : undefined}
+            onKeyDown={onReplay ? (e) => e.key === "Enter" && onReplay(r) : undefined}
             style={{
+              cursor: onReplay ? "pointer" : undefined,
               display: "flex",
               alignItems: "center",
               gap: space[3],
@@ -55,6 +69,11 @@ export default function RoundHistory({ rounds, limit }: { rounds: RoundRecord[];
                 </p>
               )}
             </div>
+            {onReplay && (
+              <span aria-hidden="true" style={{ color: colors.textFaint, fontSize: font.size.lg }}>
+                ›
+              </span>
+            )}
           </li>
         )
       })}
