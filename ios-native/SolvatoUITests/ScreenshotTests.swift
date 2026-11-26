@@ -344,7 +344,7 @@ final class ScreenshotTests: XCTestCase {
                         if app.buttons["Kapat"].exists { break }
                         let next = app.buttons.matching(NSPredicate(format: "label IN {'Sıradaki', 'Turu bitir'}")).firstMatch
                         if next.exists { next.tap() } else {
-                            let key = app.buttons["Do tuşu"]
+                            let key = app.buttons["Do tuşu"].firstMatch  // iPad klavyesinde iki Do tuşu var
                             if key.exists { key.tap() } else { app.buttons.allElementsBoundByIndex.last { $0.isEnabled && $0.isHittable }?.tap() }
                         }
                         Thread.sleep(forTimeInterval: 0.9)
@@ -408,7 +408,7 @@ final class ScreenshotTests: XCTestCase {
                     if app.otherElements["Kutlama"].exists || app.staticTexts["Harika iş!"].exists { break }
                     let next = app.buttons.matching(NSPredicate(format: "label IN {'Sıradaki', 'Turu bitir'}")).firstMatch
                     if next.exists { next.tap() } else {
-                        let key = app.buttons["Do tuşu"]
+                        let key = app.buttons["Do tuşu"].firstMatch  // iPad klavyesinde iki Do tuşu var
                         if key.exists { key.tap() } else { app.buttons.allElementsBoundByIndex.last { $0.isEnabled && $0.isHittable }?.tap() }
                     }
                     Thread.sleep(forTimeInterval: 0.9)
@@ -424,7 +424,7 @@ final class ScreenshotTests: XCTestCase {
     @MainActor
     private func answerUntil(_ app: XCUIApplication, wrong: Bool) {
         for _ in 0..<10 {
-            let key = app.buttons["Do tuşu"]
+            let key = app.buttons["Do tuşu"].firstMatch  // iPad klavyesinde iki Do tuşu var
             if key.exists { key.tap() } else { app.buttons.allElementsBoundByIndex.last { $0.isEnabled && $0.isHittable }?.tap() }
             Thread.sleep(forTimeInterval: 0.3)
             let isWrong = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Doğru cevap:'")).firstMatch.exists
