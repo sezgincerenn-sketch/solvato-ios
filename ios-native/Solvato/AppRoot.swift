@@ -1,8 +1,8 @@
 // Uygulamanın kök görünümü: o anki ekran (AppModel.nav), sekme ekranlarında yüzen alt menü (kapsül; içerik altından
 // kayar, kaydırma alanlarının sonunda kapsül kadar boşluk kalır), kutlama, tanıtım, açılış.
 // Web App.tsx renderScreen + utils/swipeBack.tsx: sol kenardan (28 pt) sağa kaydırınca ekran parmakla kayar, altında
-// önceki ekran görünür; %35'i geçince ya da hızlı bırakınca geri dönülür. Turlarda ekran kaymaz, ~80 pt kaydırma ekranın
-// çıkış onayını açar. Telefonda yalnız soru ve akor turu yan döner (G-02).
+// önceki ekran görünür; %35'i geçince ya da hızlı bırakınca geri dönülür. Turlarda da aynı; cevap verilmişse bırakınca
+// ekran geri oturur ve çıkış onayı açılır (R34, tur-ekranlari.md). Telefonda yalnız soru ve akor turu yan döner (G-02).
 // Hazır ekranlar: Pratik, soru turu, tur sonucu. Diğerleri 0.5–0.7'de; yerlerinde başlık ve kısa not.
 import SolvatoCore
 import SwiftUI
@@ -11,7 +11,6 @@ struct AppRoot: View {
     let model: AppModel
     @State private var dragX: Double = 0
     @State private var underlay: AppView?
-    @State private var arrow: Double = 0
     @State private var coach = 0
 
     static let edge = 28.0
@@ -34,7 +33,6 @@ struct AppRoot: View {
                     .background(ThemeColor.bg.color.ignoresSafeArea())
                     .offset(x: dragX)
                     .shadow(color: dragX > 0 ? .black.opacity(0.25) : .clear, radius: 12, x: -8)
-                if arrow > 0 { SwipeBackIndicator(progress: arrow) }
                 if let c = model.celebrate {
                     CelebrationView(data: c) { model.celebrate = nil }
                 }
@@ -129,11 +127,10 @@ struct AppRoot: View {
     private func edgeSwipe(width w: Double) -> some Gesture {
         DragGesture(minimumDistance: 10)
             .onChanged { g in
-                guard g.startLocation.x <= Self.edge else { return }
+                guard g.startLocation.x <= Self.edge, !model.exitConfirmOpen else { return }
                 let dx = g.translation.width
                 let dy = abs(g.translation.height)
-                let cur = model.nav.current
-                if underlay == nil && arrow == 0 {
+                if underlay == nil {
                     // Dikey hareket önce geldiyse kaydırma değil
                     if dy > 14 && dy > dx { return }
                     guard dx > 10 else { return }
@@ -141,48 +138,37 @@ struct AppRoot: View {
                 if model.nav.canSwipeBack(overlayOpen: model.overlayOpen) {
                     if underlay == nil { underlay = model.nav.backTarget }
                     dragX = max(0, dx)
-                } else if cur.confirmsExit && !model.overlayOpen {
-                    arrow = min(1, max(0, dx / Self.trigger))
                 }
             }
             .onEnded { g in
                 guard g.startLocation.x <= Self.edge else { return }
                 let dx = g.translation.width
-                if arrow > 0 {
-                    if dx >= Self.trigger && abs(g.translation.height) < dx * 0.7 { model.requestExit() }
-                    withAnimation(.easeOut(duration: 0.15)) { arrow = 0 }
+                // Çıkış onayı açıkken kaydırma "Devam et" gibi kapatır
+                if model.exitConfirmOpen {
+                    if dx >= Self.trigger && abs(g.translation.height) < dx * 0.7 { model.stayInRound() }
                     return
                 }
                 guard underlay != nil else { return }
                 let fast = g.predictedEndTranslation.width - dx > 120 && dx > 40
+                let snap = Animation.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.22)
                 if dx > w * 0.35 || fast {
-                    withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.22)) { dragX = w } completion: {
-                        model.back()
-                        underlay = nil
-                        dragX = 0
+                    if model.nav.current.confirmsExit && model.roundHasAnswers {
+                        // Turda cevap verildi: ekran yerine oturur, sonra "Turdan çıkılsın mı?" (R34)
+                        withAnimation(snap) { dragX = 0 } completion: {
+                            underlay = nil
+                            model.requestExit()
+                        }
+                    } else {
+                        withAnimation(snap) { dragX = w } completion: {
+                            model.back()
+                            underlay = nil
+                            dragX = 0
+                        }
                     }
                 } else {
-                    withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.22)) { dragX = 0 } completion: { underlay = nil }
+                    withAnimation(snap) { dragX = 0 } completion: { underlay = nil }
                 }
             }
-    }
-}
-
-/// Turlarda kenardan kaydırırken soldaki ok (web SwipeBackIndicator)
-private struct SwipeBackIndicator: View {
-    let progress: Double
-    var body: some View {
-        Image(systemName: "chevron.left")
-            .font(.system(size: 16, weight: .bold))
-            .foregroundStyle(PaletteColor.white.color)
-            .frame(width: 40, height: 40)
-            .background(Circle().fill(PaletteColor.violet600.opacity(0.4 + 0.5 * progress)))
-            .scaleEffect(0.6 + 0.4 * progress)
-            .opacity(progress)
-            .offset(x: -20 + 36 * progress)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
     }
 }
 

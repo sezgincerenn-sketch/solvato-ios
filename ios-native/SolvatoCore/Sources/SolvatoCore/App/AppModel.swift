@@ -116,18 +116,49 @@ public final class AppModel {
     public var dailySolved: Int { stats.dailyQuestions[clock().todayKey] ?? 0 }
 
     // MARK: Gezinme
-    /// Turlarda kenardan kaydırma: ekranın kendi çıkış onayını açması istenir (sayaç her istekte artar)
-    public private(set) var exitRequest = 0
-    public func requestExit() { exitRequest += 1 }
+    // MARK: Turdan çıkış (tur-ekranlari.md: ✕ ve kenardan kaydırma aynı kural)
+    /// Tur ekranında "Turdan çıkılsın mı?" açık
+    public var exitConfirmOpen = false
+    /// Açık turda en az bir cevap verildi mi; tur ekranı bildirir. Cevap yoksa çıkış sormadan olur.
+    public var roundHasAnswers = false
+
+    /// ✕ ya da kaydırma bırakıldı: cevap verildiyse onay açılır (true döner), yoksa doğrudan önceki ekrana dönülür
+    @discardableResult
+    public func requestExit() -> Bool {
+        if roundHasAnswers {
+            exitConfirmOpen = true
+            return true
+        }
+        leaveRound()
+        return false
+    }
+
+    /// Onayda "Devam et" (ya da onay açıkken kaydırma)
+    public func stayInRound() { exitConfirmOpen = false }
+
+    /// Onayda "Çık"
+    public func leaveRound() {
+        resetRoundExit()
+        back()
+    }
+
+    private func resetRoundExit() {
+        exitConfirmOpen = false
+        roundHasAnswers = false
+    }
 
     /// Kaydırma hafızası: geri dönülen ekran kalınan yerden açılır (gözlenmez; kaydırırken ekran yeniden çizilmez)
     @ObservationIgnored public let scroll = ScrollMemory()
 
     public func go(_ v: AppView) {
+        resetRoundExit()
         scroll.willGo(from: nav.current, to: v)
         nav.go(v)
     }
-    public func back() { scroll.didBack(to: nav.back()) }
+    public func back() {
+        resetRoundExit()
+        scroll.didBack(to: nav.back())
+    }
 
     /// Açık sekmeye alt menüden tekrar dokunuldu: her istekte artar, o sekmenin sayfası en üste kayar
     public private(set) var scrollTopRequest = 0
@@ -193,6 +224,7 @@ public final class AppModel {
     /// Sonuçta "Yeni tur" / "Tekrar"
     public func retry() {
         quizToken += 1
+        resetRoundExit()
         if let s = lastSpecial { nav.replace(s == .chords ? .chordquiz : .rhythmtap) } else { startQuiz(currentCategory) }
     }
 
@@ -231,6 +263,7 @@ public final class AppModel {
         } else {
             nav.replace(.result)
         }
+        resetRoundExit()
     }
 
     /// Akor turu ya da Ritmi Tut bitti (web handleSpecialComplete)
@@ -245,6 +278,7 @@ public final class AppModel {
         stats = out.stats
         roundsCompleted += 1
         nav.replace(.result)
+        resetRoundExit()
     }
 
     // MARK: Ayarlar

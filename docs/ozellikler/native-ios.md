@@ -401,6 +401,10 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 ### E-05 Soru turu
 
+- [x] Tur revizesi native'de (26 Kasım, `docs/ozellikler/tur-ekranlari.md`: R2, R16, R34): sol üstte ✕, noktalar doğru
+  yeşil / yanlış kırmızı, kenardan kaydırma ekranı kaydırır; cevap varsa onay, yoksa sormadan çıkış. Ritmi Tut ve akor
+  düellosu da aynı kurala uyar (düelloda "Bitir" yerine ✕; Ritmi Tut dokunuşu orta titreşim, R22).
+
 - Kaynak: `screens/QuizSession.tsx`, `components/MusicalStaff.tsx`, `components/Notation.tsx`,
   `components/piano/QuizPiano.tsx`, `components/EarPrompt.tsx`, `components/RotateHint.tsx`.
 - Üst çubuk: çıkış (ok, onay açar), 10 nokta + "3/10", sağda "✓ 4". Her 3 doğruda skorda alev parlar.
@@ -428,6 +432,10 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
   `soru-sure`, `soru-cikis`.
 
 ### E-06 Akor turu
+
+- [x] Tur revizesi native'de (26 Kasım, `docs/ozellikler/tur-ekranlari.md`: R2, R16, R34): sol üstte ✕, noktalar doğru
+  yeşil / yanlış kırmızı, kenardan kaydırma ekranı kaydırır; cevap varsa onay, yoksa sormadan çıkış. Ritmi Tut ve akor
+  düellosu da aynı kurala uyar (düelloda "Bitir" yerine ✕; Ritmi Tut dokunuşu orta titreşim, R22).
 
 - Kaynak: `screens/ChordQuizSession.tsx`, `components/ChordStaffSvg.tsx`, `components/piano/MultiPiano.tsx`.
 - Üst çubuk: çıkış, noktalar, "3/10", XP. Etiket: AKOR TANIMA / TUŞLARDAN BUL / AKORU BAS + seviye adı; süre halkası.

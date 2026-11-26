@@ -35,6 +35,8 @@ public struct RhythmTapRound: Sendable {
     public var score: String { patterns[index] }
     /// Ekrandaki partisyon
     public var notation: String { "ts:4/4 \(score) ||" }
+    /// En az bir ritim denendi mi (yoksa çıkış sormadan olur)
+    public var hasAnswers: Bool { !answers.isEmpty || result != nil }
     public var busy: Bool { phase == .countin || phase == .play || phase == .listen }
     public var isLast: Bool { index + 1 >= patterns.count }
 

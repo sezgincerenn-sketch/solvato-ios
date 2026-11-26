@@ -16,16 +16,17 @@ public enum AppView: String, Sendable, CaseIterable {
     /// Telefonda yan çevrilebilen ekranlar (G-02)
     public var allowsLandscape: Bool { self == .quiz || self == .chordquiz }
 
-    /// Kenardan kaydırınca bir önceki ekrana dönülen ekranlar. Turlarda (test, akor, Ritmi Tut, düello) kaydırma
-    /// ekranı kaydırmaz, ekranın kendi geri düğmesi (çıkış onayı) çalışır.
+    /// Kenardan kaydırınca ekranın parmağı izlediği alt ekranlar. Turlarda (soru, akor, Ritmi Tut, düello) da kayar;
+    /// cevap verilmişse bırakınca ekran geri oturur ve çıkış onayı açılır (R34, tur-ekranlari.md).
     public var swipesBack: Bool {
         switch self {
-        case .settings, .notes, .result, .games, .gameDaily, .gameChallenge, .gameresult, .lesson, .teacher, .privacy, .licenses: true
+        case .settings, .notes, .result, .games, .gameDaily, .gameChallenge, .gameresult, .lesson, .teacher, .privacy, .licenses,
+            .quiz, .chordquiz, .rhythmtap, .duel: true
         default: false
         }
     }
 
-    /// Kendi çıkış onayı olan tur ekranları: kenardan kaydırma onayı açar (ekran kaymaz)
+    /// Tur ekranları: ✕ ve kaydırma cevap verilmişse çıkış onayı açar
     public var confirmsExit: Bool { self == .quiz || self == .chordquiz || self == .rhythmtap || self == .duel }
 }
 

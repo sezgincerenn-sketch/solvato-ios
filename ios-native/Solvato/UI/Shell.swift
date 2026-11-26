@@ -388,3 +388,15 @@ struct TabletColumn<Content: View>: View {
         }
     }
 }
+
+/// Turun üstündeki nokta rengi (R2): geçilen soru doğruysa yeşil, yanlışsa kırmızı; şimdiki mor degrade, kalanlar gri
+@MainActor
+func roundDotStyle(_ d: RoundDot, upcoming: Color) -> AnyShapeStyle {
+    switch d {
+    case .correct: AnyShapeStyle(PaletteColor.green500.color)
+    case .wrong: AnyShapeStyle(PaletteColor.red500.color)
+    case .current:
+        AnyShapeStyle(LinearGradient(colors: [PaletteColor.violet500.color, PaletteColor.violet400.color], startPoint: .leading, endPoint: .trailing))
+    case .upcoming: AnyShapeStyle(upcoming)
+    }
+}

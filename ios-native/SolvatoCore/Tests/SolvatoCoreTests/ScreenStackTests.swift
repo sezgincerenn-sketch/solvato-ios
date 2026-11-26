@@ -49,8 +49,10 @@ final class ScreenStackTests: XCTestCase {
     }
 
     func testSwipeOnlyOnSubScreens() {
-        XCTAssertEqual(AppView.allCases.filter(\.swipesBack).count, 11)
-        for v in [AppView.quiz, .chordquiz, .rhythmtap, .duel, .home, .dashboard, .study, .profile] { XCTAssertFalse(v.swipesBack, v.rawValue) }
+        XCTAssertEqual(AppView.allCases.filter(\.swipesBack).count, 15)
+        for v in [AppView.home, .dashboard, .study, .profile] { XCTAssertFalse(v.swipesBack, v.rawValue) }
+        // R34: turlarda da ekran parmağı izler
+        for v in [AppView.quiz, .chordquiz, .rhythmtap, .duel] { XCTAssertTrue(v.swipesBack && v.confirmsExit, v.rawValue) }
         XCTAssertEqual(AppView.allCases.filter(\.isTab), [.home, .dashboard, .study, .profile], "alt menüde dört sekme")
         var s = ScreenStack()
         s.go(.settings)

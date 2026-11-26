@@ -32,6 +32,12 @@ public struct QuizRound: Equatable, Sendable {
     }
 
     public var question: Question { questions[index] }
+    /// En az bir soru cevaplandı mı (yoksa çıkış sormadan olur; tur-ekranlari.md)
+    public var hasAnswers: Bool { !results.isEmpty || answerState != .pending }
+    /// Üstteki nokta (R2): geçilen soru doğruysa yeşil, yanlışsa kırmızı
+    public func dot(_ i: Int) -> RoundDot {
+        i == index ? .current : i > index ? .upcoming : results.indices.contains(i) && results[i].correct ? .correct : .wrong
+    }
     public var isNote: Bool { question.category == .noteIdentification }
     public var isLast: Bool { index + 1 >= questions.count }
     public var score: Int { results.filter(\.correct).count }
@@ -180,4 +186,9 @@ public struct QuizRound: Equatable, Sendable {
         let end = u[1...].firstIndex(of: UInt16(UInt8(ascii: "'"))) ?? (u.count - 1)
         return end > 1 ? String(decoding: u[1..<end], as: UTF16.self) : ""
     }
+}
+
+/// Turun üstündeki nokta (soru ve akor turu, R2)
+public enum RoundDot: Equatable, Sendable {
+    case correct, wrong, current, upcoming
 }

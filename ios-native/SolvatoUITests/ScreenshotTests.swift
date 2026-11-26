@@ -140,12 +140,15 @@ final class ScreenshotTests: XCTestCase {
                 // Kart görünene kadar kaydır (alttaki konular ilk ekranda yok)
                 for _ in 0..<6 where !(card.exists && card.isHittable) { app.swipeUp(velocity: .slow) }
                 card.tap()
-                XCTAssertTrue(app.buttons["Çık"].waitForExistence(timeout: 5), "\(name): soru açılmadı")
+                XCTAssertTrue(app.buttons["Turdan çık"].waitForExistence(timeout: 5), "\(name): soru açılmadı")
                 switch action {
                 case "ipucu": app.buttons["İpucu"].firstMatch.tap()
                 case "yanlis": answerUntil(app, wrong: true)
                 case "dogru": answerUntil(app, wrong: false)
-                case "cikis": app.buttons["Çık"].firstMatch.tap()
+                case "cikis":
+                    // Çıkış onayı yalnız cevap verilmişse açılır (tur-ekranlari.md): önce bir yanlış cevap
+                    answerUntil(app, wrong: true)
+                    app.buttons["Turdan çık"].firstMatch.tap()
                 default: break
                 }
                 Thread.sleep(forTimeInterval: 0.5)
@@ -384,7 +387,7 @@ final class ScreenshotTests: XCTestCase {
             let link = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Akor'")).firstMatch
             for _ in 0..<6 where !(link.exists && link.isHittable) { app.swipeUp(velocity: .slow) }
             link.tap()
-            XCTAssertTrue(app.buttons["Çık"].waitForExistence(timeout: 5), "akor turu açılmadı")
+            XCTAssertTrue(app.buttons["Turdan çık"].waitForExistence(timeout: 5), "akor turu açılmadı")
             Thread.sleep(forTimeInterval: 0.5)
             snap("akor-\(tr)")
             app.terminate()

@@ -9,7 +9,6 @@ import SwiftUI
 struct ChordQuizScreen: View {
     let model: AppModel
     @State private var round: ChordRound
-    @State private var showExit = false
     @State private var toast: String?
     @State private var shownAt = Date()
     @State private var playingChord = false
@@ -64,9 +63,10 @@ struct ChordQuizScreen: View {
                 .frame(maxHeight: .infinity, alignment: .bottom)
                 .slideUpOnAppear()
             }
-            if showExit { ExitConfirm(onStay: { showExit = false }, onExit: { model.back() }) }
+            if model.exitConfirmOpen { ExitConfirm(onStay: { model.stayInRound() }, onExit: { model.leaveRound() }) }
         }
-        .onChange(of: model.exitRequest) { _, _ in showExit.toggle() }
+        // Cevap verildiyse ✕ ve kenardan kaydırma çıkış onayı açar; yoksa sormadan çıkılır (tur-ekranlari.md)
+        .onChange(of: round.hasAnswers, initial: true) { _, a in model.roundHasAnswers = a }
         .onChange(of: land, initial: true) { _, l in
             guard l else { return }
             model.persistence.bumpRotateHint(done: true)
@@ -89,26 +89,19 @@ struct ChordQuizScreen: View {
     // MARK: Üst çubuk
     private var topBar: some View {
         HStack(spacing: 10) {
-            Button { showExit = true } label: {
-                Image(systemName: "arrow.left")
-                    .font(.system(size: 14, weight: .bold))
+            Button { model.requestExit() } label: {
+                Icon(.x, size: 16)
                     .foregroundStyle(ThemeColor.textFaint.color)
                     .frame(width: 44, height: 44)
                     .background(RoundedRectangle(cornerRadius: Radius.sm).fill(ThemeColor.fill.color))
                     .overlay(RoundedRectangle(cornerRadius: Radius.sm).strokeBorder(ThemeColor.border.color, lineWidth: 1))
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Çık")
+            .accessibilityLabel("Turdan çık")
             HStack(spacing: 3) {
                 ForEach(0..<round.questions.count, id: \.self) { i in
                     Capsule()
-                        .fill(
-                            i < round.index
-                                ? AnyShapeStyle(PaletteColor.violet500.color)
-                                : i == round.index
-                                    ? AnyShapeStyle(LinearGradient(colors: [PaletteColor.violet500.color, PaletteColor.violet400.color], startPoint: .leading, endPoint: .trailing))
-                                    : AnyShapeStyle(ThemeColor.fillStrong.color)
-                        )
+                        .fill(roundDotStyle(round.dot(i), upcoming: ThemeColor.fillStrong.color))
                         .frame(width: i == round.index ? 14 : 5, height: 5)
                         .shadow(color: i == round.index ? PaletteColor.violet500.opacity(0.5) : .clear, radius: 4)
                 }

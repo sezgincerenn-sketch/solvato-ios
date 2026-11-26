@@ -14,7 +14,6 @@ struct QuizScreen: View {
     var timerSeconds: Int?
 
     @State private var round: QuizRound
-    @State private var showExit = false
     @State private var flare = false
     @State private var startedAt = Date()
     /// "Yan çevir" ipucu: klavyeyle cevaplarken ilk 3 turda (web: dokunmatik ekran + piano modu + sayaç < 3)
@@ -79,8 +78,8 @@ struct QuizScreen: View {
                         answerArea
                     }
                 }
-                if showExit {
-                    ExitConfirm(onStay: { showExit = false }, onExit: { model.back() })
+                if model.exitConfirmOpen {
+                    ExitConfirm(onStay: { model.stayInRound() }, onExit: { model.leaveRound() })
                 }
             }
             .onChange(of: geo.size, initial: true) { _, sz in wide = sz.width >= 900 && sz.width > sz.height }
@@ -98,8 +97,8 @@ struct QuizScreen: View {
             model.persistence.bumpRotateHint(done: true)
             rotateHint = false
         }
-        // Kenardan kaydırma çıkış onayını açar; onay açıkken kaydırma "Devam et" gibi kapatır (web data-back)
-        .onChange(of: model.exitRequest) { _, _ in showExit.toggle() }
+        // Cevap verildiyse ✕ ve kenardan kaydırma çıkış onayı açar; yoksa sormadan çıkılır (tur-ekranlari.md)
+        .onChange(of: round.hasAnswers, initial: true) { _, a in model.roundHasAnswers = a }
     }
 
     private var elapsed: Int { Int(Date().timeIntervalSince(startedAt) * 1000) }
@@ -138,13 +137,7 @@ struct QuizScreen: View {
                 HStack(spacing: 4) {
                     ForEach(0..<round.questions.count, id: \.self) { i in
                         Capsule()
-                            .fill(
-                                i < round.index
-                                    ? AnyShapeStyle(PaletteColor.violet500.color)
-                                    : i == round.index
-                                        ? AnyShapeStyle(LinearGradient(colors: [PaletteColor.violet500.color, PaletteColor.violet400.color], startPoint: .leading, endPoint: .trailing))
-                                        : AnyShapeStyle(ThemeColor.fillStronger.color)
-                            )
+                            .fill(roundDotStyle(round.dot(i), upcoming: ThemeColor.fillStronger.color))
                             .frame(width: i == round.index ? 18 : 6, height: 6)
                             .shadow(color: i == round.index ? PaletteColor.violet500.opacity(0.6) : .clear, radius: 4)
                     }
@@ -156,16 +149,15 @@ struct QuizScreen: View {
             }
             .animation(.easeInOut(duration: 0.3), value: round.index)
             HStack {
-                Button { showExit = true } label: {
-                    Image(systemName: "arrow.left")
-                        .font(.system(size: 14, weight: .bold))
+                Button { model.requestExit() } label: {
+                    Icon(.x, size: 16)
                         .foregroundStyle(ThemeColor.textMuted.color)
                         .frame(width: 44, height: 44)
                         .background(RoundedRectangle(cornerRadius: Radius.sm).fill(ThemeColor.fillStrong.color))
                         .overlay(RoundedRectangle(cornerRadius: Radius.sm).strokeBorder(ThemeColor.border.color, lineWidth: 1))
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Çık")
+                .accessibilityLabel("Turdan çık")
                 Spacer()
                 Text(verbatim: "✓ \(round.score)")
                     .font(.mono(FontSize.sm, .bold))

@@ -9,7 +9,6 @@ struct ChordDuelScreen: View {
     @State private var names = DuelGame.defaultNames
     @State private var level: Int
     @State private var game: DuelGame?
-    @State private var confirmExit = false
 
     init(model: AppModel) {
         self.model = model
@@ -24,21 +23,13 @@ struct ChordDuelScreen: View {
             } else {
                 setup
             }
-            if confirmExit, let g = game {
+            if model.exitConfirmOpen, let g = game {
                 exitDialog(g)
             }
         }
-        // Kenardan kaydırma: oyunda onay açar, onay açıkken "Devam et" gibi kapatır; kurulumda geri döner; sonuçta bir şey
-        // yapmaz (web: sonuç ekranında data-back yok)
-        .onChange(of: model.exitRequest) { _, _ in
-            if confirmExit {
-                confirmExit = false
-            } else if let g = game {
-                if !g.finished { confirmExit = true }
-            } else {
-                model.back()
-            }
-        }
+        // ✕ ve kenardan kaydırma: düello sürerken ve bir şıkka basıldıysa onay açar; kurulumda, sonuçta ya da hiç cevap
+        // yokken sormadan çıkılır (tur-ekranlari.md)
+        .onChange(of: game?.hasAnswers ?? false, initial: true) { _, a in model.roundHasAnswers = a }
     }
 
     private func start() {
@@ -94,10 +85,13 @@ struct ChordDuelScreen: View {
                 pick(1, $0)
             }
             HStack {
-                Button("Bitir") { confirmExit = true }
-                    .font(.ui(FontSize.xs))
-                    .foregroundStyle(ThemeColor.textMuted.color)
-                    .padding(6)
+                Button { model.requestExit() } label: {
+                    Icon(.x, size: 16)
+                        .foregroundStyle(ThemeColor.textMuted.color)
+                        .frame(width: 40, height: 32)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Turdan çık")
                 Spacer(minLength: 0)
                 Text(g.counter).font(.mono(FontSize.xs, .bold)).foregroundStyle(ThemeColor.textMuted.color)
                 Spacer(minLength: 0)
@@ -176,8 +170,8 @@ struct ChordDuelScreen: View {
                     .padding(.top, 6)
                     .padding(.bottom, 16)
                 HStack(spacing: 10) {
-                    AppButton("Devam et", block: true) { confirmExit = false }
-                    AppButton("Çık", variant: .secondary, block: true) { model.back() }
+                    AppButton("Devam et", block: true) { model.stayInRound() }
+                    AppButton("Çık", variant: .secondary, block: true) { model.leaveRound() }
                 }
             }
             .padding(20)

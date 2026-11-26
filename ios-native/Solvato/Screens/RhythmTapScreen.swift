@@ -9,7 +9,6 @@ import SwiftUI
 struct RhythmTapScreen: View {
     let model: AppModel
     @State private var round: RhythmTapRound
-    @State private var showExit = false
     @State private var loop: Task<Void, Never>?
 
     private let accent = CategoryColor.rhythm.base
@@ -45,10 +44,13 @@ struct RhythmTapScreen: View {
             .padding(.top, Space.s3)
             .padding(.horizontal, Space.s4)
             .padding(.bottom, Space.s4)
-            if showExit { ExitConfirm(onStay: { showExit = false }, onExit: { model.back() }) }
+            if model.exitConfirmOpen { ExitConfirm(onStay: { model.stayInRound() }, onExit: { model.leaveRound() }) }
         }
         .background(ThemeColor.bg.color)
-        .onChange(of: model.exitRequest) { _, _ in if showExit { showExit = false } else { askExit() } }
+        // Cevap (denenmiş ritim) varsa ✕ ve kenardan kaydırma çıkış onayı açar; yoksa sormadan çıkılır
+        .onChange(of: round.hasAnswers, initial: true) { _, a in model.roundHasAnswers = a }
+        // Onay (✕ ya da kaydırmayla) açılınca çalan deneme ve sesler durur
+        .onChange(of: model.exitConfirmOpen) { _, open in if open { stopAttempt() } }
         .onDisappear {
             loop?.cancel()
             Sound.stopAll()
@@ -193,18 +195,22 @@ struct RhythmTapScreen: View {
         }
     }
 
-    /// Dokunuş: hafif titreşim; duyulan sese göre ölçülür (dokunuş anından ses gecikmesi düşülür)
+    /// Dokunuş: orta güçte titreşim (R22); duyulan sese göre ölçülür (dokunuş anından ses gecikmesi düşülür)
     private func tap() {
         guard round.phase == .play || round.phase == .countin else { return }
-        Haptics.tap()
+        Haptics.tapStrong()
         round.tap(now: Sound.now - Sound.latency)
     }
 
     private func askExit() {
+        if round.hasAnswers { stopAttempt() }
+        model.requestExit()
+    }
+
+    private func stopAttempt() {
         loop?.cancel()
         if round.busy { Sound.stopAll() }
         round.interrupt()
-        showExit = true
     }
 }
 
