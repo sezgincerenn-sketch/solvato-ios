@@ -264,8 +264,16 @@ public final class AppModel {
         showOnboarding = true
     }
 
-    public func finishOnboarding() {
+    /// Tanıtım bitti ya da atlandı: Ana sayfa en üstten açılır (R12). Öğretmen yolunda ("Ben öğretmenim") öğretmen
+    /// kodu ekranı açılır; oradan geri dönülünce Profil.
+    public func finishOnboarding(openTeacher: Bool = false) {
         settings.onboarded = true
         showOnboarding = false
+        go(.home)
+        scrollTopRequest += 1
+        if openTeacher {
+            go(.profile)
+            go(.teacher)
+        }
     }
 }

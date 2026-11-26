@@ -39,7 +39,7 @@ struct AppRoot: View {
                     CelebrationView(data: c) { model.celebrate = nil }
                 }
                 if model.showOnboarding && !model.showSplash {
-                    OnboardingScreen(model: model) { model.finishOnboarding() }.zIndex(5)
+                    OnboardingScreen(model: model) { model.finishOnboarding(openTeacher: $0) }.zIndex(5)
                 }
                 if model.showSplash {
                     SplashScreen { model.showSplash = false }.zIndex(10)

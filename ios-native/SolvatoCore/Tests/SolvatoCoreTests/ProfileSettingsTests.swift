@@ -16,7 +16,7 @@ final class ProfileSettingsTests: XCTestCase {
         XCTAssertEqual(SettingsText.levelSub(s), "Tüm sorular açık.")
         s.reminder = true
         s.reminderHour = 9
-        XCTAssertEqual(SettingsText.reminderSub(s), "Her gün 09:00'de")
+        XCTAssertEqual(SettingsText.reminderSub(s), "Her gün 09:00'da")
         XCTAssertEqual(SettingsText.notesSummary(["Do", "Re", "Mi"]), "Nota sorularında yalnızca Do Re Mi çıkar.")
         XCTAssertEqual(SettingsText.toggleNote("Mi", in: ["Do", "Re", "Mi"]), ["Do", "Re", "Mi"], "en az 3")
         XCTAssertEqual(SettingsText.toggleNote("Do", in: ["Re", "Mi", "Sol"]), ["Do", "Re", "Mi", "Sol"], "sıra Do…Si")

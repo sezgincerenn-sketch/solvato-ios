@@ -131,6 +131,11 @@ ios-native/
   (Profil sekme oldu; öğretmen kodu kartı Profil'de). Web `main` bu revizeyi içermediği için `ana-sayfa.json` ve
   `ilerleme.json` altın tabloları `revize-onizleme` dalından üretildi (o dalda `node scripts/altin.mjs`; İlerleme başlığı
   `TabTitle` ile). `node scripts/altin.mjs`'i main'de çalıştırırsanız bu iki dosyayı geri alın.
+- **Tanıtım revizesi (yalnız native, `docs/ozellikler/tanitim.md`):** tanıtım giriş ekranıyla açılır, geri oku var,
+  denemelerden sonra öğretmen sorusu (`teacherRole`: student / self / teacher). Adım sırası `SolvatoCore` `OnboardingFlow`;
+  "Ben öğretmenim" seçilince tanıtım biter ve öğretmen kodu ekranı yalnız hazırlama bölümüyle açılır. Öğretmen kodu
+  ekranının bölümü role göre (`TeacherSection`). Hatırlatma saati her yerde aynı saat satırı (`UI/TimeField.swift`, saat
+  çarkı); yeni ayar `reminderMinute` (0–59). Ayarlar'daki alt yazı Türkçe eke uyar: "Her gün 07:45'te", "19:00'da".
 
 ## Klasör yapısı
 

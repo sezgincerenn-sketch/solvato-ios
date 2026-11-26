@@ -15,12 +15,26 @@ public enum SettingsText {
         return "Sonraki seviyeye: \(n)/50 soru" + (n > 0 ? " · %\(jsRound(Double(s.levelProgress.c) / Double(n) * 100)) doğru" : "")
     }
 
-    /// "Her gün 19:00'de"
+    /// "Her gün 19:30'da", "Her gün 07:45'te"
     public static func reminderSub(_ s: Settings) -> String? {
-        s.reminder ? "Her gün \(String(format: "%02d", s.reminderHour)):00'de" : nil
+        s.reminder ? "Her gün \(timeText(hour: s.reminderHour, minute: s.reminderMinute))" : nil
     }
 
-    public static let reminderHours = [9, 12, 18, 20, 21]
+    /// 24 saat biçimi: "09:05"
+    public static func clock(hour: Int, minute: Int) -> String { String(format: "%02d:%02d", hour, minute) }
+
+    /// Saat ve bulunma eki: "19:00'da", "07:45'te", "20:00'de". Ek, saatin okunuşundaki son sözcüğe uyar
+    /// (dakika sıfırsa saat: "on dokuz"da; değilse dakika: "kırk beş"te).
+    public static func timeText(hour: Int, minute: Int) -> String {
+        clock(hour: hour, minute: minute) + "'" + locativeSuffix(minute == 0 ? hour : minute)
+    }
+
+    /// 0–59 arası sayının okunuşuna göre bulunma eki
+    static func locativeSuffix(_ n: Int) -> String {
+        let ones = ["da", "de", "de", "te", "te", "te", "da", "de", "de", "da"]  // sıfır bir iki üç dört beş altı yedi sekiz dokuz
+        let tens = ["da", "da", "de", "da", "ta", "de"]  // sıfır on yirmi otuz kırk elli
+        return n % 10 != 0 ? ones[n % 10] : tens[(n / 10) % 6]
+    }
 
     // MARK: Çalışılacak notalar (web NotesPicker)
     public static let notePresets: [(label: String, notes: [String])] = [

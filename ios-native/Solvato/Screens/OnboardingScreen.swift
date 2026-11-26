@@ -1,21 +1,31 @@
-// İlk açılış tanıtımı (web src/screens/Onboarding.tsx): merhaba ve ad → iki canlı deneme (Do, Sol) → anahtar →
-// seviye ve günlük hedef → hatırlatma → hazırsın. Üstte adım noktaları ve "Atla". Metinler web'den harfi harfine.
+// İlk açılış tanıtımı (docs/ozellikler/tanitim.md; web revize src/screens/Onboarding.tsx): giriş → merhaba ve ad → iki
+// canlı deneme (Do, Sol) → öğretmen sorusu → anahtar → seviye ve günlük hedef → hatırlatma (saat satırı) → hazırsın.
+// Üstte geri oku (ikinci adımdan itibaren), adım noktaları ve "Atla". "Ben öğretmenim" seçilirse sorudan sonra biter ve
+// öğretmen kodu ekranı açılır. Adım sırası SolvatoCore OnboardingFlow'da. Metinler web'den harfi harfine.
 import SolvatoCore
 import SwiftUI
 import UIKit
 
 struct OnboardingScreen: View {
     let model: AppModel
-    let onDone: () -> Void
+    /// Tanıtım bitti; true ise öğretmen kodu ekranı açılsın (öğretmen yolu)
+    let onDone: (_ openTeacher: Bool) -> Void
 
-    private enum Step: Int, CaseIterable { case hello, try1, try2, clef, level, reminder, done }
-    @State private var step = Step.hello
+    @State private var step = OnboardingStep.intro
     @State private var level = 0
     @State private var goal = 10
     @State private var remind = true
     @State private var hour = 19
+    @State private var minute = 0
     @State private var name = ""
     @State private var clef = ClefChoice.treble
+    @State private var role: TeacherRole
+
+    init(model: AppModel, onDone: @escaping (_ openTeacher: Bool) -> Void) {
+        self.model = model
+        self.onDone = onDone
+        _role = State(initialValue: OnboardingFlow.initialRole(model.settings))
+    }
 
     private static let levels: [(label: String, sub: String, level: Int)] = [
         ("Yeni başladım", "Temel notalar, ritim ve işaretler", 1),
@@ -25,27 +35,45 @@ struct OnboardingScreen: View {
     private static let clefs: [(key: ClefChoice, label: String, sub: String)] = [
         (.treble, "Sol anahtarı", "Genelde sağ el"), (.bass, "Fa anahtarı", "Genelde sol el"), (.both, "İkisi de", "İki elle çalıyorum"),
     ]
-    private static let reminderHours = [17, 18, 19, 20, 21]
+    /// Giriş adımındaki dört kutu: simge, ad, simge rengi
+    private static let features: [(glyph: String, label: String, color: PaletteColor)] = [
+        ("𝄞", "Nota okuma", .blue400), ("♩", "Ritim", .amber400), ("♬", "Akor", .green400), ("◉", "Kulak", .pink400),
+    ]
 
-    private func next() { withAnimation(.easeOut(duration: 0.2)) { step = Step(rawValue: step.rawValue + 1) ?? .done } }
+    private func go(_ s: OnboardingStep) { withAnimation(.easeOut(duration: 0.2)) { step = s } }
+
+    /// Sonraki adım; öğretmen yolunda sorudan sonra tanıtım biter
+    private func next() {
+        if let n = OnboardingFlow.next(after: step, role: role) { go(n) } else { onDone(role == .teacher) }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
+            HStack(spacing: 0) {
+                // Geri (R28): ilk adımda görünmez ama yeri boş kalır, noktalar kaymaz
+                let showsBack = OnboardingFlow.showsBack(step)
+                BackButton { go(OnboardingFlow.back(from: step)) }
+                    .opacity(showsBack ? 1 : 0)
+                    .disabled(!showsBack)
+                    .accessibilityHidden(!showsBack)
+                Spacer(minLength: 8)
                 HStack(spacing: 6) {
-                    ForEach(Step.allCases, id: \.self) { k in
+                    ForEach(OnboardingStep.allCases, id: \.self) { k in
                         Capsule()
                             .fill(k.rawValue <= step.rawValue ? PaletteColor.violet500.color : ThemeColor.fillStronger.color)
-                            .frame(width: k == step ? 22 : 8, height: 8)
+                            .frame(width: k == step ? 18 : 6, height: 6)
                     }
                 }
-                Spacer()
+                .accessibilityHidden(true)
+                Spacer(minLength: 8)
                 if step != .done {
-                    Button("Atla", action: onDone)
+                    Button("Atla") { onDone(false) }
                         .font(.ui(FontSize.md))
                         .foregroundStyle(ThemeColor.textMuted.color)
                         .padding(.vertical, 10)
                         .padding(.horizontal, 4)
+                } else {
+                    Color.clear.frame(width: 44, height: 1)
                 }
             }
             .frame(minHeight: 44)
@@ -67,6 +95,56 @@ struct OnboardingScreen: View {
     @ViewBuilder
     private var content: some View {
         switch step {
+        case .intro:
+            VStack(spacing: 0) {
+                Spacer(minLength: 0)
+                VStack(alignment: .leading, spacing: 18) {
+                    Logo(size: 48)
+                    Text("Her gün birkaç dakika, nota okumak kolaylaşsın")
+                        .font(.ui(FontSize.xxl, .heavy))
+                        .tracking(em: -0.03, size: FontSize.xxl)
+                        .foregroundStyle(ThemeColor.text.color)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
+                    Text("Solvato, piyano öğrencileri için kısa pratik turları: nota, ritim, akor ve kulak. Ne kadar ilerlediğini de gösterir.")
+                        .font(.ui(FontSize.md))
+                        .foregroundStyle(ThemeColor.textSoft.color)
+                        .lineHeight(1.5, size: FontSize.md)
+                        .fixedSize(horizontal: false, vertical: true)
+                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
+                        ForEach(Self.features, id: \.label) { f in
+                            HStack(spacing: 8) {
+                                Text(verbatim: f.glyph).font(.ui(FontSize.lg)).foregroundStyle(f.color.color)
+                                Text(f.label).font(.ui(FontSize.md, .semibold)).foregroundStyle(ThemeColor.text.color).lineLimit(1)
+                            }
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(RoundedRectangle(cornerRadius: Radius.lg).fill(ThemeColor.fill.color))
+                            .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(ThemeColor.border.color, lineWidth: 1))
+                            // Kutular tek tek okunur (simge okunmaz)
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityLabel(f.label)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer(minLength: 18)
+                primary("Başlayalım", action: next)
+            }
+        case .teacher:
+            VStack(alignment: .leading, spacing: 12) {
+                title("Bir öğretmenle mi çalışıyorsun?").padding(.bottom, 6)
+                ForEach(OnboardingFlow.roles, id: \.title) { r in
+                    ChoiceCard(selected: role == r.role, title: r.title, sub: r.sub, action: { role = r.role }) { EmptyView() }
+                }
+                Spacer()
+                primary("Devam") {
+                    // Geri dönüp değiştirilirse son "Devam"daki seçim geçerli
+                    model.settings.teacherRole = role
+                    next()
+                }
+            }
         case .hello:
             VStack(spacing: 0) {
                 Spacer()
@@ -155,13 +233,10 @@ struct OnboardingScreen: View {
                 bodyText("Nota okuma, her gün birkaç dakikayla yerleşir. Seçtiğin saatte bir bildirim gönderelim.").padding(.bottom, 6)
                 ChoiceCard(selected: remind, title: "Evet, hatırlat", sub: "Her gün aynı saatte", action: { remind = true }) { EmptyView() }
                 if remind {
-                    HStack(spacing: 8) {
-                        ForEach(Self.reminderHours, id: \.self) { h in
-                            Chip("\(h):00", selected: hour == h) { hour = h }
-                        }
+                    TimeField(hour: hour, minute: minute) { h, m in
+                        hour = h
+                        minute = m
                     }
-                    .padding(.top, 2)
-                    .padding(.bottom, 4)
                 }
                 ChoiceCard(
                     selected: !remind, title: "Şimdi değil", sub: "Ayarlar'dan istediğin zaman açabilirsin", action: { remind = false }
@@ -169,10 +244,12 @@ struct OnboardingScreen: View {
                 Spacer()
                 primary(remind ? "Hatırlat" : "Devam") {
                     model.settings.reminderHour = hour
+                    model.settings.reminderMinute = minute
                     if remind {
                         let h = hour
+                        let m = minute
                         Task { @MainActor in
-                            model.settings.reminder = await Reminder.enable(hour: h)
+                            model.settings.reminder = await Reminder.enable(hour: h, minute: m)
                             next()
                         }
                     } else {
@@ -191,7 +268,7 @@ struct OnboardingScreen: View {
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 300)
                 Spacer()
-                primary("Başlayalım", action: onDone)
+                primary("Başlayalım") { onDone(false) }
             }
             .frame(maxWidth: .infinity)
         }

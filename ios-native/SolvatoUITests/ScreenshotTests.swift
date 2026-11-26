@@ -40,24 +40,33 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
-    /// İlk açılış tanıtımı: web referans senaryolarıyla aynı adlar ve aynı dokunuşlar
+    /// İlk açılış tanıtımı (tanitim.md): web referans adları ve dokunuşlar; giriş, öğretmen sorusu, saat çarkı, geri oku
+    /// ve öğretmen yolu (tanıtım biter, öğretmen kodu ekranı yalnız hazırlama bölümüyle; bağlantıyla kod girme bölümü)
     @MainActor
     func testTanitim() throws {
         continueAfterFailure = false
-        let base = ["Devam", "Do tuşu", "Devam", "Sol tuşu", "Devam"]
+        let tries = ["Başlayalım", "Devam", "Do tuşu", "Devam", "Sol tuşu", "Devam"]
+        let base = tries + ["Devam"]
         let steps: [(String, [String])] = [
-            ("tanitim-1-merhaba", []),
-            ("tanitim-2-deneme", ["Devam"]),
-            ("tanitim-2-yanlis", ["Devam", "Re tuşu"]),
-            ("tanitim-2-dogru", ["Devam", "Do tuşu"]),
+            ("tanitim-0-giris", []),
+            ("tanitim-1-merhaba", ["Başlayalım"]),
+            ("tanitim-2-deneme", ["Başlayalım", "Devam"]),
+            ("tanitim-2-yanlis", ["Başlayalım", "Devam", "Re tuşu"]),
+            ("tanitim-2-dogru", ["Başlayalım", "Devam", "Do tuşu"]),
+            ("tanitim-3-ogretmen", tries),
             ("tanitim-4-anahtar", base),
+            ("tanitim-4-geri", base + ["Geri"]),
             ("tanitim-5-seviye", base + ["Devam"]),
             ("tanitim-6-hatirlatma", base + ["Devam", "Devam"]),
+            ("tanitim-6-saat", base + ["Devam", "Devam", "Hatırlatma saati"]),
             ("tanitim-7-hazir", base + ["Devam", "Devam", "Şimdi değil", "Devam"]),
+            ("ogretmen-kodu-hazirla", tries + ["Ben öğretmenim", "Devam"]),
+            ("ogretmen-kodu-gir", tries + ["Ben öğretmenim", "Devam", "Öğrenci misin?"]),
         ]
         for (name, taps) in steps {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
-                let app = try launch(theme: theme, scenario: name)
+                // Bütün tanıtım senaryoları aynı: boş kayıt, tanıtım açık
+                let app = try launch(theme: theme, scenario: "tanitim-1-merhaba")
                 try must(app, app.buttons["Atla"], "\(name): tanıtım açılmadı", shot: "\(name)-hata-\(tr)")
                 for label in taps {
                     let b = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", label)).firstMatch
@@ -65,6 +74,7 @@ final class ScreenshotTests: XCTestCase {
                     b.tap()
                     Thread.sleep(forTimeInterval: 0.35)
                 }
+                if name.hasPrefix("ogretmen-kodu") || name == "tanitim-6-saat" { Thread.sleep(forTimeInterval: 0.5) }
                 snap("\(name)-\(tr)")
                 app.terminate()
             }

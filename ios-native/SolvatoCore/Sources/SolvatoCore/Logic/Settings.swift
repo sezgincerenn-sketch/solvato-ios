@@ -45,6 +45,8 @@ public struct Settings: Codable, Equatable, Sendable {
     public var haptics = true
     public var reminder = false
     public var reminderHour = 20
+    /// Hatırlatma dakikası (0–59; saat seçici, tanitim.md R9)
+    public var reminderMinute = 0
     public var onboarded = false
     public var inputMode = InputMode.piano
     /// Piyano tuşlarında nota adları
@@ -76,7 +78,7 @@ public struct Settings: Codable, Equatable, Sendable {
     public init() {}
 
     private enum Keys: String, CodingKey {
-        case soundKeys, notes, timer, haptics, reminder, reminderHour, onboarded, inputMode, keyLabels, dailyGoal
+        case soundKeys, notes, timer, haptics, reminder, reminderHour, reminderMinute, onboarded, inputMode, keyLabels, dailyGoal
         case level, clef, levelProgress, name, avatarColor, joinedAt, coachDone, teacherCode, topics, showRestTopics, teacherRole
     }
 
@@ -90,6 +92,7 @@ public struct Settings: Codable, Equatable, Sendable {
         haptics = get(.haptics, d.haptics)
         reminder = get(.reminder, d.reminder)
         reminderHour = get(.reminderHour, d.reminderHour)
+        reminderMinute = get(.reminderMinute, d.reminderMinute)
         onboarded = get(.onboarded, d.onboarded)
         inputMode = get(.inputMode, d.inputMode)
         keyLabels = get(.keyLabels, d.keyLabels)

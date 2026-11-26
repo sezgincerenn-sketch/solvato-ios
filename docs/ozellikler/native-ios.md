@@ -341,25 +341,35 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 ### E-02 Tanıtım (ilk açılış)
 
-- Kaynak: `screens/Onboarding.tsx`. Yalnız `onboarded` false iken; Ayarlar › Tanıtımı tekrar göster ile yeniden.
-- 7 adım, üstte adım noktaları, sağ üstte "Atla" (son adım hariç):
+- [x] Tanıtım revizesi native'de yapıldı (26 Kasım, `docs/ozellikler/tanitim.md`: R5, R9, R12, R27, R28): adım sırası
+  çekirdekte `OnboardingFlow` (testli), ekran `OnboardingScreen`, saat satırı `UI/TimeField`.
+
+- Kaynak: `screens/Onboarding.tsx` (`revize-onizleme` dalı). Yalnız `onboarded` false iken; Ayarlar › Tanıtımı tekrar göster ile yeniden.
+- 9 adım, üstte solda geri oku (ikinci adımdan itibaren; seçimler korunur), ortada adım noktaları (6 pt, açık adım
+  18 pt), sağ üstte "Atla" (son adım hariç):
+  0. **Giriş**: logo, "Her gün birkaç dakika, nota okumak kolaylaşsın", açıklama, 2×2 kutu (Nota okuma, Ritim, Akor,
+     Kulak), Başlayalım.
   1. **Merhaba**: Solfie (el sallar) "Merhaba, ben Solfie!", "Hadi bir nota bulalım", isim alanı (isteğe bağlı, en
      çok 24 harf), Devam.
   2. **Deneme 1**: Sol anahtarında Do4, "Bu nota Do. Tuşunu bul.", tuş adları görünen klavye. Yanlışta yardım metni,
      kısa süre sonra tekrar denenir. Doğruda "Doğru! Bu nota Do." ve Devam açılır.
   3. **Deneme 2**: Sol4 (ikinci çizgi), "Şimdi sen bul: bu hangi nota?".
-  4. **Anahtar**: Sol / Fa / İkisi de (varsayılan Sol).
-  5. **Seviye**: Yeni başladım / Bir süredir çalıyorum / Uzun süredir çalıyorum + günlük hedef 10/20/30.
-  6. **Hatırlatma**: Evet (saat 17–21, varsayılan 19) / Şimdi değil. "Hatırlat" bildirim izni ister; reddedilirse
-     kapalı kalır.
-  7. **Hazırsın**: Solfie (sevinç) "Her gün birlikte çalışalım!", "Günde X soru yeter…", Başlayalım.
-- iPad'de içerik ortada en fazla 560 pt.
+  4. **Öğretmen sorusu**: "Bir öğretmenle mi çalışıyorsun?" Evet, öğretmenim var / Hayır, kendi kendime / Ben
+     öğretmenim (`teacherRole`). "Ben öğretmenim" → tanıtım biter, öğretmen kodu ekranı (hazırlama) açılır; geri → Profil.
+  5. **Anahtar**: Sol / Fa / İkisi de (varsayılan Sol).
+  6. **Seviye**: Yeni başladım / Bir süredir çalıyorum / Uzun süredir çalıyorum + günlük hedef 10/20/30.
+  7. **Hatırlatma**: Evet (saat satırı, dokununca saat çarkı, varsayılan 19:00) / Şimdi değil. "Hatırlat" bildirim
+     izni ister; reddedilirse kapalı kalır.
+  8. **Hazırsın**: Solfie (sevinç) "Her gün birlikte çalışalım!", "Günde X soru yeter…", Başlayalım.
+- Bitince ya da Atla ile Ana sayfa en üstten açılır.
+- iPad'de içerik ortada en fazla 600 pt.
 - Kabul:
   - [ ] Atla her adımda tanıtımı bitiriyor, seçilmemiş ayarlar varsayılanda kalıyor.
   - [ ] Seviye adımı seviye sayacını sıfırlıyor.
   - [ ] Bildirim izni reddedilince hatırlatma kapalı.
-- Görüntü: `tanitim-1-merhaba`, `tanitim-2-deneme`, `tanitim-2-yanlis`, `tanitim-2-dogru`, `tanitim-4-anahtar`,
-  `tanitim-5-seviye`, `tanitim-6-hatirlatma`, `tanitim-7-hazir`.
+- Görüntü: `tanitim-0-giris`, `tanitim-1-merhaba`, `tanitim-2-deneme`, `tanitim-2-yanlis`, `tanitim-2-dogru`,
+  `tanitim-3-ogretmen`, `tanitim-4-anahtar`, `tanitim-4-geri`, `tanitim-5-seviye`, `tanitim-6-hatirlatma`,
+  `tanitim-6-saat`, `tanitim-7-hazir`.
 
 ### E-03 Ana sayfa tanıtımı (ipuçları)
 
@@ -488,8 +498,8 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 - Kaynak: `screens/SettingsScreen.tsx`, `components/NotesPicker.tsx`.
 - Öğretmen kodu satırı Profil'e taşındı (gezinme revizesi). Çalışma: Günlük hedef (10/20/30/50 + açıklama), Seviye (değişince sayaç sıfır),
   Anahtar, Çalışılacak notalar (en az 3, hazır seçimler). Soru ekranı: Cevap yöntemi, Tuş isimlerini göster, Zaman
-  yarışı. Ses ve görünüm: Ses, Titreşim, Tema. Hatırlatma: anahtar + saat (09, 12, 18, 20, 21); izin yoksa kırmızı
-  uyarı. Tanıtımı tekrar göster. İlerlemeyi sıfırla (onay kutusu; ayarlar ve oyun kayıtları kalır). Gizlilik, Lisanslar.
+  yarışı. Ses ve görünüm: Ses, Titreşim, Tema. Hatırlatma: anahtar + saat satırı (dokununca saat çarkı, her saat ve dakika; alt yazı "Her gün 07:45'te"); izin
+  yoksa kırmızı uyarı. Tanıtımı tekrar göster. İlerlemeyi sıfırla (onay kutusu; ayarlar ve oyun kayıtları kalır). Gizlilik, Lisanslar.
   "Sürüm 1.0".
 - Kabul:
   - [ ] Sıfırla: XP, seri, istatistikler, yıldızlar, son turlar siliniyor; ayarlar kalıyor; Pratik açılıyor.
@@ -499,6 +509,9 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 ### E-13 Öğretmen kodu
 
 - [x] Native'de yapıldı (22 Kasım): kurallar çekirdekte `TeacherFlow` (testli), ekran `TeacherScreen`.
+- [x] Role göre bölüm (26 Kasım, `tanitim.md` R35): öğrenci yalnız kod girme ("Öğretmen kodunu gir"), öğretmen yalnız
+  hazırlama ("Öğrenci kodu hazırla"), diğerleri ikisi ("Öğretmen kodu"); alttaki mor bağlantı bölümü ve rolü kalıcı
+  değiştirir. Kural `TeacherSection`. Görüntü: `ogretmen-kodu-hazirla`, `ogretmen-kodu-gir`.
 
 - Kaynak: `screens/TeacherScreen.tsx`.
 - Açıklama. **Öğrenci** kartı: kod alanı (büyük harf, en çok 7, "ABC-DEF"), Uygula; hata "Kod geçersiz. 6 karakteri

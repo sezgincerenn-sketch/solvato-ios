@@ -1,6 +1,54 @@
-// Öğretmen kodu ekranının kuralları: kodu uygulama, öğretmen tarafındaki seçimlerin başlangıcı ve konu seçimi.
-// Web src/screens/TeacherScreen.tsx. Ekran Solvato/Screens/TeacherScreen.swift.
+// Öğretmen kodu ekranının kuralları: tanıtımdaki seçime göre görünen bölüm (tanitim.md R35), kodu uygulama, öğretmen
+// tarafındaki seçimlerin başlangıcı ve konu seçimi. Web src/screens/TeacherScreen.tsx. Ekran Solvato/Screens/TeacherScreen.swift.
 import Foundation
+
+/// Öğretmen kodu ekranında görünen bölüm(ler); tanıtımdaki öğretmen sorusuna (teacherRole) göre
+public enum TeacherSection: Equatable, Sendable {
+    /// Yalnız kod girme (Evet, öğretmenim var)
+    case enter
+    /// Yalnız öğrenci kodu hazırlama (Ben öğretmenim)
+    case prepare
+    /// İkisi de (kendi kendime ya da soru atlandı)
+    case both
+
+    public init(_ role: TeacherRole) {
+        switch role {
+        case .student: self = .enter
+        case .teacher: self = .prepare
+        case .solo, .unset: self = .both
+        }
+    }
+
+    public var showsEnter: Bool { self != .prepare }
+    public var showsPrepare: Bool { self != .enter }
+
+    /// Ekran başlığı (Profil'deki öğretmen kodu kartının başlığıyla aynı)
+    public var title: String {
+        switch self {
+        case .enter: "Öğretmen kodunu gir"
+        case .prepare: "Öğrenci kodu hazırla"
+        case .both: "Öğretmen kodu"
+        }
+    }
+
+    /// Üstteki açıklama
+    public var intro: String {
+        switch self {
+        case .enter, .both:
+            "Öğretmenin hangi notaları ve hangi seviyede çalışacağını bir kodla gönderir. Kodu girince uygulaman o ayarlarla kurulur."
+        case .prepare: "Öğrencin için konu, seviye, hedef ve notaları seç; kodu WhatsApp ya da mesajla gönder."
+        }
+    }
+
+    /// Altta diğer bölüme geçiş bağlantısı ve dokununca kaydedilecek rol; iki bölüm birden görünüyorsa yok
+    public var switchLink: (text: String, role: TeacherRole)? {
+        switch self {
+        case .enter: ("Öğretmen misin? Öğrencin için kod hazırla", .teacher)
+        case .prepare: ("Öğrenci misin? Öğretmeninin kodunu gir", .student)
+        case .both: nil
+        }
+    }
+}
 
 public enum TeacherFlow {
     public static let invalidMessage = "Kod geçersiz. 6 karakteri kontrol et."

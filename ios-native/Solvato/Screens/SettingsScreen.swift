@@ -52,13 +52,11 @@ struct SettingsScreen: View {
                         Text(reminderMsg).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.redText.color).padding(.vertical, 8)
                     }
                     if s.reminder {
-                        HStack(spacing: 8) {
-                            ForEach(SettingsText.reminderHours, id: \.self) { h in
-                                Chip(String(format: "%02d:00", h), selected: s.reminderHour == h) {
-                                    model.settings.reminderHour = h
-                                    Task { _ = await Reminder.enable(hour: h) }
-                                }
-                            }
+                        // Saat değişince bildirim yeni saate taşınır
+                        TimeField(hour: s.reminderHour, minute: s.reminderMinute) { h, m in
+                            model.settings.reminderHour = h
+                            model.settings.reminderMinute = m
+                            Task { _ = await Reminder.enable(hour: h, minute: m) }
                         }
                         .padding(.vertical, 12)
                     }
@@ -92,8 +90,9 @@ struct SettingsScreen: View {
             return
         }
         let h = model.settings.reminderHour
+        let m = model.settings.reminderMinute
         Task { @MainActor in
-            if await Reminder.enable(hour: h) {
+            if await Reminder.enable(hour: h, minute: m) {
                 model.settings.reminder = true
                 reminderMsg = ""
             } else {

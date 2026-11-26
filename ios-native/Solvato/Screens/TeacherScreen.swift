@@ -1,6 +1,7 @@
-// Öğretmen kodu (Ayarlar › Öğretmen kodu): 1) öğrenci öğretmeninin gönderdiği kodu girer, ayarlar kurulur; 2) öğretmen
-// öğrencisi için seçim yapar, kodu paylaşım menüsüyle gönderir. Web src/screens/TeacherScreen.tsx; kurallar
-// SolvatoCore TeacherFlow / TeacherCode'da.
+// Öğretmen kodu (Profil › öğretmen kodu kartı): 1) öğrenci öğretmeninin gönderdiği kodu girer, ayarlar kurulur; 2) öğretmen
+// öğrencisi için seçim yapar, kodu paylaşım menüsüyle gönderir. Tanıtımdaki seçime göre yalnız biri ya da ikisi görünür;
+// alttaki bağlantı diğer bölüme geçer ve seçimi kalıcı değiştirir (tanitim.md R35). Web src/screens/TeacherScreen.tsx;
+// kurallar SolvatoCore TeacherSection / TeacherFlow / TeacherCode'da.
 import SolvatoCore
 import SwiftUI
 
@@ -17,24 +18,44 @@ struct TeacherScreen: View {
     }
 
     var body: some View {
+        let section = TeacherSection(model.settings.teacherRole)
         VStack(spacing: 0) {
-            ScreenHeader(title: "Öğretmen kodu") { model.back() }
-            ScrollView {
-                VStack(alignment: .leading, spacing: Space.s3) {
-                    muted("Öğretmenin hangi notaları ve hangi seviyede çalışacağını bir kodla gönderir. Kodu girince uygulaman o ayarlarla kurulur.")
-                    AppCard { student }
-                    AppCard { teacher }
+            ScreenHeader(title: section.title) { model.back() }
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: Space.s3) {
+                        muted(section.intro).id(Self.top)
+                        if section.showsEnter { AppCard { student } }
+                        if section.showsPrepare { AppCard { teacher } }
+                        if let link = section.switchLink {
+                            Button {
+                                // Seçim kalıcı değişir: Profil kartının başlığı ve ekranın sonraki açılışı da yeni rolde
+                                model.settings.teacherRole = link.role
+                                proxy.scrollTo(Self.top, anchor: .top)
+                            } label: {
+                                Text(link.text)
+                                    .font(.ui(FontSize.sm, .semibold))
+                                    .foregroundStyle(ThemeColor.violetText.color)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, Space.s2)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal, Space.s4)
+                    .padding(.top, Space.s2)
+                    .padding(.bottom, Space.s6)
+                    .remembersScroll(model, .teacher)
                 }
-                .padding(.horizontal, Space.s4)
-                .padding(.top, Space.s2)
-                .padding(.bottom, Space.s6)
-                .remembersScroll(model, .teacher)
+                .scrollIndicators(.hidden)
+                .scrollDismissesKeyboard(.interactively)
             }
-            .scrollIndicators(.hidden)
-            .scrollDismissesKeyboard(.interactively)
         }
         .background(ThemeColor.bg.color)
     }
+
+    private static let top = "teacher-top"
 
     // MARK: 1) Öğrenci
     @ViewBuilder private var student: some View {

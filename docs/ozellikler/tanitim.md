@@ -1,6 +1,7 @@
 # Tanıtım ve öğretmen kodu ekranı
 
-Durum: **Ceren'in onayını bekliyor (26 Kasım 2026)**. Yalnız native iOS'a yazılır (`ios-native/`). Kapsadığı revizeler
+Durum: **onaylandı, native'de uygulandı (26 Kasım 2026)**. Çekirdek ölçütleri testlerle doğrulandı; ekran ölçütleri
+GitHub Actions simülatör görüntüleriyle (`ekranlar` dalı) kapanacak. Yalnız native iOS'a yazılır (`ios-native/`). Kapsadığı revizeler
 (`docs/ozellikler/tasarim-revize.md`): R5 (tanıtımdaki soru adımı), R9, R12, R27, R28 ve R35 (öğretmen kodu ekranı
 role göre). R5'in Profil tarafı (kart başlıkları) `gezinme.md`'de yapıldı.
 
@@ -90,18 +91,18 @@ Ekran, tanıtımdaki seçime (`teacherRole`) göre açılır:
 
 - [ ] Tanıtım "Her gün birkaç dakika, nota okumak kolaylaşsın" ekranıyla açılıyor; "Başlayalım" Merhaba adımına geçiyor.
 - [ ] İkinci adımdan itibaren sol üstte geri oku var; geri dönünce girilen ad ve seçimler duruyor; ilk adımda ok yok.
-- [ ] Öğretmen sorusunda üç seçenek; seçim `teacherRole`'e kaydediliyor (student / self / teacher).
+- [x] Öğretmen sorusunda üç seçenek; seçim `teacherRole`'e kaydediliyor (student / self / teacher).
 - [ ] "Ben öğretmenim" → Devam: anahtar/seviye/hatırlatma adımları gelmiyor, öğretmen kodu ekranı "Öğrenci kodu
       hazırla" başlığıyla yalnız hazırlama bölümüyle açılıyor; geri dönünce Profil.
 - [ ] "Evet, öğretmenim var" ve "Kendi kendime": anahtar → seviye → hatırlatma → Hazırsın sırası bugünkü gibi.
 - [ ] Tanıtım (bitince ya da Atla ile) Ana sayfayı en üstten açıyor.
 - [ ] Hatırlatma saati tanıtımda ve Ayarlar'da aynı saat satırı; 07:45 gibi her saat seçilebiliyor; bildirim o saatte.
-- [ ] Ayarlar'daki alt yazı dakikalı: "Her gün 07:45'te".
+- [x] Ayarlar'daki alt yazı dakikalı: "Her gün 07:45'te".
 - [ ] Öğretmen kodu ekranı: öğrenci yalnız kod girmeyi, öğretmen yalnız hazırlamayı, diğerleri ikisini görüyor.
 - [ ] Geçiş bağlantısı bölümü değiştiriyor; Profil kartının başlığı ve ekranın sonraki açılışı yeni rolü gösteriyor.
 - [ ] Koyu ve açık temada, iPhone SE ve iPad'de taşma yok (ekran görüntüleri: tanıtım giriş, öğretmen sorusu,
       hatırlatma; öğretmen kodu ekranının üç hâli).
-- [ ] Çekirdek testleri: adım sırası (öğretmen yolu dahil), geri, rol ve ekran bölümü seçimi, saat alt yazısı,
+- [x] Çekirdek testleri: adım sırası (öğretmen yolu dahil), geri, rol ve ekran bölümü seçimi, saat alt yazısı,
       `reminderMinute` varsayılanı.
 
 ## Kapsam dışı
