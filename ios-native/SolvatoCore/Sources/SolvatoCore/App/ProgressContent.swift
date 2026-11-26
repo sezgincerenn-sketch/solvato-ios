@@ -95,6 +95,41 @@ public struct ProgressContent: Sendable {
     }
     public var rounds: [Round]
 
+    // MARK: Başlangıç listesi (R7, Ceren 26 Kasım)
+    public struct StartStep: Equatable, Sendable {
+        public var title: String
+        public var done: Bool
+    }
+
+    /// İlk turunu bitir · Günlük hedefini tamamla · 2 gün üst üste çalış. Tamamlanan madde bir daha geri dönmez:
+    /// hedef "seri sayılan gün" (lastPlayDate) ile, iki gün tur kaydındaki (dailyLog) art arda iki günle ölçülür.
+    public static func startSteps(_ s: AppStats) -> [StartStep] {
+        [
+            StartStep(title: "İlk turunu bitir", done: s.totalSessions > 0 || !s.dailyLog.isEmpty),
+            StartStep(title: "Günlük hedefini tamamla", done: !s.lastPlayDate.isEmpty),
+            StartStep(title: "2 gün üst üste çalış", done: s.streak >= 2 || hasConsecutiveDays(s.dailyLog.keys)),
+        ]
+    }
+
+    /// "2026-11-25" ve "2026-11-26" gibi art arda iki gün var mı
+    static func hasConsecutiveDays(_ keys: [String]) -> Bool {
+        var utc = Calendar(identifier: .gregorian)
+        utc.timeZone = TimeZone(identifier: "UTC")!
+        let days = Set(keys.compactMap { k -> Int? in
+            let p = k.split(separator: "-").compactMap { Int($0) }
+            guard p.count == 3, let d = utc.date(from: DateComponents(year: p[0], month: p[1], day: p[2])) else { return nil }
+            return Int(d.timeIntervalSince1970 / 86400)
+        })
+        return days.contains { days.contains($0 + 1) }
+    }
+
+    /// Gösterilecek liste: bitti olarak kaydedildiyse ya da üçü de tamamsa nil (sessizce kaybolur)
+    public static func startChecklist(_ s: AppStats, settings: Settings) -> [StartStep]? {
+        guard !settings.startChecklistDone else { return nil }
+        let steps = startSteps(s)
+        return steps.allSatisfy(\.done) ? nil : steps
+    }
+
     /// Son turlar satırına dokununca (R17, Ceren 26 Kasım): aynı konudan yeni tur
     public enum RoundReplay: Equatable, Sendable {
         case quiz(FilterCategory)

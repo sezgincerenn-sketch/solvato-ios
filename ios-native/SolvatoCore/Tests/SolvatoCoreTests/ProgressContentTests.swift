@@ -34,3 +34,26 @@ final class RoundReplayTests: XCTestCase {
         XCTAssertEqual(ProgressContent.replay(label: "Hataların tekrarı"), .quiz(.all))
     }
 }
+
+/// R7: İlerleme'deki başlangıç listesi
+final class StartChecklistTests: XCTestCase {
+    func testSteps() {
+        var s = AppStats()
+        var set = Settings()
+        XCTAssertEqual(ProgressContent.startChecklist(s, settings: set)?.map(\.done), [false, false, false])
+        s.totalSessions = 1
+        s.dailyLog["2026-11-25"] = 1
+        XCTAssertEqual(ProgressContent.startSteps(s).map(\.done), [true, false, false])
+        s.lastPlayDate = "Wed Nov 25 2026"
+        s.streak = 1
+        s.dailyLog["2026-11-27"] = 1
+        XCTAssertEqual(ProgressContent.startSteps(s).map(\.done), [true, true, false], "arada gün var")
+        s.dailyLog["2026-11-28"] = 2
+        XCTAssertEqual(ProgressContent.startSteps(s).map(\.done), [true, true, true])
+        XCTAssertNil(ProgressContent.startChecklist(s, settings: set), "üçü tamam: kaybolur")
+        XCTAssertEqual(ProgressContent.startSteps(s).map(\.title), ["İlk turunu bitir", "Günlük hedefini tamamla", "2 gün üst üste çalış"])
+        set.startChecklistDone = true
+        XCTAssertNil(ProgressContent.startChecklist(AppStats(), settings: set), "bitti kaydı varsa hiç görünmez")
+        XCTAssertTrue(ProgressContent.hasConsecutiveDays(["2026-11-30", "2026-12-01"]), "ay geçişi")
+    }
+}
