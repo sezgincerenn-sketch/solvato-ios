@@ -47,7 +47,7 @@ struct DesignSystemScreen: View {
         }
     }
 
-    /// 0.5: ekran iskeleti parçaları (web Avatar, ScreenHeader, TopicLink, ExitConfirm, Toast, NavBar)
+    /// 0.5: ekran iskeleti parçaları (web Avatar, ScreenHeader, TopicLink, ExitConfirm, Toast)
     private var shellParts: some View {
         VStack(alignment: .leading, spacing: Space.s4) {
             HStack(spacing: Space.s3) {
@@ -58,7 +58,6 @@ struct DesignSystemScreen: View {
             }
             ScreenHeader(title: "Ayarlar", flush: true, onBack: {})
             TopicLink(color: .chords, icon: .piano, title: "Akor", sub: "Tanı, tuşlara bas", stars: 2) {}
-            NavBar(active: .home) { _ in }
             ZStack {
                 ThemeColor.bgDeep.color
                 ExitConfirm(onStay: {}, onExit: {})

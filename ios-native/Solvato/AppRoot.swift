@@ -1,5 +1,5 @@
-// Uygulamanın kök görünümü: o anki ekran (AppModel.nav), sekme ekranlarında yüzen alt menü (kapsül; içerik altından
-// kayar, kaydırma alanlarının sonunda kapsül kadar boşluk kalır), kutlama, tanıtım, açılış.
+// Uygulamanın kök görünümü: o anki ekran (AppModel.nav), sekme ekranlarında Apple'ın sekme çubuğu (UI/SystemTabs),
+// kutlama, tanıtım, açılış.
 // Web App.tsx renderScreen + utils/swipeBack.tsx: sol kenardan (28 pt) sağa kaydırınca ekran parmakla kayar, altında
 // önceki ekran görünür; %35'i geçince ya da hızlı bırakınca geri dönülür. Turlarda da ekran aynı biçimde kayar (R34);
 // cevap verilmişse bırakınca ekran yerine döner ve "Turdan çıkılsın mı?" onayı açılır, cevap yoksa geri dönülür. Telefonda yalnız soru ve akor turu yan döner (G-02).
@@ -73,17 +73,16 @@ struct AppRoot: View {
         .onChange(of: model.scrollTopRequest) { _, _ in NotificationCenter.default.post(name: .scrollToTop, object: model.nav.current.rawValue) }
     }
 
+    /// Sekme ekranları Apple'ın sekme çubuğunun içinde (UI/SystemTabs); alt ekranlar ve turlar çubuksuz, tam ekran
     @ViewBuilder
     private func screenWithNav(_ v: AppView) -> some View {
-        screen(v)
-            .frame(maxHeight: .infinity)
-            // Kapsül alt güvenli alana eklenir: kaydırma alanları sonunda kapsül kadar boşluk bırakır
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                if v.isTab {
-                    NavBar(active: NavTab(rawValue: v.rawValue) ?? .home) { model.selectTab(AppView(rawValue: $0.rawValue) ?? .home) }
-                        .coachTarget("nav")
-                }
+        if v.isTab {
+            SystemTabs(active: NavTab(rawValue: v.rawValue) ?? .home, onSelect: { model.selectTab(AppView(rawValue: $0.rawValue) ?? .home) }) { t in
+                screen(AppView(rawValue: t.rawValue) ?? .home).frame(maxHeight: .infinity)
             }
+        } else {
+            screen(v).frame(maxHeight: .infinity)
+        }
     }
 
     /// Ana sayfa ipuçları: Pratik'te, açılış/tanıtım/kutlama kapalıyken, bir kez (settings.coachDone)
