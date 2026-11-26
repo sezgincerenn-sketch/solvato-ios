@@ -495,6 +495,12 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 ### E-12 Ayarlar
 
+- [x] Ayarlar düzeni (26 Kasım, `ayarlar.md` R36, yalnız native): dört kart (Çalışma, Sorular, Ses ve bildirim, Diğer),
+  değerli satırlar sağda değer + seçim penceresi (`UI/SettingsRows.swift`), Çalışılacak notalar ayrı ekran
+  (`NotesSettingsScreen`, `AppView.notes`), Hatırlatma saati satırı saat çarkıyla (`.timeWheel`), altta kırmızı
+  "İlerlemeyi sıfırla". Satır değerleri ve seviye sayacı kuralı çekirdekte (`SettingsText`, `Settings.setLevel`, testli).
+  Görüntü: `ayarlar`, `ayarlar-alt`, `ayarlar-pencere`, `ayarlar-notalar`, `ayarlar-sifirla`.
+
 - Kaynak: `screens/SettingsScreen.tsx`, `components/NotesPicker.tsx`.
 - Öğretmen kodu satırı Profil'e taşındı (gezinme revizesi). Çalışma: Günlük hedef (10/20/30/50 + açıklama), Seviye (değişince sayaç sıfır),
   Anahtar, Çalışılacak notalar (en az 3, hazır seçimler). Soru ekranı: Cevap yöntemi, Tuş isimlerini göster, Zaman

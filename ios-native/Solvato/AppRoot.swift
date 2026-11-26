@@ -120,6 +120,7 @@ struct AppRoot: View {
         case .teacher: TabletColumn { TeacherScreen(model: model) }
         case .privacy: TabletColumn { LegalScreen(model: model, page: .privacy) }
         case .licenses: TabletColumn { LegalScreen(model: model, page: .licenses) }
+        case .notes: TabletColumn { NotesSettingsScreen(model: model) }
         default: PendingScreen(view: v) { v.isTab ? model.go(.home) : model.back() }
         }
     }

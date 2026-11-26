@@ -8,6 +8,8 @@ public enum AppView: String, Sendable, CaseIterable {
     case gameDaily = "game-daily"
     case gameChallenge = "game-challenge"
     case gameresult, profile, lesson, teacher, privacy, licenses
+    /// Ayarlar › Çalışılacak notalar (ayarlar.md)
+    case notes
 
     public var isTab: Bool { self == .home || self == .dashboard || self == .study || self == .profile }
 
@@ -18,7 +20,7 @@ public enum AppView: String, Sendable, CaseIterable {
     /// ekranı kaydırmaz, ekranın kendi geri düğmesi (çıkış onayı) çalışır.
     public var swipesBack: Bool {
         switch self {
-        case .settings, .result, .games, .gameDaily, .gameChallenge, .gameresult, .lesson, .teacher, .privacy, .licenses: true
+        case .settings, .notes, .result, .games, .gameDaily, .gameChallenge, .gameresult, .lesson, .teacher, .privacy, .licenses: true
         default: false
         }
     }

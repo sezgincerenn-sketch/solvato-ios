@@ -1,6 +1,7 @@
-// Ayarlar: Çalışma (günlük hedef, seviye, anahtar, çalışılacak notalar), Soru ekranı (cevap yöntemi, tuş
-// isimleri, zaman yarışı), Ses ve görünüm (ses, titreşim, tema), Hatırlatma, tanıtımı tekrar göster, ilerlemeyi sıfırla,
-// Hakkında (gizlilik, lisanslar, sürüm). Öğretmen kodu Profil'de (gezinme.md). Web src/screens/SettingsScreen.tsx; yazılar SolvatoCore SettingsText'ten.
+// Ayarlar (docs/ozellikler/ayarlar.md, Taslak 1): dört kart — Çalışma (günlük hedef, seviye, anahtar, çalışılacak
+// notalar), Sorular (cevap yöntemi, tuş isimleri, zaman yarışı), Ses ve bildirim (ses, titreşim, hatırlatma ve saati),
+// Diğer (tema, tanıtım, gizlilik, lisanslar); en altta "İlerlemeyi sıfırla" ve sürüm. Değerli satırlar seçim penceresi
+// açar (UI/SettingsRows). Öğretmen kodu Profil'de (gezinme.md). Yazılar SolvatoCore SettingsText'ten.
 import SolvatoCore
 import SwiftUI
 
@@ -8,73 +9,88 @@ struct SettingsScreen: View {
     let model: AppModel
     @State private var reminderMsg = ""
     @State private var confirmReset = false
+    @State private var timeOpen = false
 
     var body: some View {
         let s = model.settings
         VStack(spacing: 0) {
             ScreenHeader(title: "Ayarlar") { model.back() }
             ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    section("Çalışma")
-                    block("Günlük hedef", SettingsText.goalText[s.dailyGoal] ?? "") {
-                        Segmented(value: s.dailyGoal, options: [10, 20, 30, 50].map { ($0, "\($0)") }) { model.settings.dailyGoal = $0 }
+                VStack(alignment: .leading, spacing: Space.s6) {
+                    SettingsGroup(title: "Çalışma") {
+                        SettingsPickerRow(
+                            title: "Günlük hedef",
+                            options: SettingsText.goalOptions.map { OptionItem(value: $0.goal, label: SettingsText.goalValue($0.goal), note: $0.note) },
+                            selected: s.dailyGoal
+                        ) { model.settings.dailyGoal = $0 }
+                        SettingsPickerRow(
+                            title: "Seviye", sub: SettingsText.levelSub(s),
+                            options: SettingsText.levelOptions.map { OptionItem(value: $0.level, label: $0.label) },
+                            selected: s.level
+                        ) { model.settings.setLevel($0) }
+                        SettingsPickerRow(
+                            title: "Anahtar", options: SettingsText.clefOptions.map { OptionItem(value: $0.clef, label: $0.label) },
+                            selected: s.clef
+                        ) { model.settings.clef = $0 }
+                        SettingsValueRow(title: "Çalışılacak notalar", value: SettingsText.notesValue(s.notes)) { model.go(.notes) }
                     }
-                    block("Seviye", SettingsText.levelSub(s)) {
-                        Segmented(value: s.level, options: [(1, "Başlangıç"), (2, "Orta"), (3, "İleri")]) {
-                            model.settings.level = $0
-                            model.settings.levelProgress = LevelProgress(n: 0, c: 0)
+
+                    SettingsGroup(title: "Sorular") {
+                        SettingsPickerRow(
+                            title: "Cevap yöntemi", options: SettingsText.inputOptions.map { OptionItem(value: $0.mode, label: $0.label) },
+                            selected: s.inputMode
+                        ) { model.settings.inputMode = $0 }
+                        SettingsToggleRow(title: "Tuş isimlerini göster", isOn: s.keyLabels) { model.settings.keyLabels.toggle() }
+                        SettingsToggleRow(title: "Zaman yarışı", isOn: s.timer) { model.settings.timer.toggle() }
+                    }
+
+                    VStack(alignment: .leading, spacing: Space.s2) {
+                        SettingsGroup(title: "Ses ve bildirim") {
+                            SettingsToggleRow(title: "Ses", isOn: s.soundKeys) { model.settings.soundKeys.toggle() }
+                            SettingsToggleRow(title: "Titreşim", isOn: s.haptics) { model.settings.haptics.toggle() }
+                            SettingsToggleRow(title: "Günlük hatırlatma", isOn: s.reminder) { toggleReminder() }
+                            if s.reminder {
+                                SettingsValueRow(title: "Hatırlatma saati", value: SettingsText.clock(hour: s.reminderHour, minute: s.reminderMinute)) {
+                                    timeOpen = true
+                                }
+                                // Saat değişince bildirim yeni saate taşınır
+                                .timeWheel(isPresented: $timeOpen, hour: s.reminderHour, minute: s.reminderMinute, label: "Hatırlatma saati") { h, m in
+                                    model.settings.reminderHour = h
+                                    model.settings.reminderMinute = m
+                                    Task { _ = await Reminder.enable(hour: h, minute: m) }
+                                }
+                            }
+                        }
+                        if !reminderMsg.isEmpty {
+                            Text(reminderMsg)
+                                .font(.ui(FontSize.sm))
+                                .foregroundStyle(ThemeColor.redText.color)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding(.horizontal, Space.s1)
                         }
                     }
-                    block("Anahtar") {
-                        Segmented(value: s.clef, options: [(ClefChoice.treble, "Sol"), (.bass, "Fa"), (.both, "İkisi de")]) { model.settings.clef = $0 }
-                    }
-                    block("Çalışılacak notalar", SettingsText.notesSummary(s.notes)) {
-                        NotesPicker(value: s.notes) { model.settings.notes = $0 }
+
+                    SettingsGroup(title: "Diğer") {
+                        SettingsPickerRow(
+                            title: "Tema", options: SettingsText.themeOptions.map { OptionItem(value: $0.mode, label: $0.label) },
+                            selected: model.themeMode
+                        ) { model.themeMode = $0 }
+                        SettingsLinkRow(title: "Tanıtımı tekrar göster") { model.showTutorial() }
+                        SettingsLinkRow(title: "Gizlilik") { model.go(.privacy) }
+                        SettingsLinkRow(title: "Lisanslar") { model.go(.licenses) }
                     }
 
-                    section("Soru ekranı")
-                    block("Cevap yöntemi") {
-                        Segmented(value: s.inputMode, options: [(InputMode.piano, "Klavye"), (.choice, "Şıklar")]) { model.settings.inputMode = $0 }
+                    VStack(spacing: Space.s2) {
+                        resetArea
+                        Text("Sürüm 1.0")
+                            .font(.ui(FontSize.sm))
+                            .foregroundStyle(ThemeColor.textSubtle.color)
+                            .frame(maxWidth: .infinity)
                     }
-                    toggleRow("Tuş isimlerini göster", nil, s.keyLabels) { model.settings.keyLabels.toggle() }
-                    toggleRow("Zaman yarışı", "Her soru için süre verilir.", s.timer) { model.settings.timer.toggle() }
-
-                    section("Ses ve görünüm")
-                    toggleRow("Ses", "Telefon sessiz moddayken de çalar.", s.soundKeys) { model.settings.soundKeys.toggle() }
-                    toggleRow("Titreşim", nil, s.haptics) { model.settings.haptics.toggle() }
-                    block("Tema") {
-                        Segmented(value: model.themeMode, options: [(ThemeMode.system, "Sistem"), (.dark, "Koyu"), (.light, "Açık")]) { model.themeMode = $0 }
-                    }
-
-                    section("Hatırlatma")
-                    toggleRow("Günlük hatırlatma", SettingsText.reminderSub(s), s.reminder) { toggleReminder() }
-                    if !reminderMsg.isEmpty {
-                        Text(reminderMsg).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.redText.color).padding(.vertical, 8)
-                    }
-                    if s.reminder {
-                        // Saat değişince bildirim yeni saate taşınır
-                        TimeField(hour: s.reminderHour, minute: s.reminderMinute) { h, m in
-                            model.settings.reminderHour = h
-                            model.settings.reminderMinute = m
-                            Task { _ = await Reminder.enable(hour: h, minute: m) }
-                        }
-                        .padding(.vertical, 12)
-                    }
-
-                    plainButton("Tanıtımı tekrar göster") { model.showTutorial() }.padding(.top, 20)
-                    resetArea.padding(.top, 14)
-
-                    section("Hakkında")
-                    linkRow("Gizlilik", "Veri toplanmaz, her şey bu cihazda") { model.go(.privacy) }
-                    linkRow("Lisanslar", "Kullanılan yazı tipleri ve açık kaynak yazılımlar") { model.go(.licenses) }
-                    Text("Sürüm 1.0")
-                        .font(.ui(FontSize.sm))
-                        .foregroundStyle(ThemeColor.textSubtle.color)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 28)
                 }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 32)
+                .padding(.horizontal, Space.s4)
+                .padding(.top, Space.s2)
+                .padding(.bottom, Space.s8)
                 .remembersScroll(model, .settings)
             }
             .scrollIndicators(.hidden)
@@ -101,80 +117,7 @@ struct SettingsScreen: View {
         }
     }
 
-    // MARK: Parçalar
-    private func section(_ t: String) -> some View {
-        Text(t.uppercased(with: Locale(identifier: "tr")))
-            .font(.ui(FontSize.xs, .bold))
-            .tracking(em: 0.08, size: FontSize.xs)
-            .foregroundStyle(ThemeColor.violetText.color)
-            .padding(.top, 26)
-            .padding(.bottom, 2)
-    }
-
-    private func titleSub(_ title: String, _ sub: String?) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title).font(.ui(FontSize.md, .semibold)).foregroundStyle(ThemeColor.text.color)
-            if let sub { Text(sub).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color).fixedSize(horizontal: false, vertical: true) }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func block<C: View>(_ title: String, _ sub: String? = nil, @ViewBuilder _ content: () -> C) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            titleSub(title, sub)
-            content()
-        }
-        .padding(.top, 14)
-        .padding(.bottom, 16)
-        .overlay(alignment: .bottom) { ThemeColor.border.color.frame(height: 1) }
-    }
-
-    private func toggleRow(_ title: String, _ sub: String?, _ on: Bool, _ action: @escaping () -> Void) -> some View {
-        HStack(spacing: 12) {
-            titleSub(title, sub)
-            Button(action: action) {
-                ZStack(alignment: on ? .trailing : .leading) {
-                    Capsule().fill(on ? PaletteColor.violet600.color : ThemeColor.fillStronger.color)
-                    Circle().fill(PaletteColor.white.color).frame(width: 26, height: 26).padding(3)
-                }
-                .frame(width: 52, height: 32)
-                .animation(.easeOut(duration: 0.18), value: on)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(title)
-            .accessibilityValue(on ? "Açık" : "Kapalı")
-            .accessibilityAddTraits(.isToggle)
-        }
-        .padding(.vertical, 14)
-        .overlay(alignment: .bottom) { ThemeColor.border.color.frame(height: 1) }
-    }
-
-    private func linkRow(_ title: String, _ sub: String?, _ action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                titleSub(title, sub)
-                Text("›").font(.ui(FontSize.lg)).foregroundStyle(ThemeColor.textMuted.color).accessibilityHidden(true)
-            }
-            .padding(.vertical, 14)
-            .overlay(alignment: .bottom) { ThemeColor.border.color.frame(height: 1) }
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-    }
-
-    private func plainButton(_ title: String, _ action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(title)
-                .font(.ui(FontSize.md, .semibold))
-                .foregroundStyle(ThemeColor.textSecondary.color)
-                .frame(maxWidth: .infinity)
-                .padding(14)
-                .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fill.color))
-                .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(ThemeColor.border.color, lineWidth: 1))
-        }
-        .buttonStyle(.plain)
-    }
-
+    /// Kartların altında ortalı kırmızı "İlerlemeyi sıfırla"; dokununca onay alanı
     @ViewBuilder
     private var resetArea: some View {
         if !confirmReset {
@@ -183,9 +126,8 @@ struct SettingsScreen: View {
                     .font(.ui(FontSize.md, .semibold))
                     .foregroundStyle(ThemeColor.redText.color)
                     .frame(maxWidth: .infinity)
-                    .padding(14)
-                    .background(RoundedRectangle(cornerRadius: Radius.md).fill(PaletteColor.red500.opacity(0.1)))
-                    .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(PaletteColor.red500.opacity(0.25), lineWidth: 1))
+                    .padding(Space.s3)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
         } else {
@@ -212,25 +154,6 @@ struct SettingsScreen: View {
             .padding(14)
             .background(RoundedRectangle(cornerRadius: Radius.md).fill(PaletteColor.red500.opacity(0.08)))
             .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(PaletteColor.red500.opacity(0.25), lineWidth: 1))
-        }
-    }
-}
-
-/// Çalışılacak notalar: 7 nota düğmesi (en az 3 seçili) ve hazır seçimler (web NotesPicker)
-struct NotesPicker: View {
-    let value: [String]
-    let onChange: ([String]) -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Segmented(options: allNotes.map { ($0, $0) }, isSelected: { value.contains($0) }, columns: 7, size: .sm) {
-                onChange(SettingsText.toggleNote($0, in: value))
-            }
-            HStack(spacing: 8) {
-                ForEach(SettingsText.notePresets, id: \.label) { p in
-                    Chip(p.label, selected: value == p.notes) { onChange(p.notes) }
-                }
-            }
         }
     }
 }

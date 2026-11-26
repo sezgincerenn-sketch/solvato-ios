@@ -19,6 +19,19 @@ final class ScreenStackTests: XCTestCase {
         XCTAssertEqual(s.back(), .home, "boş yığında ana sayfa")
     }
 
+    /// Ayarlar › Çalışılacak notalar: alt ekran; geri ve kaydırma Ayarlar'a döner (ayarlar.md)
+    func testNotesScreenReturnsToSettings() {
+        var s = ScreenStack()
+        s.go(.profile)
+        s.go(.settings)
+        s.go(.notes)
+        XCTAssertEqual(s.stack, [.profile, .settings])
+        XCTAssertTrue(s.canSwipeBack(overlayOpen: false))
+        XCTAssertEqual(s.backTarget, .settings)
+        XCTAssertEqual(s.back(), .settings)
+        XCTAssertEqual(s.back(), .profile)
+    }
+
     func testResultReturnsToWhereRoundStarted() {
         var s = ScreenStack()
         s.go(.dashboard)
@@ -49,7 +62,7 @@ final class ScreenStackTests: XCTestCase {
     }
 
     func testSwipeOnlyOnSubScreens() {
-        XCTAssertEqual(AppView.allCases.filter(\.swipesBack).count, 10)
+        XCTAssertEqual(AppView.allCases.filter(\.swipesBack).count, 11)
         for v in [AppView.quiz, .chordquiz, .rhythmtap, .duel, .home, .dashboard, .study, .profile] { XCTAssertFalse(v.swipesBack, v.rawValue) }
         XCTAssertEqual(AppView.allCases.filter(\.isTab), [.home, .dashboard, .study, .profile], "alt menüde dört sekme")
         var s = ScreenStack()

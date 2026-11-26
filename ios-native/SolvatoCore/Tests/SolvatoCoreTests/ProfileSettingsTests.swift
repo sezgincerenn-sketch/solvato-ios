@@ -14,12 +14,58 @@ final class ProfileSettingsTests: XCTestCase {
         XCTAssertEqual(SettingsText.levelSub(s), "Sonraki seviyeye: 0/50 soru")
         s.level = 3
         XCTAssertEqual(SettingsText.levelSub(s), "Tüm sorular açık.")
-        s.reminder = true
-        s.reminderHour = 9
-        XCTAssertEqual(SettingsText.reminderSub(s), "Her gün 09:00'da")
         XCTAssertEqual(SettingsText.notesSummary(["Do", "Re", "Mi"]), "Nota sorularında yalnızca Do Re Mi çıkar.")
         XCTAssertEqual(SettingsText.toggleNote("Mi", in: ["Do", "Re", "Mi"]), ["Do", "Re", "Mi"], "en az 3")
         XCTAssertEqual(SettingsText.toggleNote("Do", in: ["Re", "Mi", "Sol"]), ["Do", "Re", "Mi", "Sol"], "sıra Do…Si")
+    }
+
+    /// Ayarlar satırlarının sağındaki değerler (ayarlar.md)
+    func testRowValues() {
+        XCTAssertEqual([10, 20, 30, 50].map(SettingsText.goalValue), ["10 soru", "20 soru", "30 soru", "50 soru"])
+        XCTAssertEqual(SettingsText.goalOptions.map(\.note), ["rahat tempo", "düzenli çalışma", "hızlı ilerleme", "yoğun tempo"])
+        XCTAssertEqual([1, 2, 3].map(SettingsText.levelValue), ["Başlangıç", "Orta", "İleri"])
+        XCTAssertEqual([ClefChoice.treble, .bass, .both].map(SettingsText.clefValue), ["Sol", "Fa", "İkisi de"])
+        XCTAssertEqual([InputMode.piano, .choice].map(SettingsText.inputValue), ["Klavye", "Şıklar"])
+        XCTAssertEqual([ThemeMode.system, .dark, .light].map(SettingsText.themeValue), ["Sistem", "Koyu", "Açık"])
+        XCTAssertEqual(SettingsText.goalValue(Settings().dailyGoal), "10 soru", "varsayılan")
+        XCTAssertEqual(SettingsText.levelValue(Settings().level), "Başlangıç", "varsayılan")
+        XCTAssertEqual(SettingsText.clefValue(Settings().clef), "İkisi de", "varsayılan")
+    }
+
+    /// Notalar satırı: hepsi → "Hepsi"; değilse notalar; sığmazsa bütün notalar atılıp "…"
+    func testNotesValue() {
+        XCTAssertEqual(SettingsText.notesValue(allNotes), "Hepsi")
+        XCTAssertEqual(SettingsText.notesValue(Settings().notes), "Hepsi")
+        XCTAssertEqual(SettingsText.notesValue(["Do", "Re", "Mi"]), "Do Re Mi")
+        XCTAssertEqual(SettingsText.notesValue(["Do", "Re", "Mi", "Sol"]), "Do Re Mi Sol")
+        XCTAssertEqual(SettingsText.notesValue(["Do", "Re", "Mi", "Fa", "Sol"]), "Do Re Mi Fa Sol", "15 harf sığar")
+        XCTAssertEqual(SettingsText.notesValue(["Do", "Re", "Mi", "Fa", "Sol", "La"]), "Do Re Mi Fa…")
+        XCTAssertEqual(SettingsText.notesValue(["Re", "Mi", "Fa", "Sol", "La", "Si"]), "Re Mi Fa Sol…")
+        for k in 3..<allNotes.count {
+            for notes in combos(allNotes, k) { XCTAssertLessThanOrEqual(SettingsText.notesValue(notes).count, SettingsText.notesValueLimit, "\(notes)") }
+        }
+    }
+
+    private func combos(_ a: [String], _ k: Int) -> [[String]] {
+        guard k > 0 else { return [[]] }
+        guard let f = a.first else { return [] }
+        let rest = Array(a.dropFirst())
+        return combos(rest, k - 1).map { [f] + $0 } + combos(rest, k)
+    }
+
+    /// Seviye değişince sayaç sıfırlanır; aynı seviye seçilirse sıfırlanmaz
+    func testSetLevelResetsCounter() {
+        var s = Settings()
+        s.level = 2
+        s.levelProgress = LevelProgress(n: 31, c: 26)
+        s.setLevel(2)
+        XCTAssertEqual(s.levelProgress, LevelProgress(n: 31, c: 26), "aynı seviye")
+        s.setLevel(3)
+        XCTAssertEqual(s.level, 3)
+        XCTAssertEqual(s.levelProgress, LevelProgress(n: 0, c: 0))
+        s.levelProgress = LevelProgress(n: 5, c: 4)
+        s.setLevel(1)
+        XCTAssertEqual([s.level, s.levelProgress.n], [1, 0])
     }
 
     func testProfile() {

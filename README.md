@@ -86,7 +86,7 @@ ios-native/
   Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
                        aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,
                        StatTile, StatPill, ScoreRing; Shell.swift: Avatar, BackButton, ScreenHeader, Toast, PlayChip,
-                       TopicLink, ExitConfirm, NavBar (yüzen kapsül, iOS 26'da cam), TabletColumn; PercentRing.swift: yüzde halkası, GoalBar, TabTitle; FlowLayout; CodeField (kod girişi); SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
+                       TopicLink, ExitConfirm, NavBar (yüzen kapsül, iOS 26'da cam), TabletColumn; PercentRing.swift: yüzde halkası, GoalBar, TabTitle; FlowLayout; CodeField (kod girişi); SettingsRows (ayar kartı, satırlar, seçim penceresi); NotesPicker; SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
                        Canvas'a çizer; NotationView, MusicalStaffView, ChordStaffView, GoalStaffView, ClefIconView; PianoViews: QuizPianoView,
                        MultiPianoView), Screens/, Audio.swift (AVAudioEngine çıkışı `Sound`, ses saati, titreşim `Haptics`),
                        UI/Motion.swift (sallanma, nabız, kayarak/büyüyerek belirme, seri alevi, nota zıplaması, "yan çevir" ipucu),
@@ -135,7 +135,13 @@ ios-native/
   denemelerden sonra öğretmen sorusu (`teacherRole`: student / self / teacher). Adım sırası `SolvatoCore` `OnboardingFlow`;
   "Ben öğretmenim" seçilince tanıtım biter ve öğretmen kodu ekranı yalnız hazırlama bölümüyle açılır. Öğretmen kodu
   ekranının bölümü role göre (`TeacherSection`). Hatırlatma saati her yerde aynı saat satırı (`UI/TimeField.swift`, saat
-  çarkı); yeni ayar `reminderMinute` (0–59). Ayarlar'daki alt yazı Türkçe eke uyar: "Her gün 07:45'te", "19:00'da".
+  çarkı); yeni ayar `reminderMinute` (0–59). Saatin Türkçe eki `SettingsText.timeText` ("07:45'te", "19:00'da").
+- **Ayarlar düzeni (yalnız native, `docs/ozellikler/ayarlar.md`):** dört kart (Çalışma · Sorular · Ses ve bildirim ·
+  Diğer). Satır türleri `UI/SettingsRows.swift`: değerli satır (sağda değer, dokununca seçim penceresi; iPad'de açılır
+  pencere), anahtarlı satır, bağlantı satırı. Satır değerleri çekirdekte `SettingsText` (`goalValue`, `notesValue`
+  15 harfi aşarsa "Do Re Mi Fa…"); seviye değişince sayaç `Settings.setLevel` ile sıfırlanır (aynı seviyede sıfırlanmaz).
+  Çalışılacak notalar ayrı alt ekran (`AppView.notes`, `NotesSettingsScreen`); Hatırlatma saati satırı tanıtımdaki
+  saat çarkını açar (`.timeWheel`). Depolama anahtarları değişmedi.
 
 ## Klasör yapısı
 

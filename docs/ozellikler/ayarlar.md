@@ -1,6 +1,6 @@
 # Ayarlar düzeni
 
-Durum: **Ceren'in onayını bekliyor (26 Kasım 2026)**. Yalnız native iOS'a yazılır (`ios-native/`). Kapsadığı revize
+Durum: **uygulandı (26 Kasım 2026)**, native iOS. Yalnız native iOS'a yazılır (`ios-native/`). Kapsadığı revize
 (`docs/ozellikler/tasarim-revize.md`): R36.
 
 **Başvuru:** taslak sayfası https://claude.ai/artifact/CZgUJ48uPbVufVhMFaMzKq, **Taslak 1 (tek sayfa)** seçildi
@@ -109,7 +109,7 @@ Satır türleri:
 - [ ] "İlerlemeyi sıfırla" kartların altında kırmızı; onay alanı ve sıfırlama bugünkü gibi.
 - [ ] Koyu ve açık temada, iPhone SE ve iPad'de taşma yok (görüntüler: `ayarlar`, `ayarlar-alt`, `ayarlar-pencere`,
       `ayarlar-notalar`, `ayarlar-sifirla`).
-- [ ] Çekirdek testleri: satır değer yazıları (hedef, seviye, anahtar, notalar, cevap yöntemi, tema), notalar
+- [x] Çekirdek testleri: satır değer yazıları (hedef, seviye, anahtar, notalar, cevap yöntemi, tema), notalar
       değerinin kısaltılması, seviye değişiminde sayaç kuralı.
 
 ## Kapsam dışı

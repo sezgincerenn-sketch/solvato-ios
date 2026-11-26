@@ -177,9 +177,13 @@ final class ScreenshotTests: XCTestCase {
     @MainActor
     func testProfilAyarlar() throws {
         continueAfterFailure = false
-        for name in ["profil", "profil-alt", "ayarlar", "ayarlar-alt"] {
+        // Ayarlar düzeni (ayarlar.md): dört kart, seçim penceresi (Günlük hedef), Çalışılacak notalar ekranı, sıfırlama onayı.
+        // Pencere ve notalar görüntüleri "ayarlar" senaryosunun verisiyle açılır.
+        let shots = ["profil", "profil-alt", "ayarlar", "ayarlar-alt", "ayarlar-pencere", "ayarlar-notalar", "ayarlar-sifirla"]
+        for name in shots {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
-                let app = try launch(theme: theme, scenario: name)
+                let data = ["ayarlar-pencere": "ayarlar", "ayarlar-notalar": "ayarlar"][name] ?? name
+                let app = try launch(theme: theme, scenario: data)
                 XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
                 app.buttons["Profil"].firstMatch.tap()
                 Thread.sleep(forTimeInterval: 0.5)
@@ -187,7 +191,23 @@ final class ScreenshotTests: XCTestCase {
                     app.buttons["Ayarlar"].firstMatch.tap()
                     Thread.sleep(forTimeInterval: 0.5)
                 }
-                if name.hasSuffix("-alt") { for _ in 0..<6 { app.swipeUp() } }
+                switch name {
+                case "ayarlar-pencere":
+                    app.buttons["Günlük hedef"].firstMatch.tap()
+                    try must(app, app.buttons["20 soru, düzenli çalışma"], "seçim penceresi açılmadı", shot: "\(name)-hata-\(tr)", timeout: 5)
+                    Thread.sleep(forTimeInterval: 0.6)
+                case "ayarlar-notalar":
+                    app.buttons["Çalışılacak notalar"].firstMatch.tap()
+                    try must(app, app.buttons["Do Re Mi"], "notalar ekranı açılmadı", shot: "\(name)-hata-\(tr)", timeout: 5)
+                case "ayarlar-sifirla":
+                    let reset = app.buttons["İlerlemeyi sıfırla"]
+                    for _ in 0..<8 where !(reset.exists && reset.isHittable) { app.swipeUp() }
+                    reset.tap()
+                    Thread.sleep(forTimeInterval: 0.3)
+                    app.swipeUp()
+                default:
+                    if name.hasSuffix("-alt") { for _ in 0..<6 { app.swipeUp() } }
+                }
                 Thread.sleep(forTimeInterval: 0.4)
                 snap("\(name)-\(tr)")
                 app.terminate()

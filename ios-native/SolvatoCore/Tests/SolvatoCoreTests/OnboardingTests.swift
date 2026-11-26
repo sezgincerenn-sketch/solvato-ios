@@ -74,13 +74,8 @@ final class OnboardingTests: XCTestCase {
     }
 
     func testReminderText() async {
-        var s = Settings()
+        let s = Settings()
         XCTAssertEqual(s.reminderMinute, 0)
-        XCTAssertNil(SettingsText.reminderSub(s))
-        s.reminder = true
-        s.reminderHour = 7
-        s.reminderMinute = 45
-        XCTAssertEqual(SettingsText.reminderSub(s), "Her gün 07:45'te")
         let cases: [(Int, Int, String)] = [
             (19, 30, "19:30'da"), (19, 0, "19:00'da"), (20, 0, "20:00'de"), (9, 5, "09:05'te"), (0, 0, "00:00'da"),
             (13, 0, "13:00'te"), (21, 40, "21:40'ta"), (18, 50, "18:50'de"), (10, 0, "10:00'da"), (16, 0, "16:00'da"),

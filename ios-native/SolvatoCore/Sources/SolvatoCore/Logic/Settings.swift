@@ -118,6 +118,13 @@ public struct Settings: Codable, Equatable, Sendable {
         showRestTopics = false
     }
 
+    /// Ayarlar › Seviye: farklı seviye seçilince seviye sayacı sıfırlanır; aynı seviye seçilirse değişmez
+    public mutating func setLevel(_ l: Int) {
+        guard l != level else { return }
+        level = l
+        levelProgress = LevelProgress(n: 0, c: 0)
+    }
+
     /// Akor turunun seviyesi (Uzman yalnız Çalışma'da)
     public var effectiveChordLevel: Int { min(level, 3) }
 }

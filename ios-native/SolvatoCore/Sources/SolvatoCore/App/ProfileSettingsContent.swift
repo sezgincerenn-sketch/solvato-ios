@@ -3,21 +3,50 @@
 import Foundation
 
 public enum SettingsText {
-    public static let goalText: [Int: String] = [
-        10: "Günde 10 soru: rahat tempo.", 20: "Günde 20 soru: düzenli çalışma.", 30: "Günde 30 soru: hızlı ilerleme.",
-        50: "Günde 50 soru: yoğun tempo.",
+    // MARK: Satır değerleri (docs/ozellikler/ayarlar.md): satırın sağındaki soluk yazı ve seçim penceresi seçenekleri
+
+    /// Günlük hedef seçenekleri ve pencerede yanlarındaki açıklama
+    public static let goalOptions: [(goal: Int, note: String)] = [
+        (10, "rahat tempo"), (20, "düzenli çalışma"), (30, "hızlı ilerleme"), (50, "yoğun tempo"),
     ]
+    /// "10 soru"
+    public static func goalValue(_ goal: Int) -> String { "\(goal) soru" }
+
+    public static let levelOptions: [(level: Int, label: String)] = [(1, "Başlangıç"), (2, "Orta"), (3, "İleri")]
+    public static func levelValue(_ level: Int) -> String { levelOptions.first { $0.level == level }?.label ?? "" }
+
+    public static let clefOptions: [(clef: ClefChoice, label: String)] = [(.treble, "Sol"), (.bass, "Fa"), (.both, "İkisi de")]
+    public static func clefValue(_ c: ClefChoice) -> String { clefOptions.first { $0.clef == c }?.label ?? "" }
+
+    public static let inputOptions: [(mode: InputMode, label: String)] = [(.piano, "Klavye"), (.choice, "Şıklar")]
+    public static func inputValue(_ m: InputMode) -> String { inputOptions.first { $0.mode == m }?.label ?? "" }
+
+    public static let themeOptions: [(mode: ThemeMode, label: String)] = [(.system, "Sistem"), (.dark, "Koyu"), (.light, "Açık")]
+    public static func themeValue(_ m: ThemeMode) -> String { themeOptions.first { $0.mode == m }?.label ?? "" }
+
+    /// Notalar satırının en uzun değeri (harf); iPhone SE'de başlıkla aynı satıra sığar
+    public static let notesValueLimit = 15
+
+    /// Notalar satırının değeri: hepsi seçiliyse "Hepsi", değilse seçili notalar ("Do Re Mi Sol"). Sığmazsa sondan
+    /// bütün notalar atılır ve "…" eklenir ("Do Re Mi Fa…").
+    public static func notesValue(_ notes: [String]) -> String {
+        if allNotes.allSatisfy(notes.contains) { return "Hepsi" }
+        let full = notes.joined(separator: " ")
+        guard full.count > notesValueLimit else { return full }
+        var out = ""
+        for n in notes {
+            let next = out.isEmpty ? n : out + " " + n
+            if next.count + 1 > notesValueLimit { break }
+            out = next
+        }
+        return out + "…"
+    }
 
     /// Seviye satırının açıklaması
     public static func levelSub(_ s: Settings) -> String {
         guard s.level < 3 else { return "Tüm sorular açık." }
         let n = s.levelProgress.n
         return "Sonraki seviyeye: \(n)/50 soru" + (n > 0 ? " · %\(jsRound(Double(s.levelProgress.c) / Double(n) * 100)) doğru" : "")
-    }
-
-    /// "Her gün 19:30'da", "Her gün 07:45'te"
-    public static func reminderSub(_ s: Settings) -> String? {
-        s.reminder ? "Her gün \(timeText(hour: s.reminderHour, minute: s.reminderMinute))" : nil
     }
 
     /// 24 saat biçimi: "09:05"
