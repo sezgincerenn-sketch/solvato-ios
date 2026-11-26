@@ -9,11 +9,12 @@ struct CoachStep {
     let title: String
     let text: String
 
+    /// Sayfadaki sırayla, yukarıdan aşağı (R29, Ceren 26 Kasım): sayfa hep aşağı iner, bitince en üste döner
     static let home: [CoachStep] = [
-        .init(target: "today", title: "Buradan başla", text: "Her gün karışık 10 soru. Günlük hedefini tamamlayınca serin bir gün artar."),
         .init(target: "level", title: "Seviyen", text: "Bu seviyede 50 soru çözüp %80 doğru yapınca bir üst seviyenin soruları açılır."),
-        .init(target: "categories", title: "Bir konuya odaklan", text: "Sadece Sol anahtarı, ritim ya da terim çalışmak istersen bir karta dokun."),
+        .init(target: "today", title: "Buradan başla", text: "Her gün karışık 10 soru. Günlük hedefini tamamlayınca serin bir gün artar."),
         .init(target: "games", title: "Oyunlar", text: "Günün meydan okumasını oyna ya da arkadaşına meydan oku."),
+        .init(target: "categories", title: "Bir konuya odaklan", text: "Sadece Sol anahtarı, ritim ya da terim çalışmak istersen bir karta dokun."),
         .init(
             target: "nav", title: "İlerleme, Öğren ve Profil",
             text: "Gelişimini İlerleme'de gör, notaları Öğren'de çalış; öğretmen kodu ve ayarlar Profil'de."),
