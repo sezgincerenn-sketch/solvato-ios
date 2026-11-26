@@ -1,5 +1,5 @@
 // Profil sekmesi: ad ve renk, ünvan ve "…'den beri", öğretmen kodu kartı, seviye kartı (açıklamalı), ünvan kartı
-// (liste), seri / tur / soru, haftalık rapor, Tüm ilerleme. Ayarlar yalnız sağ üstteki dişliden; geri oku yok.
+// (liste), haftalık rapor, Tüm ilerleme (seri / tur / soru kutuları İlerleme'de). Ayarlar yalnız sağ üstteki dişliden; geri oku yok.
 // Web src/screens/profile/ProfileScreen.tsx; gezinme revizesi docs/ozellikler/gezinme.md (R5, R14, R20).
 import SolvatoCore
 import SwiftUI
@@ -77,11 +77,6 @@ struct ProfileScreen: View {
                     TeacherCodeCard(model: model) { toast.show("Öğretmen kodu kaldırıldı") }
                     LevelCardView(content: home, detailed: true, actionLabel: "Ayarları aç") { model.go(.settings) }
                     RankCardView(xp: stats.totalPoints, detailed: true)
-                    HStack(spacing: Space.s2) {
-                        StatTile(value: "\(model.streak) gün", label: "Seri")
-                        StatTile(value: "\(stats.totalSessions)", label: "Tamamlanan tur")
-                        StatTile(value: "\(ProfileText.solved(stats))", label: "Çözülen soru")
-                    }
                     ShareLink(item: WeeklyReport(stats: stats, settings: s, now: model.now).text) {
                         HStack(spacing: Space.s2) {
                             Icon(.share, size: 18)

@@ -28,6 +28,7 @@ struct ProgressScreen: View {
                     VStack(spacing: 16) {
                         TabTitle("İlerleme")
                         if let start { StartChecklist(steps: start) }
+                        totals
                         HStack(alignment: .top, spacing: 16) {
                             VStack(spacing: 16) {
                                 accuracy(c)
@@ -47,6 +48,7 @@ struct ProgressScreen: View {
                     VStack(spacing: 16) {
                         TabTitle("İlerleme")
                         if let start { StartChecklist(steps: start) }
+                        totals
                         accuracy(c)
                         WeekCard(c: c, text: c.report.text)
                         topics(c)
@@ -65,6 +67,15 @@ struct ProgressScreen: View {
         // Üç madde bitince liste bir daha görünmez (ilerleme sıfırlansa da)
         .onChange(of: ProgressContent.startSteps(model.stats).allSatisfy(\.done), initial: true) { _, all in
             if all && !model.settings.startChecklistDone { model.settings.startChecklistDone = true }
+        }
+    }
+
+    /// Seri, tamamlanan tur, çözülen soru (Profil'den taşındı; Ceren, 26 Kasım)
+    private var totals: some View {
+        HStack(spacing: Space.s2) {
+            StatTile(value: "\(model.streak) gün", label: "Seri")
+            StatTile(value: "\(model.stats.totalSessions)", label: "Tamamlanan tur")
+            StatTile(value: "\(ProfileText.solved(model.stats))", label: "Çözülen soru")
         }
     }
 
