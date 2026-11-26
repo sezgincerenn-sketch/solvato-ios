@@ -1,0 +1,67 @@
+# Native iOS uygulamasını GitHub'ın Mac sunucusunda imzalar ve TestFlight'a yükler (Codemagic'in yerine; depo herkese
+# açık olduğu için ücretsiz). Elle başlatılır: GitHub › Actions › "TestFlight" › "Run workflow" (ya da Claude başlatır).
+# İmzalama Codemagic'in açık kaynak aracıyla (codemagic-cli-tools): App Store Connect API anahtarıyla sertifika ve profil
+# kendiliğinden bulunur, yoksa oluşturulur. Mac gerekmez.
+# Gereken depo sırları (Settings › Secrets and variables › Actions), kurulum: docs/IOS-TEST-REHBERI.md "GitHub'dan TestFlight":
+# - ASC_ISSUER_ID, ASC_KEY_ID, ASC_PRIVATE_KEY (.p8 dosyasının tamamı): App Store Connect API anahtarı
+# - CERTIFICATE_PRIVATE_KEY: imzalama sertifikasının gizli anahtarı (bir kez oluşturulur, hep aynı kalır)
+# Build numarası 2000 + koşu numarası (Codemagic'in 1000'li numaralarıyla çakışmaz).
+name: TestFlight
+on:
+  workflow_dispatch:
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+jobs:
+  testflight:
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.ASC_KEY_ID }}
+      APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+      CERTIFICATE_PRIVATE_KEY: ${{ secrets.CERTIFICATE_PRIVATE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sırlar girilmiş mi
+        run: |
+          eksik=""
+          for v in APP_STORE_CONNECT_ISSUER_ID APP_STORE_CONNECT_KEY_IDENTIFIER APP_STORE_CONNECT_PRIVATE_KEY CERTIFICATE_PRIVATE_KEY; do
+            [ -n "${!v}" ] || eksik="$eksik $v"
+          done
+          if [ -n "$eksik" ]; then echo "Eksik depo sırrı:$eksik (rehber: docs/IOS-TEST-REHBERI.md)"; exit 1; fi
+      - name: Xcode sürümü 26 ya da üstü mü
+        run: |
+          xcodebuild -version
+          MAJOR=$(xcodebuild -version | head -1 | awk '{print $2}' | cut -d. -f1)
+          if [ "$MAJOR" -lt 26 ]; then echo "Xcode $MAJOR: App Store Connect Xcode 26+ istiyor"; exit 1; fi
+      - name: Araçlar (XcodeGen, Codemagic CLI)
+        run: |
+          brew install xcodegen
+          pip3 install --break-system-packages codemagic-cli-tools
+      - name: Xcode projesini üret (XcodeGen)
+        run: cd ios-native && xcodegen generate
+      - name: İmzalama (sertifika ve profil App Store Connect'ten)
+        run: |
+          keychain initialize
+          app-store-connect fetch-signing-files com.solvato.app --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles --project ios-native/Solvato.xcodeproj
+      - name: Build numarası
+        run: |
+          N=$((2000 + GITHUB_RUN_NUMBER))
+          perl -pi -e "s/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = $N;/g" ios-native/Solvato.xcodeproj/project.pbxproj
+          echo "build $N" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: IPA oluştur
+        run: xcode-project build-ipa --project ios-native/Solvato.xcodeproj --scheme Solvato
+      - name: TestFlight'a yükle
+        run: |
+          app-store-connect publish --path build/ios/ipa/*.ipa
+          echo "TestFlight'a yüklendi; Apple'ın işlemesi 5–15 dakika sürer." | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Günlükler
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testflight-gunlukler
+          path: /tmp/xcodebuild_logs/*.log
+          if-no-files-found: ignore
