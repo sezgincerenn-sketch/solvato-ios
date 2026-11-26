@@ -136,6 +136,9 @@ ios-native/
   "Ben öğretmenim" seçilince tanıtım biter ve öğretmen kodu ekranı yalnız hazırlama bölümüyle açılır. Öğretmen kodu
   ekranının bölümü role göre (`TeacherSection`). Hatırlatma saati her yerde aynı saat satırı (`UI/TimeField.swift`, saat
   çarkı); yeni ayar `reminderMinute` (0–59). Ayarlar'daki alt yazı Türkçe eke uyar: "Her gün 07:45'te", "19:00'da".
+- **Ayarlar düzeni (yalnız native, `docs/ozellikler/ayarlar.md`):** dört kart (Çalışma · Sorular · Ses ve bildirim ·
+  Diğer); satırda o anki değer, dokununca seçim penceresi (`UI/SettingsRows.swift`, değer yazıları `SettingsText`).
+  Çalışılacak notalar ayrı ekran (`AppView.notes`). Hatırlatma saati Ayarlar'da satır ("19:00 ›"), tanıtımda büyük kutu.
 
 ## Klasör yapısı
 

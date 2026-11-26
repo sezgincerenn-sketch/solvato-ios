@@ -15,7 +15,7 @@ public enum SettingsText {
         return "Sonraki seviyeye: \(n)/50 soru" + (n > 0 ? " · %\(jsRound(Double(s.levelProgress.c) / Double(n) * 100)) doğru" : "")
     }
 
-    /// "Her gün 19:30'da", "Her gün 07:45'te"
+    /// "Her gün 19:30'da", "Her gün 07:45'te" (Ayarlar'da artık gösterilmiyor; saat kendi satırında)
     public static func reminderSub(_ s: Settings) -> String? {
         s.reminder ? "Her gün \(timeText(hour: s.reminderHour, minute: s.reminderMinute))" : nil
     }
@@ -34,6 +34,32 @@ public enum SettingsText {
         let ones = ["da", "de", "de", "te", "te", "te", "da", "de", "de", "da"]  // sıfır bir iki üç dört beş altı yedi sekiz dokuz
         let tens = ["da", "da", "de", "da", "ta", "de"]  // sıfır on yirmi otuz kırk elli
         return n % 10 != 0 ? ones[n % 10] : tens[(n / 10) % 6]
+    }
+
+    // MARK: Satır değerleri (ayarlar.md: her satırın sağında o anki değer, dokununca seçim penceresi)
+    /// Günlük hedef penceresi: seçenek ve açıklaması
+    public static let goalOptions: [(value: Int, sub: String)] = [
+        (10, "rahat tempo"), (20, "düzenli çalışma"), (30, "hızlı ilerleme"), (50, "yoğun tempo"),
+    ]
+    public static func goalValue(_ n: Int) -> String { "\(n) soru" }
+    public static let levelOptions: [(value: Int, label: String)] = [(1, "Başlangıç"), (2, "Orta"), (3, "İleri")]
+    public static func levelValue(_ l: Int) -> String { levelOptions.first { $0.value == l }?.label ?? "" }
+    public static let clefOptions: [(value: ClefChoice, label: String)] = [(.treble, "Sol"), (.bass, "Fa"), (.both, "İkisi de")]
+    public static func clefValue(_ c: ClefChoice) -> String { clefOptions.first { $0.value == c }?.label ?? "" }
+    public static let inputOptions: [(value: InputMode, label: String)] = [(.piano, "Klavye"), (.choice, "Şıklar")]
+    public static func inputValue(_ m: InputMode) -> String { inputOptions.first { $0.value == m }?.label ?? "" }
+    public static let themeOptions: [(value: ThemeMode, label: String)] = [(.system, "Sistem"), (.dark, "Koyu"), (.light, "Açık")]
+    public static func themeValue(_ t: ThemeMode) -> String { themeOptions.first { $0.value == t }?.label ?? "" }
+    /// "Hepsi" ya da seçili notalar ("Do Re Mi Sol"); sığmazsa ekran sondan kısaltır
+    public static func notesValue(_ notes: [String]) -> String {
+        notes.count >= allNotes.count ? "Hepsi" : allNotes.filter(notes.contains).joined(separator: " ")
+    }
+
+    /// Seviye seçimi: farklı seviyede sayaç sıfırlanır, aynı seviyede dokunulmaz
+    public static func setLevel(_ l: Int, in s: inout Settings) {
+        guard l != s.level else { return }
+        s.level = l
+        s.levelProgress = LevelProgress(n: 0, c: 0)
     }
 
     // MARK: Çalışılacak notalar (web NotesPicker)

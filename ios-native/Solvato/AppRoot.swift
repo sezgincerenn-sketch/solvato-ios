@@ -107,6 +107,7 @@ struct AppRoot: View {
         case .dashboard: ProgressScreen(model: model)
         case .profile: TabletColumn { ProfileScreen(model: model) }
         case .settings: TabletColumn { SettingsScreen(model: model) }
+        case .notes: TabletColumn { NotesSettingsScreen(model: model) }
         case .chordquiz: ChordQuizScreen(model: model).id(model.quizToken)
         case .result: TabletColumn { ResultScreen(model: model) }
         case .study: TabletColumn(width: 820) { StudyScreen(model: model) }
@@ -196,6 +197,7 @@ private struct PendingScreen: View {
         case .study: "Öğren"
         case .profile: "Profil"
         case .settings: "Ayarlar"
+        case .notes: "Çalışılacak notalar"
         case .games, .gameDaily, .gameChallenge, .gameresult, .duel: "Oyunlar"
         case .chordquiz: "Akor"
         case .rhythmtap: "Ritmi Tut"

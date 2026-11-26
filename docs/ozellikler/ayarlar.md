@@ -1,6 +1,7 @@
 # Ayarlar düzeni
 
-Durum: **Ceren'in onayını bekliyor (26 Kasım 2026)**. Yalnız native iOS'a yazılır (`ios-native/`). Kapsadığı revize
+Durum: **onaylandı, native'de uygulandı (26 Kasım 2026)**. Çekirdek ölçütleri testlerle doğrulandı; ekran ölçütleri
+GitHub Actions simülatör görüntüleriyle (`ekranlar` dalı) kapanacak. Yalnız native iOS'a yazılır (`ios-native/`). Kapsadığı revize
 (`docs/ozellikler/tasarim-revize.md`): R36.
 
 **Başvuru:** taslak sayfası https://claude.ai/artifact/CZgUJ48uPbVufVhMFaMzKq, **Taslak 1 (tek sayfa)** seçildi
@@ -102,14 +103,14 @@ Satır türleri:
 - [ ] Ayarlar dört kartla açılıyor: Çalışma, Sorular, Ses ve bildirim, Diğer; sıra ve satırlar bu dokümandaki gibi.
 - [ ] Değerli satırlar sağda o anki değeri gösteriyor; dokununca seçim penceresi açılıyor, seçim hemen uygulanıp
       pencere kapanıyor.
-- [ ] Seviye penceresinde farklı seviye seçilince sayaç sıfırlanıyor, aynı seviyede sıfırlanmıyor.
+- [x] Seviye penceresinde farklı seviye seçilince sayaç sıfırlanıyor, aynı seviyede sıfırlanmıyor.
 - [ ] "Çalışılacak notalar" ayrı ekranda; en az 3 nota kuralı çalışıyor; satır değeri "Hepsi" ya da seçili notalar.
 - [ ] "Hatırlatma saati" yalnız hatırlatma açıkken görünüyor, saat çarkıyla değişiyor, bildirim yeni saate taşınıyor.
 - [ ] İzin reddedilince kırmızı uyarı Ses ve bildirim kartının altında.
 - [ ] "İlerlemeyi sıfırla" kartların altında kırmızı; onay alanı ve sıfırlama bugünkü gibi.
 - [ ] Koyu ve açık temada, iPhone SE ve iPad'de taşma yok (görüntüler: `ayarlar`, `ayarlar-alt`, `ayarlar-pencere`,
       `ayarlar-notalar`, `ayarlar-sifirla`).
-- [ ] Çekirdek testleri: satır değer yazıları (hedef, seviye, anahtar, notalar, cevap yöntemi, tema), notalar
+- [x] Çekirdek testleri: satır değer yazıları (hedef, seviye, anahtar, notalar, cevap yöntemi, tema), notalar
       değerinin kısaltılması, seviye değişiminde sayaç kuralı.
 
 ## Kapsam dışı

@@ -495,6 +495,10 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 ### E-12 Ayarlar
 
+- [x] Yeni düzen native'de yapıldı (26 Kasım, `docs/ozellikler/ayarlar.md`, R36): dört kart (Çalışma · Sorular · Ses ve
+  bildirim · Diğer), satırda değer ve seçim penceresi, Çalışılacak notalar ayrı ekran, en altta İlerlemeyi sıfırla.
+  Aşağıdaki liste web'deki eski düzeni anlatır. Görüntü: `ayarlar-pencere`, `ayarlar-notalar` eklendi.
+
 - Kaynak: `screens/SettingsScreen.tsx`, `components/NotesPicker.tsx`.
 - Öğretmen kodu satırı Profil'e taşındı (gezinme revizesi). Çalışma: Günlük hedef (10/20/30/50 + açıklama), Seviye (değişince sayaç sıfır),
   Anahtar, Çalışılacak notalar (en az 3, hazır seçimler). Soru ekranı: Cevap yöntemi, Tuş isimlerini göster, Zaman

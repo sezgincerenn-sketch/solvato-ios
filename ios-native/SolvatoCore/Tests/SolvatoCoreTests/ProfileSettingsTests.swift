@@ -97,3 +97,29 @@ final class ProfileSettingsTests: XCTestCase {
         XCTAssertEqual(try JSONDecoder().decode(Settings.self, from: Data(json.utf8)), s)
     }
 }
+
+/// Ayarlar düzeni (ayarlar.md): satır değerleri ve seviye kuralı
+final class SettingsRowsTests: XCTestCase {
+    func testValues() {
+        XCTAssertEqual(SettingsText.goalValue(20), "20 soru")
+        XCTAssertEqual(SettingsText.goalOptions.map(\.value), [10, 20, 30, 50])
+        XCTAssertEqual(SettingsText.goalOptions.map(\.sub), ["rahat tempo", "düzenli çalışma", "hızlı ilerleme", "yoğun tempo"])
+        XCTAssertEqual([1, 2, 3].map(SettingsText.levelValue), ["Başlangıç", "Orta", "İleri"])
+        XCTAssertEqual(ClefChoice.allCases.map(SettingsText.clefValue), ["Sol", "Fa", "İkisi de"])
+        XCTAssertEqual([InputMode.piano, .choice].map(SettingsText.inputValue), ["Klavye", "Şıklar"])
+        XCTAssertEqual(ThemeMode.allCases.map(SettingsText.themeValue), ["Sistem", "Koyu", "Açık"])
+        XCTAssertEqual(SettingsText.notesValue(allNotes), "Hepsi")
+        XCTAssertEqual(SettingsText.notesValue(["Sol", "Do", "Mi", "Re"]), "Do Re Mi Sol", "sıra Do…Si")
+    }
+
+    func testSetLevel() {
+        var s = Settings()
+        s.level = 2
+        s.levelProgress = LevelProgress(n: 12, c: 9)
+        SettingsText.setLevel(2, in: &s)
+        XCTAssertEqual(s.levelProgress, LevelProgress(n: 12, c: 9), "aynı seviye: sayaç kalır")
+        SettingsText.setLevel(3, in: &s)
+        XCTAssertEqual(s.level, 3)
+        XCTAssertEqual(s.levelProgress, LevelProgress(n: 0, c: 0))
+    }
+}

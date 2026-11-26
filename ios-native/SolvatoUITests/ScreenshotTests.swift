@@ -177,9 +177,10 @@ final class ScreenshotTests: XCTestCase {
     @MainActor
     func testProfilAyarlar() throws {
         continueAfterFailure = false
-        for name in ["profil", "profil-alt", "ayarlar", "ayarlar-alt"] {
+        // ayarlar.md: seçim penceresi (Günlük hedef), Çalışılacak notalar ekranı, sıfırlama onayı
+        for name in ["profil", "profil-alt", "ayarlar", "ayarlar-alt", "ayarlar-pencere", "ayarlar-notalar", "ayarlar-sifirla"] {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
-                let app = try launch(theme: theme, scenario: name)
+                let app = try launch(theme: theme, scenario: name.hasPrefix("profil") ? name : "ayarlar")
                 XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
                 app.buttons["Profil"].firstMatch.tap()
                 Thread.sleep(forTimeInterval: 0.5)
@@ -188,6 +189,14 @@ final class ScreenshotTests: XCTestCase {
                     Thread.sleep(forTimeInterval: 0.5)
                 }
                 if name.hasSuffix("-alt") { for _ in 0..<6 { app.swipeUp() } }
+                let tap: String? = ["ayarlar-pencere": "Günlük hedef", "ayarlar-notalar": "Çalışılacak notalar", "ayarlar-sifirla": "İlerlemeyi sıfırla"][name]
+                if let tap {
+                    let b = app.buttons[tap].firstMatch
+                    for _ in 0..<8 where !(b.exists && b.isHittable) { app.swipeUp() }
+                    try must(app, b, "\(name): \(tap) yok", shot: "\(name)-hata-\(tr)", timeout: 3)
+                    b.tap()
+                    Thread.sleep(forTimeInterval: 0.6)
+                }
                 Thread.sleep(forTimeInterval: 0.4)
                 snap("\(name)-\(tr)")
                 app.terminate()
