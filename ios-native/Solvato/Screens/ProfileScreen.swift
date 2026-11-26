@@ -75,7 +75,7 @@ struct ProfileScreen: View {
                     .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(ThemeColor.border.color, lineWidth: 1))
 
                     TeacherCodeCard(model: model) { toast.show("Öğretmen kodu kaldırıldı") }
-                    LevelCardView(content: home, detailed: true)
+                    LevelCardView(content: home, detailed: true, actionLabel: "Ayarları aç") { model.go(.settings) }
                     RankCardView(xp: stats.totalPoints, detailed: true)
                     HStack(spacing: Space.s2) {
                         StatTile(value: "\(model.streak) gün", label: "Seri")

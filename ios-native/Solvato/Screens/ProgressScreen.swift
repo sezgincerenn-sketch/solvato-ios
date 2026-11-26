@@ -195,23 +195,43 @@ struct ProgressScreen: View {
                 }
                 .padding(.bottom, 4)
                 ForEach(Array(c.rounds.prefix(allRounds ? 30 : 3).enumerated()), id: \.offset) { i, r in
-                    HStack(spacing: Space.s3) {
-                        Stars(value: r.stars, size: 11)
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text(r.label).font(.ui(FontSize.sm, .semibold)).foregroundStyle(ThemeColor.text.color)
-                            Text(r.when).font(.ui(FontSize.xs)).foregroundStyle(ThemeColor.textSubtle.color)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        VStack(alignment: .trailing, spacing: 0) {
-                            Text(r.score).font(.mono(FontSize.sm, .bold)).foregroundStyle(ThemeColor.text.color)
-                            if let t = r.time { Text(t).font(.mono(FontSize.xs)).foregroundStyle(ThemeColor.textSubtle.color) }
-                        }
-                    }
-                    .padding(.vertical, Space.s2)
-                    .overlay(alignment: .top) { if i > 0 { ThemeColor.border.color.frame(height: 1) } }
+                    // Satıra dokununca aynı konudan yeni tur (R17)
+                    Button { replay(r.replay, weak: c.weak) } label: { roundRow(i, r) }
+                        .buttonStyle(.plain)
+                        .accessibilityHint("Aynı konudan yeni tur")
                 }
             }
         }
+    }
+
+    private func replay(_ r: ProgressContent.RoundReplay, weak: [WeakNote]) {
+        switch r {
+        case let .quiz(cat): model.startQuiz(cat)
+        case .chords: model.go(.chordquiz)
+        case .rhythmTap: model.go(.rhythmtap)
+        case .games: model.go(.games)
+        case .weak:
+            if weak.isEmpty { model.startQuiz(.all) } else { model.startWeakPractice(weak.map(\.key)) }
+        }
+    }
+
+    private func roundRow(_ i: Int, _ r: ProgressContent.Round) -> some View {
+        HStack(spacing: Space.s3) {
+            Stars(value: r.stars, size: 11)
+            VStack(alignment: .leading, spacing: 0) {
+                Text(r.label).font(.ui(FontSize.sm, .semibold)).foregroundStyle(ThemeColor.text.color)
+                Text(r.when).font(.ui(FontSize.xs)).foregroundStyle(ThemeColor.textSubtle.color)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .trailing, spacing: 0) {
+                Text(r.score).font(.mono(FontSize.sm, .bold)).foregroundStyle(ThemeColor.text.color)
+                if let t = r.time { Text(t).font(.mono(FontSize.xs)).foregroundStyle(ThemeColor.textSubtle.color) }
+            }
+            Text("›").font(.ui(FontSize.lg)).foregroundStyle(ThemeColor.textFaint.color).accessibilityHidden(true)
+        }
+        .padding(.vertical, Space.s2)
+        .overlay(alignment: .top) { if i > 0 { ThemeColor.border.color.frame(height: 1) } }
+        .contentShape(Rectangle())
     }
 }
 
