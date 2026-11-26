@@ -1,98 +1,61 @@
-// Tur sonucundaki "Serin başladı! Hatırlatayım mı?" kartı (revize R8). Hatırlatma kapalıyken seri ilk kez 1
-// olduğunda bir kez görünür; "Hatırlat" bildirim izni ister ve saati şimdiki saate en yakın tam saate kurar.
-import { useState } from "react"
+// Tur sonucundaki "Serini koru" kartı (revize R8; native ile aynı, Ceren 26 Kasım). Hatırlatma kapalıyken seri ilk kez 1
+// olduğunda bir kez görünür; "Hatırlat" bildirim izni ister ve hatırlatmayı şimdiki saate kurar. İzin verilmezse kartta
+// uyarı kalır; verilirse kart kapanır.
+import { useEffect, useState } from "react"
 import Icon from "../components/Icons"
-import { alpha, colors, font, palette, radius, space } from "../design/tokens"
-import { enableReminder, timeText } from "../utils/reminder"
+import { colors, font, palette, space } from "../design/tokens"
+import { Button, Card } from "../ui"
+import { enableReminder } from "../utils/reminder"
 import { getSettings, updateSettings } from "../utils/settings"
-
-function nearestHour() {
-  const d = new Date()
-  return (d.getHours() + (d.getMinutes() >= 30 ? 1 : 0)) % 24
-}
 
 export default function StreakReminderCard({ streak }: { streak: number }) {
   const s = getSettings()
   const [visible, setVisible] = useState(() => streak === 1 && !s.reminder && !s.streakReminderOffered)
-  const [note, setNote] = useState<string | null>(null)
-  const [hour] = useState(nearestHour)
-  if (!visible && !note) return null
-  const hh = String(hour).padStart(2, "0")
+  const [msg, setMsg] = useState("")
+  // Bir kez: gösterildiği an işaretlenir (native gibi)
+  useEffect(() => {
+    if (visible) updateSettings({ streakReminderOffered: true })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  if (!visible) return null
 
-  const close = () => {
-    updateSettings({ streakReminderOffered: true })
-    setVisible(false)
-  }
+  const close = () => setVisible(false)
   const remind = async () => {
-    const ok = await enableReminder(hour)
-    updateSettings({ streakReminderOffered: true, ...(ok ? { reminder: true, reminderHour: hour } : {}) })
-    setVisible(false)
-    setNote(ok ? `Her gün ${timeText(hour, 0)} hatırlatacağım.` : "Bildirim izni verilmedi; Ayarlar'dan açabilirsin.")
+    const d = new Date()
+    const h = d.getHours()
+    const m = d.getMinutes()
+    const ok = await enableReminder(h, m)
+    updateSettings({
+      streakReminderOffered: true,
+      ...(ok ? { reminder: true, reminderHour: h, reminderMinute: m } : {}),
+    })
+    if (ok) setVisible(false)
+    else setMsg("Bildirim izni verilmedi. iPhone Ayarlar → Solvato → Bildirimler bölümünden açabilirsin.")
   }
 
-  if (note)
-    return (
-      <p style={{ width: "100%", marginBottom: space[4], fontSize: font.size.sm, color: colors.textMuted }}>{note}</p>
-    )
-
-  const btn = {
-    flex: 1,
-    padding: "12px",
-    borderRadius: radius.md,
-    border: "none",
-    fontFamily: font.family.ui,
-    fontSize: font.size.md,
-    cursor: "pointer",
-  } as const
   return (
-    <div
-      style={{
-        width: "100%",
-        marginBottom: space[4],
-        padding: space[4],
-        borderRadius: radius.lg,
-        background: alpha(palette.orange500, 0.1),
-        border: `1px solid ${alpha(palette.orange500, 0.35)}`,
-        display: "flex",
-        flexDirection: "column",
-        gap: space[3],
-      }}
+    <Card
+      tone={palette.violet500}
+      style={{ width: "100%", marginBottom: space[4], display: "flex", flexDirection: "column", gap: space[3] }}
     >
-      <div style={{ display: "flex", gap: space[3], alignItems: "center" }}>
-        <span
-          aria-hidden="true"
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: radius.md,
-            background: alpha(palette.orange500, 0.2),
-            color: colors.orangeText,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <Icon name="flame" size={22} fill />
+      <div style={{ display: "flex", alignItems: "center", gap: space[2] }}>
+        <span aria-hidden="true" style={{ color: colors.orangeText, display: "flex" }}>
+          <Icon name="flame" size={18} fill />
         </span>
-        <div>
-          <p style={{ fontSize: font.size.md, fontWeight: font.weight.bold, color: colors.text }}>Serin başladı!</p>
-          <p style={{ fontSize: font.size.sm, color: colors.textSoft }}>
-            Serini koru. Yarın bu saatte hatırlatayım mı?
-          </p>
+        <p style={{ fontSize: font.size.md, fontWeight: font.weight.bold, color: colors.text }}>Serini koru</p>
+      </div>
+      <p style={{ fontSize: font.size.sm, color: colors.textMuted }}>Yarın bu saatte hatırlatayım mı?</p>
+      {msg ? (
+        <p style={{ fontSize: font.size.sm, color: colors.redText, lineHeight: 1.4 }}>{msg}</p>
+      ) : (
+        <div style={{ display: "flex", gap: space[2] }}>
+          <Button block variant="secondary" onClick={close}>
+            Şimdi değil
+          </Button>
+          <Button block onClick={remind}>
+            Hatırlat
+          </Button>
         </div>
-      </div>
-      <div style={{ display: "flex", gap: space[2] }}>
-        <button onClick={close} style={{ ...btn, background: colors.fillStrong, color: colors.text }}>
-          Şimdi değil
-        </button>
-        <button
-          onClick={remind}
-          style={{ ...btn, background: palette.orange500, color: palette.white, fontWeight: font.weight.bold }}
-        >
-          Hatırlat · {hh}:00
-        </button>
-      </div>
-    </div>
+      )}
+    </Card>
   )
 }
