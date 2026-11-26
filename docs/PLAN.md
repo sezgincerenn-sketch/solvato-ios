@@ -102,7 +102,7 @@ Gizlilik ve Lisanslar, bildirim, titreşim, paylaşım, koyu/açık tema. Bugün
 Toplam kabaca 25–30 oturum; Ceren'in TestFlight geri bildirimine bağlı olarak **5–7 hafta**.
 
 **Durum (26 Kasım akşamı):** 0.5–0.7 bitti: bütün ekranlar native'de; tasarım revizeleri (R1–R41) uygulandı ya da
-karara bağlandı (kalan: R32 App Store bağlantısı Apple ID bekliyor, R11 TestFlight'ta bakılacak). Alt menü Apple'ın
+karara bağlandı (kalan: R11 TestFlight'ta bakılacak; R32 App Store bağlantısı 26 Kasım'da eklendi). Alt menü Apple'ın
 sekme çubuğu. TestFlight artık GitHub Actions'tan (`testflight.yml`, son sürüm 2005); web revize önizlemesi
 güncellenmiyor. Sıradaki: **0.8** (erişilebilirlik: VoiceOver adları, büyük yazı; iPad düzenleri; performans
 ölçümü) ve **0.9** (`inceleyici` ile `docs/ozellikler/native-ios.md` envanterine göre tam karşılaştırma, kapalı test,

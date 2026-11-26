@@ -324,7 +324,7 @@ private struct WeekCard: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(c.weekLabel)
             Text(c.weekSummary).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color)
-            ShareLink(item: text) {
+            ShareLink(item: AppStoreLink.appended(to: text)) {
                 Text("Öğretmenine haftalık rapor gönder")
                     .font(.ui(FontSize.md, .bold))
                     .foregroundStyle(ThemeColor.textSecondary.color)
