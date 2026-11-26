@@ -23,7 +23,7 @@ permissions:
 jobs:
   ekranlar:
     runs-on: macos-26
-    timeout-minutes: 150
+    timeout-minutes: 330 # 11+ test × 3 cihaz 2,5 saati aşabiliyor (GitHub sınırı 6 saat)
     steps:
       - uses: actions/checkout@v4
       - name: Xcode sürümü 26 ya da üstü mü

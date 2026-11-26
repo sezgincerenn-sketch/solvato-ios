@@ -243,7 +243,12 @@ final class ScreenshotTests: XCTestCase {
                             code = String(shown.label.suffix(7))
                         }
                         field.tap()
-                        field.typeText(code)
+                        // Kullanıcı gibi tiresiz ve harf harf: kutu tireyi kendisi ekler (R31); hızlı yazınca simülatörde
+                        // yeniden yazılan metinden sonraki harfler düşebiliyor (70021c6 koşusunda "32V" kaldı)
+                        for ch in code where ch != "-" {
+                            field.typeText(String(ch))
+                            Thread.sleep(forTimeInterval: 0.15)
+                        }
                         app.buttons["Uygula"].tap()
                         Thread.sleep(forTimeInterval: 0.5)
                     }
@@ -336,7 +341,7 @@ final class ScreenshotTests: XCTestCase {
                 if name == "meydan-oku-hata" {
                     let field = app.textFields["Meydan okuma kodu"]
                     field.tap()
-                    field.typeText("ABCD-EFGH")
+                    for ch in "ABCDEFGH" { field.typeText(String(ch)); Thread.sleep(forTimeInterval: 0.15) }
                     app.buttons["Kabul et"].tap()
                 }
                 if name.hasPrefix("oyun-sonucu") {
@@ -344,7 +349,7 @@ final class ScreenshotTests: XCTestCase {
                         if app.buttons["Kapat"].exists { break }
                         let next = app.buttons.matching(NSPredicate(format: "label IN {'Sıradaki', 'Turu bitir'}")).firstMatch
                         if next.exists { next.tap() } else {
-                            let key = app.buttons["Do tuşu"]
+                            let key = app.buttons["Do tuşu"].firstMatch  // iPad klavyesinde iki Do tuşu var
                             if key.exists { key.tap() } else { app.buttons.allElementsBoundByIndex.last { $0.isEnabled && $0.isHittable }?.tap() }
                         }
                         Thread.sleep(forTimeInterval: 0.9)
@@ -408,7 +413,7 @@ final class ScreenshotTests: XCTestCase {
                     if app.otherElements["Kutlama"].exists || app.staticTexts["Harika iş!"].exists { break }
                     let next = app.buttons.matching(NSPredicate(format: "label IN {'Sıradaki', 'Turu bitir'}")).firstMatch
                     if next.exists { next.tap() } else {
-                        let key = app.buttons["Do tuşu"]
+                        let key = app.buttons["Do tuşu"].firstMatch  // iPad klavyesinde iki Do tuşu var
                         if key.exists { key.tap() } else { app.buttons.allElementsBoundByIndex.last { $0.isEnabled && $0.isHittable }?.tap() }
                     }
                     Thread.sleep(forTimeInterval: 0.9)
@@ -424,7 +429,7 @@ final class ScreenshotTests: XCTestCase {
     @MainActor
     private func answerUntil(_ app: XCUIApplication, wrong: Bool) {
         for _ in 0..<10 {
-            let key = app.buttons["Do tuşu"]
+            let key = app.buttons["Do tuşu"].firstMatch  // iPad klavyesinde iki Do tuşu var
             if key.exists { key.tap() } else { app.buttons.allElementsBoundByIndex.last { $0.isEnabled && $0.isHittable }?.tap() }
             Thread.sleep(forTimeInterval: 0.3)
             let isWrong = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Doğru cevap:'")).firstMatch.exists
