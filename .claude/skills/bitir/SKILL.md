@@ -1,6 +1,6 @@
 ---
 name: bitir
-description: Solvato'da bir değişikliği bitirme adımları — kontrol, ekran görüntüsü, README, native eşitleme, önizlemeyi yayınlama, commit ve main'e push. Kod değiştiren her işin sonunda kullan.
+description: Solvato'da bir değişikliği bitirme adımları — kontrol, ekran görüntüsü, README, native eşitleme, commit, main'e push ve TestFlight. Kod değiştiren her işin sonunda kullan.
 ---
 
 # Değişikliği bitir
@@ -19,12 +19,12 @@ Sırayla yap; bir adım geçmezse düzelt, atlama. Atladığın adım olursa öz
    4b. **Mağaza uygunluğu (yeni özellik ya da yeni bağımlılık geldiyse):** `magaza-kontrol` becerisinin 3, 4 ve 5. adımları
    (gizlilik beyanı, lisanslar, yer tutucu/"yakında" taraması) ve `ekran` raporunda DIŞ İSTEK olmaması. Sonucu
    `docs/APP-STORE-KONTROL.md`'nin sonundaki "Özellik kontrolleri" tablosuna bir satır ekle (tarih, özellik, sonuç).
-5. **Native:** `npm run sync` (ios/ repoda, eski kalmasın). `git status` ile değişen native dosyaları gör.
-6. **Önizleme:** `npm run build:single`, sonra `dist-single/index.html`'i Artifact aracıyla
-   https://claude.ai/artifact/AK45sA3bSP2kZX5TZacarf adresine yeniden yayınla (bu oturumda okumadıysan önce `read`).
-   Kısa bir `label` ver ("Ritmi Tut: çıkış onayı"). TestFlight çalışmaya başlayınca bu adım kalkar.
-   Ceren telefonda denemek isterse: `git tag testflight-<sürüm>-<kısa-ad> && git push origin <etiket>` (Codemagic derler).
+5. **Capacitor (yalnız src/ değiştiyse):** `npm run sync` (ios/ repoda, eski kalmasın). `git status` ile değişen native dosyaları gör.
+6. **Native (ios-native/ değiştiyse):** `swift test` geçmeli; `ios-native/ui-testleri.txt`'e yalnız değişen ekranların
+   testlerini yaz. Web revize önizlemesi artık güncellenmez (Ceren, 26 Kasım).
 7. **Commit ve push:** her mantıksal değişiklik ayrı commit; mesaj Türkçe ve ne değiştiğini söyler
    ("Ritmi Tut: çıkışta onay sor"). Oturumun çalışma dalına push et, sonra `git push origin HEAD:main`
    (main ileri sarılamıyorsa zorlamadan dur ve Ceren'e söyle).
+7b. **TestFlight (native değiştiyse):** push'tan sonra `testflight.yml`'i başlat (`mcp__github__actions_run_trigger`,
+   ref `main`); ~5 dakikada biter, sürüm numarasını (2000 + koşu) özette söyle. Derleme hatası olursa düzelt.
 8. **Özet (Türkçe, kısa):** ne değişti, Ceren ekranda ne görecek, kararı gereken bir şey var mı, atlanan adım.
