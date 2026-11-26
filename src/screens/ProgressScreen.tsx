@@ -492,7 +492,13 @@ export default function ProgressScreen({
     // 2. Bu hafta: gün şeridi + öğretmene haftalık rapor
     week: <WeeklyReportCard stats={stats} />,
     // Sekme başlığı (App'ten gelir)
-    path: header,
+    // Başlangıç listesi başlığın altında (revize R7)
+    path: (
+      <>
+        {header}
+        <StartChecklist stats={stats} />
+      </>
+    ),
     // 4. Konular: tek satır, dokununca o konuda tur
     topics: (
       <div style={card}>
@@ -605,7 +611,6 @@ export default function ProgressScreen({
             : { display: "flex", flexDirection: "column" }),
         }}
       >
-        <StartChecklist stats={stats} />
         {tablet ? (
           <>
             <div style={column}>

@@ -74,7 +74,13 @@ export default function TopicLink({
         <p style={{ fontSize: font.size.sm, color: colors.textMuted, fontWeight: font.weight.regular }}>{sub}</p>
       </div>
       {acc ? (
-        <PercentRing acc={acc} color={color.base} />
+        <>
+          <PercentRing acc={acc} color={color.base} />
+          {/* Konu kartlarındaki gibi ▶ (revize R40): bütün satırlar aynı */}
+          <svg width={10} height={10} viewBox="0 0 24 24" aria-hidden="true" style={{ flexShrink: 0 }}>
+            <path d="M5 3l14 9-14 9V3z" fill={colors.textFaint} />
+          </svg>
+        </>
       ) : (
         <>
           {stars !== undefined && <Stars value={stars} size={13} />}
