@@ -104,10 +104,10 @@ Satır türleri:
 - [ ] Değerli satırlar sağda o anki değeri gösteriyor; dokununca seçim penceresi açılıyor, seçim hemen uygulanıp
       pencere kapanıyor.
 - [x] Seviye penceresinde farklı seviye seçilince sayaç sıfırlanıyor, aynı seviyede sıfırlanmıyor.
-- [ ] "Çalışılacak notalar" ayrı ekranda; en az 3 nota kuralı çalışıyor; satır değeri "Hepsi" ya da seçili notalar.
+- [x] "Çalışılacak notalar" ayrı ekranda; en az 3 nota kuralı çalışıyor; satır değeri "Hepsi" ya da seçili notalar.
 - [ ] "Hatırlatma saati" yalnız hatırlatma açıkken görünüyor, saat çarkıyla değişiyor, bildirim yeni saate taşınıyor.
 - [ ] İzin reddedilince kırmızı uyarı Ses ve bildirim kartının altında.
-- [ ] "İlerlemeyi sıfırla" kartların altında kırmızı; onay alanı ve sıfırlama bugünkü gibi.
+- [x] "İlerlemeyi sıfırla" kartların altında kırmızı; onay alanı ve sıfırlama bugünkü gibi.
 - [ ] Koyu ve açık temada, iPhone SE ve iPad'de taşma yok (görüntüler: `ayarlar`, `ayarlar-alt`, `ayarlar-pencere`,
       `ayarlar-notalar`, `ayarlar-sifirla`).
 - [x] Çekirdek testleri: satır değer yazıları (hedef, seviye, anahtar, notalar, cevap yöntemi, tema), notalar

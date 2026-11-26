@@ -46,7 +46,6 @@ final class ScreenshotTests: XCTestCase {
     func testTanitim() throws {
         continueAfterFailure = false
         let tries = ["Başlayalım", "Devam", "Do tuşu", "Devam", "Sol tuşu", "Devam"]
-        let base = tries + ["Devam"]
         let steps: [(String, [String])] = [
             ("tanitim-0-giris", []),
             ("tanitim-1-merhaba", ["Başlayalım"]),
@@ -54,15 +53,40 @@ final class ScreenshotTests: XCTestCase {
             ("tanitim-2-yanlis", ["Başlayalım", "Devam", "Re tuşu"]),
             ("tanitim-2-dogru", ["Başlayalım", "Devam", "Do tuşu"]),
             ("tanitim-3-ogretmen", tries),
+        ]
+        try runTanitim(steps)
+    }
+
+    /// Tanıtımın ikinci yarısı (10 dakikalık test sınırına sığsın diye ayrı): anahtar, geri, seviye, hatırlatma, hazır
+    @MainActor
+    func testTanitimDevam() throws {
+        continueAfterFailure = false
+        let base = ["Başlayalım", "Devam", "Do tuşu", "Devam", "Sol tuşu", "Devam", "Devam"]
+        let steps: [(String, [String])] = [
             ("tanitim-4-anahtar", base),
             ("tanitim-4-geri", base + ["Geri"]),
             ("tanitim-5-seviye", base + ["Devam"]),
             ("tanitim-6-hatirlatma", base + ["Devam", "Devam"]),
             ("tanitim-6-saat", base + ["Devam", "Devam", "Hatırlatma saati"]),
             ("tanitim-7-hazir", base + ["Devam", "Devam", "Şimdi değil", "Devam"]),
+        ]
+        try runTanitim(steps)
+    }
+
+    /// Tanıtımdan öğretmen yolu (10 dakikalık test sınırına sığsın diye ayrı): öğretmen kodu ekranı hazırlama ve
+    /// bağlantıyla kod girme bölümü
+    @MainActor
+    func testTanitimOgretmen() throws {
+        continueAfterFailure = false
+        let tries = ["Başlayalım", "Devam", "Do tuşu", "Devam", "Sol tuşu", "Devam"]
+        try runTanitim([
             ("ogretmen-kodu-hazirla", tries + ["Ben öğretmenim", "Devam"]),
             ("ogretmen-kodu-gir", tries + ["Ben öğretmenim", "Devam", "Öğrenci misin?"]),
-        ]
+        ])
+    }
+
+    @MainActor
+    private func runTanitim(_ steps: [(String, [String])]) throws {
         for (name, taps) in steps {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 // Bütün tanıtım senaryoları aynı: boş kayıt, tanıtım açık
