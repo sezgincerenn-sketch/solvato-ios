@@ -74,6 +74,8 @@ public struct Settings: Codable, Equatable, Sendable {
     public var showRestTopics = false
     /// Tanıtımdaki öğretmen sorusu; Profil'deki öğretmen kodu kartının başlığını belirler
     public var teacherRole = TeacherRole.unset
+    /// İlerleme'deki başlangıç listesi (R7) üç maddesiyle bitti; bir daha gösterilmez
+    public var startChecklistDone = false
     /// Tur sonucundaki "Serini koru" teklifi gösterildi (R8; bir kez)
     public var reminderOffered = false
 
@@ -82,6 +84,7 @@ public struct Settings: Codable, Equatable, Sendable {
     private enum Keys: String, CodingKey {
         case soundKeys, notes, timer, haptics, reminder, reminderHour, reminderMinute, onboarded, inputMode, keyLabels, dailyGoal
         case level, clef, levelProgress, name, avatarColor, joinedAt, coachDone, teacherCode, topics, showRestTopics, teacherRole
+        case startChecklistDone
         case reminderOffered
     }
 
@@ -111,6 +114,7 @@ public struct Settings: Codable, Equatable, Sendable {
         topics = get(.topics, d.topics)
         showRestTopics = get(.showRestTopics, d.showRestTopics)
         teacherRole = get(.teacherRole, d.teacherRole)
+        startChecklistDone = get(.startChecklistDone, d.startChecklistDone)
         reminderOffered = get(.reminderOffered, d.reminderOffered)
     }
 

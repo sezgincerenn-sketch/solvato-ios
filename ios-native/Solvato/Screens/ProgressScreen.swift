@@ -13,18 +13,21 @@ struct ProgressScreen: View {
 
     var body: some View {
         let c = ProgressContent(stats: model.stats, settings: model.settings, now: model.now)
+        let start = ProgressContent.startChecklist(model.stats, settings: model.settings)
         ScrollView {
             Group {
                 if !c.hasAnswers {
                     VStack(spacing: 16) {
                         TabTitle("İlerleme")
                         EmptyProgress { model.go(.home) }
+                        if let start { StartChecklist(steps: start) }
                     }
                     .padding(.horizontal, 16)
                     .padding(.top, 32)
                 } else if sizeClass == .regular {
                     VStack(spacing: 16) {
                         TabTitle("İlerleme")
+                        if let start { StartChecklist(steps: start) }
                         HStack(alignment: .top, spacing: 16) {
                             VStack(spacing: 16) {
                                 accuracy(c)
@@ -43,6 +46,7 @@ struct ProgressScreen: View {
                 } else {
                     VStack(spacing: 16) {
                         TabTitle("İlerleme")
+                        if let start { StartChecklist(steps: start) }
                         accuracy(c)
                         WeekCard(c: c, text: c.report.text)
                         topics(c)
@@ -58,6 +62,10 @@ struct ProgressScreen: View {
         }
         .scrollIndicators(.hidden)
         .background(ThemeColor.bg.color)
+        // Üç madde bitince liste bir daha görünmez (ilerleme sıfırlansa da)
+        .onChange(of: ProgressContent.startSteps(model.stats).allSatisfy(\.done), initial: true) { _, all in
+            if all && !model.settings.startChecklistDone { model.settings.startChecklistDone = true }
+        }
     }
 
     private func card<C: View>(@ViewBuilder _ content: () -> C) -> some View {
@@ -377,5 +385,45 @@ private struct EmptyProgress: View {
         }
         .padding(28)
         .frame(maxWidth: .infinity)
+    }
+}
+
+/// Başlangıç listesi (R7): "Başlangıç · 1/3" ve üç madde; tamamlanan madde yeşil ✓. Üçü bitince kaybolur.
+private struct StartChecklist: View {
+    let steps: [ProgressContent.StartStep]
+
+    var body: some View {
+        let done = steps.filter(\.done).count
+        VStack(alignment: .leading, spacing: Space.s3) {
+            HStack {
+                Text("Başlangıç").font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color)
+                Spacer()
+                Text(verbatim: "\(done)/\(steps.count)").font(.mono(FontSize.sm, .bold)).foregroundStyle(ThemeColor.violetTextSoft.color)
+            }
+            ForEach(steps, id: \.title) { s in
+                HStack(spacing: Space.s3) {
+                    ZStack {
+                        if s.done {
+                            Circle().fill(PaletteColor.green500.color)
+                            Icon(.check, size: 13, strokeWidth: 3).foregroundStyle(PaletteColor.white.color)
+                        } else {
+                            Circle().strokeBorder(ThemeColor.borderStrong.color, lineWidth: 1.5)
+                        }
+                    }
+                    .frame(width: 22, height: 22)
+                    Text(s.title)
+                        .font(.ui(FontSize.sm, s.done ? .regular : .semibold))
+                        .foregroundStyle((s.done ? ThemeColor.textMuted : ThemeColor.text).color)
+                        .strikethrough(s.done, color: ThemeColor.textMuted.color)
+                }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(s.title)
+                .accessibilityValue(s.done ? "Tamamlandı" : "Yapılmadı")
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: Radius.lg).fill(PaletteColor.violet500.opacity(0.08)))
+        .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(PaletteColor.violet500.opacity(0.25), lineWidth: 1))
     }
 }
