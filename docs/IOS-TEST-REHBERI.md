@@ -93,6 +93,39 @@ demektir. Apple Developer → Certificates'ta kullanmadığın eskilerden birini
 
 ---
 
+## Bölüm B2 — GitHub'dan TestFlight (Codemagic'in yerine, 26 Kasım)
+
+Depo herkese açık olduğu sürece GitHub'ın Mac sunucusu ücretsiz; TestFlight yüklemesi oradan yapılır
+(`.github/workflows/testflight.yml`). Bir kez dört "sır" girilir; sonra her sürüm tek dokunuşla gider.
+
+### B2-1. Yeni bir API anahtarı oluştur (telefondan, tarayıcıda)
+
+1. appstoreconnect.apple.com → **Users and Access** → **Integrations** → **App Store Connect API** → **Team Keys**.
+2. **+** → Name: `GitHub`, Access: **App Manager** → **Generate**.
+3. Yeni satırda **Download API Key** → `.p8` dosyası iner (Dosyalar › İndirilenler). **Bir kez indirilebilir.**
+4. Sayfadaki **Issuer ID**'yi ve yeni anahtarın **Key ID**'sini kopyalamaya hazır tut.
+
+### B2-2. GitHub'a dört sır gir
+
+github.com/sezgincerenn-sketch/solvato-ios → **Settings** → **Secrets and variables** → **Actions** →
+**New repository secret**. Her biri için **Name** ve **Secret** kutusunu doldur, **Add secret**:
+
+| Name | Secret kutusuna |
+| --- | --- |
+| `ASC_ISSUER_ID` | Issuer ID (ör. `69a6de7e-…`) |
+| `ASC_KEY_ID` | Key ID (ör. `ABC123DEFG`) |
+| `ASC_PRIVATE_KEY` | `.p8` dosyasının **tamamı** (`-----BEGIN PRIVATE KEY-----` satırından `-----END PRIVATE KEY-----` satırına kadar) |
+| `CERTIFICATE_PRIVATE_KEY` | Claude'un verdiği `CERTIFICATE_PRIVATE_KEY.txt` dosyasının tamamı (`-----BEGIN RSA PRIVATE KEY-----` … `-----END RSA PRIVATE KEY-----`) |
+
+Bu bilgileri sohbete yapıştırma; yalnız bu sayfaya girilir. GitHub girildikten sonra kimseye göstermez.
+
+### B2-3. Sürüm gönder
+
+**Actions** → soldan **TestFlight** → **Run workflow** → **Run workflow**. 15–25 dakika sürer; yeşil tik çıkınca
+5–15 dakika içinde TestFlight uygulamasında yeni sürüm görünür (numara 2000'li). Bunu Claude da başlatabilir.
+
+---
+
 ## Bölüm C — TestFlight ve telefon
 
 ### 9. Kendini test grubuna ekle
