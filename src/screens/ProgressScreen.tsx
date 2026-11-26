@@ -5,7 +5,8 @@ import type { Period } from "../utils/dates"
 import WeeklyReportCard from "./progress/WeeklyReportCard"
 import { weakNotes } from "../state/weakNotes"
 import RoundHistory from "./profile/RoundHistory"
-import { Button, Chip, ScoreRing } from "../ui"
+import { Button, Chip, ScoreRing, StatTile } from "../ui"
+import { currentStreak } from "../state/stats"
 import { accuracyFor } from "../state/stats"
 import { useEffect, useState } from "react"
 import { getSettings, updateSettings } from "../utils/settings"
@@ -497,6 +498,15 @@ export default function ProgressScreen({
       <>
         {header}
         <StartChecklist stats={stats} />
+        {/* Seri, tamamlanan tur, çözülen soru: Profil'den taşındı (Ceren, 26 Kasım) */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
+          <StatTile value={`${currentStreak(stats)} gün`} label="Seri" />
+          <StatTile value={`${stats.totalSessions}`} label="Tamamlanan tur" />
+          <StatTile
+            value={`${Object.values(stats.dailyQuestions ?? {}).reduce((a, b) => a + b, 0)}`}
+            label="Çözülen soru"
+          />
+        </div>
       </>
     ),
     // 4. Konular: tek satır, dokununca o konuda tur

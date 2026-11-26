@@ -2,9 +2,8 @@
 import { useState } from "react"
 import Icon from "../../components/Icons"
 import { alpha, colors, font, palette, radius, space } from "../../design/tokens"
-import { currentStreak } from "../../state/stats"
 import type { AppStats } from "../../types"
-import { AVATAR_COLORS, Avatar, Button, Card, ScreenHeader, StatTile, useToast } from "../../ui"
+import { AVATAR_COLORS, Avatar, Button, Card, ScreenHeader, useToast } from "../../ui"
 import { buildWeeklyReport, weeklyReportText } from "../../utils/weeklyReport"
 import { shareWithToast } from "../gameShared"
 import { rankFromXp } from "../../utils/level"
@@ -29,7 +28,6 @@ export default function ProfileScreen({
   const [color, setColor] = useState(s.avatarColor)
   const xp = rankFromXp(stats.totalPoints)
   const toast = useToast()
-  const solved = Object.values(stats.dailyQuestions ?? {}).reduce((a, b) => a + b, 0)
   const since = s.joinedAt
     ? new Date(s.joinedAt).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })
     : null
@@ -133,12 +131,6 @@ export default function ProfileScreen({
 
         <LevelCard detailed actionLabel="Ayarları aç" onClick={onOpenSettings} />
         <RankCard xp={stats.totalPoints} detailed />
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: space[2] }}>
-          <StatTile value={`${currentStreak(stats)} gün`} label="Seri" />
-          <StatTile value={`${stats.totalSessions}`} label="Tamamlanan tur" />
-          <StatTile value={`${solved}`} label="Çözülen soru" />
-        </div>
 
         <Button
           onClick={() => shareWithToast(weeklyReportText(buildWeeklyReport(stats, getSettings())), toast.show)}
