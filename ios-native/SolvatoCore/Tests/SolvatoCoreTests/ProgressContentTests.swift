@@ -20,3 +20,17 @@ final class ProgressContentTests: XCTestCase {
         }
     }
 }
+
+/// Son turlar satırı (R17): kayıttaki addan aynı konudan yeni tur
+final class RoundReplayTests: XCTestCase {
+    func testReplay() {
+        XCTAssertEqual(ProgressContent.replay(label: "Sol Anahtarı"), .quiz(.treble))
+        XCTAssertEqual(ProgressContent.replay(label: "Karışık"), .quiz(.all))
+        XCTAssertEqual(ProgressContent.replay(label: "Ritim"), .quiz(.rhythm))
+        XCTAssertEqual(ProgressContent.replay(label: "Akorlar"), .chords)
+        XCTAssertEqual(ProgressContent.replay(label: "Ritmi Tut"), .rhythmTap)
+        XCTAssertEqual(ProgressContent.replay(label: "Zayıf notalar"), .weak)
+        XCTAssertEqual(ProgressContent.replay(label: "Oyun · Ritim"), .games)
+        XCTAssertEqual(ProgressContent.replay(label: "Hataların tekrarı"), .quiz(.all))
+    }
+}

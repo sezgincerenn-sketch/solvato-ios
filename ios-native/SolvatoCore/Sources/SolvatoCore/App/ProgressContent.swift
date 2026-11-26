@@ -90,8 +90,31 @@ public struct ProgressContent: Sendable {
         public var when: String
         public var score: String
         public var time: String?
+        /// Satıra dokununca başlayan tur (R17)
+        public var replay: RoundReplay
     }
     public var rounds: [Round]
+
+    /// Son turlar satırına dokununca (R17, Ceren 26 Kasım): aynı konudan yeni tur
+    public enum RoundReplay: Equatable, Sendable {
+        case quiz(FilterCategory)
+        case chords, rhythmTap
+        /// "Zayıf notalar": şimdiki zorlanılan notalar (yoksa karma tur)
+        case weak
+        /// "Oyun · …": Oyunlar listesi
+        case games
+    }
+
+    /// Kayıttaki addan tur: konu adı o konu; "Hataların tekrarı" ve tanınmayan ad karma tur
+    public static func replay(label: String) -> RoundReplay {
+        if label.hasPrefix("Oyun · ") { return .games }
+        switch label {
+        case "Akorlar": return .chords
+        case "Ritmi Tut": return .rhythmTap
+        case "Zayıf notalar": return .weak
+        default: return .quiz(FilterCategory.allCases.first { $0.roundLabel == label } ?? .all)
+        }
+    }
 
     let stats: AppStats
     let now: Now
@@ -139,7 +162,7 @@ public struct ProgressContent: Sendable {
         rounds = (stats.history ?? []).map { h in
             Round(
                 stars: Stars.forRound(correct: h.correct, total: h.total), label: h.label, when: Self.when(h.at, now: now),
-                score: "\(h.correct)/\(h.total)", time: h.sec.map(Games.formatSeconds))
+                score: "\(h.correct)/\(h.total)", time: h.sec.map(Games.formatSeconds), replay: Self.replay(label: h.label))
         }
     }
 

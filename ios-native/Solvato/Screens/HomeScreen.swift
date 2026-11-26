@@ -221,7 +221,7 @@ struct HomeScreen: View {
     }
 }
 
-/// Konu kartı: renkli ikon kutusu, ad ve alt yazı, konudaki doğruluk (yüzde halkası); kartın tamamı turu başlatır
+/// Konu kartı: renkli ikon kutusu, ad ve alt yazı, konudaki doğruluk (yüzde halkası), küçük ▶; kartın tamamı turu başlatır
 private struct CategoryCard: View {
     let cat: HomeContent.Category
     let action: () -> Void
@@ -247,6 +247,11 @@ private struct CategoryCard: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 PercentRing(acc: cat.acc, color: base)
+                // Basılınca tur başladığı belli olsun (R17; İlerleme'deki "Çalış ▶" gibi)
+                PlayShape()
+                    .fill(ThemeColor.textFaint.color)
+                    .frame(width: 10, height: 10)
+                    .accessibilityHidden(true)
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 16)
@@ -258,15 +263,18 @@ private struct CategoryCard: View {
     }
 }
 
-/// Seviye kartı (web LevelCard): Başlangıç / Orta / İleri ve bir sonraki seviyeye ilerleme
+/// Seviye kartı (web LevelCard): Başlangıç / Orta / İleri ve bir sonraki seviyeye ilerleme. Basılabiliyorsa sağ üstte
+/// "›" (R17): Ana sayfada Profil'i, Profil'de Ayarlar'ı açar.
 struct LevelCardView: View {
     let content: HomeContent
     var detailed = false
+    /// Erişilebilirlik adının sonu: "Profili aç", "Ayarları aç"
+    var actionLabel = "Profili aç"
     var action: (() -> Void)?
 
     var body: some View {
         if let action {
-            Button(action: action) { card }.buttonStyle(.plain).accessibilityLabel("Seviye: \(content.levelLabel). Profili aç")
+            Button(action: action) { card }.buttonStyle(.plain).accessibilityLabel("Seviye: \(content.levelLabel). \(actionLabel)")
         } else {
             card
         }
@@ -301,6 +309,9 @@ struct LevelCardView: View {
                 }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("3 seviyeden \(content.level).")
+                if action != nil {
+                    Text("›").font(.ui(FontSize.lg)).foregroundStyle(ThemeColor.textFaint.color).accessibilityHidden(true)
+                }
             }
             if let pct = content.levelPct {
                 GeometryReader { g in
