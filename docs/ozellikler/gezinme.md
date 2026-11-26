@@ -18,6 +18,11 @@ Uygulamanın dört ana bölümü alt menüden tek dokunuşla açılsın; Profil 
 
 ### Alt menü (R13)
 
+- **Değişti (Ceren, 26 Kasım):** kendi kapsülümüz yerine **Apple'ın sekme çubuğu** (`UI/SystemTabs.swift`): iOS 26'da gerçek
+  Liquid Glass ve seçili sekmede kayan cam, Apple simgeleri (ev, grafik, kitap, kişi), mor vurgu; iOS 17–25'te klasik
+  sekme çubuğu. Kaydırınca küçülmez, açık sekmeye tekrar dokununca sayfa en üste kayar. Aşağıdaki kapsül ölçüleri artık
+  geçerli değil (web önizlemesinde kapsül kalır).
+
 - Ekranın altında, kenarlardan 16 pt içeride **yüzen kapsül**. Dört sekme, soldan sağa: **Ana sayfa · İlerleme ·
   Öğren · Profil**. Simgeler: ev, sütun grafiği, kitap, kişi (çizgi simgeler, 22 pt).
 - Seçili sekme mor zeminli (kapsül içinde ikinci bir yuvarlak), simge ve yazı mor; diğerleri soluk.

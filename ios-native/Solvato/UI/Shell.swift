@@ -1,5 +1,5 @@
 // Ekran iskeleti parçaları. Web karşılıkları: src/ui/Avatar.tsx, BackButton.tsx, ScreenHeader.tsx, Toast.tsx,
-// PlayChip.tsx, TopicLink.tsx, ExitConfirm.tsx, NavBar.tsx (kapsül: docs/ozellikler/gezinme.md), TabletColumn.tsx. Ölçüler ve metinler web'den birebir.
+// PlayChip.tsx, TopicLink.tsx, ExitConfirm.tsx, TabletColumn.tsx; alt menünün sekmeleri (çubuk: UI/SystemTabs.swift). Ölçüler ve metinler web'den birebir.
 import SolvatoCore
 import SwiftUI
 
@@ -290,6 +290,7 @@ struct RoundCloseButton: View {
 }
 
 // MARK: - Alt menü
+/// Alt menünün dört sekmesi (gezinme.md R13). Çubuğun kendisi Apple'ın sekme çubuğu: UI/SystemTabs.swift.
 enum NavTab: String, CaseIterable, Sendable {
     case home, dashboard, study, profile
 
@@ -302,97 +303,14 @@ enum NavTab: String, CaseIterable, Sendable {
         }
     }
 
-    /// Çizgi simgeler (24'lük kutu): ev, sütun grafiği, kitap, kişi
-    var paths: [String] {
+    /// Apple simgesi (seçiliyken sistem dolu hâlini kullanır): ev, sütun grafiği, kitap, kişi
+    var symbol: String {
         switch self {
-        case .home: ["M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"]
-        case .dashboard: ["M5 20V12M10 20V8M15 20v-5M20 20V5"]
-        case .study: ["M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z", "M4 19V5"]
-        case .profile: ["M8 8a4 4 0 1 0 8 0a4 4 0 1 0 -8 0", "M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"]
+        case .home: "house"
+        case .dashboard: "chart.bar"
+        case .study: "book"
+        case .profile: "person"
         }
-    }
-}
-
-/// Alt menü (gezinme.md R13): ekranın altında, kenarlardan 16 pt içeride yüzen kapsül; dört sekme. Seçili sekme
-/// kapsül içinde mor zeminli. iOS 26'da zemin Apple'ın cam efekti, öncesinde bulanık yarı saydam zemin ve ince kenar.
-/// Kaydırınca küçülmez. Web önizlemesi (revize-onizleme) src/ui/NavBar.tsx ile aynı ölçüler.
-struct NavBar: View {
-    let active: NavTab
-    let onChange: (NavTab) -> Void
-    @Environment(\.horizontalSizeClass) private var sizeClass
-
-    var body: some View {
-        HStack(spacing: Space.s1) {
-            ForEach(Array(NavTab.allCases.enumerated()), id: \.element) { i, t in
-                let on = t == active
-                let col = (on ? ThemeColor.violetText : ThemeColor.textMuted).color
-                Button {
-                    onChange(t)
-                } label: {
-                    VStack(spacing: 2) {
-                        NavIcon(tab: t).stroke(col, style: StrokeStyle(lineWidth: 2 * 22 / 24, lineCap: .round, lineJoin: .round))
-                            .frame(width: 22, height: 22)
-                        Text(t.label)
-                            .font(.ui(FontSize.xs, on ? .bold : .semibold))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.8)
-                            .foregroundStyle(col)
-                    }
-                    .frame(maxWidth: .infinity, minHeight: 52)
-                    .background(Capsule().fill(on ? PaletteColor.violet500.opacity(0.2) : .clear))
-                    .contentShape(Capsule())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(t.label)
-                .accessibilityAddTraits(on ? [.isSelected] : [])
-                .accessibilityHint("Sekme, \(i + 1)/\(NavTab.allCases.count)")
-                .animation(.easeOut(duration: 0.15), value: on)
-            }
-        }
-        .padding(6)
-        .modifier(NavGlass())
-        // iPad: ortada, en fazla sekme sütunu genişliğinde
-        .frame(maxWidth: sizeClass == .regular ? 680 : .infinity)
-        .padding(.top, Space.s2)
-        .padding(.horizontal, Space.s4)
-        .padding(.bottom, Space.s3)
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Alt menü")
-    }
-}
-
-/// Kapsülün zemini: iOS 26'da cam (dokunuşa tepki veren), öncesinde sistem materyali + ince kenar + gölge.
-/// Saydamlık azaltılmışsa sistem zemini düz çizer.
-private struct NavGlass: ViewModifier {
-    func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content.glassEffect(.regular.interactive(), in: Capsule())
-        } else {
-            content
-                .background {
-                    ZStack {
-                        Capsule().fill(.ultraThinMaterial)
-                        Capsule().fill(ThemeColor.overlay.color)
-                    }
-                }
-                .overlay(Capsule().strokeBorder(ThemeColor.borderStrong.color, lineWidth: 1))
-                // web 0 12px 32px rgba(0,0,0,0.35)
-                .shadow(color: PaletteColor.black.color.opacity(0.35), radius: 16, y: 12)
-        }
-    }
-}
-
-/// Alt menü simgesi (web önizlemesi NavIcon yolları)
-private struct NavIcon: Shape {
-    let tab: NavTab
-    private static let parsed: [NavTab: [[PathCommand]]] = Dictionary(
-        uniqueKeysWithValues: NavTab.allCases.map { t in (t, t.paths.map { (try? SVGPath.parse($0)) ?? [] }) })
-
-    func path(in r: CGRect) -> Path {
-        var p = Path()
-        for c in Self.parsed[tab] ?? [] { p.addPath(SVGShape(commands: c).path(in: r)) }
-        return p
     }
 }
 
