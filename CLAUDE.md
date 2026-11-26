@@ -12,7 +12,7 @@ Claude Code'un bu repoda nasıl çalışacağı. Kodun yapısı `README.md`'de, 
 - **Ajanlarla İngilizce:** alt ajanlara (subagent, `inceleyici` dahil) verdiğin görevleri İngilizce yaz; raporlarını da
   İngilizce iste. Ceren'e aktarırken Türkçeye çevir. Ceren'le her zaman Türkçe.
 - Ceren'in bilgisayarında git, IDE ve Mac yok; bulut oturumlarından ve telefondan çalışıyor. Commit ve push'u sen
-  yaparsın; o sonucu GitHub'da ve önizlemede görür. iOS derlemesi bulut serviste alınır: Xcode'da elle yapılacak bir
+  yaparsın; o sonucu GitHub'da ve TestFlight'ta görür. iOS derlemesi bulut serviste alınır: Xcode'da elle yapılacak bir
   ayar gerekiyorsa onu proje dosyasından yap ya da nasıl yapılacağını göster.
 
 ## Repolar
@@ -35,7 +35,11 @@ Claude Code'un bu repoda nasıl çalışacağı. Kodun yapısı `README.md`'de, 
 - Küçük, net istekleri doğrudan yap. Geri dönmesi zor ya da birden çok yoruma açık işlerde önce tek soru sor.
 - Birden çok ekranı etkileyen ya da ürün kararı içeren isteklerde koda geçmeden **`ozellik`** becerisiyle özellik
   dokümanı yaz (`docs/ozellikler/`). Uygulama ayrı oturumda o dokümandan yapılır.
-- Kod değiştiren her işi **`bitir`** becerisiyle bitir (kontrol, ekran, README, sync, önizleme, commit, push, özet).
+- Kod değiştiren her işi **`bitir`** becerisiyle bitir (kontrol, ekran, README, commit, push, TestFlight, özet).
+- **Native iş akışı (26 Kasım):** web revize önizlemesi artık güncellenmez; değişiklik TestFlight'tan denenir.
+  Çekirdek: `cd ios-native/SolvatoCore && swift test`. Ekranlar: `main`e gönderince GitHub Actions görüntüleri `ekranlar`
+  dalına koyar (seçim `ios-native/ui-testleri.txt`, yalnız değişen ekranların testleri). TestFlight: GitHub Actions
+  `testflight.yml` (`mcp__github__actions_run_trigger`, ref `main`); Codemagic kullanılmaz.
 - Bir özellik bitince main'e göndermeden önce **`inceleyici`** ajanına dokümana göre inceletebilirsin; yalnız doğruluk
   bulgularını düzelt.
 - Kanıtla konuş: "geçti" deme, komutu ve sonucunu ya da ekran görüntüsünü göster.
