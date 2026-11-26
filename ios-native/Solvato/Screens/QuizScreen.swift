@@ -306,11 +306,20 @@ struct QuizScreen: View {
     }
 
     // MARK: Açıklama
+    /// "Senin cevabın: Fa · " (R1); yoksa boş
+    private func yourAnswer(_ size: Double) -> Text {
+        guard let a = round.yourAnswer else { return Text(verbatim: "") }
+        return Text("Senin cevabın: ").foregroundStyle(ThemeColor.textMuted.color).font(.ui(size, .semibold))
+            + Text(a).foregroundStyle(ThemeColor.redText.color).font(.ui(size, .bold))
+            + Text(verbatim: " · ").foregroundStyle(ThemeColor.textMuted.color).font(.ui(size))
+    }
+
     private var explanation: some View {
         HStack(alignment: .top, spacing: 10) {
             Text("✕").font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.redText.color).padding(.top, 1)
             VStack(alignment: .leading, spacing: 2) {
-                (Text("Doğru cevap: ").foregroundStyle(ThemeColor.redText.color).font(.ui(FontSize.md, .semibold))
+                // R1: nota sorusunda yanlışta önce öğrencinin cevabı
+                (yourAnswer(FontSize.md) + Text("Doğru cevap: ").foregroundStyle(ThemeColor.redText.color).font(.ui(FontSize.md, .semibold))
                     + Text(round.question.correctAnswer).foregroundStyle(ThemeColor.greenText.color).font(.ui(FontSize.md, .bold)))
                 if let w = round.wrongOctaveText {
                     Text(w).font(.ui(FontSize.sm, .semibold)).foregroundStyle(ThemeColor.amberText.color)
@@ -332,7 +341,7 @@ struct QuizScreen: View {
     /// Yan ekranda açıklama sol sütunda, kısa
     private var landExplanation: some View {
         VStack(alignment: .leading, spacing: 0) {
-            (Text("Doğru cevap: ").foregroundStyle(ThemeColor.redText.color).font(.ui(FontSize.sm, .semibold))
+            (yourAnswer(FontSize.sm) + Text("Doğru cevap: ").foregroundStyle(ThemeColor.redText.color).font(.ui(FontSize.sm, .semibold))
                 + Text(round.window.octaveMode && round.target != nil ? round.target!.key : round.question.correctAnswer)
                 .foregroundStyle(ThemeColor.greenText.color).font(.ui(FontSize.sm, .bold)))
             if round.wrongOctave {

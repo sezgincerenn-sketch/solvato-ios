@@ -143,6 +143,13 @@ public struct QuizRound: Equatable, Sendable {
         return "Nota doğru, oktav yanlış: bu nota \(name) (\(t.octave). oktav)."
     }
 
+    /// Yanlış cevapta "Senin cevabın: Fa" (R1, Ceren 26 Kasım): yalnız nota sorularında; süre dolduysa ve oktav
+    /// yanlışsa (ayrı yazısı var) yok. Oktav rakamı atılır, "#" → "♯".
+    public var yourAnswer: String? {
+        guard isNote, answerState == .wrong, !wrongOctave, let s = selected, s != "__timeout__" else { return nil }
+        return String(s.reversed().drop { $0.isNumber }.reversed()).replacingOccurrences(of: "#", with: "♯")
+    }
+
     /// İpucu (yalnız nota sorularında, oyunlarda yok)
     public var hintAvailable: Bool { isNote && !noHints && answerState == .pending }
     public var hintText: String {
