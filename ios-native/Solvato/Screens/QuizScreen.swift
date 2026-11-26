@@ -67,15 +67,26 @@ struct QuizScreen: View {
                         // Web: klavye/şıklar ızgaranın altında, tam genişlikte
                         answerArea.padding(.top, 6)
                     } else {
-                        ScrollView {
-                            VStack(alignment: .leading, spacing: 0) {
-                                header.padding(.horizontal, Space.s4)
-                                // Web clamp(…, 44vh, …): vh tam ekran yüksekliği
-                                promptCard(height: screenHeight).padding(.horizontal, Space.s4).padding(.bottom, 12)
-                                if round.showExplanation { explanation }
+                        ScrollViewReader { proxy in
+                            ScrollView {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    header.padding(.horizontal, Space.s4)
+                                    // Web clamp(…, 44vh, …): vh tam ekran yüksekliği
+                                    promptCard(height: screenHeight).padding(.horizontal, Space.s4).padding(.bottom, 12)
+                                    if round.showExplanation { explanation.id(Self.explanationID) }
+                                }
+                            }
+                            .scrollBounceBehavior(.basedOnSize)
+                            // Yanlışta açıklama kartı klavyenin altında kalmasın (küçük telefon; Ceren, 26 Kasım):
+                            // soru alanı kartı gösterecek kadar kayar; sığıyorsa kaydırma olmaz
+                            .onChange(of: round.showExplanation) { _, shown in
+                                guard shown else { return }
+                                Task { @MainActor in
+                                    try? await Task.sleep(for: .milliseconds(120))
+                                    withAnimation(.easeOut(duration: 0.25)) { proxy.scrollTo(Self.explanationID, anchor: .bottom) }
+                                }
                             }
                         }
-                        .scrollBounceBehavior(.basedOnSize)
                         answerArea
                     }
                 }
@@ -306,6 +317,8 @@ struct QuizScreen: View {
     }
 
     // MARK: Açıklama
+    private static let explanationID = "explanation"
+
     /// "Senin cevabın: Fa · " (R1); yoksa boş
     private func yourAnswer(_ size: Double) -> Text {
         guard let a = round.yourAnswer else { return Text(verbatim: "") }
