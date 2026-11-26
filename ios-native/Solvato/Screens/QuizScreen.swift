@@ -135,20 +135,7 @@ struct QuizScreen: View {
     private var topBar: some View {
         ZStack {
             HStack(spacing: 6) {
-                HStack(spacing: 4) {
-                    ForEach(0..<round.questions.count, id: \.self) { i in
-                        Capsule()
-                            .fill(
-                                i < round.index
-                                    ? AnyShapeStyle(PaletteColor.violet500.color)
-                                    : i == round.index
-                                        ? AnyShapeStyle(LinearGradient(colors: [PaletteColor.violet500.color, PaletteColor.violet400.color], startPoint: .leading, endPoint: .trailing))
-                                        : AnyShapeStyle(ThemeColor.fillStronger.color)
-                            )
-                            .frame(width: i == round.index ? 18 : 6, height: 6)
-                            .shadow(color: i == round.index ? PaletteColor.violet500.opacity(0.6) : .clear, radius: 4)
-                    }
-                }
+                RoundDotsView(dots: round.dots, index: round.index)
                 Text(verbatim: "\(round.index + 1)/\(round.questions.count)")
                     .font(.mono(FontSize.sm, .bold))
                     .foregroundStyle(ThemeColor.textMuted.color)
@@ -156,16 +143,7 @@ struct QuizScreen: View {
             }
             .animation(.easeInOut(duration: 0.3), value: round.index)
             HStack {
-                Button { showExit = true } label: {
-                    Image(systemName: "arrow.left")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(ThemeColor.textMuted.color)
-                        .frame(width: 44, height: 44)
-                        .background(RoundedRectangle(cornerRadius: Radius.sm).fill(ThemeColor.fillStrong.color))
-                        .overlay(RoundedRectangle(cornerRadius: Radius.sm).strokeBorder(ThemeColor.border.color, lineWidth: 1))
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Çık")
+                RoundCloseButton { showExit = true }
                 Spacer()
                 Text(verbatim: "✓ \(round.score)")
                     .font(.mono(FontSize.sm, .bold))

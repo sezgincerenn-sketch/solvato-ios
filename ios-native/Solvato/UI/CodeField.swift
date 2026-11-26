@@ -1,7 +1,9 @@
 // Kod giriş satırı: büyük harfli, harf aralıklı kod kutusu ve yanında düğme; hatalıysa kırmızı çerçeve ve altta
-// açıklama. Öğretmen kodu (Uygula) ve Arkadaşına meydan oku (Kabul et) ekranlarında. Web'de iki ekranda aynı input.
+// açıklama. Yazılırken tire kendiliğinden eklenir (R31, `sanitize`); altta "Kodu yapıştır" (R30): panodaki mesajdan
+// kodu bulup kutuya yazar. Öğretmen kodu (Uygula) ve Arkadaşına meydan oku (Kabul et) ekranlarında.
 import SolvatoCore
 import SwiftUI
+import UIKit
 
 struct CodeField: View {
     @Binding var code: String
@@ -11,6 +13,8 @@ struct CodeField: View {
     let button: String
     /// Yazılanı düzelt (büyük harf, en çok N karakter)
     let sanitize: (String) -> String
+    /// Panodaki metinden kod
+    let pasted: (String) -> String
     let onSubmit: () -> Void
     @FocusState private var focused: Bool
 
@@ -45,7 +49,13 @@ struct CodeField: View {
             if !error.isEmpty {
                 Text(error).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.redText.color)
             }
+            Chip("Kodu yapıştır", action: paste)
         }
+    }
+
+    private func paste() {
+        guard let text = UIPasteboard.general.string, !text.isEmpty else { return }
+        code = pasted(text)
     }
 
     private func submit() {

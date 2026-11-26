@@ -35,7 +35,7 @@ final class AppModelTests: XCTestCase {
         m.openLesson("mnemonic-treble")
         XCTAssertEqual(m.nav.current, .lesson)
         XCTAssertEqual(m.lessonId, "mnemonic-treble")
-        XCTAssertEqual(model().lastLesson?.title, "Ezber cümleleri: Sol anahtarı")
+        XCTAssertEqual(model().lastLesson?.title, "Kolay hatırla: Sol anahtarı")
         p.setLastLesson("silinmis-ders")
         XCTAssertNil(model().lastLesson)
     }

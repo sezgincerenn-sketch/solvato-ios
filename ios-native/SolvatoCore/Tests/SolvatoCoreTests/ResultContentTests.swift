@@ -63,4 +63,23 @@ final class ResultContentTests: XCTestCase {
         c.streak = 4
         XCTAssertEqual(c.rows.last?.sub, "Devam, bozma!")
     }
+
+    /// R8: hatırlatma kapalı, seri 1 ve daha önce sorulmadıysa bir kez
+    func testReminderOffer() throws {
+        var s = Settings()
+        XCTAssertTrue(ReminderOffer.shouldOffer(s, streak: 1))
+        XCTAssertFalse(ReminderOffer.shouldOffer(s, streak: 0))
+        XCTAssertFalse(ReminderOffer.shouldOffer(s, streak: 2), "yalnız ilk seri günü")
+        s.reminderOffered = true
+        XCTAssertFalse(ReminderOffer.shouldOffer(s, streak: 1), "bir kez")
+        s.reminderOffered = false
+        s.reminder = true
+        XCTAssertFalse(ReminderOffer.shouldOffer(s, streak: 1), "hatırlatma açıksa yok")
+        // Eski kayıtta alan yok: gösterilmemiş sayılır; kaydedilip geri okunur
+        let old = try JSONDecoder().decode(Settings.self, from: Data(#"{"reminder":false}"#.utf8))
+        XCTAssertFalse(old.reminderOffered)
+        var n = Settings()
+        n.reminderOffered = true
+        XCTAssertTrue(try JSONDecoder().decode(Settings.self, from: JSONEncoder().encode(n)).reminderOffered)
+    }
 }

@@ -53,10 +53,11 @@ public enum TeacherSection: Equatable, Sendable {
 public enum TeacherFlow {
     public static let invalidMessage = "Kod geçersiz. 6 karakteri kontrol et."
 
-    /// Kod kutusuna yazılan metin: büyük harf, en çok 7 karakter
-    public static func sanitize(_ input: String) -> String {
-        String(input.uppercased().prefix(7))
-    }
+    /// Kod kutusuna yazılan metin: büyük harf, 6 karakter, üçüncüden sonra tire kendiliğinden (R31)
+    public static func sanitize(_ input: String) -> String { formatCodeInput(input, length: 6, split: 3) }
+
+    /// "Kodu yapıştır": panodaki metinden öğretmen kodu (R30)
+    public static func pasted(_ text: String) -> String { codeFromPaste(text, length: 6, split: 3) }
 
     /// Öğretmen tarafı kendi ayarlarıyla dolu başlar; hedef listede yoksa 10
     public static func initialSetup(_ s: Settings) -> TeacherSetup {

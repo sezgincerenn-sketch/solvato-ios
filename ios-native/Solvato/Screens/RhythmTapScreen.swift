@@ -58,15 +58,7 @@ struct RhythmTapScreen: View {
     // MARK: Üst bar
     private var topBar: some View {
         HStack(spacing: Space.s3) {
-            Button(action: askExit) {
-                Icon(.x, size: 18)
-                    .foregroundStyle(ThemeColor.textMuted.color)
-                    .frame(width: 40, height: 40)
-                    .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fillStrong.color))
-                    .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(ThemeColor.border.color, lineWidth: 1))
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Turdan çık")
+            RoundCloseButton(action: askExit)
             HStack(spacing: 4) {
                 ForEach(Array(round.segments.enumerated()), id: \.offset) { _, s in
                     Capsule().fill(segmentColor(s)).frame(height: 6)
@@ -193,11 +185,12 @@ struct RhythmTapScreen: View {
         }
     }
 
-    /// Dokunuş: hafif titreşim; duyulan sese göre ölçülür (dokunuş anından ses gecikmesi düşülür)
+    /// Dokunuş: güçlü titreşim (R22); duyulan sese göre ölçülür (dokunuş anından ses gecikmesi düşülür)
     private func tap() {
         guard round.phase == .play || round.phase == .countin else { return }
-        Haptics.tap()
+        // Önce ölçülür, sonra titreşim: titreşim çağrısı ölçümü geciktirmesin
         round.tap(now: Sound.now - Sound.latency)
+        Haptics.beat()
     }
 
     private func askExit() {

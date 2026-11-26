@@ -16,8 +16,8 @@ public enum AppView: String, Sendable, CaseIterable {
     /// Telefonda yan çevrilebilen ekranlar (G-02)
     public var allowsLandscape: Bool { self == .quiz || self == .chordquiz }
 
-    /// Kenardan kaydırınca bir önceki ekrana dönülen ekranlar. Turlarda (test, akor, Ritmi Tut, düello) kaydırma
-    /// ekranı kaydırmaz, ekranın kendi geri düğmesi (çıkış onayı) çalışır.
+    /// Kenardan kaydırınca bir önceki ekrana dönülen ekranlar. Turlarda (test, akor, Ritmi Tut, düello) ekran yine
+    /// parmakla kayar ama geri dönülmez; bırakınca turun çıkış onayı açılır (R34).
     public var swipesBack: Bool {
         switch self {
         case .settings, .notes, .result, .games, .gameDaily, .gameChallenge, .gameresult, .lesson, .teacher, .privacy, .licenses: true
@@ -25,7 +25,7 @@ public enum AppView: String, Sendable, CaseIterable {
         }
     }
 
-    /// Kendi çıkış onayı olan tur ekranları: kenardan kaydırma onayı açar (ekran kaymaz)
+    /// Kendi çıkış onayı olan tur ekranları: kenardan kaydırma ekranı kaydırır, bırakınca onay açılır (R34)
     public var confirmsExit: Bool { self == .quiz || self == .chordquiz || self == .rhythmtap || self == .duel }
 }
 

@@ -28,6 +28,9 @@ final class ChordRoundTests: XCTestCase {
                 r.check(timeMs: 1000)
             }
             XCTAssertFalse(r.pending)
+            // R2: noktalar cevap sırasıyla birebir
+            XCTAssertEqual(r.dots[i], i < 6 || (i < 9 && q.type == .build) ? .correct : .wrong, "\(i)")
+            XCTAssertEqual(r.dots.dropFirst(i + 1).allSatisfy { $0 == .upcoming }, true)
             XCTAssertEqual(r.buttonTitle, i == 9 ? "Turu bitir" : "Sıradaki")
             if let answers = r.advance() {
                 XCTAssertEqual(answers.count, 10)

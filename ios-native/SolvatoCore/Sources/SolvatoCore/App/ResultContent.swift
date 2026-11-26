@@ -21,6 +21,17 @@ public func trNumber(_ x: Double, maxFraction: Int = 3) -> String {
     return (neg ? "-" : "") + grouped + (frac.isEmpty ? "" : "," + frac)
 }
 
+/// Tur sonucunda tek seferlik hatırlatma teklifi (R8): hatırlatma kapalıyken seri ilk kez 1 olunca. "Hatırlat" bildirim
+/// izni ister ve hatırlatmayı şimdiki saate kurar; izin verilmezse hatırlatma kapalı kalır. Bir kez gösterilir.
+public enum ReminderOffer {
+    public static let title = "Serini koru"
+    public static let text = "Yarın bu saatte hatırlatayım mı?"
+    public static let accept = "Hatırlat"
+    public static let decline = "Şimdi değil"
+
+    public static func shouldOffer(_ s: Settings, streak: Int) -> Bool { !s.reminder && !s.reminderOffered && streak == 1 }
+}
+
 public struct ResultContent: Equatable, Sendable {
     public static let categoryLabels: [String: String] = [
         "all": "Karma Pratik", "treble": "Sol Anahtarı Pratiği", "bass": "Fa Anahtarı Pratiği", "rhythm": "Ritim Pratiği",

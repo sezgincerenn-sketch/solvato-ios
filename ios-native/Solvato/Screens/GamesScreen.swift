@@ -149,7 +149,7 @@ struct ChallengeGameScreen: View {
                     muted("Arkadaşının gönderdiği 8 karakterlik kodu yaz; aynı soruları çöz, sonuçları karşılaştır.")
                     CodeField(
                         code: $code, error: $err, placeholder: "ABCD-EFGH", label: "Meydan okuma kodu", button: "Kabul et",
-                        sanitize: GameScreens.sanitizeCode, onSubmit: accept)
+                        sanitize: GameScreens.sanitizeCode, pasted: GameScreens.pastedCode, onSubmit: accept)
                 }
             }
         }

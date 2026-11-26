@@ -16,7 +16,7 @@ public struct ChordRound: Equatable, Sendable {
     /// Seçilen şıkkın akor kimliği
     public private(set) var choice: String?
     public private(set) var score = 0
-    private var answers: [Int: RoundAnswer] = [:]
+    private(set) var answers: [Int: RoundAnswer] = [:]
     public var showFormula = false
 
     public static let length = 10

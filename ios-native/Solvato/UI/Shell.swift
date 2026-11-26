@@ -266,6 +266,24 @@ struct ExitConfirm: View {
     }
 }
 
+// MARK: - Turdan çıkış düğmesi
+/// Soru, akor ve Ritmi Tut turlarının sol üstündeki çarpı (R16): hep aynı görünüm; dokununca çıkış onayı
+struct RoundCloseButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Icon(.x, size: 18)
+                .foregroundStyle(ThemeColor.textMuted.color)
+                .frame(width: Touch.min, height: Touch.min)
+                .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fillStrong.color))
+                .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(ThemeColor.border.color, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Turdan çık")
+    }
+}
+
 // MARK: - Alt menü
 enum NavTab: String, CaseIterable, Sendable {
     case home, dashboard, study, profile

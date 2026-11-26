@@ -115,7 +115,8 @@ private func makeSourceNode(_ m: SynthMixer, format: AVAudioFormat) -> AVAudioSo
     return AVAudioSourceNode(format: format, renderBlock: render)
 }
 
-/// Titreşim (web utils/haptics.ts): dokunuş (hafif), başarı, hata. Ayarlar › Titreşim kapalıysa hiçbiri.
+/// Titreşim (web utils/haptics.ts): dokunuş (hafif), Ritmi Tut vuruşu (güçlü, R22), başarı, hata. Ayarlar › Titreşim
+/// kapalıysa hiçbiri.
 @MainActor
 enum Haptics {
     static var enabled = true
@@ -123,6 +124,13 @@ enum Haptics {
     static func tap() {
         guard enabled else { return }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+    /// Ritmi Tut'ta dokunuş: sert ve tam güçte (R22). Üreteç hazır tutulur, gecikme olmasın.
+    private static let beatGenerator = UIImpactFeedbackGenerator(style: .rigid)
+    static func beat() {
+        guard enabled else { return }
+        beatGenerator.impactOccurred(intensity: 1)
+        beatGenerator.prepare()
     }
     static func success() {
         guard enabled else { return }

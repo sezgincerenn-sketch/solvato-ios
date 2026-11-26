@@ -24,7 +24,11 @@ public enum GameScreens {
         "Herkes bugün aynı \(Games.length) soruyu çözüyor. Günde bir kez oynanır, ilk denemen sayılır. Bitince sonucunu arkadaşlarına gönder, kim daha iyi yapmış görün."
 
     /// Meydan okuma kodu kutusu: büyük harf, en çok 9 karakter
-    public static func sanitizeCode(_ s: String) -> String { String(s.uppercased().prefix(9)) }
+    /// Meydan okuma kodu kutusu: büyük harf, 8 karakter, dördüncüden sonra tire kendiliğinden (R31)
+    public static func sanitizeCode(_ s: String) -> String { formatCodeInput(s, length: 8, split: 4) }
+
+    /// "Kodu yapıştır": panodaki metinden meydan okuma kodu (R30)
+    public static func pastedCode(_ s: String) -> String { codeFromPaste(s, length: 8, split: 4) }
 
     /// Ekran yazıları sırasıyla (altın tablo karşılaştırması için)
     public static func listTexts(today: DailyInfo, played: DailyRecord?) -> [String] {
@@ -94,8 +98,9 @@ public struct GameResultContent: Sendable {
             title = "Meydan okuman hazır"
             shareLabel = "Kodu gönder"
             let who = name.trimmingCharacters(in: .whitespacesAndNewlines)
+            // Kod en üstte, tek başına (R30)
             shareText =
-                "\(who.isEmpty ? "Bir arkadaşın" : who) sana meydan okuyor! 🎹\n\(cat): \(sum.correct)/\(n) · \(fmt(sum.sec))\nGeçebilir misin? Solvato'da Oyunlar › \"Sana kod mu geldi?\" kısmına yaz:\n\(code)"
+                "\(code)\n\n\(who.isEmpty ? "Bir arkadaşın" : who) sana meydan okuyor! 🎹\n\(cat): \(sum.correct)/\(n) · \(fmt(sum.sec))\nGeçebilir misin? Solvato'da Oyunlar › \"Sana kod mu geldi?\" kısmına kodu yapıştır."
         case let .challenge(_, _, _, o?):
             // Önce doğru sayısı, eşitse süre; ikisi de eşitse berabere
             let win: Bool? = sum.correct != o.correct ? sum.correct > o.correct : sum.sec != o.sec ? sum.sec < o.sec : nil

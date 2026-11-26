@@ -49,8 +49,22 @@ final class GameScreensTests: XCTestCase {
         XCTAssertEqual(win.title, "Kazandın!")
         XCTAssertEqual(win.shareText, "Ritim meydan okumanı geçtim: 7/10 (42 sn), sen 6/10 (50 sn) 😎")
         let mine = GameResultContent(ctx: .challenge(category: .rhythm, level: 2, seed: 9, opponent: nil), results: rs, name: " Ayşe ", dailyStreak: 0)
-        XCTAssertTrue(mine.shareText.hasPrefix("Ayşe sana meydan okuyor! 🎹\nRitim: 7/10 · 42 sn\n"))
         guard case let .newChallenge(code) = mine.kind else { return XCTFail() }
         XCTAssertEqual(ChallengeCode.decode(code)?.correct, 7)
+        // R30: kod en üstte, tek başına; mesajın tamamı yapıştırılsa da kod bulunur
+        XCTAssertEqual(
+            mine.shareText,
+            "\(code)\n\nAyşe sana meydan okuyor! 🎹\nRitim: 7/10 · 42 sn\nGeçebilir misin? Solvato'da Oyunlar › \"Sana kod mu geldi?\" kısmına kodu yapıştır.")
+        XCTAssertEqual(GameScreens.pastedCode(mine.shareText), code)
+        XCTAssertEqual(GameScreens.pastedCode("  \(code.lowercased())  "), code)
+    }
+
+    /// R31: yazılırken tire kendiliğinden; 8 karakter
+    func testChallengeCodeInput() {
+        XCTAssertEqual(GameScreens.sanitizeCode("abcd"), "ABCD")
+        XCTAssertEqual(GameScreens.sanitizeCode("abcde"), "ABCD-E")
+        XCTAssertEqual(GameScreens.sanitizeCode("ABCD-EFGH"), "ABCD-EFGH")
+        XCTAssertEqual(GameScreens.sanitizeCode("abcd efghij"), "ABCD-EFGH")
+        XCTAssertEqual(GameScreens.sanitizeCode("ABCD-"), "ABCD", "silerken tire kalmaz")
     }
 }

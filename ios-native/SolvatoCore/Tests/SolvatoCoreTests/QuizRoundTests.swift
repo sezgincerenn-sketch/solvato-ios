@@ -26,6 +26,24 @@ final class QuizRoundTests: XCTestCase {
         XCTAssertEqual(r.score, 1)
     }
 
+    /// R2: cevaplanan noktalar doğru/yanlış renginde, şimdiki ve kalanlar bugünkü gibi
+    func testDots() {
+        let qs = Array(QuestionBank.all.prefix(4))
+        var r = QuizRound(questions: qs, prefersPiano: false)
+        func marks() -> String { String(r.dots.map(\.mark)) }
+        XCTAssertEqual(marks(), "●···")
+        _ = r.answer(qs[0].correctAnswer, timeMs: 1)
+        XCTAssertEqual(marks(), "✓···", "cevaplanan şimdiki soru da renk alır")
+        _ = r.advance()
+        XCTAssertEqual(marks(), "✓●··")
+        _ = r.answer("yanlış", timeMs: 1)
+        _ = r.advance()
+        _ = r.timeout(timeMs: 1)
+        _ = r.advance()
+        XCTAssertEqual(marks(), "✓✗✗●")
+        XCTAssertEqual(r.dots.filter { $0 == .correct }.count, r.score, "tur sonucu sayısıyla tutarlı")
+    }
+
     func testFlareEveryThirdCorrect() {
         let qs = Array(QuestionBank.all.prefix(6))
         var r = QuizRound(questions: qs, prefersPiano: false)

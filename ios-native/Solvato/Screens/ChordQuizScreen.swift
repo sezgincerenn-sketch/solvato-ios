@@ -89,29 +89,9 @@ struct ChordQuizScreen: View {
     // MARK: Üst çubuk
     private var topBar: some View {
         HStack(spacing: 10) {
-            Button { showExit = true } label: {
-                Image(systemName: "arrow.left")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(ThemeColor.textFaint.color)
-                    .frame(width: 44, height: 44)
-                    .background(RoundedRectangle(cornerRadius: Radius.sm).fill(ThemeColor.fill.color))
-                    .overlay(RoundedRectangle(cornerRadius: Radius.sm).strokeBorder(ThemeColor.border.color, lineWidth: 1))
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Çık")
+            RoundCloseButton { showExit = true }
             HStack(spacing: 3) {
-                ForEach(0..<round.questions.count, id: \.self) { i in
-                    Capsule()
-                        .fill(
-                            i < round.index
-                                ? AnyShapeStyle(PaletteColor.violet500.color)
-                                : i == round.index
-                                    ? AnyShapeStyle(LinearGradient(colors: [PaletteColor.violet500.color, PaletteColor.violet400.color], startPoint: .leading, endPoint: .trailing))
-                                    : AnyShapeStyle(ThemeColor.fillStrong.color)
-                        )
-                        .frame(width: i == round.index ? 14 : 5, height: 5)
-                        .shadow(color: i == round.index ? PaletteColor.violet500.opacity(0.5) : .clear, radius: 4)
-                }
+                RoundDotsView(dots: round.dots, index: round.index, currentWidth: 14, width: 5, spacing: 3, upcoming: .fillStrong)
                 Text(verbatim: "\(round.index + 1)/\(round.questions.count)")
                     .font(.mono(FontSize.sm, .bold))
                     .foregroundStyle(ThemeColor.textMuted.color)

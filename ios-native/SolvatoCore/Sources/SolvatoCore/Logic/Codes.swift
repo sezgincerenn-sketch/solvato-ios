@@ -11,6 +11,24 @@ func normalizeCode(_ code: String) -> [Character] {
         .map { $0 == "O" ? "0" : $0 == "I" ? "1" : $0 }
 }
 
+/// Kod kutusunda yazılırken (R31): büyük harf, harf/rakam dışı atılır, en çok `length` karakter; `split` karakterden
+/// sonra tire kendiliğinden eklenir ("k7m2" → "K7M-2"). Sondaki tire eklenmez, silerken takılmasın.
+public func formatCodeInput(_ input: String, length: Int, split: Int) -> String {
+    let chars = Array(input.uppercased().filter { $0.isASCII && ($0.isLetter || $0.isNumber) }.prefix(length))
+    guard chars.count > split else { return String(chars) }
+    return String(chars[..<split]) + "-" + String(chars[split...])
+}
+
+/// Yapıştırılan metinden kod (R30): mesajın tamamı yapıştırılsa da (eski "Kod: K7M-2QX" satırı dahil) kod
+/// uzunluğundaki ilk sözcük bulunur; yoksa metnin başı kullanılır
+public func codeFromPaste(_ text: String, length: Int, split: Int) -> String {
+    let words = text.split(whereSeparator: { $0.isWhitespace })
+    let hit = words.first { w in
+        w.allSatisfy { $0 == "-" || $0.isASCII && ($0.isLetter || $0.isNumber) } && w.filter { $0 != "-" }.count == length
+    }
+    return formatCodeInput(String(hit ?? Substring(text)), length: length, split: split)
+}
+
 func readCode(_ s: [Character], length: Int) -> Int? {
     guard s.count == length else { return nil }
     var n = 0
@@ -141,9 +159,10 @@ public enum TeacherCode {
         ]
     }
 
+    /// Paylaşım mesajı: kod en üstte, tek başına (R30); öğretmen kodu Profil'de (gezinme.md)
     public static func shareText(code: String, _ t: TeacherSetup) -> String {
-        (["🎹 Solvato · Öğretmen kodu", "Kod: \(code)", ""] + describe(t).map { "• \($0)" }
-            + ["", "Solvato'da Ayarlar › Öğretmen kodu bölümüne bu kodu yaz."]).joined(separator: "\n")
+        ([code, "", "🎹 Solvato · Öğretmen kodu", ""] + describe(t).map { "• \($0)" }
+            + ["", "Solvato'da Profil › Öğretmen kodu bölümüne bu kodu yapıştır."]).joined(separator: "\n")
     }
 }
 

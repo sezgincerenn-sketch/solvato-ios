@@ -7,6 +7,24 @@ final class TeacherLegalTests: XCTestCase {
     func testSanitize() {
         XCTAssertEqual(TeacherFlow.sanitize("abc-defgh"), "ABC-DEF")
         XCTAssertEqual(TeacherFlow.sanitize("k7m"), "K7M")
+        // R31: tire kendiliğinden
+        XCTAssertEqual(TeacherFlow.sanitize("k7m2"), "K7M-2")
+        XCTAssertEqual(TeacherFlow.sanitize("K7M2QX"), "K7M-2QX")
+        XCTAssertEqual(TeacherFlow.sanitize("K7M-"), "K7M")
+        XCTAssertEqual(TeacherFlow.sanitize("ç7m 2qx!"), "7M2-QX")
+    }
+
+    /// R30: paylaşım mesajında kod en üstte; mesajın tamamı yapıştırılsa da kod bulunur
+    func testShareAndPaste() {
+        let setup = TeacherSetup(notes: ["Do", "Re", "Mi"], clef: .bass, level: 2, dailyGoal: 30, keyLabels: true, topics: ["rhythm"])
+        let code = TeacherCode.encode(setup)
+        let text = TeacherCode.shareText(code: code, setup)
+        XCTAssertEqual(text.components(separatedBy: "\n").first, code)
+        XCTAssertTrue(text.hasSuffix("Solvato'da Profil › Öğretmen kodu bölümüne bu kodu yapıştır."))
+        XCTAssertEqual(TeacherFlow.pasted(text), code)
+        XCTAssertEqual(TeacherFlow.pasted(code.lowercased()), code)
+        XCTAssertEqual(TeacherFlow.pasted("🎹 Solvato · Öğretmen kodu\nKod: \(code)\n"), code, "eski mesaj biçimi")
+        XCTAssertEqual(TeacherFlow.pasted("k7m2"), "K7M-2", "kod bulunmazsa metnin başı")
     }
 
     func testInitialSetupGoalFallback() {

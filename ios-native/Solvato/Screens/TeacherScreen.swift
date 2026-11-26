@@ -68,7 +68,7 @@ struct TeacherScreen: View {
             } else {
                 CodeField(
                     code: $code, error: $err, placeholder: "ABC-DEF", label: "Öğretmen kodu", button: "Uygula",
-                    sanitize: TeacherFlow.sanitize, onSubmit: apply)
+                    sanitize: TeacherFlow.sanitize, pasted: TeacherFlow.pasted, onSubmit: apply)
                 if !model.settings.teacherCode.isEmpty {
                     muted("Son uygulanan kod: \(model.settings.teacherCode)", size: FontSize.xs)
                 }

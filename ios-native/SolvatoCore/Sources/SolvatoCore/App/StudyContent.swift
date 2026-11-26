@@ -109,8 +109,8 @@ public enum Lessons {
         var l: [Lesson] = [
             Lesson(id: "notes-treble", section: .notes, title: "Sol anahtarı notaları", sub: "Portedeki yeri, piyanodaki tuşu", icon: .note, color: CategoryColor.treble.base),
             Lesson(id: "notes-bass", section: .notes, title: "Fa anahtarı notaları", sub: "Sol el notaları, portede ve piyanoda", icon: .note, color: CategoryColor.bass.base),
-            Lesson(id: "mnemonic-treble", section: .notes, title: "Ezber cümleleri: Sol anahtarı", sub: "Misafir Sola Silgiyi Reçele Fırlattı", icon: .bookmark, color: CategoryColor.treble.base),
-            Lesson(id: "mnemonic-bass", section: .notes, title: "Ezber cümleleri: Fa anahtarı", sub: "Solucan Simit, Reçel, Fasulye, Lahana yedi", icon: .bookmark, color: CategoryColor.bass.base),
+            Lesson(id: "mnemonic-treble", section: .notes, title: "Kolay hatırla: Sol anahtarı", sub: "Misafir Sola Silgiyi Reçele Fırlattı", icon: .bookmark, color: CategoryColor.treble.base),
+            Lesson(id: "mnemonic-bass", section: .notes, title: "Kolay hatırla: Fa anahtarı", sub: "Solucan Simit, Reçel, Fasulye, Lahana yedi", icon: .bookmark, color: CategoryColor.bass.base),
             Lesson(id: "accidentals", section: .notes, title: "Diyez ve bemol", sub: "Siyah tuşlar, ♯ ve ♭ sırası", icon: .piano, color: CategoryColor.accidentals.base),
             Lesson(id: "rhythm-values", section: .rhythm, title: "Nota değerleri", sub: "Birlik, ikilik, dörtlük… kaç vuruş?", icon: .waves, color: CategoryColor.rhythm.base),
             Lesson(id: "rhythm-rests", section: .rhythm, title: "Sus işaretleri", sub: "Her notanın aynı süren bir susu var", icon: .waves, color: CategoryColor.rhythm.base),

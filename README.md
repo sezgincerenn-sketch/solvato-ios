@@ -136,6 +136,13 @@ ios-native/
   "Ben öğretmenim" seçilince tanıtım biter ve öğretmen kodu ekranı yalnız hazırlama bölümüyle açılır. Öğretmen kodu
   ekranının bölümü role göre (`TeacherSection`). Hatırlatma saati her yerde aynı saat satırı (`UI/TimeField.swift`, saat
   çarkı); yeni ayar `reminderMinute` (0–59). Ayarlar'daki alt yazı Türkçe eke uyar: "Her gün 07:45'te", "19:00'da".
+- **Revizeler (yalnız native, 26 Kasım; `docs/ozellikler/tasarim-revize.md`):** tur noktaları doğru/yanlış renginde
+  (R2, `RoundDots` → `UI/RoundDotsView`); turların sol üstünde hep çarpı (R16, `RoundCloseButton`); turlarda da kenardan
+  kaydırınca ekran kayar, bırakınca çıkış onayı (R34, `AppRoot`); Ritmi Tut'ta güçlü titreşim (R22, `Haptics.beat`);
+  kod kutusunda tire kendiliğinden (R31, `formatCodeInput`) ve "Kodu yapıştır" (R30, `codeFromPaste`: mesajın tamamından
+  kodu bulur); paylaşım mesajlarında kod en üstte; Diyez-bemol dersinde bemol sekmesi korunur (R10); "Ezber cümleleri" →
+  "Kolay hatırla" (R33; `calisma.json` altın tablosunda bu başlıklar ve "hatırla" araması elle değişti, `node scripts/altin.mjs`
+  çalıştırılırsa geri alın); tur sonunda bir kez "Serini koru" teklifi (R8, `ReminderOffer`, yeni ayar `reminderOffered`).
 - **Ayarlar düzeni (yalnız native, `docs/ozellikler/ayarlar.md`):** dört kart (Çalışma · Sorular · Ses ve bildirim ·
   Diğer); satırda o anki değer, dokununca seçim penceresi (`UI/SettingsRows.swift`, değer yazıları `SettingsText`).
   Çalışılacak notalar ayrı ekran (`AppView.notes`). Hatırlatma saati Ayarlar'da satır ("19:00 ›"), tanıtımda büyük kutu.

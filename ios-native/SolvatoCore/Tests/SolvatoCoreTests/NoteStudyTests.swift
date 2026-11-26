@@ -73,11 +73,24 @@ final class NoteStudyTests: XCTestCase {
         XCTAssertEqual(a.desc, "Re notasının yarım ses altı (alçaltır). Piyanoda siyah tuştur: Do♯ / Re♭.")
         XCTAssertEqual(a.highlighted.name, "Do")
         XCTAssertTrue(a.highlighted.black)
-        // Siyah tuşa basınca diyeze geçer
+        // R10: bemol sekmesinde siyah tuş bemolde kalır (Fa# tuşu → Sol♭)
+        a.pick("Fa", 4, sharp: true)
+        XCTAssertEqual(a.acc, .flat)
+        XCTAssertEqual(a.badge, "Sol♭")
+        XCTAssertEqual(a.highlighted.name, "Fa")
+        XCTAssertTrue(a.highlighted.black)
+        a.pick("La", 4, sharp: true)
+        XCTAssertEqual(a.badge, "Si♭")
+        XCTAssertFalse(a.available("Fa", 4, sharp: false))
+        // Diyez sekmesinde siyah tuş diyez
+        a.setAcc(.sharp)
         a.pick("Fa", 4, sharp: true)
         XCTAssertEqual(a.badge, "Fa♯")
         XCTAssertEqual(a.counter, "3/10")
-        XCTAssertFalse(a.available("Fa", 4, sharp: false))
+        // Bemol sekmesinde, portede olmayan bemol (Sol anahtarında Si♭5 yok) geçilemez
+        a.setAcc(.flat)
+        XCTAssertFalse(a.available("La", 5, sharp: true))
+        XCTAssertTrue(a.available("Sol", 5, sharp: true))
     }
 
     /// Derslerde çalınan notalar (web NotesStudy go / MemoCard octs)

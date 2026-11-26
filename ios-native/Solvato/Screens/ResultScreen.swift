@@ -6,6 +6,9 @@ import SwiftUI
 
 struct ResultScreen: View {
     let model: AppModel
+    /// R8 "Serini koru" kartı bu ekranda görünüyor mu; izin verilmezse karttaki uyarı
+    @State private var offer = false
+    @State private var offerMsg = ""
 
     private var content: ResultContent {
         ResultContent(
@@ -33,6 +36,7 @@ struct ResultScreen: View {
                 SolfieSays(text: c.solfieText, amber: c.newBest, pose: c.newBest ? .cheer : .idle)
                     .padding(.top, 4)
                     .padding(.bottom, 20)
+                if offer { reminderOffer.padding(.bottom, 20) }
                 ScoreRing(value: c.correct, max: c.total, label: "%\(c.pct)", caption: "Doğruluk", detail: "\(c.correct)/\(c.total) doğru")
                     .background {
                         // web: inset −10 daire, radial-gradient(circle, violet .4 0%, saydam 65%); yarıçap en uzak köşe 80·√2
@@ -89,6 +93,54 @@ struct ResultScreen: View {
                 .allowsHitTesting(false)
         }
         .background(ThemeColor.bg.color)
+        .onAppear {
+            // Bir kez: gösterildiği an işaretlenir (kutlama açıksa kart altında bekler)
+            guard ReminderOffer.shouldOffer(model.settings, streak: model.stats.streak) else { return }
+            offer = true
+            model.settings.reminderOffered = true
+        }
+    }
+
+    /// R8: hatırlatma kapalıyken ilk seri gününde "Serini koru" teklifi
+    private var reminderOffer: some View {
+        AppCard(tone: .violet500) {
+            VStack(alignment: .leading, spacing: Space.s3) {
+                HStack(spacing: Space.s2) {
+                    Icon(.flame, size: 18, fill: true).foregroundStyle(ThemeColor.orangeText.color)
+                    Text(ReminderOffer.title).font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color)
+                }
+                Text(ReminderOffer.text).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color)
+                if offerMsg.isEmpty {
+                    HStack(spacing: Space.s2) {
+                        AppButton(ReminderOffer.decline, variant: .secondary, block: true) { withAnimation { offer = false } }
+                        AppButton(ReminderOffer.accept, block: true, action: acceptReminder)
+                    }
+                } else {
+                    Text(offerMsg)
+                        .font(.ui(FontSize.sm))
+                        .foregroundStyle(ThemeColor.redText.color)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+        .transition(.opacity)
+    }
+
+    /// İzin istenir, hatırlatma şimdiki saate kurulur; izin yoksa hatırlatma kapalı kalır ve kartta uyarı
+    private func acceptReminder() {
+        let c = Calendar.current.dateComponents([.hour, .minute], from: Date())
+        let h = c.hour ?? model.settings.reminderHour
+        let m = c.minute ?? model.settings.reminderMinute
+        Task { @MainActor in
+            if await Reminder.enable(hour: h, minute: m) {
+                model.settings.reminder = true
+                model.settings.reminderHour = h
+                model.settings.reminderMinute = m
+                withAnimation { offer = false }
+            } else {
+                offerMsg = "Bildirim izni verilmedi. iPhone Ayarlar → Solvato → Bildirimler bölümünden açabilirsin."
+            }
+        }
     }
 
     private func statBox(icon: AnyView, value: String, label: String, text: ThemeColor, tint: PaletteColor) -> some View {

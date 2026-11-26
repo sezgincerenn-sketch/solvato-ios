@@ -130,17 +130,29 @@ public struct StaffStudyState: Equatable, Sendable {
         selected = list.first ?? 0
     }
 
-    /// Mini piyanoda bu tuşa basınca bir notaya geçilebilir mi
-    public func available(_ n: String, _ o: Int, sharp: Bool) -> Bool {
-        notes.indices.contains { k in
-            notes[k].name == n && octaves[k] == o && (!accidentalsMode ? !sharp : sharp && Accidentals.sharpNames.contains(n))
+    /// Mini piyanoda basılan tuşun dersteki notası (tablodaki sıra). Doğal derste beyaz tuşlar; Diyez-bemol dersinde
+    /// siyah tuşlar ve sekme korunur (R10): diyezde tuşun solundaki nota (Fa# → Fa♯), bemolde sağındaki (Fa# → Sol♭).
+    func target(_ n: String, _ o: Int, sharp: Bool) -> Int? {
+        let name: String?
+        if !accidentalsMode {
+            name = sharp ? nil : n
+        } else if !sharp {
+            name = nil
+        } else if acc == .flat {
+            name = Accidentals.flatNames.first { Accidentals.flatKey[$0] == n + "#" }
+        } else {
+            name = Accidentals.sharpNames.contains(n) ? n : nil
         }
+        guard let name else { return nil }
+        return notes.indices.first { notes[$0].name == name && octaves[$0] == o }
     }
+
+    /// Mini piyanoda bu tuşa basınca bir notaya geçilebilir mi
+    public func available(_ n: String, _ o: Int, sharp: Bool) -> Bool { target(n, o, sharp: sharp) != nil }
 
     /// Mini piyanoda bir tuşa basıldı (geçilemeyen tuş yalnız ses çalar)
     public mutating func pick(_ n: String, _ o: Int, sharp: Bool) {
-        guard available(n, o, sharp: sharp), let i = notes.indices.first(where: { notes[$0].name == n && octaves[$0] == o }) else { return }
-        if sharp { acc = .sharp }
+        guard let i = target(n, o, sharp: sharp) else { return }
         selected = i
     }
 
