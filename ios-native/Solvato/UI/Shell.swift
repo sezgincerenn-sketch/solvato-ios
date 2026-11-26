@@ -199,6 +199,11 @@ struct TopicLink: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 if let acc {
                     PercentRing(acc: acc, color: color.base)
+                    // Konu kartlarındaki gibi ▶ (R40): Ana sayfadaki bütün satırlar aynı
+                    PlayShape()
+                        .fill(ThemeColor.textFaint.color)
+                        .frame(width: 10, height: 10)
+                        .accessibilityHidden(true)
                 } else {
                     if let stars { Stars(value: stars, size: 13) }
                     PlayChip()
