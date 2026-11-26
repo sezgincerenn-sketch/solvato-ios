@@ -15,7 +15,9 @@ on:
   workflow_dispatch:
 concurrency:
   group: native-ekranlar
-  cancel-in-progress: true # art arda gönderimlerde yalnızca sonuncusu
+  # Çalışan koşu yarıda kesilmez (görüntüler mutlaka gelsin); arada gelen gönderimlerden yalnızca en sonuncusu
+  # sırada bekler, ötekiler atlanır.
+  cancel-in-progress: false
 permissions:
   contents: write # ekranlar dalına yazmak için
 jobs:
