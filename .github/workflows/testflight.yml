@@ -30,6 +30,31 @@ jobs:
             [ -n "${!v}" ] || eksik="$eksik $v"
           done
           if [ -n "$eksik" ]; then echo "Eksik depo sırrı:$eksik (rehber: docs/IOS-TEST-REHBERI.md)"; exit 1; fi
+      - name: Anahtarların biçimini düzelt
+        # Telefondan yapıştırırken satır sonları kaybolabiliyor (tek satır, boşluklu, \n yazılı): başlık ve gövdeyi
+        # ayırıp 64 karakterlik satırlarla yeniden kurar. Anahtarın kendisi değişmez, günlüğe yazılmaz.
+        run: |
+          duzelt() {
+            python3 - "$1" <<'PY'
+          import os, re, sys
+          v = os.environ.get(sys.argv[1], "").replace("\\n", "\n").replace("\r", "")
+          m = re.search(r"-----BEGIN ([A-Z ]+)-----(.*?)-----END \1-----", v, re.S)
+          if not m:
+              sys.exit(f"{sys.argv[1]}: -----BEGIN … -----END satırları bulunamadı; değerin tamamı yapıştırılmamış olabilir")
+          body = re.sub(r"[^A-Za-z0-9+/=]", "", m.group(2))
+          lines = [body[i:i + 64] for i in range(0, len(body), 64)]
+          print(f"-----BEGIN {m.group(1)}-----\n" + "\n".join(lines) + f"\n-----END {m.group(1)}-----")
+          PY
+          }
+          for v in APP_STORE_CONNECT_PRIVATE_KEY CERTIFICATE_PRIVATE_KEY; do
+            pem=$(duzelt "$v") || exit 1
+            echo "::add-mask::$(echo "$pem" | sed -n 2p)"
+            { echo "$v<<PEM_SONU"; echo "$pem"; echo "PEM_SONU"; } >> "$GITHUB_ENV"
+            echo "$v: $(echo "$pem" | head -1) · $(echo "$pem" | wc -l | tr -d ' ') satır"
+          done
+          # Kimlikler: baştaki/sondaki boşluklar
+          echo "APP_STORE_CONNECT_ISSUER_ID=$(echo "$APP_STORE_CONNECT_ISSUER_ID" | tr -d '[:space:]')" >> "$GITHUB_ENV"
+          echo "APP_STORE_CONNECT_KEY_IDENTIFIER=$(echo "$APP_STORE_CONNECT_KEY_IDENTIFIER" | tr -d '[:space:]')" >> "$GITHUB_ENV"
       - name: Xcode sürümü 26 ya da üstü mü
         run: |
           xcodebuild -version
