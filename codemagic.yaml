@@ -20,66 +20,7 @@ definitions:
         cd ios-native && xcodegen generate
     - &ui_ekranlar
       name: UI testleri ve ekran görüntüleri
-      script: |
-        set -o pipefail
-        # iOS simülatörü kurulu değilse indir (Xcode 26'da ayrı geliyor)
-        if ! xcrun simctl list runtimes | grep -q "^iOS"; then xcodebuild -downloadPlatform iOS; fi
-        xcrun simctl list runtimes
-        xcrun simctl list runtimes -j > /tmp/runtimes.json
-        xcrun simctl list devicetypes -j > /tmp/types.json
-        python3 scripts/native-simulatorler.py /tmp/runtimes.json /tmp/types.json > /tmp/devices.txt
-        cat /tmp/devices.txt
-        [ "$(wc -l < /tmp/devices.txt)" -ge 3 ] || { echo "Üç simülatör bulunamadı"; exit 1; }
-        mkdir -p build/ekranlar
-        # Hangi cihazlar ve testler: ios-native/ui-testleri.txt (boş test listesi = hepsi)
-        CIHAZLAR=$(sed -n 's/^cihazlar:[[:space:]]*//p' ios-native/ui-testleri.txt)
-        TESTLER=$(sed -n 's/^testler:[[:space:]]*//p' ios-native/ui-testleri.txt)
-        SADECE=""
-        for t in $TESTLER; do SADECE="$SADECE -only-testing:SolvatoUITests/ScreenshotTests/$t"; done
-        echo "Cihazlar: ${CIHAZLAR:-hepsi} · Testler: ${TESTLER:-hepsi}"
-        # Bir kez derle, her cihazda derlemeden koş
-        xcodebuild build-for-testing -project ios-native/Solvato.xcodeproj -scheme Solvato \
-          -destination "generic/platform=iOS Simulator" -derivedDataPath build/dd \
-          CODE_SIGNING_ALLOWED=NO < /dev/null > build/xcodebuild-derleme.log 2>&1 || true
-        echo "── derleme: hatalar ──"
-        grep -E "error:|: error" build/xcodebuild-derleme.log | sort -u | head -80 || true
-        grep -q "TEST BUILD SUCCEEDED" build/xcodebuild-derleme.log || { tail -25 build/xcodebuild-derleme.log; exit 1; }
-        while IFS='|' read -r SLUG TYPE RUNTIME; do
-          if [ -n "$CIHAZLAR" ] && ! echo " $CIHAZLAR " | grep -q " $SLUG "; then continue; fi
-          UDID=$(xcrun simctl create "solvato-$SLUG" "$TYPE" "$RUNTIME")
-          echo "$SLUG: $TYPE ($UDID)"
-          # Tam çıktı dosyaya; ekrana önce düşen testler, sonra son satırlar. Takılan test 10 dakikada kesilir.
-          xcodebuild test-without-building -project ios-native/Solvato.xcodeproj -scheme Solvato \
-            -destination "platform=iOS Simulator,id=$UDID" -derivedDataPath build/dd $SADECE \
-            -test-timeouts-enabled YES -maximum-test-execution-time-allowance 600 \
-            -resultBundlePath "build/ui-$SLUG.xcresult" < /dev/null > "build/xcodebuild-$SLUG.log" 2>&1 || true
-          echo "── $SLUG: hatalar ──"
-          grep -E "error:|: error|failed \(|XCTAssert|Test Case .* failed" "build/xcodebuild-$SLUG.log" | sort -u | head -80 || true
-          echo "── $SLUG: son satırlar ──"
-          tail -25 "build/xcodebuild-$SLUG.log"
-          mkdir -p build/ekranlar
-          { grep -E "error:|: error|failed \(|XCTAssert|Test Case .* failed|crash|Fatal error" "build/xcodebuild-$SLUG.log" | sort -u | head -80
-            echo "── son satırlar ──"; tail -40 "build/xcodebuild-$SLUG.log"; } > "build/ekranlar/xcodebuild-$SLUG.txt" || true
-          python3 scripts/native-ekranlar.py "build/ui-$SLUG.xcresult" "$SLUG" build/ekranlar || true
-          # Uygulama kapandıysa simülatörün çökme raporları (hangi satırda, hangi iş parçacığında) zip'e girer
-          for r in ~/Library/Logs/DiagnosticReports/Solvato*.ips; do
-            [ -e "$r" ] && cp "$r" "build/ekranlar/cokme-$SLUG-$(basename "$r" .ips).txt"
-          done
-        done < /tmp/devices.txt
-        # Görüntü olmasa da zip'ler üretilir (hata dosyaları ve çökme raporları içinde); adım sonda düşer
-        mkdir -p build/ekranlar
-        cd build && zip -qr native-ekranlar.zip ekranlar
-        # Sohbete gönderilebilecek küçük kopya (30 MB altı): yalnız iPhone, yarı boyut, JPEG
-        mkdir -p ekranlar-kucuk
-        for f in ekranlar/*-iphone-koyu.png ekranlar/*-iphone-acik.png ekranlar/hata-*-iphone-*.png; do
-          [ -e "$f" ] || continue
-          sips -s format jpeg -s formatOptions 70 --resampleWidth 600 "$f" --out "ekranlar-kucuk/$(basename "${f%.png}").jpg" > /dev/null
-        done
-        # Hata mesajları ve test çıktısının özeti küçük zip'e de (sohbete gönderilince neden düştüğü görülsün)
-        cp ekranlar/*.txt ekranlar-kucuk/ 2>/dev/null || true
-        zip -qr native-ekranlar-kucuk.zip ekranlar-kucuk
-        ls -lh native-ekranlar*.zip
-        ls ekranlar | grep -q png || { echo "Ekran görüntüsü yok"; exit 1; }
+      script: bash scripts/native-ui-testleri.sh
 
 workflows:
   ios-testflight:
@@ -142,7 +83,7 @@ workflows:
   # ─── Native iOS (Swift / SwiftUI, docs/PLAN.md Paket 0) ─────────────────────────────────────────────────────────
   # İki iş akışı:
   # - ios-native-test: imzasız. Çekirdek paket testleri, iPhone / küçük iPhone / iPad simülatöründe UI testleri ve
-  #   ekran görüntüleri. main'e `ios-native/` klasörünü değiştiren her gönderimde kendiliğinden başlar.
+  #   ekran görüntüleri. Elle başlatılır; her gönderimde aynısı GitHub Actions'ta koşar (native-ekranlar.yml).
   # - ios-native-testflight: çekirdek testleri + imzalı derleme ve TestFlight (UI testleri yok). Elle başlatılır;
   #   App Store imzalaması kurulu olmalı (docs/IOS-TEST-REHBERI.md, Bölüm A ve B 5–7).
   # Ekran görüntüleri derleme çıktısında `native-ekranlar.zip` (<senaryo>-<iphone|iphone-kucuk|ipad>-<koyu|acik>.png).
@@ -153,20 +94,8 @@ workflows:
     max_build_duration: 60
     environment:
       xcode: latest
-    triggering:
-      events:
-        - push
-      branch_patterns:
-        - pattern: main
-          include: true
-      cancel_previous_builds: true # art arda gönderimlerde yalnızca sonuncusu derlenir
-    when:
-      changeset:
-        includes:
-          - ios-native/
-          - scripts/native-ekranlar.py
-          - scripts/native-simulatorler.py
-          - codemagic.yaml
+    # Kendiliğinden başlamaz: aynı testler her gönderimde GitHub'da ücretsiz koşuyor (.github/workflows/native-ekranlar.yml).
+    # Codemagic dakikaları TestFlight'a kalsın; gerekirse "Start new build" ile elle başlatılır.
     scripts:
       - *xcode_kontrol
       - *cekirdek_test

@@ -108,10 +108,14 @@ ios-native/
 - **Sesler web ile birebir:** `node scripts/altin-ses.mjs` web'in seslerini Chromium'da OfflineAudioContext ile 48 kHz'de
   üretip 5 ms'lik RMS düzeylerini `Fixtures/ses.json`'a yazar; `SynthTests` SynthMixer'ın ürettiği sesle pencere pencere
   karşılaştırır (perde, süre, sıra, zarf). `utils/audio.ts` değişirse betiği çalıştırın.
-- **Derleme (Codemagic, iki iş akışı):**
+- **GitHub Actions (ücretsiz, her gönderimde):** `cekirdek-testleri.yml` Linux'ta `swift test`; `native-ekranlar.yml`
+  `main`e `ios-native/` değişince Mac sunucusunda uygulamayı derler, UI testlerini koşar (`scripts/native-ui-testleri.sh`,
+  seçim `ios-native/ui-testleri.txt`). Küçültülmüş görüntüler ve hata özetleri **`ekranlar` dalında** (her koşu baştan
+  yazar; `BENIOKU.md` hangi commit olduğunu söyler), tam boy PNG'ler koşunun Artifacts bölümünde.
+- **Derleme (Codemagic, iki iş akışı; ikisi de elle başlatılır, dakikalar TestFlight için):**
   - `ios-native-test`, imzasız: `swift test`, `xcodegen generate`, iPhone / küçük iPhone / iPad simülatörlerinde UI
     testleri ve ekran görüntüleri (`native-ekranlar.zip`, adlar web referanslarıyla aynı:
-    `<senaryo>-<cihaz>-<koyu|acik>.png`). main'e `ios-native/` değişikliği gönderilince kendiliğinden başlar.
+    `<senaryo>-<cihaz>-<koyu|acik>.png`). Aynı adımlar GitHub'da her gönderimde koşuyor.
     Uygulama bir kez derlenir, testler derlemeden koşar. Hangi testlerin hangi cihazlarda koşacağı
     `ios-native/ui-testleri.txt`'te (hepsi üç cihazda 90 dakikayı aşıyor; her adımda değişen ekranlar seçilir).
   - `ios-native-testflight`: aynı adımlar + imzalı derleme ve TestFlight; elle başlatılır. Build numarası 1000 +

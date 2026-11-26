@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Native UI testleri için üç simülatör seçer: büyük iPhone, küçük iPhone, 13 inç iPad (en yeni iOS sürümüyle).
 # Simülatör adları Xcode sürümüyle değiştiği için sabit ad yerine kurulu cihaz türlerinden desenle seçer.
-# Çıktı satır satır "<kısa ad>|<cihaz türü>|<runtime kimliği>"; Codemagic `ios-native-*` iş akışları kullanır.
+# Çıktı satır satır "<kısa ad>|<cihaz türü>|<runtime kimliği>"; scripts/native-ui-testleri.sh kullanır.
 # Kullanım: python3 scripts/native-simulatorler.py <simctl runtimes -j çıktısı> <simctl devicetypes -j çıktısı>
 import json
 import re

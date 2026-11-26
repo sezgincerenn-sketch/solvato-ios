@@ -1,0 +1,72 @@
+# Native iOS uygulamasını GitHub'ın Mac sunucusunda derler, UI testlerini iPhone / küçük iPhone / iPad simülatöründe
+# koşar ve ekran görüntülerini alır. Depo herkese açık olduğu için ücretsiz; Codemagic dakikası harcamaz (Codemagic
+# TestFlight'a kalır). Hangi testler, hangi cihazlar: ios-native/ui-testleri.txt. Adımlar scripts/native-ui-testleri.sh.
+# Sonuç:
+# - Görüntüler (JPEG, küçültülmüş) ve hata özetleri `ekranlar` dalında; her koşu dalı baştan yazar (BENIOKU.md'de commit).
+# - Tam boy PNG'ler ve derleme günlükleri koşunun "Artifacts" bölümünde (native-ekranlar).
+name: Native ekranlar
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ios-native/**"
+      - "scripts/native-*"
+      - ".github/workflows/native-ekranlar.yml"
+  workflow_dispatch:
+concurrency:
+  group: native-ekranlar
+  cancel-in-progress: true # art arda gönderimlerde yalnızca sonuncusu
+permissions:
+  contents: write # ekranlar dalına yazmak için
+jobs:
+  ekranlar:
+    runs-on: macos-26
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - name: Xcode sürümü 26 ya da üstü mü
+        run: |
+          xcodebuild -version
+          MAJOR=$(xcodebuild -version | head -1 | awk '{print $2}' | cut -d. -f1)
+          if [ "$MAJOR" -lt 26 ]; then echo "Xcode $MAJOR: 26+ gerekiyor"; exit 1; fi
+      - name: Xcode projesini üret (XcodeGen)
+        run: |
+          brew install xcodegen
+          cd ios-native && xcodegen generate
+      - name: UI testleri ve ekran görüntüleri
+        run: bash scripts/native-ui-testleri.sh
+      - name: Tam boy görüntüler ve günlükler
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-ekranlar
+          path: |
+            build/native-ekranlar.zip
+            build/xcodebuild-*.log
+          if-no-files-found: ignore
+      - name: Görüntüleri ekranlar dalına koy
+        if: always()
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONUC: ${{ job.status }}
+        run: |
+          D=$(mktemp -d)
+          for f in build/ekranlar/*.png; do
+            [ -e "$f" ] || continue
+            sips -s format jpeg -s formatOptions 75 --resampleWidth 700 "$f" --out "$D/$(basename "${f%.png}").jpg" > /dev/null
+          done
+          cp build/ekranlar/*.txt "$D/" 2>/dev/null || true
+          cp build/xcodebuild-derleme.log "$D/" 2>/dev/null || true
+          {
+            echo "# Native ekran görüntüleri"
+            echo
+            echo "- Commit: ${GITHUB_SHA::7} ($(git log -1 --format=%s))"
+            echo "- Koşu: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "- Sonuç: $SONUC · $(ls "$D"/*.jpg 2>/dev/null | wc -l | tr -d ' ') görüntü"
+            echo "- Testler ve cihazlar: $(grep -E '^(cihazlar|testler):' ios-native/ui-testleri.txt | tr '\n' ' ')"
+          } > "$D/BENIOKU.md"
+          cd "$D"
+          git init -q -b ekranlar
+          git add -A
+          git -c user.name="github-actions" -c user.email="github-actions@users.noreply.github.com" commit -qm "Ekranlar: ${GITHUB_SHA::7}"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ekranlar

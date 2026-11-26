@@ -2,7 +2,7 @@
 # Native UI testlerinin ekran görüntülerini test sonucundan (.xcresult) çıkarır ve okunur adlarla bir klasöre koyar:
 #   <senaryo>-<cihaz>-<tema>.png   ör. tasarim-1-iphone-koyu.png
 # Web referans görüntüleriyle (scripts/referans.mjs, ekran/referans/) aynı adlandırma: yan yana karşılaştırılır.
-# Codemagic'te `ios-native` iş akışı kullanır (codemagic.yaml). Xcode 16+ `xcresulttool export attachments` gerekir.
+# scripts/native-ui-testleri.sh kullanır (Codemagic ve GitHub Actions). Xcode 16+ `xcresulttool export attachments` gerekir.
 # Düşen testlerin hata mesajları `hatalar-<cihaz>.txt`'ye yazılır (küçük zip'e de girer). Hata anındaki ekler
 # (ekran kaydı, dokunma olayları) kendi uzantılarıyla `hata-<test>-<cihaz>-<sıra>.<uzantı>` olarak saklanır.
 # Kullanım: python3 scripts/native-ekranlar.py <sonuç.xcresult> <cihaz: iphone|iphone-kucuk|ipad> <çıktı klasörü>
