@@ -16,6 +16,9 @@ Uygulamanın dört ana bölümü alt menüden tek dokunuşla açılsın; Profil 
 
 ## Kullanıcı ne görür
 
+- **Değişti (Ceren, 26 Kasım):** Seri, Tamamlanan tur, Çözülen soru kutuları Profil'den İlerleme'ye taşındı (başlığın ve
+  Başlangıç kartının altında, Doğruluk kartının üstünde).
+
 ### Alt menü (R13)
 
 - **Değişti (Ceren, 26 Kasım):** kendi kapsülümüz yerine **Apple'ın sekme çubuğu** (`UI/SystemTabs.swift`): iOS 26'da gerçek
