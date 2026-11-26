@@ -49,6 +49,8 @@ struct RhythmTapScreen: View {
         }
         .background(ThemeColor.bg.color)
         .onChange(of: model.exitRequest) { _, _ in if showExit { showExit = false } else { askExit() } }
+        // Denenmiş ritim varsa ✕ ve kenardan kaydırma onay açar; yoksa sormadan çıkılır (tur-ekranlari.md)
+        .onChange(of: round.hasAnswers, initial: true) { _, a in model.roundHasAnswers = a }
         .onDisappear {
             loop?.cancel()
             Sound.stopAll()
@@ -58,7 +60,7 @@ struct RhythmTapScreen: View {
     // MARK: Üst bar
     private var topBar: some View {
         HStack(spacing: Space.s3) {
-            RoundCloseButton(action: askExit)
+            RoundCloseButton { model.exitRound() }
             HStack(spacing: 4) {
                 ForEach(Array(round.segments.enumerated()), id: \.offset) { _, s in
                     Capsule().fill(segmentColor(s)).frame(height: 6)

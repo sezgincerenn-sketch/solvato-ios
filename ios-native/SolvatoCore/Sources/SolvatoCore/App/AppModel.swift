@@ -120,14 +120,33 @@ public final class AppModel {
     public private(set) var exitRequest = 0
     public func requestExit() { exitRequest += 1 }
 
+    /// Açık turda en az bir cevap verildi mi; tur ekranı bildirir (tur-ekranlari.md). Yeni ekranda sıfırlanır.
+    public var roundHasAnswers = false
+
+    /// Turdan çıkış (✕ ya da kenardan kaydırma bırakıldı): cevap verildiyse ekranın onayı istenir (true), yoksa sormadan
+    /// önceki ekrana dönülür (false)
+    @discardableResult
+    public func exitRound() -> Bool {
+        if roundHasAnswers {
+            requestExit()
+            return true
+        }
+        back()
+        return false
+    }
+
     /// Kaydırma hafızası: geri dönülen ekran kalınan yerden açılır (gözlenmez; kaydırırken ekran yeniden çizilmez)
     @ObservationIgnored public let scroll = ScrollMemory()
 
     public func go(_ v: AppView) {
+        roundHasAnswers = false
         scroll.willGo(from: nav.current, to: v)
         nav.go(v)
     }
-    public func back() { scroll.didBack(to: nav.back()) }
+    public func back() {
+        roundHasAnswers = false
+        scroll.didBack(to: nav.back())
+    }
 
     /// Açık sekmeye alt menüden tekrar dokunuldu: her istekte artar, o sekmenin sayfası en üste kayar
     public private(set) var scrollTopRequest = 0
@@ -193,6 +212,7 @@ public final class AppModel {
     /// Sonuçta "Yeni tur" / "Tekrar"
     public func retry() {
         quizToken += 1
+        roundHasAnswers = false
         if let s = lastSpecial { nav.replace(s == .chords ? .chordquiz : .rhythmtap) } else { startQuiz(currentCategory) }
     }
 
@@ -231,6 +251,7 @@ public final class AppModel {
         } else {
             nav.replace(.result)
         }
+        roundHasAnswers = false
     }
 
     /// Akor turu ya da Ritmi Tut bitti (web handleSpecialComplete)
@@ -245,6 +266,7 @@ public final class AppModel {
         stats = out.stats
         roundsCompleted += 1
         nav.replace(.result)
+        roundHasAnswers = false
     }
 
     // MARK: Ayarlar

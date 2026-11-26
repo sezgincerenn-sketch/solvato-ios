@@ -100,6 +100,8 @@ struct QuizScreen: View {
         }
         // Kenardan kaydırma çıkış onayını açar; onay açıkken kaydırma "Devam et" gibi kapatır (web data-back)
         .onChange(of: model.exitRequest) { _, _ in showExit.toggle() }
+        // Cevap verildiyse ✕ ve kenardan kaydırma onay açar; yoksa sormadan çıkılır (tur-ekranlari.md)
+        .onChange(of: round.hasAnswers, initial: true) { _, a in model.roundHasAnswers = a }
     }
 
     private var elapsed: Int { Int(Date().timeIntervalSince(startedAt) * 1000) }
@@ -143,7 +145,7 @@ struct QuizScreen: View {
             }
             .animation(.easeInOut(duration: 0.3), value: round.index)
             HStack {
-                RoundCloseButton { showExit = true }
+                RoundCloseButton { model.exitRound() }
                 Spacer()
                 Text(verbatim: "✓ \(round.score)")
                     .font(.mono(FontSize.sm, .bold))

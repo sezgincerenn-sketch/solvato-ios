@@ -41,6 +41,8 @@ public struct DuelGame: Equatable, Sendable {
     }
 
     public var finished: Bool { index >= questions.count }
+    /// Düello sürüyor ve bir oyuncu şıkka bastı mı (yoksa çıkış sormadan olur; sonuçta sorulmaz)
+    public var hasAnswers: Bool { !finished && (index > 0 || picked.contains { $0 != nil }) }
     public var current: DuelQuestion? { finished ? nil : questions[index] }
 
     public enum PickResult: Equatable, Sendable {

@@ -146,6 +146,9 @@ ios-native/
 - **Ayarlar düzeni (yalnız native, `docs/ozellikler/ayarlar.md`):** dört kart (Çalışma · Sorular · Ses ve bildirim ·
   Diğer); satırda o anki değer, dokununca seçim penceresi (`UI/SettingsRows.swift`, değer yazıları `SettingsText`).
   Çalışılacak notalar ayrı ekran (`AppView.notes`). Hatırlatma saati Ayarlar'da satır ("19:00 ›"), tanıtımda büyük kutu.
+- **Turdan çıkış (yalnız native, `docs/ozellikler/tur-ekranlari.md`):** ✕ ve kenardan kaydırma `AppModel.exitRound`'u
+  çağırır: turda cevap verildiyse (`roundHasAnswers`, ekran `hasAnswers`'tan bildirir) onay açılır, yoksa sormadan geri
+  dönülür. Akor düellosunda da ✕.
 
 ## Klasör yapısı
 

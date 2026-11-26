@@ -32,6 +32,8 @@ public struct QuizRound: Equatable, Sendable {
     }
 
     public var question: Question { questions[index] }
+    /// En az bir soru cevaplandı mı (yoksa çıkış sormadan olur; tur-ekranlari.md)
+    public var hasAnswers: Bool { !results.isEmpty }
     public var isNote: Bool { question.category == .noteIdentification }
     public var isLast: Bool { index + 1 >= questions.count }
     public var score: Int { results.filter(\.correct).count }

@@ -2,7 +2,7 @@
 // kayar, kaydırma alanlarının sonunda kapsül kadar boşluk kalır), kutlama, tanıtım, açılış.
 // Web App.tsx renderScreen + utils/swipeBack.tsx: sol kenardan (28 pt) sağa kaydırınca ekran parmakla kayar, altında
 // önceki ekran görünür; %35'i geçince ya da hızlı bırakınca geri dönülür. Turlarda da ekran aynı biçimde kayar (R34);
-// bırakınca ekran yerine döner ve "Turdan çıkılsın mı?" onayı açılır. Telefonda yalnız soru ve akor turu yan döner (G-02).
+// cevap verilmişse bırakınca ekran yerine döner ve "Turdan çıkılsın mı?" onayı açılır, cevap yoksa geri dönülür. Telefonda yalnız soru ve akor turu yan döner (G-02).
 // Hazır ekranlar: Pratik, soru turu, tur sonucu. Diğerleri 0.5–0.7'de; yerlerinde başlık ve kısa not.
 import SolvatoCore
 import SwiftUI
@@ -148,11 +148,12 @@ struct AppRoot: View {
                 let fast = g.predictedEndTranslation.width - dx > 120 && dx > 40
                 let passed = dx > w * 0.35 || fast
                 let settle = Animation.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.22)
-                if model.nav.current.confirmsExit {
-                    // Tur: ekran yerine döner; eşik geçildiyse çıkış onayı (onay açıksa kapanır)
+                if model.nav.current.confirmsExit && model.roundHasAnswers {
+                    // Turda cevap var: ekran yerine döner; eşik geçildiyse çıkış onayı (onay açıksa kapanır)
                     withAnimation(settle) { dragX = 0 } completion: { underlay = nil }
                     if passed { model.requestExit() }
                 } else if passed {
+                    // Alt ekran ya da henüz cevapsız tur: sormadan geri (tur-ekranlari.md)
                     withAnimation(settle) { dragX = w } completion: {
                         model.back()
                         underlay = nil

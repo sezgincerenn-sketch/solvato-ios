@@ -172,3 +172,38 @@ final class TestScenarioTests: XCTestCase {
         XCTAssertNil(TestScenario(environment: [:]))
     }
 }
+
+/// Turdan çıkış (tur-ekranlari.md): cevap yoksa sormadan geri, varsa ekranın onayı istenir
+@MainActor
+final class RoundExitTests: XCTestCase {
+    func testExitRound() async {
+        let m = AppModel(persistence: Persistence(store: MemoryStore()), random: seededRandom(7))
+        m.startQuiz(.all)
+        XCTAssertFalse(m.exitRound(), "cevap yok")
+        XCTAssertEqual(m.nav.current, .home)
+        m.startQuiz(.all)
+        m.roundHasAnswers = true
+        let req = m.exitRequest
+        XCTAssertTrue(m.exitRound())
+        XCTAssertEqual(m.exitRequest, req + 1, "ekran onay açar")
+        XCTAssertEqual(m.nav.current, .quiz)
+        m.back()
+        XCTAssertFalse(m.roundHasAnswers, "ekrandan çıkınca sıfırlanır")
+    }
+
+    func testHasAnswers() async {
+        var r = QuizRound(questions: [QuestionBank.byId[1]!, QuestionBank.byId[2]!])
+        XCTAssertFalse(r.hasAnswers)
+        _ = r.answer("yanlış", timeMs: 300)
+        XCTAssertTrue(r.hasAnswers)
+        var c = ChordRound(level: 1, random: seededRandom(9))
+        XCTAssertFalse(c.hasAnswers)
+        c.timeout(timeMs: 15000)
+        XCTAssertTrue(c.hasAnswers, "süresi dolan da sayılır")
+        XCTAssertFalse(RhythmTapRound(level: 1, random: seededRandom(2)).hasAnswers)
+        var g = DuelGame(questions: DuelGame.build(level: 1, random: seededRandom(4)))
+        XCTAssertFalse(g.hasAnswers)
+        _ = g.pick(0, "yanlış")
+        XCTAssertTrue(g.hasAnswers)
+    }
+}

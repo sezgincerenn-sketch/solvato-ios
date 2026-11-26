@@ -35,6 +35,8 @@ public struct ChordRound: Equatable, Sendable {
     }
 
     public var question: ChordQuestion { questions[index] }
+    /// En az bir soru cevaplandı ya da süresi doldu mu (yoksa çıkış sormadan olur)
+    public var hasAnswers: Bool { !answers.isEmpty }
     public var pending: Bool { state == .pending }
     public var usesPiano: Bool { question.type == .build }
     public var canCheck: Bool { usesPiano ? !selectedKeys.isEmpty : choice != nil }

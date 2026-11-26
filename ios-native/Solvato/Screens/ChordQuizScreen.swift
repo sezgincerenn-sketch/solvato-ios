@@ -67,6 +67,8 @@ struct ChordQuizScreen: View {
             if showExit { ExitConfirm(onStay: { showExit = false }, onExit: { model.back() }) }
         }
         .onChange(of: model.exitRequest) { _, _ in showExit.toggle() }
+        // Cevap verildiyse ✕ ve kenardan kaydırma onay açar; yoksa sormadan çıkılır (tur-ekranlari.md)
+        .onChange(of: round.hasAnswers, initial: true) { _, a in model.roundHasAnswers = a }
         .onChange(of: land, initial: true) { _, l in
             guard l else { return }
             model.persistence.bumpRotateHint(done: true)
@@ -89,7 +91,7 @@ struct ChordQuizScreen: View {
     // MARK: Üst çubuk
     private var topBar: some View {
         HStack(spacing: 10) {
-            RoundCloseButton { showExit = true }
+            RoundCloseButton { model.exitRound() }
             HStack(spacing: 3) {
                 RoundDotsView(dots: round.dots, index: round.index, currentWidth: 14, width: 5, spacing: 3, upcoming: .fillStrong)
                 Text(verbatim: "\(round.index + 1)/\(round.questions.count)")

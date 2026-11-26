@@ -145,7 +145,10 @@ final class ScreenshotTests: XCTestCase {
                 case "ipucu": app.buttons["İpucu"].firstMatch.tap()
                 case "yanlis": answerUntil(app, wrong: true)
                 case "dogru": answerUntil(app, wrong: false)
-                case "cikis": app.buttons["Turdan çık"].firstMatch.tap()
+                case "cikis":
+                    // Çıkış onayı yalnız cevap verilmişse açılır (tur-ekranlari.md): önce bir yanlış cevap
+                    answerUntil(app, wrong: true)
+                    app.buttons["Turdan çık"].firstMatch.tap()
                 default: break
                 }
                 Thread.sleep(forTimeInterval: 0.5)

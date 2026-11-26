@@ -28,8 +28,9 @@ struct ChordDuelScreen: View {
                 exitDialog(g)
             }
         }
-        // Kenardan kaydırma: oyunda onay açar, onay açıkken "Devam et" gibi kapatır; kurulumda geri döner; sonuçta bir şey
+        // ✕ ve kenardan kaydırma: bir şıkka basıldıysa onay açar (yoksa AppModel.exitRound sormadan çıkar), onay açıkken "Devam et" gibi kapatır; kurulumda geri döner; sonuçta bir şey
         // yapmaz (web: sonuç ekranında data-back yok)
+        .onChange(of: game?.hasAnswers ?? false, initial: true) { _, a in model.roundHasAnswers = a }
         .onChange(of: model.exitRequest) { _, _ in
             if confirmExit {
                 confirmExit = false
@@ -94,14 +95,11 @@ struct ChordDuelScreen: View {
                 pick(1, $0)
             }
             HStack {
-                Button("Bitir") { confirmExit = true }
-                    .font(.ui(FontSize.xs))
-                    .foregroundStyle(ThemeColor.textMuted.color)
-                    .padding(6)
+                RoundCloseButton { model.exitRound() }
                 Spacer(minLength: 0)
                 Text(g.counter).font(.mono(FontSize.xs, .bold)).foregroundStyle(ThemeColor.textMuted.color)
                 Spacer(minLength: 0)
-                Color.clear.frame(width: 40, height: 1)
+                Color.clear.frame(width: Touch.min, height: 1)
             }
             .padding(.vertical, 4)
             .padding(.horizontal, 14)
