@@ -185,7 +185,8 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
-    /// Öğretmen kodu, Gizlilik ve Lisanslar (web "ogretmen-kodu…", "gizlilik", "lisanslar"): Profil › Ayarlar'dan açılır
+    /// Öğretmen kodu, Gizlilik ve Lisanslar (web "ogretmen-kodu…", "gizlilik", "lisanslar"): öğretmen kodu Profil'deki
+    /// karttan, Gizlilik ve Lisanslar Profil › Ayarlar'dan açılır
     @MainActor
     func testOgretmenHukuk() throws {
         continueAfterFailure = false
@@ -193,8 +194,10 @@ final class ScreenshotTests: XCTestCase {
             XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
             app.buttons["Profil"].firstMatch.tap()
             Thread.sleep(forTimeInterval: 0.5)
-            app.buttons["Ayarlar"].firstMatch.tap()
-            Thread.sleep(forTimeInterval: 0.5)
+            if row != "Öğretmen kodu" {
+                app.buttons["Ayarlar"].firstMatch.tap()
+                Thread.sleep(forTimeInterval: 0.5)
+            }
             let link = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", row)).firstMatch
             for _ in 0..<8 where !(link.exists && link.isHittable) { app.swipeUp() }
             link.tap()
@@ -237,10 +240,10 @@ final class ScreenshotTests: XCTestCase {
         for name in ["calisma", "calisma-arama", "calisma-kaldigin-yer"] {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: name)
-                XCTAssertTrue(app.buttons["Çalışma"].waitForExistence(timeout: 10))
-                app.buttons["Çalışma"].firstMatch.tap()
+                XCTAssertTrue(app.buttons["Öğren"].waitForExistence(timeout: 10))
+                app.buttons["Öğren"].firstMatch.tap()
                 let field = app.textFields["Konu ara"]
-                XCTAssertTrue(field.waitForExistence(timeout: 5), "Çalışma açılmadı")
+                XCTAssertTrue(field.waitForExistence(timeout: 5), "Öğren açılmadı")
                 if name == "calisma-arama" {
                     field.tap()
                     field.typeText("legato")
@@ -269,8 +272,8 @@ final class ScreenshotTests: XCTestCase {
         for (id, title) in lessons {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: "ders-\(id)")
-                XCTAssertTrue(app.buttons["Çalışma"].waitForExistence(timeout: 10))
-                app.buttons["Çalışma"].firstMatch.tap()
+                XCTAssertTrue(app.buttons["Öğren"].waitForExistence(timeout: 10))
+                app.buttons["Öğren"].firstMatch.tap()
                 let row = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", title)).firstMatch
                 XCTAssertTrue(row.waitForExistence(timeout: 5), "ders satırı yok: \(title)")
                 for _ in 0..<8 where !row.isHittable { app.swipeUp() }

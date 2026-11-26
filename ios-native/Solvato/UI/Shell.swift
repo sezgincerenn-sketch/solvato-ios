@@ -1,5 +1,5 @@
 // Ekran iskeleti parçaları. Web karşılıkları: src/ui/Avatar.tsx, BackButton.tsx, ScreenHeader.tsx, Toast.tsx,
-// PlayChip.tsx, TopicLink.tsx, ExitConfirm.tsx, NavBar.tsx, TabletColumn.tsx. Ölçüler ve metinler web'den birebir.
+// PlayChip.tsx, TopicLink.tsx, ExitConfirm.tsx, NavBar.tsx (kapsül: docs/ozellikler/gezinme.md), TabletColumn.tsx. Ölçüler ve metinler web'den birebir.
 import SolvatoCore
 import SwiftUI
 
@@ -68,16 +68,16 @@ private struct BackArrow: Shape {
     }
 }
 
-/// Alt ekran başlığı: geri düğmesi + başlık (+ sağda isteğe bağlı öğe)
+/// Alt ekran başlığı: geri düğmesi + başlık (+ sağda isteğe bağlı öğe). onBack yoksa (sekme ekranı) geri düğmesi yok.
 struct ScreenHeader<Right: View>: View {
     let title: String
     var flush = false
-    let onBack: () -> Void
+    let onBack: (() -> Void)?
     @ViewBuilder var right: Right
 
     var body: some View {
         HStack(spacing: 10) {
-            BackButton(action: onBack)
+            if let onBack { BackButton(action: onBack) }
             Text(title)
                 .font(.ui(FontSize.xl, .heavy))
                 .tracking(em: Tracking.tight, size: FontSize.xl)
@@ -93,7 +93,7 @@ struct ScreenHeader<Right: View>: View {
 }
 
 extension ScreenHeader where Right == EmptyView {
-    init(title: String, flush: Bool = false, onBack: @escaping () -> Void) {
+    init(title: String, flush: Bool = false, onBack: (() -> Void)?) {
         self.init(title: title, flush: flush, onBack: onBack) { EmptyView() }
     }
 }
@@ -173,6 +173,8 @@ struct TopicLink: View {
     let title: String
     let sub: String
     var stars: Int?
+    /// Verilirse yıldız ve oynat simgesi yerine yüzde halkası (Ana sayfa)
+    var acc: Tally?
     let action: () -> Void
 
     var body: some View {
@@ -195,8 +197,12 @@ struct TopicLink: View {
                     Text(sub).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                if let stars { Stars(value: stars, size: 13) }
-                PlayChip()
+                if let acc {
+                    PercentRing(acc: acc, color: color.base)
+                } else {
+                    if let stars { Stars(value: stars, size: 13) }
+                    PlayChip()
+                }
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 16)
@@ -262,108 +268,108 @@ struct ExitConfirm: View {
 
 // MARK: - Alt menü
 enum NavTab: String, CaseIterable, Sendable {
-    case home, dashboard, study
+    case home, dashboard, study, profile
 
     var label: String {
         switch self {
-        case .home: "Pratik"
+        case .home: "Ana sayfa"
         case .dashboard: "İlerleme"
-        case .study: "Çalışma"
+        case .study: "Öğren"
+        case .profile: "Profil"
+        }
+    }
+
+    /// Çizgi simgeler (24'lük kutu): ev, sütun grafiği, kitap, kişi
+    var paths: [String] {
+        switch self {
+        case .home: ["M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"]
+        case .dashboard: ["M5 20V12M10 20V8M15 20v-5M20 20V5"]
+        case .study: ["M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z", "M4 19V5"]
+        case .profile: ["M8 8a4 4 0 1 0 8 0a4 4 0 1 0 -8 0", "M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"]
         }
     }
 }
 
-/// Alt menü: Pratik · İlerleme · Çalışma
+/// Alt menü (gezinme.md R13): ekranın altında, kenarlardan 16 pt içeride yüzen kapsül; dört sekme. Seçili sekme
+/// kapsül içinde mor zeminli. iOS 26'da zemin Apple'ın cam efekti, öncesinde bulanık yarı saydam zemin ve ince kenar.
+/// Kaydırınca küçülmez. Web önizlemesi (revize-onizleme) src/ui/NavBar.tsx ile aynı ölçüler.
 struct NavBar: View {
     let active: NavTab
     let onChange: (NavTab) -> Void
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
-        HStack(spacing: 0) {
-            ForEach(NavTab.allCases, id: \.self) { t in
+        HStack(spacing: Space.s1) {
+            ForEach(Array(NavTab.allCases.enumerated()), id: \.element) { i, t in
                 let on = t == active
+                let col = (on ? ThemeColor.violetText : ThemeColor.textMuted).color
                 Button {
                     onChange(t)
                 } label: {
-                    VStack(spacing: Space.s1) {
-                        NavIcon(tab: t, active: on).frame(width: 22, height: 22)
+                    VStack(spacing: 2) {
+                        NavIcon(tab: t).stroke(col, style: StrokeStyle(lineWidth: 2 * 22 / 24, lineCap: .round, lineJoin: .round))
+                            .frame(width: 22, height: 22)
                         Text(t.label)
-                            .font(.ui(FontSize.xs, .semibold))
-                            .foregroundStyle((on ? ThemeColor.violetText : ThemeColor.textMuted).color)
+                            .font(.ui(FontSize.xs, on ? .bold : .semibold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                            .foregroundStyle(col)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Space.s4)
-                    .contentShape(Rectangle())
+                    .frame(maxWidth: .infinity, minHeight: 52)
+                    .background(Capsule().fill(on ? PaletteColor.violet500.opacity(0.2) : .clear))
+                    .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
-                .accessibilityAddTraits(on ? .isSelected : [])
+                .accessibilityLabel(t.label)
+                .accessibilityAddTraits(on ? [.isSelected] : [])
+                .accessibilityHint("Sekme, \(i + 1)/\(NavTab.allCases.count)")
+                .animation(.easeOut(duration: 0.15), value: on)
             }
         }
-        .background(alignment: .top) {
-            ZStack(alignment: .top) {
-                Rectangle().fill(.ultraThinMaterial)
-                ThemeColor.overlay.color
-                ThemeColor.border.color.frame(height: 1)
-            }
-            .ignoresSafeArea(edges: .bottom)
+        .padding(6)
+        .modifier(NavGlass())
+        // iPad: ortada, en fazla sekme sütunu genişliğinde
+        .frame(maxWidth: sizeClass == .regular ? 680 : .infinity)
+        .padding(.top, Space.s2)
+        .padding(.horizontal, Space.s4)
+        .padding(.bottom, Space.s3)
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Alt menü")
+    }
+}
+
+/// Kapsülün zemini: iOS 26'da cam (dokunuşa tepki veren), öncesinde sistem materyali + ince kenar + gölge.
+/// Saydamlık azaltılmışsa sistem zemini düz çizer.
+private struct NavGlass: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.glassEffect(.regular.interactive(), in: Capsule())
+        } else {
+            content
+                .background {
+                    ZStack {
+                        Capsule().fill(.ultraThinMaterial)
+                        Capsule().fill(ThemeColor.overlay.color)
+                    }
+                }
+                .overlay(Capsule().strokeBorder(ThemeColor.borderStrong.color, lineWidth: 1))
+                // web 0 12px 32px rgba(0,0,0,0.35)
+                .shadow(color: PaletteColor.black.color.opacity(0.35), radius: 16, y: 12)
         }
     }
 }
 
-/// Alt menü ikonları (web NavIcon, 24'lük kutu)
-private struct NavIcon: View {
+/// Alt menü simgesi (web önizlemesi NavIcon yolları)
+private struct NavIcon: Shape {
     let tab: NavTab
-    let active: Bool
+    private static let parsed: [NavTab: [[PathCommand]]] = Dictionary(
+        uniqueKeysWithValues: NavTab.allCases.map { t in (t, t.paths.map { (try? SVGPath.parse($0)) ?? [] }) })
 
-    var body: some View {
-        let col = (active ? ThemeColor.violetText : ThemeColor.textMuted).color
-        let sw = active ? 2.0 : 1.5
-        Canvas { ctx, size in
-            let s = size.width / 24
-            ctx.scaleBy(x: s, y: s)
-            let style = StrokeStyle(lineWidth: sw, lineCap: .round, lineJoin: .round)
-            func rect(_ x: Double, _ y: Double, _ w: Double, _ h: Double, _ r: Double) -> Path {
-                Path(roundedRect: CGRect(x: x, y: y, width: w, height: h), cornerRadius: r)
-            }
-            func line(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Path {
-                var p = Path()
-                p.move(to: CGPoint(x: x1, y: y1))
-                p.addLine(to: CGPoint(x: x2, y: y2))
-                return p
-            }
-            switch tab {
-            case .home:
-                // Piyano klavyesi
-                ctx.stroke(rect(3, 5, 18, 14, 2), with: .color(col), style: style)
-                ctx.stroke(line(9, 12, 9, 19), with: .color(col), style: style)
-                ctx.stroke(line(15, 12, 15, 19), with: .color(col), style: style)
-                for x in [7.5, 13.5] {
-                    let r = rect(x, 5, 3, 7, 0.8)
-                    ctx.fill(r, with: .color(col))
-                    ctx.stroke(r, with: .color(col), style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
-                }
-            case .dashboard:
-                for (x, y, h) in [(3.0, 12.0, 9.0), (10, 7, 14), (17, 3, 18)] {
-                    ctx.stroke(rect(x, y, 4, h, 1), with: .color(col), style: style)
-                }
-            case .study:
-                var book = Path()
-                book.move(to: CGPoint(x: 4, y: 19))
-                book.addLine(to: CGPoint(x: 4, y: 6))
-                book.addArc(tangent1End: CGPoint(x: 4, y: 4), tangent2End: CGPoint(x: 6, y: 4), radius: 2)
-                book.addLine(to: CGPoint(x: 18, y: 4))
-                book.addArc(tangent1End: CGPoint(x: 20, y: 4), tangent2End: CGPoint(x: 20, y: 6), radius: 2)
-                book.addLine(to: CGPoint(x: 20, y: 19))
-                book.move(to: CGPoint(x: 4, y: 19))
-                book.addArc(tangent1End: CGPoint(x: 4, y: 21), tangent2End: CGPoint(x: 6, y: 21), radius: 2)
-                book.addLine(to: CGPoint(x: 18, y: 21))
-                book.addArc(tangent1End: CGPoint(x: 20, y: 21), tangent2End: CGPoint(x: 20, y: 19), radius: 2)
-                ctx.stroke(book, with: .color(col), style: style)
-                ctx.stroke(line(9, 9, 15, 9), with: .color(col), style: style)
-                ctx.stroke(line(9, 13, 13, 13), with: .color(col), style: style)
-            }
-        }
-        .accessibilityHidden(true)
+    func path(in r: CGRect) -> Path {
+        var p = Path()
+        for c in Self.parsed[tab] ?? [] { p.addPath(SVGShape(commands: c).path(in: r)) }
+        return p
     }
 }
 

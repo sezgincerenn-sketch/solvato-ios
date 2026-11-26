@@ -12,6 +12,8 @@ public struct Tally: Equatable, Sendable {
     public static let zero = Tally()
     func adding(_ ok: Bool) -> Tally { Tally(correct: correct + (ok ? 1 : 0), total: total + 1) }
     func adding(correct c: Int, total t: Int) -> Tally { Tally(correct: correct + c, total: total + t) }
+    /// Doğruluk yüzdesi `round(doğru / toplam × 100)`; hiç çözülmediyse nil (Ana sayfa yüzde halkası)
+    public var percent: Int? { total > 0 ? jsRound(Double(correct) / Double(total) * 100) : nil }
 }
 
 public struct CategoryAccuracy: Equatable, Sendable {

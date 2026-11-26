@@ -1,11 +1,13 @@
-// Profil: ad ve renk, ünvan ve "…'den beri", seviye kartı (açıklamalı), ünvan kartı (liste), seri / tur / soru,
-// haftalık rapor, Tüm ilerleme, Ayarlar. Web src/screens/profile/ProfileScreen.tsx.
+// Profil sekmesi: ad ve renk, ünvan ve "…'den beri", öğretmen kodu kartı, seviye kartı (açıklamalı), ünvan kartı
+// (liste), seri / tur / soru, haftalık rapor, Tüm ilerleme. Ayarlar yalnız sağ üstteki dişliden; geri oku yok.
+// Web src/screens/profile/ProfileScreen.tsx; gezinme revizesi docs/ozellikler/gezinme.md (R5, R14, R20).
 import SolvatoCore
 import SwiftUI
 
 struct ProfileScreen: View {
     let model: AppModel
     @State private var name = ""
+    @State private var toast = ToastModel()
 
     var body: some View {
         let stats = model.stats
@@ -13,7 +15,7 @@ struct ProfileScreen: View {
         let rank = Ranks.from(xp: stats.totalPoints)
         let home = HomeContent(stats: stats, settings: s, daily: nil, now: model.now)
         VStack(spacing: 0) {
-            ScreenHeader(title: "Profil", onBack: { model.back() }) {
+            ScreenHeader(title: "Profil", onBack: nil) {
                 Button { model.go(.settings) } label: {
                     Icon(.settings, size: 20)
                         .foregroundStyle(ThemeColor.textSecondary.color)
@@ -72,6 +74,7 @@ struct ProfileScreen: View {
                     .background(RoundedRectangle(cornerRadius: Radius.lg).fill(ThemeColor.fill.color))
                     .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(ThemeColor.border.color, lineWidth: 1))
 
+                    TeacherCodeCard(model: model) { toast.show("Öğretmen kodu kaldırıldı") }
                     LevelCardView(content: home, detailed: true)
                     RankCardView(xp: stats.totalPoints, detailed: true)
                     HStack(spacing: Space.s2) {
@@ -91,10 +94,7 @@ struct ProfileScreen: View {
                         // Web birincil Button: shadow.glow
                         .shadow(BoxShadow.glow(Brand.primary, strength: 0.45))
                     }
-                    AppButton("Tüm ilerleme", variant: .secondary, block: true) { model.go(.dashboard) }
-                    AppButton("Ayarlar", variant: .secondary, block: true, action: { model.go(.settings) }) {
-                        Icon(.settings, size: 18)
-                    }
+                    AppButton("Tüm ilerleme", variant: .secondary, block: true) { model.selectTab(.dashboard) }
                 }
                 .padding(.top, Space.s2)
                 .padding(.horizontal, Space.s4)
@@ -104,6 +104,78 @@ struct ProfileScreen: View {
             .scrollIndicators(.hidden)
         }
         .background(ThemeColor.bg.color)
+        .overlay { ToastView(model: toast) }
         .onAppear { name = model.settings.name }
+    }
+}
+
+/// Öğretmen kodu kartı: dokununca öğretmen kodu ekranı. Kod uygulanmışsa kod, açıklama ve iki düğme
+/// ("Diğer konuları da göster", "Kodu kaldır"); değilse başlık tanıtımdaki seçime göre, gerekirse mor çerçeveyle öne çıkar.
+private struct TeacherCodeCard: View {
+    let model: AppModel
+    let onRemoved: () -> Void
+
+    var body: some View {
+        let s = model.settings
+        let card = ProfileText.teacherCard(s)
+        let shape = RoundedRectangle(cornerRadius: Radius.lg)
+        VStack(alignment: .leading, spacing: 0) {
+            Button { model.go(.teacher) } label: {
+                HStack(spacing: Space.s3) {
+                    Icon(.users, size: 18)
+                        .foregroundStyle(ThemeColor.violetText.color)
+                        .frame(width: 36, height: 36)
+                        .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fillStrong.color))
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(card.title).font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color)
+                        Text(card.sub).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    Text("›").foregroundStyle(ThemeColor.textMuted.color).accessibilityHidden(true)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityElement(children: .combine)
+            if card.applied {
+                VStack(alignment: .leading, spacing: Space.s2) {
+                    Text(ProfileText.teacherNote)
+                        .font(.ui(FontSize.sm))
+                        .foregroundStyle(ThemeColor.textMuted.color)
+                        .fixedSize(horizontal: false, vertical: true)
+                    FlowLayout(spacing: Space.s2) {
+                        Button { model.settings.showRestTopics.toggle() } label: {
+                            rowButton(ProfileText.showRestLabel(s.showRestTopics), color: ThemeColor.text, fill: s.showRestTopics ? .fillStronger : .fillStrong)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(s.showRestTopics ? .isSelected : [])
+                        Button {
+                            model.settings.removeTeacherCode()
+                            onRemoved()
+                        } label: {
+                            rowButton("Kodu kaldır", color: ThemeColor.redText, fill: .fillStrong)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.top, Space.s3)
+            }
+        }
+        .padding(Space.s4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(card.highlight ? PaletteColor.violet500.opacity(0.08) : ThemeColor.fill.color, in: shape)
+        .overlay(shape.strokeBorder(card.highlight ? PaletteColor.violet500.color : ThemeColor.border.color, lineWidth: 1))
+    }
+
+    private func rowButton(_ title: String, color: ThemeColor, fill: ThemeColor) -> some View {
+        Text(title)
+            .font(.ui(FontSize.sm, .semibold))
+            .foregroundStyle(color.color)
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .frame(minHeight: Touch.min)
+            .background(RoundedRectangle(cornerRadius: Radius.md).fill(fill.color))
     }
 }

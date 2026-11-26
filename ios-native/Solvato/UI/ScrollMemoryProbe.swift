@@ -2,6 +2,7 @@
 // görünüm eklenir; o görünüm çevreleyen UIScrollView'u bulur, konumunu AppModel.scroll'a bildirir ve açılışta saklanan
 // konumu uygular (içerik ilk karede tam çizilmemiş olabilir, web gibi birkaç kare dener).
 // Kullanım: ScrollView { içerik.remembersScroll(model, .profile) }; bir ekranda birden çok alan varsa `slot` ile.
+// Alt menüde açık sekmeye tekrar dokununca (`.scrollToTop` bildirimi) o ekranın ilk kaydırma alanı en üste kayar.
 import SolvatoCore
 import SwiftUI
 import UIKit
@@ -11,6 +12,11 @@ extension View {
     func remembersScroll(_ model: AppModel, _ view: AppView, slot: Int = 0) -> some View {
         background(ScrollMemoryProbe(model: model, view: view, slot: slot).allowsHitTesting(false).accessibilityHidden(true))
     }
+}
+
+extension Notification.Name {
+    /// Alt menüde açık sekmeye tekrar dokunuldu; nesne: ekran adı (AppView.rawValue)
+    static let scrollToTop = Notification.Name("solvato.scrollToTop")
 }
 
 private struct ScrollMemoryProbe: UIViewRepresentable {
@@ -25,6 +31,9 @@ private struct ScrollMemoryProbe: UIViewRepresentable {
             // Geri dönülen ya da kaydırırken altta görünen ekran: saklanan konuma git
             if let y = model.scroll.restore(view, slot: slot, current: model.nav.current) { ProbeView.apply(y, to: sv, tries: 6) }
         }
+        v.onTop = { [model, view, slot] name in
+            slot == 0 && model.nav.current == view && name == view.rawValue
+        }
         v.onScroll = { [model, view, slot] y in
             // Yalnız görünen ekranın konumu saklanır (altta görünen kopya değil)
             if model.nav.current == view { model.scroll.report(view, slot: slot, y: y) }
@@ -38,7 +47,10 @@ private struct ScrollMemoryProbe: UIViewRepresentable {
 final class ProbeView: UIView {
     var onAttach: ((UIScrollView) -> Void)?
     var onScroll: ((Double) -> Void)?
+    /// En üste kaydırma isteği bu kaydırma alanı için mi (bildirimdeki ekran adıyla)
+    var onTop: ((String) -> Bool)?
     private var observation: NSKeyValueObservation?
+    nonisolated(unsafe) private var topObserver: NSObjectProtocol?
     private weak var scrollView: UIScrollView?
 
     override func didMoveToWindow() {
@@ -52,6 +64,17 @@ final class ProbeView: UIView {
         observation = sv.observe(\.contentOffset, options: [.new]) { [weak self] _, _ in
             MainActor.assumeIsolated { self?.report() }
         }
+        topObserver = NotificationCenter.default.addObserver(forName: .scrollToTop, object: nil, queue: .main) { [weak self] n in
+            let name = n.object as? String ?? ""
+            MainActor.assumeIsolated {
+                guard let self, let sv = self.scrollView, self.window != nil, self.onTop?(name) == true else { return }
+                sv.setContentOffset(CGPoint(x: sv.contentOffset.x, y: -sv.adjustedContentInset.top), animated: true)
+            }
+        }
+    }
+
+    deinit {
+        if let topObserver { NotificationCenter.default.removeObserver(topObserver) }
     }
 
     /// Üstten uzaklık (pt; içerik boşluğu düşülür)

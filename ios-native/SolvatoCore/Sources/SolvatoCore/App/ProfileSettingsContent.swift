@@ -1,4 +1,4 @@
-// Profil ve Ayarlar yazıları (web screens/profile/ProfileScreen.tsx, RankCard.tsx detaylı, SettingsScreen.tsx,
+// Profil ve Ayarlar yazıları (web screens/profile/ProfileScreen.tsx; öğretmen kodu kartı docs/ozellikler/gezinme.md, RankCard.tsx detaylı, SettingsScreen.tsx,
 // components/NotesPicker.tsx). SwiftUI ekranları (Screens/ProfileScreen, Screens/SettingsScreen) bunları kullanır.
 import Foundation
 
@@ -13,10 +13,6 @@ public enum SettingsText {
         guard s.level < 3 else { return "Tüm sorular açık." }
         let n = s.levelProgress.n
         return "Sonraki seviyeye: \(n)/50 soru" + (n > 0 ? " · %\(jsRound(Double(s.levelProgress.c) / Double(n) * 100)) doğru" : "")
-    }
-
-    public static func teacherSub(_ s: Settings) -> String {
-        s.teacherCode.isEmpty ? "Öğretmeninin gönderdiği kodu gir ya da öğrencine kod hazırla" : "Son uygulanan kod: \(s.teacherCode)"
     }
 
     /// "Her gün 19:00'de"
@@ -72,6 +68,34 @@ public enum ProfileText {
         if to < Ranks.all.count - 1 { list.append(Ranks.all.count - 1) }
         return list
     }
+
+    /// Profil'deki öğretmen kodu kartı: başlık, alt yazı ve öne çıkıp çıkmadığı. Kod uygulanmışsa kod; değilse
+    /// tanıtımdaki öğretmen sorusuna göre (Öğretmenim var / Ben öğretmenim kart mor çerçeveyle öne çıkar).
+    public struct TeacherCard: Equatable, Sendable {
+        public var title: String
+        public var sub: String
+        public var highlight: Bool
+        /// Kod uygulanmışsa altta açıklama ve iki düğme ("Diğer konuları da göster", "Kodu kaldır")
+        public var applied: Bool
+    }
+
+    public static func teacherCard(_ s: Settings) -> TeacherCard {
+        if !s.teacherCode.isEmpty {
+            return TeacherCard(title: "Öğretmen kodu", sub: "Uygulandı · \(s.teacherCode)", highlight: false, applied: true)
+        }
+        switch s.teacherRole {
+        case .student:
+            return TeacherCard(title: "Öğretmen kodunu gir", sub: "Öğretmeninin gönderdiği kodu yaz", highlight: true, applied: false)
+        case .teacher:
+            return TeacherCard(title: "Öğrenci kodu hazırla", sub: "Öğrencilerine konu, seviye ve hedef gönder", highlight: true, applied: false)
+        case .solo, .unset:
+            return TeacherCard(
+                title: "Öğretmen kodu", sub: "Öğretmeninin kodunu gir ya da öğrencine kod hazırla", highlight: false, applied: false)
+        }
+    }
+
+    public static let teacherNote = "Öğretmeninin konuları Ana sayfada üstte. Diğer konuları da açık tutabilirsin."
+    public static func showRestLabel(_ on: Bool) -> String { on ? "Diğer konular açık ✓" : "Diğer konuları da göster" }
 
     /// Toplam çözülen soru
     public static func solved(_ stats: AppStats) -> Int { stats.dailyQuestions.values.reduce(0, +) }

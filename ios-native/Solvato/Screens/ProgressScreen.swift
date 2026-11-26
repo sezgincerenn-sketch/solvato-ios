@@ -1,5 +1,6 @@
-// İlerleme sekmesi: Doğruluk · Bu hafta · Öğrenme yolu · Konular · Zorlandığın notalar · Son turlar. Telefonda tek
-// sütun, iPad'de iki bağımsız sütun. Web src/screens/ProgressScreen.tsx (+ PathCard, WeeklyReportCard, RoundHistory).
+// İlerleme sekmesi: başlık · Doğruluk · Bu hafta · Konular · Zorlandığın notalar · Son turlar. Telefonda tek
+// sütun, iPad'de başlık üstte, altında iki bağımsız sütun. Web src/screens/ProgressScreen.tsx (+ WeeklyReportCard,
+// RoundHistory); gezinme revizesi (docs/ozellikler/gezinme.md): öğrenme yolu kartı yok, konularda "Çalış ▶".
 // Yazılar ve kurallar SolvatoCore ProgressContent'ten (web'le 50 durumda aynı).
 import SolvatoCore
 import SwiftUI
@@ -16,22 +17,24 @@ struct ProgressScreen: View {
             Group {
                 if !c.hasAnswers {
                     VStack(spacing: 16) {
-                        PathCardView(c: c, model: model)
+                        TabTitle("İlerleme")
                         EmptyProgress { model.go(.home) }
                     }
                     .padding(.horizontal, 16)
                     .padding(.top, 32)
                 } else if sizeClass == .regular {
-                    HStack(alignment: .top, spacing: 16) {
-                        VStack(spacing: 16) {
-                            accuracy(c)
-                            PathCardView(c: c, model: model)
-                            weak(c)
-                        }
-                        VStack(spacing: 16) {
-                            WeekCard(c: c, text: c.report.text)
-                            topics(c)
-                            rounds(c)
+                    VStack(spacing: 16) {
+                        TabTitle("İlerleme")
+                        HStack(alignment: .top, spacing: 16) {
+                            VStack(spacing: 16) {
+                                accuracy(c)
+                                weak(c)
+                            }
+                            VStack(spacing: 16) {
+                                WeekCard(c: c, text: c.report.text)
+                                topics(c)
+                                rounds(c)
+                            }
                         }
                     }
                     .padding(.horizontal, 16)
@@ -39,9 +42,9 @@ struct ProgressScreen: View {
                     .padding(.bottom, 28)
                 } else {
                     VStack(spacing: 16) {
+                        TabTitle("İlerleme")
                         accuracy(c)
                         WeekCard(c: c, text: c.report.text)
-                        PathCardView(c: c, model: model)
                         topics(c)
                         weak(c)
                         rounds(c)
@@ -111,7 +114,7 @@ struct ProgressScreen: View {
     private func topics(_ c: ProgressContent) -> some View {
         card {
             cardTitle("Konular")
-            ForEach(c.topics, id: \.key) { t in
+            ForEach(Array(c.topics.enumerated()), id: \.element.key) { i, t in
                 Button { t.key == "chords" ? model.go(.chordquiz) : model.startQuiz(FilterCategory(rawValue: t.key) ?? .all) } label: {
                     HStack(spacing: 10) {
                         VStack(alignment: .leading, spacing: 0) {
@@ -125,16 +128,17 @@ struct ProgressScreen: View {
                                 if let p = t.pct { t.color.bar.frame(width: g.size.width * Double(p) / 100).clipShape(Capsule()) }
                             }
                         }
-                        .frame(width: 72, height: 6)
+                        .frame(width: 64, height: 6)
                         Text(verbatim: t.pct.map { "%\($0)" } ?? "—")
                             .font(.mono(FontSize.sm, .bold))
                             .foregroundStyle(t.pct == nil ? ThemeColor.textFaint.color : t.color.text.color)
                             .frame(width: 40, alignment: .trailing)
-                        Text("›").foregroundStyle(ThemeColor.textMuted.color).frame(width: 12)
+                        StudyPill()
                     }
                     .frame(minHeight: 44)
                     .padding(.vertical, 6)
-                    .overlay(alignment: .top) { ThemeColor.border.color.frame(height: 1) }
+                    // İlk satırın üstünde çizgi yok, sonrakiler arasında var
+                    .overlay(alignment: .top) { if i > 0 { ThemeColor.border.color.frame(height: 1) } }
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -211,93 +215,20 @@ struct ProgressScreen: View {
     }
 }
 
-/// Öğrenme yolu (web PathCard): aşama daireleri, "Sıradaki: …" ve ilerleme
-struct PathCardView: View {
-    let c: ProgressContent
-    let model: AppModel
-
-    private func go(_ s: ProgressContent.Stage) {
-        if let cat = s.category { model.startQuiz(cat) } else { model.go(.chordquiz) }
-    }
-
+/// Konu satırının sağındaki küçük mor hap "Çalış ▶" (satırın tamamı basılır)
+private struct StudyPill: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("Öğrenme yolu").font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.textSoft.color)
-                Spacer()
-                Text(c.pathDone).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color)
-            }
-            .padding(.bottom, 12)
-            HStack(spacing: 0) {
-                ForEach(Array(c.stages.enumerated()), id: \.offset) { i, st in
-                    Button { go(st) } label: {
-                        Group {
-                            if st.done {
-                                Icon(.check, size: 15, strokeWidth: 3).foregroundStyle(PaletteColor.white.color)
-                            } else {
-                                Text(st.short).font(.ui(FontSize.sm, .heavy))
-                                    .foregroundStyle(st.isCurrent ? PaletteColor.white.color : ThemeColor.textMuted.color)
-                            }
-                        }
-                        .frame(width: 34, height: 34)
-                        .background {
-                            if st.done {
-                                CSSLinearGradient([PaletteColor.green500.color, PaletteColor.green600.color]).clipShape(Circle())
-                            } else if st.isCurrent {
-                                CSSLinearGradient(.primaryFlat).clipShape(Circle())
-                            } else {
-                                Circle().fill(ThemeColor.fillStrong.color)
-                            }
-                        }
-                        .overlay(
-                            Circle().strokeBorder(
-                                st.isCurrent ? PaletteColor.violet300.color : ThemeColor.borderStrong.color, lineWidth: st.isCurrent ? 2 : 1)
-                        )
-                        .shadow(color: st.isCurrent ? PaletteColor.violet500.opacity(0.55) : .clear, radius: 7)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(st.accessibility)
-                    if i < c.stages.count - 1 {
-                        RoundedRectangle(cornerRadius: Radius.xs)
-                            .fill(st.done ? PaletteColor.green500.color : ThemeColor.fillStronger.color)
-                            .frame(height: 3)
-                            .frame(maxWidth: .infinity)
-                    }
-                }
-            }
-            .padding(.bottom, 8)
-            Button { go(c.nextStage) } label: {
-                HStack(spacing: 10) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(c.nextTitle).font(.ui(FontSize.sm, .bold)).foregroundStyle(ThemeColor.highlightTitle.color)
-                        Text(c.nextSub).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.highlightBody.color)
-                        if let p = c.nextPct {
-                            GeometryReader { g in
-                                ZStack(alignment: .leading) {
-                                    RoundedRectangle(cornerRadius: Radius.xs).fill(ThemeColor.fillStronger.color)
-                                    RoundedRectangle(cornerRadius: Radius.xs).fill(PaletteColor.violet400.color).frame(width: g.size.width * Double(p) / 100)
-                                }
-                            }
-                            .frame(height: 4)
-                            .padding(.top, 6)
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    Image(systemName: "chevron.right").font(.system(size: 13, weight: .bold)).foregroundStyle(ThemeColor.violetTextSoft.color)
-                }
-                .padding(.vertical, 11)
-                .padding(.horizontal, 12)
-                .background(RoundedRectangle(cornerRadius: Radius.md).fill(PaletteColor.violet500.opacity(0.1)))
-                .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(PaletteColor.violet500.opacity(0.28), lineWidth: 1))
-            }
-            .buttonStyle(.plain)
-            .padding(.top, 8)
+        HStack(spacing: 4) {
+            Text("Çalış")
+            PlayShape().frame(width: 9, height: 9)
         }
-        .padding(.top, 14)
-        .padding(.horizontal, 16)
-        .padding(.bottom, 16)
-        .background(RoundedRectangle(cornerRadius: 16).fill(ThemeColor.fill.color))
-        .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(ThemeColor.border.color, lineWidth: 1))
+        .font(.ui(FontSize.xs, .bold))
+        .foregroundStyle(ThemeColor.violetTextSoft.color)
+        .padding(.vertical, 5)
+        .padding(.horizontal, 10)
+        .background(Capsule().fill(PaletteColor.violet500.opacity(0.16)))
+        .fixedSize()
+        .accessibilityHidden(true)
     }
 }
 

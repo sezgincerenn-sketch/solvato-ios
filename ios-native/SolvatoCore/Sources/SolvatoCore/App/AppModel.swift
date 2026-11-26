@@ -45,7 +45,7 @@ public final class AppModel {
     public var celebrate: Celebration?
     public var showSplash = true
     public var showOnboarding: Bool
-    /// Çalışma'da açık ders
+    /// Öğren'de açık ders
     public var lessonId = "notes-treble"
 
     // Tur
@@ -128,6 +128,17 @@ public final class AppModel {
         nav.go(v)
     }
     public func back() { scroll.didBack(to: nav.back()) }
+
+    /// Açık sekmeye alt menüden tekrar dokunuldu: her istekte artar, o sekmenin sayfası en üste kayar
+    public private(set) var scrollTopRequest = 0
+    /// Alt menüden sekme seçildi: başka sekmeyse oraya gidilir (yığın sıfırlanır), açık sekmeyse sayfa en üste kayar
+    public func selectTab(_ v: AppView) {
+        if nav.current == v {
+            scrollTopRequest += 1
+        } else {
+            go(v)
+        }
+    }
 
     /// Çalışma'dan bir ders açar; son açılan ders "Kaldığın yer" için bu cihazda hatırlanır (yedeğe girmez)
     public func openLesson(_ id: String) {

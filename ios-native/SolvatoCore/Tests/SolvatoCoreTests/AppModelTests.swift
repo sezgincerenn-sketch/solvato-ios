@@ -134,6 +134,24 @@ final class AppModelTests: XCTestCase {
         XCTAssertTrue(m.showOnboarding)
         XCTAssertFalse(p.loadSettings().coachDone)
     }
+
+    /// Alt menü: başka sekme yığını sıfırlar; açık sekmeye tekrar dokunmak gezinmez, en üste kaydırma ister
+    func testSelectTab() async {
+        let m = model()
+        m.go(.games)
+        m.selectTab(.profile)
+        XCTAssertEqual(m.nav.current, .profile)
+        XCTAssertEqual(m.nav.stack, [])
+        XCTAssertEqual(m.scrollTopRequest, 0)
+        m.selectTab(.profile)
+        XCTAssertEqual(m.nav.current, .profile)
+        XCTAssertEqual(m.scrollTopRequest, 1)
+        m.go(.settings)
+        m.selectTab(.study)
+        XCTAssertEqual(m.nav.current, .study)
+        XCTAssertEqual(m.nav.stack, [])
+        XCTAssertEqual(m.scrollTopRequest, 1)
+    }
 }
 
 @MainActor

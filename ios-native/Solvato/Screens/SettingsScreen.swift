@@ -1,6 +1,6 @@
-// Ayarlar: Çalışma (öğretmen kodu, günlük hedef, seviye, anahtar, çalışılacak notalar), Soru ekranı (cevap yöntemi, tuş
+// Ayarlar: Çalışma (günlük hedef, seviye, anahtar, çalışılacak notalar), Soru ekranı (cevap yöntemi, tuş
 // isimleri, zaman yarışı), Ses ve görünüm (ses, titreşim, tema), Hatırlatma, tanıtımı tekrar göster, ilerlemeyi sıfırla,
-// Hakkında (gizlilik, lisanslar, sürüm). Web src/screens/SettingsScreen.tsx; yazılar SolvatoCore SettingsText'ten.
+// Hakkında (gizlilik, lisanslar, sürüm). Öğretmen kodu Profil'de (gezinme.md). Web src/screens/SettingsScreen.tsx; yazılar SolvatoCore SettingsText'ten.
 import SolvatoCore
 import SwiftUI
 
@@ -16,7 +16,6 @@ struct SettingsScreen: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     section("Çalışma")
-                    linkRow("Öğretmen kodu", SettingsText.teacherSub(s)) { model.go(.teacher) }
                     block("Günlük hedef", SettingsText.goalText[s.dailyGoal] ?? "") {
                         Segmented(value: s.dailyGoal, options: [10, 20, 30, 50].map { ($0, "\($0)") }) { model.settings.dailyGoal = $0 }
                     }

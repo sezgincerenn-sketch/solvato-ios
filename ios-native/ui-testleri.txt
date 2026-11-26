@@ -1,5 +1,5 @@
 # Codemagic'teki "UI testleri ve ekran görüntüleri" adımı hangi testleri hangi cihazlarda koşsun.
 # Hepsi üç cihazda 90 dakikayı aşıyor; o yüzden her adımda yalnız değişen ekranların testleri seçilir.
 # cihazlar: iphone, iphone-kucuk, ipad (boşluklu liste). testler: ScreenshotTests içindeki test adları; boşsa hepsi.
-cihazlar: iphone
-testler: testSoru testAkor testRitmiTut
+cihazlar: iphone iphone-kucuk ipad
+testler: testPratik testIpucu testIlerleme testProfilAyarlar testOgretmenHukuk testCalisma

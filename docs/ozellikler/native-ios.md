@@ -127,7 +127,9 @@ yetki ve imzalama değişikliği isterdi; dosyada veri koruması doğrudan açı
 
 ### G-10 Gezinme
 
-- Üç sekme (alt menü): **Pratik · İlerleme · Çalışma** (`ui/NavBar.tsx`). Sekmeye dokununca yığın sıfırlanır.
+- Dört sekme (gezinme revizesi, `docs/ozellikler/gezinme.md`, 26 Kasım): yüzen kapsül alt menü **Ana sayfa · İlerleme · Öğren · Profil** (iOS 26'da cam). Sekmeye
+  dokununca yığın sıfırlanır; açık sekmeye tekrar dokununca sayfa en üste kayar. Profil sekme: geri oku ve kaydırarak
+  geri yok.
 - Alt ekranlar yığına eklenir; geri düğmesi ve **sol kenardan kaydırma** bir önceki ekrana döner, önceki ekranın
   kaydırma konumu korunur (`utils/scrollMemory.ts`, `utils/swipeBack.tsx`).
 - Tur ekranlarında (soru turu, akor turu, Ritmi Tut, düello) kenardan kaydırma ekranı kaydırmaz, çıkış onayını açar.
@@ -370,17 +372,16 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 - Kaynak: `screens/HomeScreen.tsx`, `profile/LevelCard.tsx`, `components/GoalStaff.tsx`, `ui/StatPill.tsx`,
   `ui/TopicLink.tsx`.
-- Üstte logo; sağda seri hapı (turuncu alev, seri yoksa soluk; dokununca İlerleme), XP hapı (ünvan sırası rozetli;
-  dokununca Profil), avatar (dokununca Profil).
+- Üstte logo; sağda seri hapı (turuncu alev, seri yoksa soluk; basılmaz) ve XP hapı (ünvan sırası rozetli; dokununca
+  Profil sekmesi). Avatar yok (gezinme revizesi, `docs/ozellikler/gezinme.md`, 26 Kasım).
 - İsim varsa selam: saate göre "İyi geceler" (<6), "Günaydın" (<12), "Merhaba" (<18), "İyi akşamlar".
 - Seviye kartı (kısa): seviye adı, üç basamak, ilerleme çubuğu ve "Orta seviyesine: 12/50 soru · %83 doğru".
-- **Bugün** kartı: "12/20 soru" (hedef tamsa "Hedef tamam · "), günlük hedef portesi (her parça bir nota, Re4'ten
-  yukarı; hedef >10 ise 10 nota), alt yazı ("… soru kaldı" ya da "Bugünün serisi tamam"), mor düğme: "Bugünün
+- **Bugün** kartı: "12/20 soru" (hedef tamsa "Hedef tamam · "), 10 bölmeli hedef çubuğu (gezinme revizesi), alt yazı ("… soru kaldı" ya da "Bugünün serisi tamam"), mor düğme: "Bugünün
   çalışması" / "Devam et" / "Bir tur daha", alt yazı öğretmen konusu seçiliyse farklı.
 - **Oyunlar** kartı: sağda "Günün oyunu" ya da "Bugün 7/10".
 - **Pratik Kategorileri**: Sol Anahtarı, Fa Anahtarı, Diyez & Bemol (Orta'dan itibaren), Akor (bağlantı), Ritim &
   Ölçü, Ritmi Tut (bağlantı), Kulak, Nota Yazımı, Müzik Terimleri. Kartta konu rengi, simge, alt yazı (çalışılacak
-  notalar kısıtlıysa "Sadece Do Re Mi"), oynandıysa en iyi yıldız, oynat simgesi.
+  notalar kısıtlıysa "Sadece Do Re Mi"), sağda o konudaki doğruluk için yüzde halkası (gezinme revizesi).
 - Öğretmen konu seçtiyse başlık "Öğretmeninin seçtiği konular"; diğerleri kapalı "Diğer konular (N)" altında.
 - Kabul:
   - [ ] Seri 0'da hap soluk ve erişilebilirlik etiketi "Seri yok. Bugün bir tur çözünce başlar".
@@ -462,10 +463,10 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 - Kaynak: `screens/ProgressScreen.tsx`, `progress/PathCard.tsx`, `progress/WeeklyReportCard.tsx`,
   `profile/RoundHistory.tsx`.
-- Hiç soru yoksa: boş durum çizimi, "İstatistiklerin burada görünecek", "İlk tura başla" (Pratik'e götürür); üstte
-  öğrenme yolu.
+- Üstte "İlerleme" başlığı; öğrenme yolu kartı yok, konularda "Çalış ▶" (gezinme revizesi).
+- Hiç soru yoksa: boş durum çizimi, "İstatistiklerin burada görünecek", "İlk tura başla" (Ana sayfaya götürür).
 - Veri varsa sırayla: **Doğruluk** (Bu hafta / Bu ay / Tümü; bu hafta veri yoksa Tümü seçili açılır), **Bu hafta**
-  (seri, dürtme metni, 7 gün şeridi, özet, "Öğretmenine haftalık rapor gönder"), **Sıradaki** (öğrenme yolu),
+  (seri, dürtme metni, 7 gün şeridi, özet, "Öğretmenine haftalık rapor gönder"),
   **Konular** (satır: ad, çubuk, yüzde; ek çizgiler alt bilgi; dokununca o konuda tur), **Zorlandığın notalar**
   (3 sütun küçük porte, "Bu notaları çalış"), **Son turlar** (ilk 3, "Tümünü göster" ile 30).
 - Kabul:
@@ -476,15 +477,16 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 ### E-11 Profil
 
 - Kaynak: `screens/profile/ProfileScreen.tsx`, `RankCard.tsx`, `LevelCard.tsx`, `ui/Avatar.tsx`.
-- Başlık + Ayarlar düğmesi. Avatar, isim alanı (kesik çizgili), 6 renk seçimi, "… · 3 Kasım 2026'den beri".
+- Sekme ekranı (gezinme revizesi, `docs/ozellikler/gezinme.md`, 26 Kasım): başlık (geri oku yok) + Ayarlar dişlisi. Öğretmen kodu kartı (E-13'e götürür; kod
+  uygulanmışsa "Diğer konuları da göster" ve "Kodu kaldır"). Avatar, isim alanı (kesik çizgili), 6 renk seçimi, "… · 3 Kasım 2026'den beri".
 - Ünvan kartı (15 basamak), seviye kartı (açıklamalı), üç kutu (Seri, Tamamlanan tur, Çözülen soru), düğmeler:
-  Haftalık raporu öğretmenine gönder, Tüm ilerleme, Ayarlar.
+  Haftalık raporu öğretmenine gönder, Tüm ilerleme.
 - Görüntü: `profil`, `profil-alt`.
 
 ### E-12 Ayarlar
 
 - Kaynak: `screens/SettingsScreen.tsx`, `components/NotesPicker.tsx`.
-- Öğretmen kodu satırı → E-13. Çalışma: Günlük hedef (10/20/30/50 + açıklama), Seviye (değişince sayaç sıfır),
+- Öğretmen kodu satırı Profil'e taşındı (gezinme revizesi). Çalışma: Günlük hedef (10/20/30/50 + açıklama), Seviye (değişince sayaç sıfır),
   Anahtar, Çalışılacak notalar (en az 3, hazır seçimler). Soru ekranı: Cevap yöntemi, Tuş isimlerini göster, Zaman
   yarışı. Ses ve görünüm: Ses, Titreşim, Tema. Hatırlatma: anahtar + saat (09, 12, 18, 20, 21); izin yoksa kırmızı
   uyarı. Tanıtımı tekrar göster. İlerlemeyi sıfırla (onay kutusu; ayarlar ve oyun kayıtları kalır). Gizlilik, Lisanslar.
@@ -515,7 +517,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
   Metin değişikliği Ceren'in onayıyla (gizlilik metni mağazadakiyle aynı kalmalı).
 - Görüntü: `gizlilik`, `lisanslar`.
 
-### E-15 Çalışma
+### E-15 Çalışma (sekme adı artık Öğren)
 
 - [x] Native'de yapıldı (22 Kasım): ders listesi, terim tablosu ve arama çekirdekte (`Lessons`, `Terms`; altın tablo
   `calisma.json`, 35 aramada web'le aynı sonuç), ekran `StudyScreen`. Ders içerikleri E-16'da.

@@ -1,4 +1,4 @@
-// Çalışma sekmesi: konu arama, "Kaldığın yer" kartı ve bölüm bölüm ders listesi. Bir derse dokununca LessonScreen açılır.
+// Öğren sekmesi (eski adı Çalışma): konu arama, "Kaldığın yer" kartı ve bölüm bölüm ders listesi. Bir derse dokununca LessonScreen açılır.
 // Web src/screens/study/StudyScreen.tsx; ders listesi ve arama kuralı SolvatoCore Lessons'ta (web'le altın tabloyla aynı).
 import SolvatoCore
 import SwiftUI
@@ -17,11 +17,7 @@ struct StudyScreen: View {
             VStack(alignment: .leading, spacing: Space.s5) {
                 VStack(alignment: .leading, spacing: Space.s3) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Çalışma")
-                            .font(.ui(FontSize.xl, .heavy))
-                            .tracking(em: Tracking.tight, size: FontSize.xl)
-                            .foregroundStyle(ThemeColor.text.color)
-                            .accessibilityAddTraits(.isHeader)
+                        TabTitle("Öğren")
                         Text("Bir konu seç; notaları, ritmi ve akorları adım adım öğren.")
                             .font(.ui(FontSize.sm))
                             .foregroundStyle(ThemeColor.textMuted.color)

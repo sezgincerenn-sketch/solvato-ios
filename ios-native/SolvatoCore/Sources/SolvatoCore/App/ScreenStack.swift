@@ -1,5 +1,5 @@
 // Ekranlar arası gezinme kuralları (web App.tsx setView / replaceView / goBack / kaydırarak geri).
-// Basit bir yığın: sekmeler (Pratik, İlerleme, Çalışma) yığını sıfırlar; alt ekranlar üstüne eklenir; geri bir önceki
+// Basit bir yığın: sekmeler (Ana sayfa, İlerleme, Öğren, Profil) yığını sıfırlar; alt ekranlar üstüne eklenir; geri bir önceki
 // ekrana döner. Sonuç ekranları yığına girmez: oradan geri dönünce turdan önceki ekrana dönülür.
 
 public enum AppView: String, Sendable, CaseIterable {
@@ -9,7 +9,7 @@ public enum AppView: String, Sendable, CaseIterable {
     case gameChallenge = "game-challenge"
     case gameresult, profile, lesson, teacher, privacy, licenses
 
-    public var isTab: Bool { self == .home || self == .dashboard || self == .study }
+    public var isTab: Bool { self == .home || self == .dashboard || self == .study || self == .profile }
 
     /// Telefonda yan çevrilebilen ekranlar (G-02)
     public var allowsLandscape: Bool { self == .quiz || self == .chordquiz }
@@ -18,7 +18,7 @@ public enum AppView: String, Sendable, CaseIterable {
     /// ekranı kaydırmaz, ekranın kendi geri düğmesi (çıkış onayı) çalışır.
     public var swipesBack: Bool {
         switch self {
-        case .settings, .result, .games, .gameDaily, .gameChallenge, .gameresult, .profile, .lesson, .teacher, .privacy, .licenses: true
+        case .settings, .result, .games, .gameDaily, .gameChallenge, .gameresult, .lesson, .teacher, .privacy, .licenses: true
         default: false
         }
     }

@@ -1,6 +1,6 @@
 # Gezinme, Ana sayfa, İlerleme ve Profil
 
-Durum: **onaylandı (25 Kasım 2026)**. Yalnız native iOS'a yazılır (`ios-native/`). Kapsadığı revizeler
+Durum: **onaylandı (25 Kasım 2026)**, native'de uygulandı (26 Kasım 2026). İşaretli ölçütler çekirdek testleriyle doğrulandı; ekran ölçütleri Codemagic simülatör görüntüleriyle kapanacak. Yalnız native iOS'a yazılır (`ios-native/`). Kapsadığı revizeler
 (`docs/ozellikler/tasarim-revize.md`): R3, R13, R14, R15, R18, R19, R20, R23, R24, R25, R26 ve R5'in Profil tarafı.
 Tanıtımdaki değişiklikler (R5 soru adımı, R9, R12, R27, R28, R29) ayrı dokümanda.
 
@@ -107,19 +107,19 @@ Uygulamanın dört ana bölümü alt menüden tek dokunuşla açılsın; Profil 
 - [ ] Kaydırınca menü boyutu değişmiyor; sayfa sonundaki içerik menünün altında kalmıyor.
 - [ ] Açık sekmeye tekrar dokununca sayfa en üste kayıyor; başka sekmeye geçince yığın sıfırlanıyor.
 - [ ] Ana sayfada avatar yok; seri hapına dokununca hiçbir şey olmuyor; XP hapı Profil sekmesini açıyor.
-- [ ] Bugün çubuğu: hedef 10/20/30/50 için dolu bölme sayısı `floor(min(çözülen, hedef) × 10 / hedef)`; hedef
+- [x] Bugün çubuğu: hedef 10/20/30/50 için dolu bölme sayısı `floor(min(çözülen, hedef) × 10 / hedef)`; hedef
       tamamsa 10 bölme yeşil.
-- [ ] Düğme alt yazısı öğretmen konusu yokken "Karma · 10 soru · ~3 dk", varken "… · öğretmeninin konuları".
+- [x] Düğme alt yazısı öğretmen konusu yokken "Karma · 10 soru · ~3 dk", varken "… · öğretmeninin konuları".
 - [ ] Dokuz konu satırının hepsinde yüzde halkası; çözülmemiş konuda "–"; yıldız ve ▶ yok.
 - [ ] İlerleme'de "İlerleme" başlığı var, öğrenme yolu kartı yok (boş ve dolu durumda).
 - [ ] Konular'da ilk satırın üstünde çizgi yok; her satırda "Çalış ▶"; satıra dokununca o konuda tur.
 - [ ] Profil'de geri oku yok, alt "Ayarlar" düğmesi yok; Ayarlar'da "Öğretmen kodu" satırı yok.
-- [ ] Öğretmen kodu kartının başlığı tanıtım seçimine göre (üç durum + kodlu durum) yukarıdaki gibi.
+- [x] Öğretmen kodu kartının başlığı tanıtım seçimine göre (üç durum + kodlu durum) yukarıdaki gibi.
 - [ ] "Diğer konuları da göster" açıkken Ana sayfada "Diğer konular" grubu açık geliyor; uygulama yeniden açılınca da.
-- [ ] "Kodu kaldır": konu seçimi kalkıyor, seviye/hedef/notalar değişmiyor, Ana sayfa "Pratik Kategorileri" düzenine
+- [x] "Kodu kaldır": konu seçimi kalkıyor, seviye/hedef/notalar değişmiyor, Ana sayfa "Pratik Kategorileri" düzenine
       dönüyor.
 - [ ] Koyu ve açık temada, iPhone SE ve iPad'de taşma yok (ekran görüntüleri).
-- [ ] Çekirdek testleri: halka yüzdesi, bölme sayısı, kart başlığı seçimi ve "Kodu kaldır" sonrası ayarlar.
+- [x] Çekirdek testleri: halka yüzdesi, bölme sayısı, kart başlığı seçimi ve "Kodu kaldır" sonrası ayarlar.
 
 ## Kapsam dışı
 

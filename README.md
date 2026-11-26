@@ -86,7 +86,7 @@ ios-native/
   Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
                        aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,
                        StatTile, StatPill, ScoreRing; Shell.swift: Avatar, BackButton, ScreenHeader, Toast, PlayChip,
-                       TopicLink, ExitConfirm, NavBar, TabletColumn; FlowLayout; CodeField (kod girişi); SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
+                       TopicLink, ExitConfirm, NavBar (yüzen kapsül, iOS 26'da cam), TabletColumn; PercentRing.swift: yüzde halkası, GoalBar, TabTitle; FlowLayout; CodeField (kod girişi); SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
                        Canvas'a çizer; NotationView, MusicalStaffView, ChordStaffView, GoalStaffView, ClefIconView; PianoViews: QuizPianoView,
                        MultiPianoView), Screens/, Audio.swift (AVAudioEngine çıkışı `Sound`, ses saati, titreşim `Haptics`),
                        UI/Motion.swift (sallanma, nabız, kayarak/büyüyerek belirme, seri alevi, nota zıplaması, "yan çevir" ipucu),
@@ -123,6 +123,10 @@ ios-native/
   (yerlerinde kısa not). Tasarım sistemi önizlemesi yalnız `-UITestDesignSystem` ile. UI testleri `scripts/referans.mjs`
   senaryolarını (`--json` → `SolvatoUITests/senaryolar.json`) ortam değişkeniyle verir, uygulama o veriyle bellekte ve sabit
   tarihle açılır, görüntüler web referanslarıyla aynı adı taşır.
+- **Gezinme revizesi (yalnız native, `docs/ozellikler/gezinme.md`):** dört sekme Ana sayfa · İlerleme · Öğren · Profil
+  (Profil sekme oldu; öğretmen kodu kartı Profil'de). Web `main` bu revizeyi içermediği için `ana-sayfa.json` ve
+  `ilerleme.json` altın tabloları `revize-onizleme` dalından üretildi (o dalda `node scripts/altin.mjs`; İlerleme başlığı
+  `TabTitle` ile). `node scripts/altin.mjs`'i main'de çalıştırırsanız bu iki dosyayı geri alın.
 
 ## Klasör yapısı
 

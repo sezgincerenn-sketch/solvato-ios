@@ -1,6 +1,7 @@
-// İlerleme sekmesi içeriği (web src/screens/ProgressScreen.tsx, progress/PathCard.tsx, progress/WeeklyReportCard.tsx,
-// profile/RoundHistory.tsx): doğruluk (bu hafta / bu ay / tümü), bu hafta şeridi, öğrenme yolu, konular, zorlandığın
-// notalar, son turlar. SwiftUI ekranı (Screens/ProgressScreen) bunu çizer; `texts(period:)` web'deki sırayla yazılar.
+// İlerleme sekmesi içeriği (web src/screens/ProgressScreen.tsx, progress/WeeklyReportCard.tsx, profile/RoundHistory.tsx):
+// başlık, doğruluk (bu hafta / bu ay / tümü), bu hafta şeridi, konular ("Çalış ▶"), zorlandığın notalar, son turlar.
+// Öğrenme yolu kartı gezinme revizesiyle kalktı (docs/ozellikler/gezinme.md); altın tablo ilerleme.json revize
+// önizleme dalından (revize-onizleme) üretildi. SwiftUI ekranı (Screens/ProgressScreen) bunu çizer; `texts(period:)` web'deki sırayla yazılar.
 import Foundation
 
 public enum AccuracyPeriod: String, CaseIterable, Sendable {
@@ -69,27 +70,6 @@ public struct ProgressContent: Sendable {
     public var weekSummary: String
     public var weekLabel: String
 
-    // MARK: Öğrenme yolu (web PathCard)
-    public struct Stage: Equatable, Sendable {
-        public var key: String
-        public var label: String
-        public var short: String
-        public var done: Bool
-        public var isCurrent: Bool
-        /// Tur: konu ya da akor turu
-        public var category: FilterCategory?
-        public var accessibility: String
-    }
-    public static let pathNeed = 15
-    public static let pathAcc = 0.7
-    public var stages: [Stage]
-    public var pathDone: String
-    public var nextTitle: String
-    public var nextSub: String
-    /// Sıradaki adımın ilerleme çubuğu (0–100); doğruluk eksikse ya da yol bittiyse nil
-    public var nextPct: Int?
-    public var nextStage: Stage
-
     // MARK: Konular
     public struct Topic: Equatable, Sendable {
         public var key: String
@@ -141,44 +121,6 @@ public struct ProgressContent: Sendable {
             : "Bu hafta \(r.activeDays) gün çalıştın, \(r.questions) soru çözdün. Hedefi \(r.goalDays) gün tutturdun."
         weekLabel = "Son 7 günde \(r.activeDays) gün çalışıldı, \(r.goalDays) gün hedef tamamlandı"
 
-        // Öğrenme yolu
-        var accT = Tally.zero
-        for e in stats.noteStats.entries where e.key.hasSuffix(":sharp") || e.key.hasSuffix(":flat") {
-            accT = accT.adding(correct: e.value.correct, total: e.value.total)
-        }
-        var raw: [(String, String, String, Tally, FilterCategory?)] = [
-            ("treble", "Sol Anahtarı", "Sol", ca.treble, .treble), ("bass", "Fa Anahtarı", "Fa", ca.bass, .bass),
-        ]
-        if settings.level >= 2 { raw.append(("acc", "Diyez & Bemol", "♯♭", accT, .accidentals)) }
-        raw += [
-            ("rhythm", "Ritim", "Ritim", ca.rhythm, .rhythm), ("terms", "Terimler", "Terim", ca.terms, .terms),
-            ("chords", "Akorlar", "Akor", ca.chords, nil),
-        ]
-        func isDone(_ c: Tally) -> Bool { c.total >= Self.pathNeed && Double(c.correct) / Double(c.total) >= Self.pathAcc }
-        let currentIdx = raw.firstIndex { !isDone($0.3) }
-        stages = raw.enumerated().map { i, s in
-            let done = isDone(s.3)
-            let cur = i == currentIdx
-            return Stage(
-                key: s.0, label: s.1, short: s.2.count > 3 ? String(s.2.prefix(2)) : s.2, done: done, isCurrent: cur, category: s.4,
-                accessibility: s.1 + (done ? " (tamam)" : cur ? " (sıradaki)" : ""))
-        }
-        let allDone = currentIdx == nil
-        let ci = currentIdx ?? raw.count - 1
-        let c = raw[ci].3
-        nextStage = stages[ci]
-        pathDone = "\(stages.filter(\.done).count)/\(stages.count) tamam"
-        let needAcc = c.total >= Self.pathNeed && Double(c.correct) / Double(c.total) < Self.pathAcc
-        let accPct = jsRound(Self.pathAcc * 100)
-        nextTitle = (allDone ? "Yolu tamamladın. Bir tur daha: " : "Sıradaki: ") + raw[ci].1
-        nextSub =
-            allDone
-            ? "Hızını ve doğruluğunu korumak için tekrar çalış."
-            : needAcc
-                ? "Doğruluğu %\(accPct) üzerine çıkar (şu an %\(jsRound(Double(c.correct) / Double(c.total) * 100)))"
-                : "\(min(c.total, Self.pathNeed))/\(Self.pathNeed) soru · %\(accPct) doğruluk hedefi"
-        nextPct = !allDone && !needAcc ? min(100, jsRound(Double(c.total) / Double(Self.pathNeed) * 100)) : nil
-
         // Konular
         func ledger(_ v: Tally) -> String? { v.total >= 5 ? "Ek çizgiler %\(jsRound(Double(v.correct) / Double(v.total) * 100))" : nil }
         topics = [
@@ -216,15 +158,9 @@ public struct ProgressContent: Sendable {
 
     /// Ekrandaki yazılar ve erişilebilirlik adları web'deki sırayla (telefon düzeni, son turlar kapalı)
     public func texts(period: AccuracyPeriod? = nil) -> (texts: [String], labels: [String]) {
-        var t: [String] = []
+        var t = ["İlerleme"]
         var l: [String] = []
-        func path() {
-            // Tamamlanan aşamada kısaltma yerine ✓ ikonu
-            t += ["Öğrenme yolu", pathDone] + stages.filter { !$0.done }.map(\.short) + [nextTitle, nextSub]
-            l += stages.map(\.accessibility)
-        }
         if !hasAnswers {
-            path()
             t += ["İstatistiklerin burada görünecek", "İlk turunu çöz; doğruluğun, serin ve zorlandığın notalar burada görünsün.", "İlk tura başla"]
             return (t, l)
         }
@@ -240,12 +176,11 @@ public struct ProgressContent: Sendable {
         }
         t += ["Bu hafta", report.range, streakTitle, streakNudge] + weekDays.map(\.label) + [weekSummary, "Öğretmenine haftalık rapor gönder"]
         l.append(weekLabel)
-        path()
         t.append("Konular")
         for x in topics {
             t.append(x.label)
             if let n = x.note { t.append(n) }
-            t += [x.pct.map { "%\($0)" } ?? "—", "›"]
+            t += [x.pct.map { "%\($0)" } ?? "—", "Çalış"]
             l.append(x.accessibility)
         }
         if !weak.isEmpty {

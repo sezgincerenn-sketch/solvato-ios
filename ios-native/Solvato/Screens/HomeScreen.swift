@@ -1,6 +1,6 @@
-// Pratik (ana sayfa): üst çubuk (seri, XP, profil), seviye kartı, Bugün kartı (günlük hedef portesi, Bugünün çalışması),
-// Oyunlar kartı, konu kartları. Web karşılığı src/screens/HomeScreen.tsx + profile/LevelCard.tsx. Hangi kartın görüneceği
-// ve bütün yazılar SolvatoCore HomeContent'ten (web'le aynı olduğu testli); burada yalnızca çizim.
+// Ana sayfa: üst çubuk (seri, XP), seviye kartı, Bugün kartı (10 bölmeli hedef çubuğu, Bugünün çalışması),
+// Oyunlar kartı, konu kartları (yüzde halkası). Gezinme revizesi: docs/ozellikler/gezinme.md. Web karşılığı
+// src/screens/HomeScreen.tsx + profile/LevelCard.tsx. Hangi kartın görüneceği ve bütün yazılar SolvatoCore HomeContent'ten (web'le aynı olduğu testli); burada yalnızca çizim.
 import SolvatoCore
 import SwiftUI
 
@@ -9,7 +9,14 @@ struct HomeScreen: View {
     /// Tanıtım sırasında aydınlatılan öğe: görünür alana kaydırılır
     var coachTarget: String?
     @Environment(\.horizontalSizeClass) private var sizeClass
-    @State private var showRest = false
+    /// "Diğer konular" grubu; Profil'de "Diğer konuları da göster" açıksa açık gelir
+    @State private var showRest: Bool
+
+    init(model: AppModel, coachTarget: String? = nil) {
+        self.model = model
+        self.coachTarget = coachTarget
+        _showRest = State(initialValue: model.settings.showRestTopics)
+    }
 
     private var content: HomeContent {
         HomeContent(stats: model.stats, settings: model.settings, daily: model.todayDaily, now: model.now)
@@ -30,7 +37,7 @@ struct HomeScreen: View {
                         .padding(.top, -4)
                         .padding(.bottom, 12)
                 }
-                LevelCardView(content: c) { model.go(.profile) }.coachTarget("level").id("level").padding(.bottom, Space.s3)
+                LevelCardView(content: c) { model.selectTab(.profile) }.coachTarget("level").id("level").padding(.bottom, Space.s3)
                 todayCard(c).padding(.bottom, Space.s4)
                 gamesCard(c).coachTarget("games").id("games").padding(.bottom, 20)
                 Text(c.sectionTitle.uppercased(with: Locale(identifier: "tr")))
@@ -79,19 +86,17 @@ struct HomeScreen: View {
             Logo(size: 30).accessibilityAddTraits(.isHeader).layoutPriority(-1)
             Spacer(minLength: Space.s2)
             HStack(spacing: Space.s2) {
-                StatPill(tone: c.streak > 0 ? .orange : .muted, value: String(c.streak), label: c.streakLabel, action: { model.go(.dashboard) }) {
+                // Seri hapı basılmaz (yalnız bilgi); XP hapı Profil sekmesini açar
+                StatPill(tone: c.streak > 0 ? .orange : .muted, value: String(c.streak), label: c.streakLabel, action: nil) {
                     Icon(.flame, size: 17, fill: c.streak > 0).opacity(c.streak > 0 ? 1 : 0.6).flameFlicker(c.streak > 0)
                 }
-                StatPill(tone: .amber, value: c.xpValue, label: c.xpLabel, action: { model.go(.profile) }) {
+                StatPill(tone: .amber, value: c.xpValue, label: c.xpLabel, action: { model.selectTab(.profile) }) {
                     Text(String(c.rank.rank))
                         .font(.ui(FontSize.sm, .heavy))
                         .foregroundStyle(PaletteColor.black.color)
                         .frame(width: 24, height: 24)
                         .background(Circle().fill(PaletteColor.amber400.color))
                 }
-                Button { model.go(.profile) } label: { Avatar(name: c.name, color: c.avatarColor, size: 40) }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Profil")
             }
         }
     }
@@ -108,7 +113,7 @@ struct HomeScreen: View {
                 Text(c.dailyText).font(.mono(FontSize.sm, .bold)).foregroundStyle(ThemeColor.violetTextSoft.color)
             }
             .padding(.bottom, Space.s2)
-            GoalStaffView(done: c.dailySolved, goal: c.dailyGoal)
+            GoalBar(filled: c.goalSegments, done: c.goalDone, label: c.goalLabel)
             HStack(spacing: 4) {
                 if c.goalDone { Icon(.flame, size: 13, fill: true).foregroundStyle(ThemeColor.orangeText.color) }
                 Text(c.goalFooter)
@@ -206,7 +211,7 @@ struct HomeScreen: View {
                     CategoryCard(cat: cat) { model.startQuiz(cat.key) }
                         .modifier(CoachIf(on: cat.key == .treble, name: "categories"))
                 case let .link(l):
-                    TopicLink(color: l.color, icon: l.icon, title: l.title, sub: l.sub, stars: l.stars) {
+                    TopicLink(color: l.color, icon: l.icon, title: l.title, sub: l.sub, acc: l.acc) {
                         model.go(l.round == .chords ? .chordquiz : .rhythmtap)
                     }
                 }
@@ -216,7 +221,7 @@ struct HomeScreen: View {
     }
 }
 
-/// Konu kartı: renkli ikon kutusu, ad ve alt yazı, en iyi yıldız, oynat düğmesi
+/// Konu kartı: renkli ikon kutusu, ad ve alt yazı, konudaki doğruluk (yüzde halkası); kartın tamamı turu başlatır
 private struct CategoryCard: View {
     let cat: HomeContent.Category
     let action: () -> Void
@@ -241,8 +246,7 @@ private struct CategoryCard: View {
                     Text(cat.sub).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                if let s = cat.stars { Stars(value: s, size: 13) }
-                PlayChip()
+                PercentRing(acc: cat.acc, color: base)
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 16)

@@ -1,4 +1,5 @@
-// Uygulamanın kök görünümü: o anki ekran (AppModel.nav), sekme ekranlarında alt menü, kutlama, tanıtım, açılış.
+// Uygulamanın kök görünümü: o anki ekran (AppModel.nav), sekme ekranlarında yüzen alt menü (kapsül; içerik altından
+// kayar, kaydırma alanlarının sonunda kapsül kadar boşluk kalır), kutlama, tanıtım, açılış.
 // Web App.tsx renderScreen + utils/swipeBack.tsx: sol kenardan (28 pt) sağa kaydırınca ekran parmakla kayar, altında
 // önceki ekran görünür; %35'i geçince ya da hızlı bırakınca geri dönülür. Turlarda ekran kaymaz, ~80 pt kaydırma ekranın
 // çıkış onayını açar. Telefonda yalnız soru ve akor turu yan döner (G-02).
@@ -71,17 +72,21 @@ struct AppRoot: View {
         .onChange(of: model.settings.haptics, initial: true) { _, on in Haptics.enabled = on }
         // Tur bitti: kutlama yoksa üç notalık melodi (kutlamanın kendi sesi CelebrationView'da)
         .onChange(of: model.roundsCompleted) { _, _ in if model.celebrate == nil { Sound.play(Sounds.sessionDone) } }
+        // Açık sekmeye tekrar dokunuldu: o sayfanın kaydırma alanı en üste kayar (UI/ScrollMemoryProbe)
+        .onChange(of: model.scrollTopRequest) { _, _ in NotificationCenter.default.post(name: .scrollToTop, object: model.nav.current.rawValue) }
     }
 
     @ViewBuilder
     private func screenWithNav(_ v: AppView) -> some View {
-        VStack(spacing: 0) {
-            screen(v).frame(maxHeight: .infinity)
-            if v.isTab {
-                NavBar(active: NavTab(rawValue: v.rawValue) ?? .home) { model.go(AppView(rawValue: $0.rawValue) ?? .home) }
-                    .coachTarget("nav")
+        screen(v)
+            .frame(maxHeight: .infinity)
+            // Kapsül alt güvenli alana eklenir: kaydırma alanları sonunda kapsül kadar boşluk bırakır
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                if v.isTab {
+                    NavBar(active: NavTab(rawValue: v.rawValue) ?? .home) { model.selectTab(AppView(rawValue: $0.rawValue) ?? .home) }
+                        .coachTarget("nav")
+                }
             }
-        }
     }
 
     /// Ana sayfa ipuçları: Pratik'te, açılış/tanıtım/kutlama kapalıyken, bir kez (settings.coachDone)
@@ -188,7 +193,7 @@ private struct PendingScreen: View {
     private var title: String {
         switch view {
         case .dashboard: "İlerleme"
-        case .study: "Çalışma"
+        case .study: "Öğren"
         case .profile: "Profil"
         case .settings: "Ayarlar"
         case .games, .gameDaily, .gameChallenge, .gameresult, .duel: "Oyunlar"

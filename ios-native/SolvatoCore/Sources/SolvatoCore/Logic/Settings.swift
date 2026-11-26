@@ -21,6 +21,18 @@ public enum InputMode: String, Codable, Sendable {
     case piano, choice
 }
 
+/// Tanıtımdaki öğretmen sorusunun cevabı (web teacherRole: "" | "student" | "self" | "teacher")
+public enum TeacherRole: String, Codable, Sendable, CaseIterable {
+    /// Sorulmadı ya da tanıtım atlandı
+    case unset = ""
+    /// Öğretmenim var
+    case student
+    /// Kendi kendime
+    case solo = "self"
+    /// Ben öğretmenim
+    case teacher
+}
+
 public struct Settings: Codable, Equatable, Sendable {
     public static let storageKey = "pianote_settings_v1"
 
@@ -56,12 +68,16 @@ public struct Settings: Codable, Equatable, Sendable {
     public var teacherCode = ""
     /// Öğretmenin seçtiği konular (TeacherCode.topics); boş = hepsi
     public var topics: [String] = []
+    /// Öğretmen kodu varken diğer konular da Ana sayfada açık gelir (Profil › Öğretmen kodu)
+    public var showRestTopics = false
+    /// Tanıtımdaki öğretmen sorusu; Profil'deki öğretmen kodu kartının başlığını belirler
+    public var teacherRole = TeacherRole.unset
 
     public init() {}
 
     private enum Keys: String, CodingKey {
         case soundKeys, notes, timer, haptics, reminder, reminderHour, onboarded, inputMode, keyLabels, dailyGoal
-        case level, clef, levelProgress, name, avatarColor, joinedAt, coachDone, teacherCode, topics
+        case level, clef, levelProgress, name, avatarColor, joinedAt, coachDone, teacherCode, topics, showRestTopics, teacherRole
     }
 
     public init(from decoder: Decoder) throws {
@@ -87,6 +103,16 @@ public struct Settings: Codable, Equatable, Sendable {
         coachDone = get(.coachDone, d.coachDone)
         teacherCode = get(.teacherCode, d.teacherCode)
         topics = get(.topics, d.topics)
+        showRestTopics = get(.showRestTopics, d.showRestTopics)
+        teacherRole = get(.teacherRole, d.teacherRole)
+    }
+
+    /// Profil › Öğretmen kodu › "Kodu kaldır": yalnız öğretmenin konu seçimi kalkar; kodun ayarladığı seviye, hedef,
+    /// notalar ve anahtar olduğu gibi kalır
+    public mutating func removeTeacherCode() {
+        teacherCode = ""
+        topics = []
+        showRestTopics = false
     }
 
     /// Akor turunun seviyesi (Uzman yalnız Çalışma'da)

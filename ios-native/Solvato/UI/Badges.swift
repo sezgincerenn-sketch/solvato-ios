@@ -114,27 +114,36 @@ struct StatPill<Leading: View>: View {
     let value: String
     /// Ekran okuyucu için tam cümle, ör. "12 gün seri. Haftanı gör"
     let label: String
-    let action: () -> Void
+    /// Verilmezse hap basılmaz, yalnız bilgi verir (seri hapı)
+    let action: (() -> Void)?
     /// Soldaki ikon ya da rozet; hap rengini alır
     @ViewBuilder var leading: Leading
 
     var body: some View {
-        let shape = Capsule()
-        Button(action: action) {
-            HStack(spacing: 6) {
-                leading.frame(width: 26, height: 26)
-                Text(value).font(.mono(FontSize.sm, .bold)).lineLimit(1).fixedSize()
-            }
-            .foregroundStyle(tone.text.color)
-            .padding(.leading, 6)
-            .padding(.trailing, 12)
-            .frame(minHeight: 36)
-            .background(tone.base.opacity(0.12), in: shape)
-            .overlay(shape.strokeBorder(tone.base.opacity(0.3), lineWidth: 1))
-            .contentShape(shape)
+        if let action {
+            Button(action: action) { pill }
+                .buttonStyle(.plain)
+                .accessibilityLabel(label)
+        } else {
+            pill
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(label)
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(label)
+    }
+
+    private var pill: some View {
+        let shape = Capsule()
+        return HStack(spacing: 6) {
+            leading.frame(width: 26, height: 26)
+            Text(value).font(.mono(FontSize.sm, .bold)).lineLimit(1).fixedSize()
+        }
+        .foregroundStyle(tone.text.color)
+        .padding(.leading, 6)
+        .padding(.trailing, 12)
+        .frame(minHeight: 36)
+        .background(tone.base.opacity(0.12), in: shape)
+        .overlay(shape.strokeBorder(tone.base.opacity(0.3), lineWidth: 1))
+        .contentShape(shape)
     }
 }
 

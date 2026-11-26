@@ -14,7 +14,9 @@ struct CoachStep {
         .init(target: "level", title: "Seviyen", text: "Bu seviyede 50 soru çözüp %80 doğru yapınca bir üst seviyenin soruları açılır."),
         .init(target: "categories", title: "Bir konuya odaklan", text: "Sadece Sol anahtarı, ritim ya da terim çalışmak istersen bir karta dokun."),
         .init(target: "games", title: "Oyunlar", text: "Günün meydan okumasını oyna ya da arkadaşına meydan oku."),
-        .init(target: "nav", title: "İlerleme ve Çalışma", text: "Gelişimini ve son turlarını İlerleme'de gör; notaları Çalışma'da ezberle."),
+        .init(
+            target: "nav", title: "İlerleme, Öğren ve Profil",
+            text: "Gelişimini İlerleme'de gör, notaları Öğren'de çalış; öğretmen kodu ve ayarlar Profil'de."),
     ]
 }
 

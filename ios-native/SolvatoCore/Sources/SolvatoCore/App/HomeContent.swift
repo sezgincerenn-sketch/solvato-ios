@@ -1,5 +1,6 @@
-// Pratik (ana sayfa) içeriği: hangi kart görünür, hangi yazı yazar. Web karşılığı src/screens/HomeScreen.tsx ve
-// screens/profile/LevelCard.tsx. SwiftUI ekranı (Screens/HomeScreen) yalnızca bunu çizer. `texts` / `labels` ekranda
+// Ana sayfa içeriği: hangi kart görünür, hangi yazı yazar. Web karşılığı src/screens/HomeScreen.tsx ve
+// screens/profile/LevelCard.tsx; gezinme revizesi (docs/ozellikler/gezinme.md: hedef çubuğu, yüzde halkası, seri hapı).
+// Altın tablo ana-sayfa.json revize önizleme dalından (revize-onizleme) üretildi. SwiftUI ekranı (Screens/HomeScreen) yalnızca bunu çizer. `texts` / `labels` ekranda
 // görünen yazıları ve erişilebilirlik adlarını web'deki sırayla verir; altın tabloyla karşılaştırılır.
 import Foundation
 
@@ -15,8 +16,8 @@ public struct HomeContent: Equatable, Sendable {
         public var sub: String
         public var color: CategoryColor
         public var icon: IconKind
-        /// Bu konudaki en iyi tur yıldızı (bir kez oynanınca)
-        public var stars: Int?
+        /// Bu konudaki doğruluk (yüzde halkası)
+        public var acc: Tally
     }
 
     public struct Link: Equatable, Sendable {
@@ -25,7 +26,8 @@ public struct HomeContent: Equatable, Sendable {
         public var icon: IconName
         public var title: String
         public var sub: String
-        public var stars: Int?
+        /// Yüzde halkası: akor doğruluğu; Ritmi Tut hiç oynanmadıysa boş, oynandıysa Ritim doğruluğu
+        public var acc: Tally
     }
 
     public enum Row: Equatable, Sendable {
@@ -45,9 +47,6 @@ public struct HomeContent: Equatable, Sendable {
     public var rank: RankInfo
     public var xpValue: String
     public var xpLabel: String
-    public var name: String
-    public var avatarColor: String
-    public var avatarInitial: String
     public var greeting: String?
     // Seviye kartı
     public var level: Int
@@ -62,6 +61,10 @@ public struct HomeContent: Equatable, Sendable {
     public var goalFooter: String
     public var dailySolved: Int
     public var dailyGoal: Int
+    /// Hedef çubuğunun dolu bölmesi (0–10)
+    public var goalSegments: Int
+    /// Hedef çubuğunun erişilebilirlik adı: "20 soruluk hedefin 12 sorusu çözüldü"
+    public var goalLabel: String
     public var todayTitle: String
     public var todaySub: String
     // Oyunlar kartı
@@ -91,14 +94,11 @@ public struct HomeContent: Equatable, Sendable {
         let rank = Ranks.from(xp: stats.totalPoints)
         let streak = Progress.currentStreak(stats, now: now)
         self.streak = streak
-        streakLabel = streak > 0 ? "\(streak) gün seri. Haftanı gör" : "Seri yok. Bugün bir tur çözünce başlar"
+        streakLabel = streak > 0 ? "\(streak) gün seri" : "Seri yok. Bugün bir tur çözünce başlar"
         self.rank = rank
         xpValue = "\(stats.totalPoints) XP"
         xpLabel = "\(stats.totalPoints) XP, \(rank.rank). ünvan: \(rank.label). Profili aç"
         let trimmed = s.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        name = s.name
-        avatarColor = s.avatarColor
-        avatarInitial = String(trimmed.prefix(1)).uppercased(with: Locale(identifier: "tr"))
         greeting = trimmed.isEmpty ? nil : "\(Self.greeting(hour: now.clock.calendar.component(.hour, from: now.date))), \(trimmed)"
 
         // Seviye kartı (LevelCard)
@@ -126,11 +126,13 @@ public struct HomeContent: Equatable, Sendable {
         dailySolved = solved
         dailyGoal = s.dailyGoal
         goalDone = solved >= s.dailyGoal
+        goalSegments = Self.goalSegments(done: solved, goal: s.dailyGoal)
+        goalLabel = "\(s.dailyGoal) soruluk hedefin \(min(solved, s.dailyGoal)) sorusu çözüldü"
         dailyText = (goalDone ? "Hedef tamam · " : "") + "\(min(solved, 9999))/\(s.dailyGoal) soru"
         goalFooter = goalDone ? "Bugünün serisi tamam" : "Hedefi tamamlayınca serin +1 olur · \(max(0, s.dailyGoal - solved)) soru kaldı"
         todayTitle = goalDone ? "Bir tur daha" : solved > 0 ? "Devam et" : "Bugünün çalışması"
         let teacherPick = !TeacherCode.allTopics(s.topics)
-        todaySub = teacherPick ? "Karma 10 soru · öğretmeninin seçtiği konulardan" : "Karma 10 soru · nota, ritim ve terimler"
+        todaySub = teacherPick ? "Karma · 10 soru · ~3 dk · öğretmeninin konuları" : "Karma · 10 soru · ~3 dk"
         gamesDone = daily != nil
         gamesBadge = daily.map { "Bugün \($0.correct)/10" } ?? "Günün oyunu"
         sectionTitle = teacherPick ? "Öğretmeninin seçtiği konular" : "Pratik Kategorileri"
@@ -140,12 +142,22 @@ public struct HomeContent: Equatable, Sendable {
         func assigned(_ k: String) -> Bool {
             !teacherPick || s.topics.contains(k) || (k == "accidentals" && (s.topics.contains("treble") || s.topics.contains("bass")))
         }
+        let ca = stats.categoryAccuracy
+        var accNotes = Tally.zero
+        for e in stats.noteStats.entries where e.key.hasSuffix(":sharp") || e.key.hasSuffix(":flat") {
+            accNotes = accNotes.adding(correct: e.value.correct, total: e.value.total)
+        }
+        let accs: [FilterCategory: Tally] = [
+            .treble: ca.treble, .bass: ca.bass, .accidentals: accNotes, .rhythm: ca.rhythm, .ear: ca.ear, .writing: ca.writing,
+            .terms: ca.terms,
+        ]
         let cats = Self.baseCategories.map { key, label, sub, color, icon in
             Category(
                 key: key, label: label,
                 sub: (key == .treble || key == .bass) && limitedNotes ? "Sadece \(s.notes.joined(separator: " "))" : sub,
-                color: color, icon: icon, stars: stats.bestStars?[key.rawValue])
+                color: color, icon: icon, acc: accs[key] ?? .zero)
         }
+        let rhythmTapAcc = stats.bestStars?["rhythmtap"] == nil ? Tally.zero : ca.rhythm
         let allKeys = cats.map(\.key.rawValue) + ["chords"]
         func rows(_ has: (String) -> Bool) -> [Row] {
             var out: [Row] = []
@@ -153,12 +165,12 @@ public struct HomeContent: Equatable, Sendable {
                 if has(c.key.rawValue) && !(c.key == .accidentals && lv < 2) { out.append(.category(c)) }
                 if c.key == .accidentals && has("chords") {
                     out.append(
-                        .link(Link(round: .chords, color: .chords, icon: .piano, title: "Akor", sub: "Tanı, tuşlara bas", stars: stats.bestStars?["chords"])))
+                        .link(Link(round: .chords, color: .chords, icon: .piano, title: "Akor", sub: "Tanı, tuşlara bas", acc: ca.chords)))
                 }
                 // Web'de olduğu gibi Ritmi Tut her grupta ritmin ardından (konu seçiminden bağımsız)
                 if c.key == .rhythm {
                     out.append(
-                        .link(Link(round: .rhythmtap, color: .rhythm, icon: .note, title: "Ritmi Tut", sub: "Metronomla dokunarak çal", stars: stats.bestStars?["rhythmtap"])))
+                        .link(Link(round: .rhythmtap, color: .rhythm, icon: .note, title: "Ritmi Tut", sub: "Metronomla dokunarak çal", acc: rhythmTapAcc)))
                 }
             }
             return out
@@ -171,11 +183,15 @@ public struct HomeContent: Equatable, Sendable {
         self.groups = groups
     }
 
+    /// Bugün çubuğu: 10 bölme, her bölme hedefin onda biri; `floor(min(çözülen, hedef) × 10 / hedef)`
+    public static func goalSegments(done: Int, goal: Int) -> Int {
+        goal > 0 ? min(10, min(done, goal) * 10 / goal) : 0
+    }
+
     /// Ekranda görünen yazılar ve erişilebilirlik adları, web'deki sırayla (diğer konular kapalıyken)
     public var texts: (texts: [String], labels: [String]) {
         var t = ["Solv", "ato", String(streak), String(rank.rank), xpValue]
-        var l = ["Solvato", streakLabel, xpLabel, "Profil", "Seviye: \(levelLabel). Profili aç", "3 seviyeden \(level)."]
-        if !avatarInitial.isEmpty { t.append(avatarInitial) }
+        var l = ["Solvato", streakLabel, xpLabel, "Seviye: \(levelLabel). Profili aç", "3 seviyeden \(level).", goalLabel]
         if let greeting { t.append(greeting) }
         t += ["Seviye", levelLabel] + [1, 2, 3].map(QuestionLevel.label) + [levelNote]
         t += ["Bugün", dailyText, goalFooter, todayTitle, todaySub, "Oyunlar", "Meydan okuma ve düello", gamesBadge, sectionTitle]
@@ -189,10 +205,8 @@ public struct HomeContent: Equatable, Sendable {
                 case let .category(c):
                     if case let .symbol(s) = c.icon { t.append(s) }
                     t += [c.label, c.sub]
-                    if let s = c.stars { l.append("3 yıldızdan \(s)") }
                 case let .link(k):
                     t += [k.title, k.sub]
-                    if let s = k.stars { l.append("3 yıldızdan \(s)") }
                 }
             }
         }
