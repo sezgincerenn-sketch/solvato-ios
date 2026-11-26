@@ -102,3 +102,27 @@ final class QuizRoundTests: XCTestCase {
         XCTAssertEqual(r.optionState(x.correctAnswer), .reveal)
     }
 }
+
+/// R1: yanlış cevapta "Senin cevabın" yalnız nota sorularında
+final class YourAnswerTests: XCTestCase {
+    func testYourAnswer() throws {
+        let note = try XCTUnwrap(QuestionBank.all.first { $0.category == .noteIdentification && $0.accidental == nil })
+        var r = QuizRound(questions: [note, note])
+        XCTAssertNil(r.yourAnswer)
+        let wrong = allNotes.first { $0 != note.correctAnswer }!
+        _ = r.answer(wrong, timeMs: 300)
+        XCTAssertEqual(r.yourAnswer, wrong)
+        _ = r.advance()
+        _ = r.timeout(timeMs: 5000)
+        XCTAssertNil(r.yourAnswer, "süre dolunca yok")
+
+        var sharp = QuizRound(questions: [note])
+        _ = sharp.answer("Fa#", timeMs: 300)
+        XCTAssertEqual(sharp.yourAnswer, "Fa♯")
+
+        let term = try XCTUnwrap(QuestionBank.all.first { $0.category == .musicalTerms })
+        var t = QuizRound(questions: [term])
+        _ = t.answer("yanlış", timeMs: 300)
+        XCTAssertNil(t.yourAnswer, "terim sorusunda yok")
+    }
+}
