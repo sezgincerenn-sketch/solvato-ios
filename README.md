@@ -121,7 +121,7 @@ ios-native/
   sonunda App Store bağlantısı (R32, `AppStoreLink`, Apple ID 6837820383; ekleme `AppButton` ve haftalık rapor
   düğmelerinde, altın tablolardaki metinler bağlantısız kalır).
 - **0.9 karşılaştırması (27 Kasım):** dört `inceleyici` ile envantere göre ekran ekran bakıldı; düzeltilenler: sekmeye
-  geçince sayfa yeniden kurulur (`SystemTabs` `.id`, web gibi en üstten ve güncel ayarla), ipucu turu katmanı bütün
+  geçince sayfa yeniden kurulur (`AppRoot` yığının içinde `.id`, web gibi en üstten ve güncel ayarla), ipucu turu katmanı bütün
   dokunuşları tutar, Ritmi Tut'ta çoklu dokunuş (`UI/TouchDownPad`) ve bitiş sesi kesilmez, akor şıkları 60 pt (iç boşluk
   dahil), süre sayacı başlangıca bağlı, tanıtım satır araları, yer tutucu rengi `textFaint`, açılış notalarının solması,
   Hareketi azalt'ta açılış anında kalkar, Sistem temasında pencere ayarı da güncellenir.

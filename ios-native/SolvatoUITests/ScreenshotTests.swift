@@ -312,7 +312,7 @@ final class ScreenshotTests: XCTestCase {
         continueAfterFailure = false
         let lessons = [
             ("notes-treble", "Sol anahtarı notaları"), ("notes-bass", "Fa anahtarı notaları"),
-            ("mnemonic-treble", "Ezber cümleleri: Sol anahtarı"), ("mnemonic-bass", "Ezber cümleleri: Fa anahtarı"),
+            ("mnemonic-treble", "Kolay hatırla: Sol anahtarı"), ("mnemonic-bass", "Kolay hatırla: Fa anahtarı"),
             ("accidentals", "Diyez ve bemol"),
             ("chords-build", "Majör ve minör nasıl kurulur"), ("chords-1", "Akor kartları: Başlangıç"),
             ("chords-2", "Akor kartları: Orta"), ("chords-3", "Akor kartları: İleri"), ("chords-4", "Akor kartları: Uzman"),

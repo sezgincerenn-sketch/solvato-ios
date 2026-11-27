@@ -118,6 +118,9 @@ struct AppRoot: View {
             let tab = AppView(rawValue: t.rawValue) ?? .home
             NavigationStack(path: tab == root ? pathBinding : .constant([])) {
                 tabRoot(tab)
+                    // Sekmeye geçince sayfa yeniden kurulur (web gibi): en üstten açılır, Ana sayfa'daki "Diğer konular"
+                    // Profil'deki ayara göre gelir. Kimlik yığının içinde: yığın ve sekme aynı kalır.
+                    .id(tab == root)
                     .navigationTitle(tab.title)
                     .navigationDestination(for: AppView.self) { d in
                         screen(d)

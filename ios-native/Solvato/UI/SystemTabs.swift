@@ -14,10 +14,9 @@ struct SystemTabs<Content: View>: View {
         // Aynı sekmeye tekrar dokununca da çağrılır: onSelect açık sekmede "en üste kay" ister
         TabView(selection: Binding(get: { active }, set: { onSelect($0) })) {
             ForEach(NavTab.allCases, id: \.self) { t in
+                // Sekmeye geçince sayfanın yeniden kurulması içerikte (AppRoot, gezinme yığınının içinde): sekmenin
+                // kendisi değişirse iPhone'da sekme çubuğu yanlış sekmeyi seçiyor (gezinme-cubugu.md)
                 content(t)
-                    // Sekmeye geçince sayfa yeniden kurulur (web gibi): en üstten açılır, Ana sayfa'daki "Diğer konular"
-                    // Profil'deki ayara göre gelir. Açık sekme kimliği değişince yeniden çizilir.
-                    .id(t == active)
                     .tabItem { Label(t.label, systemImage: t.symbol) }
                     .tag(t)
             }
