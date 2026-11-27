@@ -71,6 +71,7 @@ struct StatTile<IconView: View>: View {
     let value: String
     let label: String
     @ViewBuilder var icon: IconView
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: Radius.lg, style: .circular)
@@ -84,7 +85,19 @@ struct StatTile<IconView: View>: View {
                 .foregroundStyle(ThemeColor.text.color)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
-            Text(label)
+            // Büyütülmüş yazıda kelime ortadan bölünmesin ("Tamamlana / n tur"): tek satıra sığmazsa kelimeler alt
+            // alta, o da sığmazsa küçülür. Varsayılan ve daha küçük boyutlarda bugünkü Text aynen.
+            Group {
+                if typeSize > .large {
+                    ViewThatFits(in: .horizontal) {
+                        Text(label)
+                        VStack(spacing: 0) { ForEach(label.split(separator: " ").map(String.init), id: \.self) { Text($0).lineLimit(1) } }
+                        Text(label).lineLimit(1).minimumScaleFactor(0.6)
+                    }
+                } else {
+                    Text(label)
+                }
+            }
                 .font(.ui(FontSize.xs))
                 .foregroundStyle(ThemeColor.textSubtle.color)
                 .padding(.top, 2)

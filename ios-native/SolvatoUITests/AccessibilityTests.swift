@@ -1,7 +1,7 @@
 // Erişilebilirlik ve iPad testleri (0.8, docs/ozellikler/erisilebilirlik-ipad.md):
 // - testBuyukYazi: telefonda yazı boyutu xxxLarge ve AX5 (en büyük erişilebilirlik boyutu) iken ana ekranlar; AX5'te
 //   yazının xxxLarge'da kaldığı görülür. Görüntü adları `buyuk-yazi-<ekran>-<boyut>`.
-// - testIpadYonler: iPad'de dört yönde (dikey, ters dikey, iki yatay) ana ekranlar; `ipad-<ekran>-<yön>`.
+// - testIpadYonler: iPad'de dört yönde (dikey, ters dikey, iki yatay) ana ekranlar; `yon-<ekran>-<yön>`.
 // - testErisilebilirlikDenetimi: Apple'ın otomatik denetimi (performAccessibilityAudit) her ana ekranda; bulunanlar
 //   test çıktısına `DENETIM|ekran|tür|açıklama|öğe` satırı olarak yazılır, test düşmez (gerekçeler dokümanda).
 import XCTest
@@ -25,12 +25,12 @@ final class AccessibilityTests: XCTestCase {
                 let app = try launch(theme: "dark", scenario: scenario(for: screen), extraArgs: size(category))
                 if !goTo(app, screen) { XCTFail("\(screen) açılmadı (\(tag))") }
                 Thread.sleep(forTimeInterval: 0.5)
-                snap("buyuk-yazi-\(screen)-\(tag)")
+                snap("buyuk-yazi-\(screen)-\(tag)-koyu")
                 // Uzun sayfaların altı da (kesik yazı en çok kartların altında çıkar)
                 if ["pratik", "ilerleme", "profil", "ayarlar", "ogren"].contains(screen) {
                     for _ in 0..<3 { app.swipeUp() }
                     Thread.sleep(forTimeInterval: 0.4)
-                    snap("buyuk-yazi-\(screen)-alt-\(tag)")
+                    snap("buyuk-yazi-\(screen)-alt-\(tag)-koyu")
                 }
                 app.terminate()
             }
@@ -54,7 +54,7 @@ final class AccessibilityTests: XCTestCase {
             for (o, name) in orientations {
                 XCUIDevice.shared.orientation = o
                 Thread.sleep(forTimeInterval: 1.0)
-                snap("ipad-\(screen)-\(name)")
+                snap("yon-\(screen)-\(name)-koyu")
             }
             // Döndürme sırasında tur kaybolmadı
             if ["soru", "akor", "ritmi-tut"].contains(screen) {

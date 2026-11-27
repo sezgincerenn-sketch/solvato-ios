@@ -213,3 +213,32 @@ dokunuş; iPad'de Split View 1/3, 1/2, 2/3 ve Stage Manager'ın en küçük penc
 | Sufficient Contrast | Denetimden sonra              | Otomatik denetimin kontrast bulguları temizlenince; soluk yazılar yalnız süs metinlerinde olmalı.                                                                             |
 | VoiceOver           | Şimdilik işaretlenmez         | Ekranlar okunuyor, ama ana iş (portedeki notayı okumak) görerek yapılıyor; Apple "temel işler VoiceOver'la yapılabilmeli" diyor. Ceren'in denemesinden sonra yeniden bakılır. |
 | Larger Text         | İşaretlenmez                  | Apple en az %200 büyüme bekliyor; yazı bilerek xxxLarge'da (yaklaşık %135) duruyor.                                                                                           |
+
+### İlk ölçümler (27 Kasım, commit 7bfd203, GitHub Actions iPhone simülatörü)
+
+| Ölçüm                      | Değer               | Sınır  | Not                                                                                 |
+| -------------------------- | ------------------- | ------ | ----------------------------------------------------------------------------------- |
+| Soğuk açılış (ilk kare)    | 3,41 sn (3,19–4,01) | 1,5 sn | Aşıyor. Bulut Mac'teki simülatör yavaş; telefonda ölçülmedi. Sınır kararı Ceren'de. |
+| Pratik → İlerleme geçişi   | 0,07 sn             | 0,3 sn | Tamam (uygulamadaki işaretle ölçülür).                                              |
+| Bellek (tur boyunca, tepe) | 55 MB               | 150 MB | İlk koşuda tur testi yarıda kaldı (test düzeltildi); tam tur değeri sonraki koşuda. |
+| Kaydırma takılması         | ölçülemiyor         | %1     | Simülatör takılma oranı vermiyor, yalnız süre; cihazda Instruments ile bakılır.     |
+| Uygulama boyutu (IPA)      | 4,4 MB              | 25 MB  | Tamam (TestFlight 2008).                                                            |
+
+### Otomatik erişilebilirlik denetimi (27 Kasım)
+
+`performAccessibilityAudit`, koyu ve açık temada 10 ekran; bulgular `ekranlar` dalında `denetim-<cihaz>.txt`. iPhone'da:
+
+- **Dinamik yazı (338):** bilerek büyümeyen yazılar (klavye, halkalar, rozetler, porte) ve xxxLarge sınırı. Gerekçe: §1.
+- **Kontrast (73):** Apple'ın denetimi ekran görüntüsünden örnekliyor; yarı saydam kart ve gradyan zeminlerde çok uyarı
+  veriyor. Token hesabı: bütün metin renkleri (`text`…`textSubtle`, renkli `…Text`) iki temada kart zemininde 4,5:1'in
+  üstünde; ana düğme beyaz/mor 5,7:1. Tek eksik `textFaint` koyu temada kart üstünde **4,29:1**; yer tutucunun
+  yanında birkaç okunan yazıda da kullanılıyor (ünvan listesindeki XP'ler, "SEÇİLEN", "✕ Temizle", İlerleme'de zayıf
+  not). Düzeltme görünümü değiştireceği için Ceren'e soruldu.
+- **Dokunma alanı (48):** akor ve ders klavyelerindeki siyah tuşlar (gerçek piyano oranı, küçültülemez) ve tıklanamayan
+  bilgi öğeleri (noktalar, hedef çubuğu); denetim bunları yanlışlıkla dokunulabilir sayıyor.
+- **Kesik yazı (8):** ders listesi alt yazıları ve Oyunlar kartı alt yazısı tek satırda "…" ile kısalıyor (web'le aynı
+  tasarım), İlerleme'de "Bugün" etiketi. Varsayılan boyutta, 0.8'den önce de böyleydi.
+- iPad'de denetim 30 dakika sınırına takıldı (kısmi sonuç, 53 bulgu, aynı türler).
+
+Büyük yazı görüntülerinde (iPhone SE, xxxLarge ve AX5) tek kusur İlerleme'deki "Tamamlanan tur" etiketinin kelimeyi
+ortadan bölmesiydi; düzeltildi (kelimeler alt alta). Tur ekranları kaydırmasız sığıyor; AX5'te yazı xxxLarge'da kalıyor.

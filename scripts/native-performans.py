@@ -14,9 +14,7 @@ METRICS = [
     ("testSogukAcilis", "AppLaunch", "Soğuk açılış", lambda v, u: v, "sn", 1.5),
     ("testSekmeGecisi", "sekme", "Sekme geçişi", lambda v, u: v, "sn", 0.3),
     ("testBellekTur", "Memory Peak Physical", "Bellek (tur, tepe)", lambda v, u: v / 1024 if "kB" in u else v, "MB", 150),
-    # Takılma oranı ms/sn → yüzde (10 ms/sn = %1)
-    ("testKaydirmaPratik", "Hitch Time Ratio", "Kaydırma Pratik (takılma)", lambda v, u: v / 10 if "ms" in u else v, "%", 1.0),
-    ("testKaydirmaIlerleme", "Hitch Time Ratio", "Kaydırma İlerleme (takılma)", lambda v, u: v / 10 if "ms" in u else v, "%", 1.0),
+    # Kaydırmada takılan kare oranı simülatörde gelmiyor (27 Kasım); cihazda elle bakılır
 ]
 LINE = re.compile(r"Test Case '-\[\S+ (\w+)\]' measured \[([^,\]]+), ([^\]]+)\] average: ([0-9.]+)")
 
@@ -38,6 +36,8 @@ def main() -> int:
     rows_old = []
     if old != "-" and Path(old).exists():
         rows_old = [l for l in Path(old).read_text(encoding="utf-8").splitlines() if l.startswith("| 20")]
+        # Sütun sayısı değiştiyse eski satırlar başlığa göre kısaltılır
+        rows_old = ["|".join(l.split("|")[: len(METRICS) + 3]) + "|" for l in rows_old]
     over = []
     cells = []
     for t, key, title, conv, u, limit in METRICS:
@@ -61,7 +61,7 @@ def main() -> int:
         "",
         "GitHub Actions her `ios-native` gönderiminde iPhone simülatöründe ölçer (SolvatoUITests/PerformanceTests).",
         "En yeni ölçüm en üstte; 🔴 sınırı aşan değer (iş kırmızı olur). Sınırlar: docs/ozellikler/erisilebilirlik-ipad.md.",
-        "Uygulama boyutu TestFlight koşusunun özetinde; Ritmi Tut dokunuş gecikmesi elle ölçülür.",
+        "Uygulama boyutu TestFlight koşusunun özetinde; kaydırma takılması ve Ritmi Tut dokunuş gecikmesi cihazda elle ölçülür.",
         "",
         head,
         sep,

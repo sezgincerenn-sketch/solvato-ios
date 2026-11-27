@@ -108,7 +108,7 @@ hizası web'le zaten aynı çıktı. R32 (App Store bağlantısı) eklendi. Kala
 nota adını söylemez, iPad'de yan yana pencere, performans her derlemede otomatik). **0.8 uygulandı (27 Kasım):** yazı
 boyutu, VoiceOver adları ve duyuruları, iPad pencere boyutu; büyük yazı / iPad yön / erişilebilirlik denetimi / performans
 testleri ve güvenlik denetimi her `ios-native` gönderiminde (README "Erişilebilirlik ve iPad"). İlk ölçümler
-dokümanın sonunda. Ceren VoiceOver ve iPad denemelerini yaptı (2008, tamam). Kalan: ilk ölçümlerin dokümana yazılması, mağaza etiketleri kararı.
+dokümanın sonunda. Ceren VoiceOver ve iPad denemelerini yaptı (2008, tamam). İlk ölçümler dokümanda (açılış simülatörde 3,4 sn, sınır 1,5; karar Ceren'de). Kalan: açılış sınırı, `textFaint` kontrastı, Sufficient Contrast etiketi.
 
 **Durum (26 Kasım akşamı):** 0.5–0.7 bitti: bütün ekranlar native'de; tasarım revizeleri (R1–R41) uygulandı ya da
 karara bağlandı (kalan: R11 TestFlight'ta bakılacak; R32 App Store bağlantısı 26 Kasım'da eklendi). Alt menü Apple'ın

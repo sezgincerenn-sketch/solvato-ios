@@ -59,31 +59,15 @@ final class PerformanceTests: XCTestCase {
                 }
                 Thread.sleep(forTimeInterval: 0.9)
             }
+            // XCTest bloğu birden çok kez koşabilir: her seferinde Pratik'e dön (kutlama → Devam, sonuç → Bitir)
+            for label in ["Devam", "Bitir"] {
+                let b = app.buttons[label].firstMatch
+                if b.waitForExistence(timeout: 3) { b.tap(); Thread.sleep(forTimeInterval: 0.8) }
+            }
         }
         app.terminate()
     }
 
-    /// Pratik sayfasını hızlı kaydırırken takılan kare oranı (sınır %1)
-    @MainActor
-    func testKaydirmaPratik() throws {
-        try scroll(scenario: "pratik", screen: "pratik")
-    }
-
-    /// İlerleme sayfasını hızlı kaydırırken takılan kare oranı (sınır %1)
-    @MainActor
-    func testKaydirmaIlerleme() throws {
-        try scroll(scenario: "ilerleme", screen: "ilerleme")
-    }
-
-    @MainActor
-    private func scroll(scenario: String, screen: String) throws {
-        let app = try launch(theme: "dark", scenario: scenario)
-        XCTAssertTrue(goTo(app, screen), "\(screen) açılmadı")
-        measure(metrics: [XCTOSSignpostMetric.scrollDecelerationMetric], options: options(5, manualStop: true)) {
-            app.swipeUp(velocity: .fast)
-            stopMeasuring()
-            app.swipeDown(velocity: .fast)
-        }
-        app.terminate()
-    }
+    // Kaydırmada takılan kare oranı simülatörde ölçülemiyor (yalnız süre geliyor, 27 Kasım koşusu); cihazda Xcode
+    // Organizer / Instruments ile bakılır.
 }
