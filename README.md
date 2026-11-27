@@ -73,8 +73,8 @@ ios-native/
                        Resources/smufl.json (Bravura sembol yolları, web'le aynı)
   Solvato/             SwiftUI uygulaması: Design/ (renk → Color, yazı tipleri, CSS gradyanı), UI/ (web src/ui ile
                        aynı adlarla: AppButton, AppCard, Icon, Logo, Chip, Segmented, ChoiceCard, IconBadge, Stars,
-                       StatTile, StatPill, ScoreRing; Shell.swift: Avatar, BackButton, ScreenHeader, Toast, PlayChip,
-                       TopicLink, ExitConfirm, NavBar (yüzen kapsül, iOS 26'da cam), TabletColumn; PercentRing.swift: yüzde halkası, GoalBar, TabTitle; FlowLayout; CodeField (kod girişi); SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
+                       StatTile, StatPill, ScoreRing; Shell.swift: Avatar, BackButton (tanıtım), Toast, PlayChip,
+                       TopicLink, ExitConfirm, RoundCloseButton, NavTab, TabletColumn; SystemTabs (Apple sekme çubuğu); NavigationBarStyle (Apple gezinme çubuğu: Outfit başlıklar, tema renkleri); PercentRing.swift: yüzde halkası, GoalBar; FlowLayout; CodeField (kod girişi); SVG yolları Vector.swift ile çizilir), Notation/ (DrawingView: çizim listesini
                        Canvas'a çizer; NotationView, MusicalStaffView, ChordStaffView, GoalStaffView, ClefIconView; PianoViews: QuizPianoView,
                        MultiPianoView), Screens/, Audio.swift (AVAudioEngine çıkışı `Sound`, ses saati, titreşim `Haptics`),
                        UI/Motion.swift (sallanma, nabız, kayarak/büyüyerek belirme, seri alevi, nota zıplaması, "yan çevir" ipucu),
@@ -100,6 +100,13 @@ ios-native/
 - **Gezinme revizesi (yalnız native, `docs/ozellikler/gezinme.md`):** dört sekme Ana sayfa · İlerleme · Öğren · Profil
   (Profil sekme oldu; öğretmen kodu kartı Profil'de). `ana-sayfa.json` ve `ilerleme.json` altın
   tabloları bu revizeye göre.
+- **Gezinme çubuğu (yalnız native, `docs/ozellikler/gezinme-cubugu.md`):** her sekme Apple'ın gezinme yığını
+  (`NavigationStack`, `AppRoot`): İlerleme, Öğren, Profil'de büyük başlık (kaydırınca küçülüp ortaya geçer), alt
+  ekranlarda "‹ Profil" gibi geri düğmesi ve ortada küçük başlık; iOS 26'da Liquid Glass. Yol `ScreenStack.navPath`'ten,
+  sistemin geri düğmesi/hareketi `AppModel.back`'i çağırır. Turlar ve tur sonucu (`AppView.isFullScreen`) sekmelerin
+  üstünde tam ekran katman; kendi kenardan kaydırmaları sürer. Başlık yazı tipi UIKit görünüm vekiliyle
+  (`UI/NavigationBarStyle`). İlerleme'de haftalık rapor sağ üstteki paylaş simgesinden; Profil'de "Tüm ilerleme" yok.
+  Ana sayfa ipuçlarının hedef konumları yığının dışına `coachFrames` ile taşınır.
 - **Tanıtım revizesi (yalnız native, `docs/ozellikler/tanitim.md`):** tanıtım giriş ekranıyla açılır, geri oku var,
   denemelerden sonra öğretmen sorusu (`teacherRole`: student / self / teacher). Adım sırası `SolvatoCore` `OnboardingFlow`;
   "Ben öğretmenim" seçilince tanıtım biter ve öğretmen kodu ekranı yalnız hazırlama bölümüyle açılır. Öğretmen kodu
@@ -154,7 +161,8 @@ Yazı rengi için `ThemeColor.*Text` (ör. `greenText`): koyu temada açık, aç
 - **Tur yıldızları**: yalnızca doğruluk, %50/%70/%90 → 1/2/3 yıldız; konu başına en iyisi saklanır.
 - **Kulak**: soru bankası yok, her tur üretilir (önce Do + soru notası; akor türü); sesler `Audio/Synth.swift`.
 - **Ünvanlar**: seviyeden ayrı, XP ile kazanılan 15 basamak (`Logic/Rank.swift`). "Seviye" yalnız Başlangıç/Orta/İleri.
-- **Kaydırarak geri (`AppRoot.swift`)**: sol kenardan kaydırınca önceki ekran altta görünür; turlarda çıkış onayı.
+- **Kaydırarak geri**: alt ekranlarda Apple'ın kendi geri hareketi; turlarda ve tur sonucunda `AppRoot`'un kenardan
+  kaydırması (önceki ekran altta görünür; turda cevap varsa çıkış onayı).
 - **Gizlilik ve Lisanslar**: metinler `Resources/hukuk.json` (uygulamanın Gizlilik/Lisanslar ekranları ve
   `scripts/site.mjs` aynı dosyayı okur). Politika değişirse burada değişir; yeni yazı tipi ya da kod `licenses`'a.
 - **Oyunlar (`Logic/Games.swift`)**: sunucusuz; aynı tohum iki telefonda aynı soruları üretir, meydan okuma kodu 40 bit.

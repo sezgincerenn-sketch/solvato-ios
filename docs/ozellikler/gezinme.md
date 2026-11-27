@@ -16,6 +16,9 @@ Uygulamanın dört ana bölümü alt menüden tek dokunuşla açılsın; Profil 
 
 ## Kullanıcı ne görür
 
+- **Değişti (Ceren, 27 Kasım; `gezinme-cubugu.md`):** üstteki başlık ve geri/Ayarlar düğmeleri Apple'ın gezinme
+  çubuğu (büyük başlık, "‹ Profil" geri düğmesi). İlerleme'de haftalık rapor sağ üstteki paylaş simgesinden (Bu hafta
+  kartında düğme yok); Profil'de "Tüm ilerleme" kalktı.
 - **Değişti (Ceren, 26 Kasım):** Seri, Tamamlanan tur, Çözülen soru kutuları Profil'den İlerleme'ye taşındı (başlığın ve
   Başlangıç kartının altında, Doğruluk kartının üstünde).
 

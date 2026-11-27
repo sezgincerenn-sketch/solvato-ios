@@ -688,6 +688,12 @@ yazılır.
   xxxLarge'a kadar büyür (tur ekranlarında xxLarge; porte, klavye, halkalar, ikonlar ve Solfie büyümez); VoiceOver adları
   ve duyuruları (portedeki nota adı okunmaz); VoiceOver açıkken açılış beklemeden geçer; iPad'de Split View ve Stage
   Manager (dar pencerede iPhone düzeni). Varsayılan ayarlarda görünüm aynı kalır.
+- Gezinme çubuğu (Ceren, 27 Kasım; `docs/ozellikler/gezinme-cubugu.md`): üstteki başlık, geri ve Ayarlar düğmeleri
+  Apple'ın gezinme çubuğu (iOS 26'da Liquid Glass). İlerleme, Öğren, Profil'de büyük sola dayalı başlık (Outfit), alt
+  ekranlarda "‹ önceki ekran" geri düğmesi ve ortada küçük başlık; alt ekranlarda Apple'ın kendi kenardan kaydırması.
+  İlerleme'de haftalık rapor kartın düğmesi yerine sağ üstteki paylaş simgesinden; Profil'de "Tüm ilerleme" düğmesi
+  yok. Oyun sonucunda ortada başlık yok (ekranın kendi büyük başlığı var). Akor düellosu oyununda sol kenardan
+  kaydırma ekranı kaydırmaz; bırakınca ✕ gibi çıkış onayı açılır.
 - Tablette donanım klavyesi kısayolları ve fare imleci yok (0.8 kapsam dışı).
 - Kontrast (Ceren, 27 Kasım): en soluk gri (`textFaint`) koyu temada kart üstünde 4,29:1 kaldığı için okunan yazılarda bir
   ton koyusu (`textSubtle`) kullanılır: ünvan listesi, akor turunda "SEÇİLEN" ve "✕ Temizle", İlerleme'deki zayıf not,

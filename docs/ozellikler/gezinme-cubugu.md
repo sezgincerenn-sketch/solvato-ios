@@ -1,5 +1,6 @@
 # Apple gezinme çubuğu, haftalık rapor düğmesi, Profil sadeleştirmesi
 
+Durum: **uygulandı (27 Kasım 2026)**; ekran ölçütleri GitHub Actions ekran görüntüleri ve TestFlight'la kapanacak.
 Native revize (yalnız `ios-native/`). Kararlar Ceren'in, 27 Kasım. Bu doküman bitince `inceleyici` ajanının
 karşılaştıracağı ölçüttür. Giriş (Misafir / Apple / Google) bu dokümanda **yok**: ayrı iş, `docs/ozellikler/hesap.md`
 yeniden yazılarak (isim değişikliğinden sonra).
