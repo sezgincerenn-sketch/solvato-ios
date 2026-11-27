@@ -118,16 +118,16 @@ VoiceOver
 - [ ] Soru turunda portedeki nota "Porte: Sol anahtarı, bir nota" diye okunuyor; nota adı ya da yeri hiçbir öğede yok.
 - [ ] Cevaptan sonra "Doğru" / "Yanlış. Doğru cevap: …" duyuruluyor.
 - [ ] Noktalar "3. soru, 10 sorudan" diye okunuyor.
-- [ ] Ritmi Tut VoiceOver açıkken tek dokunuşla vuruş sayıyor.
-- [ ] Tanıtım ve ilk tur VoiceOver'la görmeden tamamlanabiliyor (Ceren telefonda dener).
+- [x] Ritmi Tut VoiceOver açıkken tek dokunuşla vuruş sayıyor. (Ceren, 27 Kasım)
+- [x] Tanıtım ve ilk tur VoiceOver'la görmeden tamamlanabiliyor (Ceren telefonda denedi, 27 Kasım).
 - [ ] Hareketi azalt açıkken konfeti yok, yıldızlar birlikte, sayfa geçişleri solma.
 
 iPad
 
 - [ ] Bütün ekranlar dört yönde ekran testinde (iPad, dikey ve yatay) taşmasız.
-- [ ] Split View'da 1/3 genişlikte iPhone düzeni, 1/2 ve 2/3 genişlikte uygun düzen; tur ortasında boyut değişince tur
+- [x] Split View'da 1/3 genişlikte iPhone düzeni, 1/2 ve 2/3 genişlikte uygun düzen; tur ortasında boyut değişince tur
       sürüyor.
-- [ ] Stage Manager en küçük pencerede yazı ve düğme kesilmiyor.
+- [x] Stage Manager en küçük pencerede yazı ve düğme kesilmiyor.
 
 Performans ve güvenlik
 
@@ -201,7 +201,7 @@ Dokümandan sapmalar (Ceren'e bildirildi):
 - **Gizlilik bildirimi** UserDefaults'un yanında Ritmi Tut'un kullandığı sistem saatini de (SystemBootTime, 35F9.1)
   beyan ediyor; doğru ve gerekli. Denetim ikisini birlikte bekler.
 
-Elle denenecekler (simülatörde otomatik yapılamıyor): VoiceOver'la tanıtım ve ilk tur; Ritmi Tut'ta VoiceOver açıkken tek
+Elle denenenler (simülatörde otomatik yapılamıyor; Ceren 27 Kasım'da TestFlight 2008'de denedi, tamam): VoiceOver'la tanıtım ve ilk tur; Ritmi Tut'ta VoiceOver açıkken tek
 dokunuş; iPad'de Split View 1/3, 1/2, 2/3 ve Stage Manager'ın en küçük penceresi.
 
 ### Mağaza erişilebilirlik etiketleri (App Store Connect › Accessibility)
