@@ -111,7 +111,7 @@ testleri ve güvenlik denetimi her `ios-native` gönderiminde (README "Erişileb
 dokümanın sonunda. Ceren VoiceOver ve iPad denemelerini yaptı (2008, tamam). İlk ölçümler dokümanda (açılış simülatörde 3,4 sn, sınır 1,5; karar Ceren'de). Açılış sınırı simülatörde 4 sn yapıldı, soluk yazılar bir ton koyulaştırıldı (Ceren); Mağazada Dark Interface, Reduced Motion ve Sufficient Contrast işaretlendi.
 
 **Durum (26 Kasım akşamı):** 0.5–0.7 bitti: bütün ekranlar native'de; tasarım revizeleri (R1–R41) uygulandı ya da
-karara bağlandı (kalan: R11 TestFlight'ta bakılacak; R32 App Store bağlantısı 26 Kasım'da eklendi). Alt menü Apple'ın
+karara bağlandı (R11 27 Kasım'da düzeltildi, 2011; R32 App Store bağlantısı 26 Kasım'da eklendi). Alt menü Apple'ın
 sekme çubuğu. TestFlight artık GitHub Actions'tan (`testflight.yml`, son sürüm 2005); web revize önizlemesi
 güncellenmiyor. Sıradaki: **0.8** (erişilebilirlik: VoiceOver adları, büyük yazı; iPad düzenleri; performans
 ölçümü) ve **0.9** (`inceleyici` ile `docs/ozellikler/native-ios.md` envanterine göre tam karşılaştırma, kapalı test,
