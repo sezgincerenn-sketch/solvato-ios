@@ -3,4 +3,4 @@
 # cihazlar: iphone, iphone-kucuk, ipad (boşluklu liste). testler: ScreenshotTests içindeki test adları ya da
 # "Sınıf/testAdı" (ör. AccessibilityTests/testBuyukYazi); boşsa hepsi. Performans testleri her koşuda ayrıca iPhone'da.
 cihazlar: iphone iphone-kucuk ipad
-testler: testProfilAyarlar testOgretmenHukuk testCalisma testDersler AccessibilityTests/testBuyukYazi AccessibilityTests/testErisilebilirlikDenetimi
+testler: testIlerleme testProfilAyarlar testOgretmenHukuk testCalisma testDersler testPratik testSonuc AccessibilityTests/testBuyukYazi AccessibilityTests/testErisilebilirlikDenetimi

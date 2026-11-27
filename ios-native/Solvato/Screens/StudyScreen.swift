@@ -68,6 +68,13 @@ struct StudyScreen: View {
                 loaded = true
             }
         }
+        // Sekmeye her gelişte web'deki gibi baştan: arama boş, "Kaldığın yer" son açılan ders (sekme yeniden kurulmaz)
+        .onChange(of: model.nav.rootTab) { _, t in
+            if t == .study {
+                query = ""
+                last = model.lastLesson
+            }
+        }
     }
 
     private var searchField: some View {

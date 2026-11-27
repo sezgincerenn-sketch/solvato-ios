@@ -62,6 +62,13 @@ struct ProgressScreen: View {
         }
         .scrollIndicators(.hidden)
         .background(ThemeColor.bg.color)
+        // Sekmeye her gelişte web'deki gibi baştan: doğruluk dönemi ve tur listesi varsayılanında (sekme yeniden kurulmaz)
+        .onChange(of: model.nav.rootTab) { _, t in
+            if t == .dashboard {
+                period = nil
+                allRounds = false
+            }
+        }
         .toolbar {
             // Bu hafta kartı görünürken (çözülmüş soru varken): aynı metin, sonunda App Store bağlantısı
             if c.hasAnswers {

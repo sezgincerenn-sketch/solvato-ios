@@ -24,8 +24,8 @@ struct SystemTabs<Content: View>: View {
                 })
         ) {
             ForEach(NavTab.allCases, id: \.self) { t in
-                // Sekmeye geçince sayfanın yeniden kurulması içerikte (AppRoot, gezinme yığınının içinde): sekmenin
-                // kendisi değişirse iPhone'da sekme çubuğu yanlış sekmeyi seçiyor (gezinme-cubugu.md)
+                // Sekmeler yeniden kurulmaz (kimlik değişince iPhone'da sekme çubuğu yanlış sekmeyi seçiyordu); sekmeye
+                // geçince en üste kayma ve durum sıfırlama AppRoot'ta ve ekranlarda (gezinme-cubugu.md)
                 content(t)
                     .tabItem { Label(t.label, systemImage: t.symbol) }
                     .tag(t)

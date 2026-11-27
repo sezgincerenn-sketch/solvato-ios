@@ -18,6 +18,11 @@ struct HomeScreen: View {
         _showRest = State(initialValue: model.settings.showRestTopics)
     }
 
+    /// Ana sayfa sekmesine her gelişte "Diğer konular" Profil'deki ayara göre (sekme yeniden kurulmaz)
+    private func resetOnVisit(_ tab: AppView) {
+        if tab == .home { showRest = model.settings.showRestTopics }
+    }
+
     private var content: HomeContent {
         HomeContent(stats: model.stats, settings: model.settings, daily: model.todayDaily, now: model.now)
     }
@@ -59,6 +64,7 @@ struct HomeScreen: View {
             .remembersScroll(model, .home)
         }
         .scrollIndicators(.hidden)
+        .onChange(of: model.nav.rootTab) { _, t in resetOnVisit(t) }
         .onChange(of: coachTarget, initial: true) { old, t in
             // İpuçları bitince (Atla / Anladım) sayfa başa kayar (web Coachmark)
             guard let t else {

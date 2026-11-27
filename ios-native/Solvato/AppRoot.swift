@@ -39,6 +39,8 @@ struct AppRoot: View {
                     }
                     .allowsHitTesting(!v.isFullScreen)
                     .accessibilityHidden(v.isFullScreen)
+                    // Tur açıkken (kaydırılmıyorsa) görünmez: VoiceOver ve erişilebilirlik denetimi alttakini okumasın
+                    .opacity(v.isFullScreen && !sliding ? 0 : 1)
                 if v.isFullScreen {
                     screen(v)
                         .frame(maxHeight: .infinity)
@@ -87,6 +89,10 @@ struct AppRoot: View {
         // Gezinme yolu: ileri / geri / sekme değişince yığın eşitlenir. Tam ekran katmanın altında (tura girerken,
         // turdan oyun sonucuna geçerken) geçiş canlandırılmaz.
         .onChange(of: model.nav, initial: true) { old, new in
+            if old.rootTab != new.rootTab {
+                // Başka sekmeye geçildi: sayfa en üstten açılır (web'de sekme yeniden kurulur)
+                NotificationCenter.default.post(name: .scrollToTop, object: new.rootTab.rawValue, userInfo: ["animated": false])
+            }
             let target = new.navPath
             guard target != path else { return }
             if old.current.isFullScreen || new.current.isFullScreen {
@@ -120,10 +126,9 @@ struct AppRoot: View {
         ) { t in
             let tab = AppView(rawValue: t.rawValue) ?? .home
             NavigationStack(path: tab == root ? pathBinding : .constant([])) {
+                // Sekmeler yeniden kurulmaz (kimlik değişince iPhone'da sekme çubuğu yanlış sekmeyi seçiyordu); sekmeye
+                // geçince sayfa en üste kayar (aşağıda) ve ekranlar kendi durumlarını sıfırlar (web gibi)
                 tabRoot(tab)
-                    // Sekmeye geçince sayfa yeniden kurulur (web gibi): en üstten açılır, Ana sayfa'daki "Diğer konular"
-                    // Profil'deki ayara göre gelir. Kimlik yığının içinde: yığın ve sekme aynı kalır.
-                    .id(tab == root)
                     .navigationTitle(tab.title)
                     .navigationDestination(for: AppView.self) { d in
                         screen(d)

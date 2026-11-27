@@ -2,7 +2,8 @@
 // görünüm eklenir; o görünüm çevreleyen UIScrollView'u bulur, konumunu AppModel.scroll'a bildirir ve açılışta saklanan
 // konumu uygular (içerik ilk karede tam çizilmemiş olabilir, web gibi birkaç kare dener).
 // Kullanım: ScrollView { içerik.remembersScroll(model, .profile) }; bir ekranda birden çok alan varsa `slot` ile.
-// Alt menüde açık sekmeye tekrar dokununca (`.scrollToTop` bildirimi) o ekranın ilk kaydırma alanı en üste kayar.
+// Alt menüde açık sekmeye tekrar dokununca (`.scrollToTop` bildirimi) o ekranın ilk kaydırma alanı en üste kayar;
+// başka sekmeye geçince de (canlandırmasız; sekmeler yeniden kurulmadığı için, gezinme-cubugu.md).
 import SolvatoCore
 import SwiftUI
 import UIKit
@@ -66,9 +67,10 @@ final class ProbeView: UIView {
         }
         topObserver = NotificationCenter.default.addObserver(forName: .scrollToTop, object: nil, queue: .main) { [weak self] n in
             let name = n.object as? String ?? ""
+            let animated = n.userInfo?["animated"] as? Bool ?? true
             MainActor.assumeIsolated {
-                guard let self, let sv = self.scrollView, self.window != nil, self.onTop?(name) == true else { return }
-                sv.setContentOffset(CGPoint(x: sv.contentOffset.x, y: -sv.adjustedContentInset.top), animated: true)
+                guard let self, let sv = self.scrollView, self.onTop?(name) == true else { return }
+                sv.setContentOffset(CGPoint(x: sv.contentOffset.x, y: -sv.adjustedContentInset.top), animated: animated)
             }
         }
     }
