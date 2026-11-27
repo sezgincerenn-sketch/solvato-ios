@@ -19,38 +19,35 @@ struct TeacherScreen: View {
 
     var body: some View {
         let section = TeacherSection(model.settings.teacherRole)
-        VStack(spacing: 0) {
-            ScreenHeader(title: section.title) { model.back() }
-            ScrollViewReader { proxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: Space.s3) {
-                        muted(section.intro).id(Self.top)
-                        if section.showsEnter { AppCard { student } }
-                        if section.showsPrepare { AppCard { teacher } }
-                        if let link = section.switchLink {
-                            Button {
-                                // Seçim kalıcı değişir: Profil kartının başlığı ve ekranın sonraki açılışı da yeni rolde
-                                model.settings.teacherRole = link.role
-                                proxy.scrollTo(Self.top, anchor: .top)
-                            } label: {
-                                Text(link.text)
-                                    .font(.ui(FontSize.sm, .semibold))
-                                    .foregroundStyle(ThemeColor.violetText.color)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, Space.s2)
-                                    .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: Space.s3) {
+                    muted(section.intro).id(Self.top)
+                    if section.showsEnter { AppCard { student } }
+                    if section.showsPrepare { AppCard { teacher } }
+                    if let link = section.switchLink {
+                        Button {
+                            // Seçim kalıcı değişir: Profil kartının başlığı ve ekranın sonraki açılışı da yeni rolde
+                            model.settings.teacherRole = link.role
+                            proxy.scrollTo(Self.top, anchor: .top)
+                        } label: {
+                            Text(link.text)
+                                .font(.ui(FontSize.sm, .semibold))
+                                .foregroundStyle(ThemeColor.violetText.color)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, Space.s2)
+                                .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
                     }
-                    .padding(.horizontal, Space.s4)
-                    .padding(.top, Space.s2)
-                    .padding(.bottom, Space.s6)
-                    .remembersScroll(model, .teacher)
                 }
-                .scrollIndicators(.hidden)
-                .scrollDismissesKeyboard(.interactively)
+                .padding(.horizontal, Space.s4)
+                .padding(.top, Space.s2)
+                .padding(.bottom, Space.s6)
+                .remembersScroll(model, .teacher)
             }
+            .scrollIndicators(.hidden)
+            .scrollDismissesKeyboard(.interactively)
         }
         .background(ThemeColor.bg.color)
     }

@@ -12,97 +12,95 @@ struct SettingsScreen: View {
 
     var body: some View {
         let s = model.settings
-        VStack(spacing: 0) {
-            ScreenHeader(title: "Ayarlar") { model.back() }
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    SettingsGroup(title: "Çalışma") {
-                        ChoiceRow(
-                            title: "Günlük hedef", value: s.dailyGoal,
-                            options: SettingsText.goalOptions.map { o -> (value: Int, label: String, sub: String?) in
-                                (o.value, SettingsText.goalValue(o.value), o.sub)
-                            }
-                        ) { model.settings.dailyGoal = $0 }
-                        SettingsDivider()
-                        ChoiceRow(
-                            title: "Seviye", sub: SettingsText.levelSub(s), value: s.level,
-                            options: SettingsText.levelOptions.map { o -> (value: Int, label: String, sub: String?) in (o.value, o.label, nil) }
-                        ) { l in
-                            var next = model.settings
-                            SettingsText.setLevel(l, in: &next)
-                            model.settings = next
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                SettingsGroup(title: "Çalışma") {
+                    ChoiceRow(
+                        title: "Günlük hedef", value: s.dailyGoal,
+                        options: SettingsText.goalOptions.map { o -> (value: Int, label: String, sub: String?) in
+                            (o.value, SettingsText.goalValue(o.value), o.sub)
                         }
-                        SettingsDivider()
-                        ChoiceRow(
-                            title: "Anahtar", value: s.clef,
-                            options: SettingsText.clefOptions.map { o -> (value: ClefChoice, label: String, sub: String?) in (o.value, o.label, nil) }
-                        ) { model.settings.clef = $0 }
-                        SettingsDivider()
-                        LinkRow(title: "Çalışılacak notalar", value: SettingsText.notesValue(s.notes)) { model.go(.notes) }
+                    ) { model.settings.dailyGoal = $0 }
+                    SettingsDivider()
+                    ChoiceRow(
+                        title: "Seviye", sub: SettingsText.levelSub(s), value: s.level,
+                        options: SettingsText.levelOptions.map { o -> (value: Int, label: String, sub: String?) in (o.value, o.label, nil) }
+                    ) { l in
+                        var next = model.settings
+                        SettingsText.setLevel(l, in: &next)
+                        model.settings = next
                     }
-
-                    SettingsGroup(title: "Sorular") {
-                        ChoiceRow(
-                            title: "Cevap yöntemi", value: s.inputMode,
-                            options: SettingsText.inputOptions.map { o -> (value: InputMode, label: String, sub: String?) in (o.value, o.label, nil) }
-                        ) { model.settings.inputMode = $0 }
-                        SettingsDivider()
-                        ToggleRow(title: "Tuş isimlerini göster", on: s.keyLabels) { model.settings.keyLabels.toggle() }
-                        SettingsDivider()
-                        ToggleRow(title: "Zaman yarışı", on: s.timer) { model.settings.timer.toggle() }
-                    }
-
-                    SettingsGroup(title: "Ses ve bildirim") {
-                        ToggleRow(title: "Ses", on: s.soundKeys) { model.settings.soundKeys.toggle() }
-                        SettingsDivider()
-                        ToggleRow(title: "Titreşim", on: s.haptics) { model.settings.haptics.toggle() }
-                        SettingsDivider()
-                        ToggleRow(title: "Günlük hatırlatma", on: s.reminder) { toggleReminder() }
-                        if s.reminder {
-                            SettingsDivider()
-                            // Saat değişince bildirim yeni saate taşınır
-                            TimeRow(title: "Hatırlatma saati", hour: s.reminderHour, minute: s.reminderMinute) { h, m in
-                                model.settings.reminderHour = h
-                                model.settings.reminderMinute = m
-                                Task { _ = await Reminder.enable(hour: h, minute: m) }
-                            }
-                        }
-                    }
-                    if !reminderMsg.isEmpty {
-                        Text(reminderMsg)
-                            .font(.ui(FontSize.sm))
-                            .foregroundStyle(ThemeColor.redText.color)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .padding(.horizontal, 4)
-                            .padding(.top, 8)
-                    }
-
-                    SettingsGroup(title: "Diğer") {
-                        ChoiceRow(
-                            title: "Tema", value: model.themeMode,
-                            options: SettingsText.themeOptions.map { o -> (value: ThemeMode, label: String, sub: String?) in (o.value, o.label, nil) }
-                        ) { model.themeMode = $0 }
-                        SettingsDivider()
-                        LinkRow(title: "Tanıtımı tekrar göster") { model.showTutorial() }
-                        SettingsDivider()
-                        LinkRow(title: "Gizlilik") { model.go(.privacy) }
-                        SettingsDivider()
-                        LinkRow(title: "Lisanslar") { model.go(.licenses) }
-                    }
-
-                    resetArea.padding(.top, 18)
-                    Text("Sürüm 1.0")
-                        .font(.ui(FontSize.sm))
-                        .foregroundStyle(ThemeColor.textSubtle.color)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 10)
+                    SettingsDivider()
+                    ChoiceRow(
+                        title: "Anahtar", value: s.clef,
+                        options: SettingsText.clefOptions.map { o -> (value: ClefChoice, label: String, sub: String?) in (o.value, o.label, nil) }
+                    ) { model.settings.clef = $0 }
+                    SettingsDivider()
+                    LinkRow(title: "Çalışılacak notalar", value: SettingsText.notesValue(s.notes)) { model.go(.notes) }
                 }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 32)
-                .remembersScroll(model, .settings)
+
+                SettingsGroup(title: "Sorular") {
+                    ChoiceRow(
+                        title: "Cevap yöntemi", value: s.inputMode,
+                        options: SettingsText.inputOptions.map { o -> (value: InputMode, label: String, sub: String?) in (o.value, o.label, nil) }
+                    ) { model.settings.inputMode = $0 }
+                    SettingsDivider()
+                    ToggleRow(title: "Tuş isimlerini göster", on: s.keyLabels) { model.settings.keyLabels.toggle() }
+                    SettingsDivider()
+                    ToggleRow(title: "Zaman yarışı", on: s.timer) { model.settings.timer.toggle() }
+                }
+
+                SettingsGroup(title: "Ses ve bildirim") {
+                    ToggleRow(title: "Ses", on: s.soundKeys) { model.settings.soundKeys.toggle() }
+                    SettingsDivider()
+                    ToggleRow(title: "Titreşim", on: s.haptics) { model.settings.haptics.toggle() }
+                    SettingsDivider()
+                    ToggleRow(title: "Günlük hatırlatma", on: s.reminder) { toggleReminder() }
+                    if s.reminder {
+                        SettingsDivider()
+                        // Saat değişince bildirim yeni saate taşınır
+                        TimeRow(title: "Hatırlatma saati", hour: s.reminderHour, minute: s.reminderMinute) { h, m in
+                            model.settings.reminderHour = h
+                            model.settings.reminderMinute = m
+                            Task { _ = await Reminder.enable(hour: h, minute: m) }
+                        }
+                    }
+                }
+                if !reminderMsg.isEmpty {
+                    Text(reminderMsg)
+                        .font(.ui(FontSize.sm))
+                        .foregroundStyle(ThemeColor.redText.color)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 4)
+                        .padding(.top, 8)
+                }
+
+                SettingsGroup(title: "Diğer") {
+                    ChoiceRow(
+                        title: "Tema", value: model.themeMode,
+                        options: SettingsText.themeOptions.map { o -> (value: ThemeMode, label: String, sub: String?) in (o.value, o.label, nil) }
+                    ) { model.themeMode = $0 }
+                    SettingsDivider()
+                    LinkRow(title: "Tanıtımı tekrar göster") { model.showTutorial() }
+                    SettingsDivider()
+                    LinkRow(title: "Gizlilik") { model.go(.privacy) }
+                    SettingsDivider()
+                    LinkRow(title: "Lisanslar") { model.go(.licenses) }
+                }
+
+                resetArea.padding(.top, 18)
+                Text("Sürüm 1.0")
+                    .font(.ui(FontSize.sm))
+                    .foregroundStyle(ThemeColor.textSubtle.color)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 10)
             }
-            .scrollIndicators(.hidden)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 32)
+            .padding(.top, Space.s2)
+            .remembersScroll(model, .settings)
         }
+        .scrollIndicators(.hidden)
         .background(ThemeColor.bg.color)
     }
 

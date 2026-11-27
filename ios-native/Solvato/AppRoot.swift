@@ -1,17 +1,25 @@
-// Uygulamanın kök görünümü: o anki ekran (AppModel.nav), sekme ekranlarında Apple'ın sekme çubuğu (UI/SystemTabs),
-// kutlama, tanıtım, açılış.
-// Web App.tsx renderScreen + utils/swipeBack.tsx: sol kenardan (28 pt) sağa kaydırınca ekran parmakla kayar, altında
-// önceki ekran görünür; %35'i geçince ya da hızlı bırakınca geri dönülür. Turlarda da ekran aynı biçimde kayar (R34);
-// cevap verilmişse bırakınca ekran yerine döner ve "Turdan çıkılsın mı?" onayı açılır, cevap yoksa geri dönülür. Telefonda yalnız soru ve akor turu yan döner (G-02).
-// Hazır ekranlar: Pratik, soru turu, tur sonucu. Diğerleri 0.5–0.7'de; yerlerinde başlık ve kısa not.
+// Uygulamanın kök görünümü: alt menü Apple'ın sekme çubuğu (UI/SystemTabs), her sekme Apple'ın gezinme yığını
+// (NavigationStack; büyük başlık, "‹ Profil" geri düğmesi, kenardan kaydırarak geri; gezinme-cubugu.md). Yol
+// AppModel.nav'dan gelir (ScreenStack.navPath); sistemin geri düğmesi ya da hareketi AppModel.back'i çağırır.
+// Turlar (soru, akor, Ritmi Tut) ve tur sonucu sekmelerin üstünde tam ekran katman: sol kenardan (28 pt) sağa
+// kaydırınca katman parmakla kayar, altında turdan önceki ekran görünür (web utils/swipeBack.tsx, R34); cevap
+// verilmişse bırakınca yerine döner ve "Turdan çıkılsın mı?" onayı açılır, cevap yoksa geri dönülür.
+// Üstte kutlama, tanıtım, açılış ve Ana sayfa ipuçları. Telefonda yalnız soru ve akor turu yan döner (G-02).
 import SolvatoCore
 import SwiftUI
 
 struct AppRoot: View {
     let model: AppModel
     @State private var dragX: Double = 0
-    @State private var underlay: AppView?
+    /// Tam ekran katman parmakla kaydırılıyor
+    @State private var sliding = false
     @State private var coach = 0
+    /// Açık sekmenin gezinme yolu (AppModel.nav'dan eşitlenir)
+    @State private var path: [AppView] = []
+    /// İpucu hedeflerinin ekran konumları: Ana sayfa (gezinme yığınının içi) ve alt menü
+    @State private var homeTargets: [String: CGRect] = [:]
+    @State private var tabTargets: [String: CGRect] = [:]
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     static let edge = 28.0
 
@@ -19,19 +27,25 @@ struct AppRoot: View {
         let v = model.nav.current
         GeometryReader { geo in
             let w = geo.size.width
+            let p = min(1, max(0, dragX / max(w, 1)))
             ZStack {
-                // Kaydırırken alttan görünen önceki ekran
-                if let u = underlay {
-                    let p = min(1, max(0, dragX / max(w, 1)))
-                    screenWithNav(u)
-                        .allowsHitTesting(false)
-                        .offset(x: -0.3 * w * (1 - p))
-                        .overlay(PaletteColor.black.color.opacity(0.35 * (1 - p)).ignoresSafeArea().allowsHitTesting(false))
+                // Sekmeler ve gezinme yığını; tam ekran katman açıkken altta durur (kaydırınca görünür)
+                tabs
+                    .offset(x: v.isFullScreen && sliding ? -0.3 * w * (1 - p) : 0)
+                    .overlay {
+                        if v.isFullScreen && sliding {
+                            PaletteColor.black.color.opacity(0.35 * (1 - p)).ignoresSafeArea().allowsHitTesting(false)
+                        }
+                    }
+                    .allowsHitTesting(!v.isFullScreen)
+                    .accessibilityHidden(v.isFullScreen)
+                if v.isFullScreen {
+                    screen(v)
+                        .frame(maxHeight: .infinity)
+                        .background(ThemeColor.bg.color.ignoresSafeArea())
+                        .offset(x: dragX)
+                        .shadow(color: dragX > 0 ? .black.opacity(0.25) : .clear, radius: 12, x: -8)
                 }
-                screenWithNav(v)
-                    .background(ThemeColor.bg.color.ignoresSafeArea())
-                    .offset(x: dragX)
-                    .shadow(color: dragX > 0 ? .black.opacity(0.25) : .clear, radius: 12, x: -8)
                 if let c = model.celebrate {
                     CelebrationView(data: c) { model.celebrate = nil }
                 }
@@ -42,13 +56,17 @@ struct AppRoot: View {
                     SplashScreen { model.showSplash = false }.zIndex(10)
                 }
             }
-            // Ana sayfa ipuçları: hedeflerin konumu ekranlardan toplanır
-            .overlayPreferenceValue(CoachTargets.self) { anchors in
+            // Yalnız tam ekran katmanda; alt ekranlarda Apple'ın geri hareketi
+            .simultaneousGesture(edgeSwipe(width: w), including: v.isFullScreen ? .all : .subviews)
+            // Ana sayfa ipuçları: hedeflerin ekran konumları bu katmanın koordinatına çevrilir
+            .overlay {
                 if showCoach {
-                    GeometryReader { p in
+                    GeometryReader { g in
+                        let o = g.frame(in: .global).origin
+                        let target = CoachStep.home[coach].target
                         CoachmarkView(
                             steps: CoachStep.home, index: coach,
-                            rect: anchors[CoachStep.home[coach].target].map { p[$0] },
+                            rect: (homeTargets[target] ?? tabTargets[target]).map { $0.offsetBy(dx: -o.x, dy: -o.y) },
                             onNext: { withAnimation(.easeOut(duration: 0.2)) { coach += 1 } },
                             onDone: {
                                 model.settings.coachDone = true
@@ -57,13 +75,26 @@ struct AppRoot: View {
                     }
                 }
             }
-            .simultaneousGesture(edgeSwipe(width: w))
         }
         // iPad: içerik ortada, en geniş 1100 pt (G-03)
         .frame(maxWidth: 1100)
         .frame(maxWidth: .infinity)
         .background(ThemeColor.bg.color.ignoresSafeArea())
         .onChange(of: v, initial: true) { _, nv in Orientation.allowLandscape(nv.allowsLandscape) }
+        // Gezinme yolu: ileri / geri / sekme değişince yığın eşitlenir. Tam ekran katmanın altında (tura girerken,
+        // turdan oyun sonucuna geçerken) geçiş canlandırılmaz.
+        .onChange(of: model.nav, initial: true) { old, new in
+            let target = new.navPath
+            guard target != path else { return }
+            if old.current.isFullScreen || new.current.isFullScreen {
+                var t = Transaction()
+                t.disablesAnimations = true
+                withTransaction(t) { path = target }
+            } else {
+                path = target
+            }
+        }
+        .onChange(of: typeSize) { _, s in NavigationBarStyle.apply(s) }
         // Ayarlar › Ses / Titreşim (G-07, G-08): kapalıysa hiçbir ses ya da titreşim yok
         .onChange(of: model.settings.soundKeys, initial: true) { _, on in Sound.enabled = on }
         .onChange(of: model.settings.haptics, initial: true) { _, on in Haptics.enabled = on }
@@ -73,21 +104,70 @@ struct AppRoot: View {
         .onChange(of: model.scrollTopRequest) { _, _ in NotificationCenter.default.post(name: .scrollToTop, object: model.nav.current.rawValue) }
     }
 
-    /// Sekme ekranları Apple'ın sekme çubuğunun içinde (UI/SystemTabs); alt ekranlar ve turlar çubuksuz, tam ekran
-    @ViewBuilder
-    private func screenWithNav(_ v: AppView) -> some View {
-        if v.isTab {
-            SystemTabs(
-                active: NavTab(rawValue: v.rawValue) ?? .home,
-                onSelect: {
-                    if $0.rawValue != v.rawValue { Perf.beginTab() }
-                    model.selectTab(AppView(rawValue: $0.rawValue) ?? .home)
-                }
-            ) { t in
-                screen(AppView(rawValue: t.rawValue) ?? .home).frame(maxHeight: .infinity)
+    // MARK: Sekmeler ve gezinme yığını
+    /// Dört sekme; her biri Apple'ın gezinme yığını. Yalnız açık sekmenin yolu dolu (başka sekmeye geçmek yığını sıfırlar).
+    private var tabs: some View {
+        let root = model.nav.rootTab
+        return SystemTabs(
+            active: NavTab(rawValue: root.rawValue) ?? .home,
+            onSelect: {
+                if $0.rawValue != model.nav.current.rawValue { Perf.beginTab() }
+                model.selectTab(AppView(rawValue: $0.rawValue) ?? .home)
             }
-        } else {
-            screen(v).frame(maxHeight: .infinity)
+        ) { t in
+            let tab = AppView(rawValue: t.rawValue) ?? .home
+            NavigationStack(path: tab == root ? pathBinding : .constant([])) {
+                tabRoot(tab)
+                    .navigationTitle(tab.title)
+                    .navigationDestination(for: AppView.self) { d in
+                        screen(d)
+                            .frame(maxHeight: .infinity)
+                            .background(ThemeColor.bg.color.ignoresSafeArea())
+                            .navigationTitle(title(d))
+                            .navigationBarTitleDisplayMode(.inline)
+                            // Alt ekranlar tam ekran: alt menü görünmez (gezinme.md)
+                            .toolbar(.hidden, for: .tabBar)
+                    }
+            }
+        }
+        .coachFrames(active: showCoach) { tabTargets = $0 }
+    }
+
+    /// Sistemin geri düğmesi ya da kenardan kaydırma yolu kısalttı: her kalkan ekran için bir geri
+    private var pathBinding: Binding<[AppView]> {
+        Binding(
+            get: { path },
+            set: { new in
+                let removed = path.count - new.count
+                path = new
+                if removed > 0 { for _ in 0..<removed { model.back() } }
+            })
+    }
+
+    /// Sekmenin kök ekranı: İlerleme, Öğren, Profil büyük başlıklı; Ana sayfa çubuksuz (kendi üst satırı var)
+    @ViewBuilder
+    private func tabRoot(_ t: AppView) -> some View {
+        Group {
+            if t == .home {
+                HomeScreen(model: model, coachTarget: showCoach ? CoachStep.home[coach].target : nil)
+                    .onAppear { Perf.endTab() }
+                    .coachFrames(active: showCoach) { homeTargets = $0 }
+                    // Başlık görünmez ama alt ekranların geri düğmesi "‹ Ana sayfa" der
+                    .toolbar(.hidden, for: .navigationBar)
+            } else {
+                screen(t).navigationBarTitleDisplayMode(.large)
+            }
+        }
+        .frame(maxHeight: .infinity)
+        .background(ThemeColor.bg.color.ignoresSafeArea())
+    }
+
+    /// Gezinme çubuğundaki başlık: ders ve öğretmen kodu içeriğe göre
+    private func title(_ v: AppView) -> String {
+        switch v {
+        case .lesson: Lessons.byId(model.lessonId)?.title ?? v.title
+        case .teacher: TeacherSection(model.settings.teacherRole).title
+        default: v.title
         }
     }
 
@@ -99,7 +179,7 @@ struct AppRoot: View {
     @ViewBuilder
     private func screen(_ v: AppView) -> some View {
         switch v {
-        case .home: HomeScreen(model: model, coachTarget: showCoach ? CoachStep.home[coach].target : nil).onAppear { Perf.endTab() }
+        case .home: HomeScreen(model: model)
         case .quiz:
             QuizScreen(
                 model: model, questions: model.sessionQuestions, noHints: model.game != nil,
@@ -124,12 +204,12 @@ struct AppRoot: View {
         case .teacher: TabletColumn { TeacherScreen(model: model) }
         case .privacy: TabletColumn { LegalScreen(model: model, page: .privacy) }
         case .licenses: TabletColumn { LegalScreen(model: model, page: .licenses) }
-        default: PendingScreen(view: v) { v.isTab ? model.go(.home) : model.back() }
         }
     }
 
-    // MARK: Kenardan kaydırma
-    /// Bu ekranda kenardan kaydırma ekranı kaydırır mı: alt ekranlarda geri götürür, turlarda çıkış onayı sorar (R34)
+    // MARK: Kenardan kaydırma (tam ekran katman)
+    /// Turlarda ve tur sonucunda kenardan kaydırma katmanı kaydırır mı: sonuçta geri götürür, turlarda çıkış onayı
+    /// sorar (R34). Alt ekranlarda Apple'ın kendi geri hareketi çalışır.
     private var swipeSlides: Bool {
         model.nav.canSwipeBack(overlayOpen: model.overlayOpen) || model.nav.current.confirmsExit && !model.overlayOpen
     }
@@ -140,70 +220,34 @@ struct AppRoot: View {
                 guard g.startLocation.x <= Self.edge else { return }
                 let dx = g.translation.width
                 let dy = abs(g.translation.height)
-                if underlay == nil {
+                if !sliding {
                     // Dikey hareket önce geldiyse kaydırma değil
                     if dy > 14 && dy > dx { return }
                     guard dx > 10, swipeSlides else { return }
-                    underlay = model.nav.backTarget
+                    sliding = true
                 }
                 dragX = max(0, dx)
             }
             .onEnded { g in
-                guard g.startLocation.x <= Self.edge, underlay != nil else { return }
+                guard g.startLocation.x <= Self.edge, sliding else { return }
                 let dx = g.translation.width
                 let fast = g.predictedEndTranslation.width - dx > 120 && dx > 40
                 let passed = dx > w * 0.35 || fast
                 let settle = Animation.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.22)
                 if model.nav.current.confirmsExit && model.roundHasAnswers {
                     // Turda cevap var: ekran yerine döner; eşik geçildiyse çıkış onayı (onay açıksa kapanır)
-                    withAnimation(settle) { dragX = 0 } completion: { underlay = nil }
+                    withAnimation(settle) { dragX = 0 } completion: { sliding = false }
                     if passed { model.requestExit() }
                 } else if passed {
-                    // Alt ekran ya da henüz cevapsız tur: sormadan geri (tur-ekranlari.md)
+                    // Tur sonucu ya da henüz cevapsız tur: sormadan geri (tur-ekranlari.md)
                     withAnimation(settle) { dragX = w } completion: {
                         model.back()
-                        underlay = nil
+                        sliding = false
                         dragX = 0
                     }
                 } else {
-                    withAnimation(settle) { dragX = 0 } completion: { underlay = nil }
+                    withAnimation(settle) { dragX = 0 } completion: { sliding = false }
                 }
             }
-    }
-}
-
-/// Native sürümde henüz yazılmamış ekran (yalnız geliştirme sürümlerinde görünür; yayından önce hepsi gelir)
-private struct PendingScreen: View {
-    let view: AppView
-    let onBack: () -> Void
-
-    private var title: String {
-        switch view {
-        case .dashboard: "İlerleme"
-        case .study: "Öğren"
-        case .profile: "Profil"
-        case .settings: "Ayarlar"
-        case .notes: "Çalışılacak notalar"
-        case .games, .gameDaily, .gameChallenge, .gameresult, .duel: "Oyunlar"
-        case .chordquiz: "Akor"
-        case .rhythmtap: "Ritmi Tut"
-        case .lesson: "Ders"
-        case .teacher: "Öğretmen kodu"
-        case .privacy: "Gizlilik"
-        case .licenses: "Lisanslar"
-        default: ""
-        }
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Space.s4) {
-            ScreenHeader(title: title, onBack: onBack)
-            Text("Bu ekran native sürüme henüz taşınmadı.")
-                .font(.ui(FontSize.sm))
-                .foregroundStyle(ThemeColor.textMuted.color)
-                .padding(.horizontal, Space.s4)
-            Spacer()
-        }
-        .background(ThemeColor.bg.color)
     }
 }

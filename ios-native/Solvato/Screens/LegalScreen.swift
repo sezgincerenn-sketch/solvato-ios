@@ -10,29 +10,27 @@ struct LegalScreen: View {
     let page: LegalPage
 
     var body: some View {
-        VStack(spacing: 0) {
-            ScreenHeader(title: page == .privacy ? "Gizlilik" : "Lisanslar") { model.back() }
-            ScrollView {
-                VStack(alignment: .leading, spacing: Space.s4) {
-                    if page == .privacy {
-                        ForEach(Legal.privacy, id: \.title) { s in
-                            VStack(alignment: .leading, spacing: Space.s2) {
-                                legalHeading(s.title).accessibilityAddTraits(.isHeader)
-                                ForEach(s.body, id: \.self) { legalBody($0) }
-                            }
+        ScrollView {
+            VStack(alignment: .leading, spacing: Space.s4) {
+                if page == .privacy {
+                    ForEach(Legal.privacy, id: \.title) { s in
+                        VStack(alignment: .leading, spacing: Space.s2) {
+                            legalHeading(s.title).accessibilityAddTraits(.isHeader)
+                            ForEach(s.body, id: \.self) { legalBody($0) }
                         }
-                    } else {
-                        legalBody(Legal.licensesIntro)
-                        ForEach(Legal.licenses, id: \.name) { LicenseCard(license: $0) }
                     }
+                } else {
+                    legalBody(Legal.licensesIntro)
+                    ForEach(Legal.licenses, id: \.name) { LicenseCard(license: $0) }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, Space.s5)
-                .padding(.bottom, Space.s6 * 2)
-                .remembersScroll(model, page == .privacy ? .privacy : .licenses)
             }
-            .scrollIndicators(.hidden)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, Space.s5)
+            .padding(.top, Space.s2)
+            .padding(.bottom, Space.s6 * 2)
+            .remembersScroll(model, page == .privacy ? .privacy : .licenses)
         }
+        .scrollIndicators(.hidden)
         .background(ThemeColor.bg.color)
     }
 }

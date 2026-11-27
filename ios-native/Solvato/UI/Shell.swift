@@ -34,7 +34,7 @@ struct Avatar: View {
 }
 
 // MARK: - Geri düğmesi ve ekran başlığı
-/// Bütün ekranlarda aynı geri düğmesi
+/// Tanıtımın geri düğmesi (uygulama ekranlarında Apple'ın gezinme çubuğu, gezinme-cubugu.md)
 struct BackButton: View {
     var label = "Geri"
     let action: () -> Void
@@ -68,12 +68,11 @@ private struct BackArrow: Shape {
     }
 }
 
-/// Alt ekran başlığı: geri düğmesi + başlık (+ sağda isteğe bağlı öğe). onBack yoksa (sekme ekranı) geri düğmesi yok.
+/// Eski alt ekran başlığı: geri düğmesi + başlık (+ sağda isteğe bağlı öğe). Uygulama ekranları artık Apple'ın gezinme
+/// çubuğunu kullanır (gezinme-cubugu.md); yalnız tasarım sistemi önizlemesinde (DesignSystemScreen) kalır.
 struct ScreenHeader<Right: View>: View {
     let title: String
     var flush = false
-    /// Sekme ekranı (Profil): başlık İlerleme ve Öğren'deki TabTitle ile aynı yükseklikte (Ceren, 27 Kasım)
-    var tab = false
     let onBack: (() -> Void)?
     @ViewBuilder var right: Right
 
@@ -88,13 +87,10 @@ struct ScreenHeader<Right: View>: View {
                 .accessibilityAddTraits(.isHeader)
             right
         }
-        .padding(.top, flush ? 0 : tab ? Self.tabTop : Space.s4)
+        .padding(.top, flush ? 0 : Space.s4)
         .padding(.horizontal, flush ? 0 : Space.s4)
         .padding(.bottom, flush ? 0 : Space.s2)
     }
-
-    /// TabTitle yazısı kaydırma alanının 32 pt altında başlar; burada yazı 44 pt'lik satırda ortalı (sağdaki düğme)
-    static var tabTop: Double { 32 - (Touch.min - FontSize.xl * 1.26) / 2 }
 }
 
 extension ScreenHeader where Right == EmptyView {

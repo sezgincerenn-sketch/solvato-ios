@@ -1,6 +1,6 @@
 // Native Solvato'nun girişi. Tema tercihini (sistem / koyu / açık) web'le aynı anahtarda saklar ve uygular.
 // UI testleri `-UITestTheme dark|light` başlatma argümanıyla temayı zorlar (kayıtlı tercihi değiştirmeden).
-// Kök görünüm AppRoot (Pratik ile açılır). UI test senaryosu (SOLVATO_SENARYO_* ortam değişkenleri, TestScenario)
+// Kök görünüm AppRoot (Pratik ile açılır); gezinme çubuğunun görünümü açılışta kurulur (NavigationBarStyle). UI test senaryosu (SOLVATO_SENARYO_* ortam değişkenleri, TestScenario)
 // verilirse uygulama o veriyle bellekte ve sabit tarihle açılır; `-UITestDesignSystem` tasarım sistemi önizlemesini açar.
 import SolvatoCore
 import SwiftUI
@@ -11,6 +11,11 @@ struct SolvatoApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     /// UI test senaryosu varsa o veriyle bellekte; yoksa gerçek kayıtlarla
     @State private var model: AppModel = TestScenario(environment: ProcessInfo.processInfo.environment)?.makeModel() ?? AppModel()
+
+    init() {
+        // Gezinme çubuğunun yazı tipi ve renkleri ilk çubuk kurulmadan (UI/NavigationBarStyle)
+        NavigationBarStyle.apply(UIApplication.shared.preferredContentSizeCategory)
+    }
 
     /// Tema tercihi uygulama durumunda (Persistence, `pianote_theme_v1`)
     private var themeMode: Binding<ThemeMode> {

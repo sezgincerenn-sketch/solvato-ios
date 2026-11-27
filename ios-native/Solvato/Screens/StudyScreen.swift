@@ -1,4 +1,4 @@
-// Öğren sekmesi (eski adı Çalışma): konu arama, "Kaldığın yer" kartı ve bölüm bölüm ders listesi. Bir derse dokununca LessonScreen açılır.
+// Öğren sekmesi (eski adı Çalışma; başlık Apple'ın gezinme çubuğunda, gezinme-cubugu.md): konu arama, "Kaldığın yer" kartı ve bölüm bölüm ders listesi. Bir derse dokununca LessonScreen açılır.
 // Web src/screens/study/StudyScreen.tsx; ders listesi ve arama kuralı SolvatoCore Lessons'ta (web'le altın tabloyla aynı).
 import SolvatoCore
 import SwiftUI
@@ -16,13 +16,10 @@ struct StudyScreen: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Space.s5) {
                 VStack(alignment: .leading, spacing: Space.s3) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        TabTitle("Öğren")
-                        Text("Bir konu seç; notaları, ritmi ve akorları adım adım öğren.")
-                            .font(.ui(FontSize.sm))
-                            .foregroundStyle(ThemeColor.textMuted.color)
-                            .lineHeight(1.5, size: FontSize.sm)
-                    }
+                    Text("Bir konu seç; notaları, ritmi ve akorları adım adım öğren.")
+                        .font(.ui(FontSize.sm))
+                        .foregroundStyle(ThemeColor.textMuted.color)
+                        .lineHeight(1.5, size: FontSize.sm)
                     searchField
                 }
 
@@ -58,7 +55,7 @@ struct StudyScreen: View {
                 }
             }
             .padding(.horizontal, Space.s4)
-            .padding(.top, 32)
+            .padding(.top, Space.s2)
             .padding(.bottom, Space.s8)
             .remembersScroll(model, .study)
         }
@@ -156,33 +153,30 @@ struct StudyScreen: View {
     }
 }
 
-/// Tek bir ders: başlık, alt yazı ve dersin içeriği (web LessonScreen.tsx)
+/// Tek bir ders: alt yazı ve dersin içeriği (web LessonScreen.tsx); dersin adı gezinme çubuğunda (AppRoot)
 struct LessonScreen: View {
     let model: AppModel
 
     var body: some View {
         let lesson = Lessons.byId(model.lessonId)
-        VStack(spacing: 0) {
-            ScreenHeader(title: lesson?.title ?? "") { model.back() }
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    if let lesson {
-                        Text(lesson.sub)
-                            .font(.ui(FontSize.sm))
-                            .foregroundStyle(ThemeColor.textMuted.color)
-                            .padding(.horizontal, 2)
-                            .padding(.bottom, Space.s4)
-                    }
-                    if let lesson { LessonContent(lesson: lesson, chordLevel: model.settings.effectiveChordLevel) }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                if let lesson {
+                    Text(lesson.sub)
+                        .font(.ui(FontSize.sm))
+                        .foregroundStyle(ThemeColor.textMuted.color)
+                        .padding(.horizontal, 2)
+                        .padding(.bottom, Space.s4)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, Space.s4)
-                .padding(.top, Space.s2)
-                .padding(.bottom, Space.s8)
-                .remembersScroll(model, .lesson)
+                if let lesson { LessonContent(lesson: lesson, chordLevel: model.settings.effectiveChordLevel) }
             }
-            .scrollIndicators(.hidden)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, Space.s4)
+            .padding(.top, Space.s2)
+            .padding(.bottom, Space.s8)
+            .remembersScroll(model, .lesson)
         }
+        .scrollIndicators(.hidden)
         .background(ThemeColor.bg.color)
     }
 }

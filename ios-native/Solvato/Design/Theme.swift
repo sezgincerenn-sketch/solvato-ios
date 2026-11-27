@@ -17,10 +17,13 @@ extension PaletteColor {
 
 extension ThemeColor {
     /// Koyu temada koyu değeri, açık temada açık değeri veren dinamik renk
-    var color: Color {
+    var color: Color { Color(uiColor: uiColor) }
+
+    /// Aynı dinamik renk UIKit için (gezinme çubuğu başlığı, UI/NavigationBarStyle)
+    var uiColor: UIColor {
         let dark = rgba(.dark).uiColor
         let light = rgba(.light).uiColor
-        return Color(uiColor: UIColor { $0.userInterfaceStyle == .light ? light : dark })
+        return UIColor { $0.userInterfaceStyle == .light ? light : dark }
     }
 }
 

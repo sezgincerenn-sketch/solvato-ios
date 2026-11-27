@@ -1,5 +1,6 @@
-// Gezinme revizesinin küçük parçaları (docs/ozellikler/gezinme.md; web önizlemesi src/ui/PercentRing.tsx, GoalBar.tsx,
-// TabTitle.tsx): Ana sayfa konu kartlarındaki yüzde halkası, Bugün kartındaki 10 bölmeli hedef çubuğu, sekme başlığı.
+// Gezinme revizesinin küçük parçaları (docs/ozellikler/gezinme.md; web önizlemesi src/ui/PercentRing.tsx, GoalBar.tsx):
+// Ana sayfa konu kartlarındaki yüzde halkası ve Bugün kartındaki 10 bölmeli hedef çubuğu. Sekme başlıkları Apple'ın
+// gezinme çubuğunda (gezinme-cubugu.md).
 import SolvatoCore
 import SwiftUI
 
@@ -54,20 +55,5 @@ struct GoalBar: View {
         .animation(.easeOut(duration: 0.3), value: filled)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
-    }
-}
-
-/// Sekme sayfasının büyük başlığı (İlerleme, Öğren): Öğren sekmesindeki başlıkla aynı ölçü
-struct TabTitle: View {
-    let title: String
-    init(_ title: String) { self.title = title }
-
-    var body: some View {
-        Text(title)
-            .font(.ui(FontSize.xl, .heavy))
-            .tracking(em: Tracking.tight, size: FontSize.xl)
-            .foregroundStyle(ThemeColor.text.color)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .accessibilityAddTraits(.isHeader)
     }
 }

@@ -33,6 +33,12 @@ public enum AccessibilityText {
     /// Her saniye duyurulmaz; yalnız son 3 saniye
     public static func announcesTime(_ seconds: Int) -> Bool { (1...3).contains(seconds) }
 
+    /// İlerleme'nin sağ üstündeki paylaş simgesi (gezinme-cubugu.md)
+    public static let shareWeeklyReport = "Haftalık raporu öğretmenine gönder"
+
+    /// Profil'in sağ üstündeki dişli
+    public static let openSettings = "Ayarlar"
+
     /// Yıldızlar: "3 yıldızdan 2"
     public static func stars(_ value: Int, of total: Int = 3) -> String { "\(total) yıldızdan \(value)" }
 

@@ -1,5 +1,6 @@
-// İlerleme sekmesi: başlık · Doğruluk · Bu hafta · Konular · Zorlandığın notalar · Son turlar. Telefonda tek
-// sütun, iPad'de başlık üstte, altında iki bağımsız sütun. Web src/screens/ProgressScreen.tsx (+ WeeklyReportCard,
+// İlerleme sekmesi: Doğruluk · Bu hafta · Konular · Zorlandığın notalar · Son turlar. Telefonda tek sütun, iPad'de iki
+// bağımsız sütun. Başlık Apple'ın gezinme çubuğunda (büyük başlık); haftalık rapor sağ üstteki paylaş simgesinden
+// gönderilir (gezinme-cubugu.md; kartta düğme yok). Web src/screens/ProgressScreen.tsx (+ WeeklyReportCard,
 // RoundHistory); gezinme revizesi (docs/ozellikler/gezinme.md): öğrenme yolu kartı yok, konularda "Çalış ▶".
 // Yazılar ve kurallar SolvatoCore ProgressContent'ten (web'le 50 durumda aynı).
 import SolvatoCore
@@ -18,15 +19,13 @@ struct ProgressScreen: View {
             Group {
                 if !c.hasAnswers {
                     VStack(spacing: 16) {
-                        TabTitle("İlerleme")
                         EmptyProgress { model.go(.home) }
                         if let start { StartChecklist(steps: start) }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.top, 32)
+                    .padding(.top, Space.s2)
                 } else if sizeClass == .regular {
                     VStack(spacing: 16) {
-                        TabTitle("İlerleme")
                         if let start { StartChecklist(steps: start) }
                         totals
                         HStack(alignment: .top, spacing: 16) {
@@ -35,28 +34,27 @@ struct ProgressScreen: View {
                                 weak(c)
                             }
                             VStack(spacing: 16) {
-                                WeekCard(c: c, text: c.report.text)
+                                WeekCard(c: c)
                                 topics(c)
                                 rounds(c)
                             }
                         }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.top, 32)
+                    .padding(.top, Space.s2)
                     .padding(.bottom, 28)
                 } else {
                     VStack(spacing: 16) {
-                        TabTitle("İlerleme")
                         if let start { StartChecklist(steps: start) }
                         totals
                         accuracy(c)
-                        WeekCard(c: c, text: c.report.text)
+                        WeekCard(c: c)
                         topics(c)
                         weak(c)
                         rounds(c)
                     }
                     .padding(.horizontal, 16)
-                    .padding(.top, 32)
+                    .padding(.top, Space.s2)
                     .padding(.bottom, 28)
                 }
             }
@@ -64,6 +62,16 @@ struct ProgressScreen: View {
         }
         .scrollIndicators(.hidden)
         .background(ThemeColor.bg.color)
+        .toolbar {
+            // Bu hafta kartı görünürken (çözülmüş soru varken): aynı metin, sonunda App Store bağlantısı
+            if c.hasAnswers {
+                ToolbarItem(placement: .topBarTrailing) {
+                    ShareLink(item: AppStoreLink.appended(to: c.report.text)) {
+                        Label(AccessibilityText.shareWeeklyReport, systemImage: "square.and.arrow.up")
+                    }
+                }
+            }
+        }
         // Üç madde bitince liste bir daha görünmez (ilerleme sıfırlansa da)
         .onChange(of: ProgressContent.startSteps(model.stats).allSatisfy(\.done), initial: true) { _, all in
             if all && !model.settings.startChecklistDone { model.settings.startChecklistDone = true }
@@ -273,10 +281,9 @@ private struct StudyPill: View {
     }
 }
 
-/// Bu hafta: seri ve bugünkü dürtme, 7 günlük şerit, özet, "Öğretmenine haftalık rapor gönder" (paylaşım menüsü)
+/// Bu hafta: seri ve bugünkü dürtme, 7 günlük şerit, özet (rapor sağ üstteki paylaş simgesinden gönderilir)
 private struct WeekCard: View {
     let c: ProgressContent
-    let text: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: Space.s3) {
@@ -326,14 +333,6 @@ private struct WeekCard: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(c.weekLabel)
             Text(c.weekSummary).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color)
-            ShareLink(item: AppStoreLink.appended(to: text)) {
-                Text("Öğretmenine haftalık rapor gönder")
-                    .font(.ui(FontSize.md, .bold))
-                    .foregroundStyle(ThemeColor.textSecondary.color)
-                    .frame(maxWidth: .infinity, minHeight: 48)
-                    .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fillStrong.color))
-                    .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(ThemeColor.border.color, lineWidth: 1))
-            }
         }
         .padding(Space.s4)
         .frame(maxWidth: .infinity, alignment: .leading)

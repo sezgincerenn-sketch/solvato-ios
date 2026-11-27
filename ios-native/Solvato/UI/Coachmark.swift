@@ -1,6 +1,8 @@
 // Ana sayfa ilk kullanım ipuçları (web src/ui/Coachmark.tsx + App.tsx COACH_STEPS): ekrandaki öğeleri sırayla
 // aydınlatır (çevresi kararır, mor çerçeve), altında ya da üstünde açıklama balonu; "Atla" / "Sıradaki" / "Anladım".
-// Hedefler `.coachTarget("today")` ile işaretlenir; konumlar SwiftUI anchor tercihleriyle toplanır.
+// Hedefler `.coachTarget("today")` ile işaretlenir; konumlar SwiftUI anchor tercihleriyle toplanır. Ana sayfa Apple'ın
+// gezinme yığınının içinde ve tercihler yığının dışına taşınmaz: konumlar `.coachFrames` ile ekran koordinatına
+// çevrilip AppRoot'a bildirilir (gezinme-cubugu.md).
 import SolvatoCore
 import SwiftUI
 
@@ -32,6 +34,24 @@ extension View {
     /// Tanıtımda aydınlatılacak öğe
     func coachTarget(_ name: String) -> some View {
         anchorPreference(key: CoachTargets.self, value: .bounds) { [name: $0] }
+    }
+}
+
+extension View {
+    /// Bu görünümün içindeki hedeflerin ekrandaki (global) konumlarını bildirir. Yalnız `active` iken: kapalıyken
+    /// kaydırmada her kare bildirim gitmesin.
+    func coachFrames(active: Bool, _ report: @escaping ([String: CGRect]) -> Void) -> some View {
+        overlayPreferenceValue(CoachTargets.self) { anchors in
+            if active {
+                GeometryReader { p in
+                    let origin = p.frame(in: .global).origin
+                    let frames = anchors.mapValues { p[$0].offsetBy(dx: origin.x, dy: origin.y) }
+                    Color.clear.onChange(of: frames, initial: true) { _, f in report(f) }
+                }
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+            }
+        }
     }
 }
 

@@ -57,4 +57,45 @@ final class ScreenStackTests: XCTestCase {
         XCTAssertFalse(s.canSwipeBack(overlayOpen: true), "kutlama açıkken kaydırma yok")
         XCTAssertEqual(AppView.allCases.filter(\.allowsLandscape), [.quiz, .chordquiz])
     }
+
+    /// gezinme-cubugu.md: sekmenin yığını Apple'ın gezinme yığınına, turlar ve tur sonucu üstteki tam ekran katmana
+    func testNavigationPath() {
+        var s = ScreenStack()
+        XCTAssertEqual(s.rootTab, .home)
+        XCTAssertEqual(s.navPath, [])
+        s.go(.profile)
+        s.go(.settings)
+        s.go(.notes)
+        XCTAssertEqual(s.rootTab, .profile)
+        XCTAssertEqual(s.navPath, [.settings, .notes])
+        XCTAssertEqual(s.stack.last?.title, "Ayarlar", "geri düğmesi: ‹ Ayarlar")
+        s.back()
+        XCTAssertEqual(s.navPath, [.settings])
+
+        // Oyun: tur açıkken yol turdan önceki ekranda kalır, oyun sonucu yola girer
+        var g = ScreenStack()
+        g.go(.games)
+        g.go(.gameDaily)
+        g.go(.quiz)
+        XCTAssertEqual(g.rootTab, .home)
+        XCTAssertEqual(g.navPath, [.games, .gameDaily], "tur tam ekran; altında Günün meydan okuması")
+        g.replace(.gameresult)
+        XCTAssertEqual(g.navPath, [.games, .gameDaily, .gameresult])
+        XCTAssertEqual(g.back(), .gameDaily)
+
+        // Öğren › ders › tur › sonuç: yol dersde kalır
+        var l = ScreenStack()
+        l.go(.study)
+        l.go(.lesson)
+        l.go(.quiz)
+        l.replace(.result)
+        XCTAssertEqual(l.rootTab, .study)
+        XCTAssertEqual(l.navPath, [.lesson])
+        XCTAssertEqual(l.back(), .lesson)
+
+        XCTAssertEqual(AppView.allCases.filter(\.isFullScreen), [.quiz, .result, .chordquiz, .rhythmtap])
+        XCTAssertFalse(AppView.duel.isFullScreen, "düello kurulumu çubuklu alt ekran")
+        for v in AppView.allCases where v.isTab { XCTAssertFalse(v.title.isEmpty, v.rawValue) }
+        XCTAssertEqual(AppView.home.title, "Ana sayfa", "Oyunlar'ın geri düğmesi: ‹ Ana sayfa")
+    }
 }

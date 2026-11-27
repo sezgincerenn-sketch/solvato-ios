@@ -1,6 +1,7 @@
-// Akor düellosu: kurulum (iki isim, akor seviyesi, Başlayalım) → oyun (ekran ikiye bölünür, üst yarı karşıdaki
+// Akor düellosu: kurulum (iki isim, akor seviyesi, Başlayalım; Apple'ın gezinme çubuğu ve geri düğmesiyle) → oyun (ekran ikiye bölünür, üst yarı karşıdaki
 // oyuncu için 180° ters; her yarıda akor ve şıklar) → sonuç (kazanan, skor, Çık / Rövanş). Web
-// src/screens/ChordDuel.tsx. Kurallar SolvatoCore DuelGame'de (sorular web'le altın tabloyla aynı). Doğruda "ting" ve başarı, yanlışta "dum" ve hata titreşimi.
+// src/screens/ChordDuel.tsx. Oyun ve sonuçta gezinme çubuğu gizli (geri hareketi de kapanır); oyunda sol kenardan
+// kaydırınca ✕ gibi çıkış onayı (gezinme-cubugu.md). Kurallar SolvatoCore DuelGame'de (sorular web'le altın tabloyla aynı). Doğruda "ting" ve başarı, yanlışta "dum" ve hata titreşimi.
 import SolvatoCore
 import SwiftUI
 
@@ -30,6 +31,8 @@ struct ChordDuelScreen: View {
         }
         // ✕ ve kenardan kaydırma: bir şıkka basıldıysa onay açar (yoksa AppModel.exitRound sormadan çıkar), onay açıkken "Devam et" gibi kapatır; kurulumda geri döner; sonuçta bir şey
         // yapmaz (web: sonuç ekranında data-back yok)
+        .toolbar(game == nil ? .visible : .hidden, for: .navigationBar)
+        .navigationBarBackButtonHidden(game != nil)
         .onChange(of: game?.hasAnswers ?? false, initial: true) { _, a in model.roundHasAnswers = a }
         .onChange(of: model.exitRequest) { _, _ in
             if confirmExit {
@@ -49,7 +52,6 @@ struct ChordDuelScreen: View {
     // MARK: Kurulum
     private var setup: some View {
         VStack(alignment: .leading, spacing: 14) {
-            ScreenHeader(title: "Akor düellosu", flush: true) { model.back() }
             Text(DuelGame.intro)
                 .font(.ui(FontSize.sm))
                 .foregroundStyle(ThemeColor.textMuted.color)
@@ -81,7 +83,7 @@ struct ChordDuelScreen: View {
             }
             .buttonStyle(.plain)
         }
-        .padding(.top, 20)
+        .padding(.top, Space.s2)
         .padding(.horizontal, 20)
         .padding(.bottom, 24)
         .scrollDismissesKeyboard(.interactively)
@@ -112,6 +114,17 @@ struct ChordDuelScreen: View {
             }
             .accessibilityElement(children: .contain)
             .accessibilityLabel("1. oyuncu")
+        }
+        .simultaneousGesture(edgeExit)
+    }
+
+    /// Sol kenardan sağa kaydırıp bırakınca ✕ gibi: cevap verildiyse onay, yoksa sormadan çıkış (R34)
+    private var edgeExit: some Gesture {
+        DragGesture(minimumDistance: 10).onEnded { g in
+            guard g.startLocation.x <= AppRoot.edge, !model.overlayOpen else { return }
+            let dx = g.translation.width
+            guard dx > abs(g.translation.height), dx > 120 || (g.predictedEndTranslation.width - dx > 120 && dx > 40) else { return }
+            model.exitRound()
         }
     }
 

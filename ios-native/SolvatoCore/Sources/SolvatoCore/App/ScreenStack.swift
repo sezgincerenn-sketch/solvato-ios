@@ -1,6 +1,8 @@
 // Ekranlar arası gezinme kuralları (web App.tsx setView / replaceView / goBack / kaydırarak geri).
 // Basit bir yığın: sekmeler (Ana sayfa, İlerleme, Öğren, Profil) yığını sıfırlar; alt ekranlar üstüne eklenir; geri bir önceki
 // ekrana döner. Sonuç ekranları yığına girmez: oradan geri dönünce turdan önceki ekrana dönülür.
+// Ekranda (gezinme-cubugu.md): yığının sekmesi Apple'ın sekme çubuğunda, alt ekranlar o sekmenin gezinme yığınında
+// (`navPath`, Apple'ın gezinme çubuğu ve "‹ Profil" geri düğmesiyle); turlar ve tur sonucu üstte tam ekran katman.
 
 public enum AppView: String, Sendable, CaseIterable {
     case home, dashboard, study
@@ -22,6 +24,37 @@ public enum AppView: String, Sendable, CaseIterable {
         switch self {
         case .settings, .notes, .result, .games, .gameDaily, .gameChallenge, .gameresult, .lesson, .teacher, .privacy, .licenses: true
         default: false
+        }
+    }
+
+    /// Gezinme çubuğu olmayan, sekmelerin üstünde tam ekran açılan ekranlar: turlar ve tur sonucu (gezinme-cubugu.md).
+    /// Akor düellosu kurulumu çubuklu bir alt ekran; oyun başlayınca çubuk kendisi gizlenir.
+    public var isFullScreen: Bool { self == .quiz || self == .chordquiz || self == .rhythmtap || self == .result }
+
+    /// Gezinme çubuğundaki başlık; sonraki ekranın geri düğmesi de bu adı taşır ("‹ Profil"). Ders ve öğretmen kodu
+    /// ekranının başlığı içeriğe göre değişir (dersin adı, TeacherSection.title); burada genel adları.
+    /// Oyun sonucunda başlık yok: ekranın kendi büyük başlığı sonucu söyler ("Kazandın!").
+    public var title: String {
+        switch self {
+        case .home: "Ana sayfa"
+        case .dashboard: "İlerleme"
+        case .study: "Öğren"
+        case .profile: "Profil"
+        case .settings: "Ayarlar"
+        case .notes: "Çalışılacak notalar"
+        case .games: "Oyunlar"
+        case .gameDaily: "Günün meydan okuması"
+        case .gameChallenge: "Arkadaşına meydan oku"
+        case .gameresult: ""
+        case .duel: "Akor düellosu"
+        case .quiz: "Soru"
+        case .chordquiz: "Akor"
+        case .rhythmtap: "Ritmi Tut"
+        case .result: "Tur sonucu"
+        case .lesson: "Ders"
+        case .teacher: "Öğretmen kodu"
+        case .privacy: "Gizlilik"
+        case .licenses: "Lisanslar"
         }
     }
 
@@ -56,6 +89,19 @@ public struct ScreenStack: Equatable, Sendable {
     public mutating func back() -> AppView {
         current = stack.popLast() ?? .home
         return current
+    }
+
+    /// Yığının ait olduğu sekme (alt menüde seçili olan): yığının dibindeki sekme, yoksa bulunulan sekme
+    public var rootTab: AppView {
+        if current.isTab { return current }
+        if let first = stack.first, first.isTab { return first }
+        return .home
+    }
+
+    /// Sekmenin gezinme yığınında sekmenin üstüne açılmış alt ekranlar, alttan üste (turlar ve tur sonucu girmez;
+    /// tur açıkken altında turdan önceki ekran durur)
+    public var navPath: [AppView] {
+        (stack.dropFirst() + [current]).filter { !$0.isTab && !$0.isFullScreen }
     }
 
     /// Kenardan kaydırma şu an geri götürür mü (açılış, tanıtım ya da kutlama açıkken hayır)

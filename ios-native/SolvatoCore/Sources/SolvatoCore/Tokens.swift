@@ -109,6 +109,9 @@ public enum FontSize {
     public static let lg: Double = 20
     public static let xl: Double = 24
     public static let xxl: Double = 32
+    /// Apple'ın gezinme çubuğu ölçüleri (gezinme-cubugu.md): küçük başlık ve sekme ekranlarının büyük başlığı
+    public static let barTitle: Double = 17
+    public static let largeTitle: Double = 34
 }
 
 /// Yazı kalınlığı (CSS sayısı). Uygulama katmanı her birini Outfit / JetBrains Mono dosyasına eşler.
