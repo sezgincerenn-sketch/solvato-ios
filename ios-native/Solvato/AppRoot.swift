@@ -45,6 +45,9 @@ struct AppRoot: View {
                         .background(ThemeColor.bg.color.ignoresSafeArea())
                         .offset(x: dragX)
                         .shadow(color: dragX > 0 ? .black.opacity(0.25) : .clear, radius: 12, x: -8)
+                        // VoiceOver altta kalan sekmeleri okumasın (sekmeler UIKit'te: gizleme tek başına yetmiyor)
+                        .accessibilityElement(children: .contain)
+                        .accessibilityAddTraits(.isModal)
                 }
                 if let c = model.celebrate {
                     CelebrationView(data: c) { model.celebrate = nil }
