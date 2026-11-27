@@ -145,7 +145,14 @@ ios-native/
   kod kutusunda tire kendiliğinden (R31, `formatCodeInput`) ve "Kodu yapıştır" (R30, `codeFromPaste`: mesajın tamamından
   kodu bulur); paylaşım mesajlarında kod en üstte; Diyez-bemol dersinde bemol sekmesi korunur (R10); "Ezber cümleleri" →
   "Kolay hatırla" (R33; `calisma.json` altın tablosunda bu başlıklar ve "hatırla" araması elle değişti, `node scripts/altin.mjs`
-  çalıştırılırsa geri alın); tur sonunda bir kez "Serini koru" teklifi (R8, `ReminderOffer`, yeni ayar `reminderOffered`).
+  çalıştırılırsa geri alın); tur sonunda bir kez "Serini koru" teklifi (R8, `ReminderOffer`, yeni ayar `reminderOffered`); paylaşım mesajlarının
+  sonunda App Store bağlantısı (R32, `AppStoreLink`, Apple ID 6837820383; ekleme `AppButton` ve haftalık rapor
+  düğmelerinde, altın tablolardaki metinler bağlantısız kalır).
+- **0.9 karşılaştırması (27 Kasım):** dört `inceleyici` ile envantere göre ekran ekran bakıldı; düzeltilenler: sekmeye
+  geçince sayfa yeniden kurulur (`SystemTabs` `.id`, web gibi en üstten ve güncel ayarla), ipucu turu katmanı bütün
+  dokunuşları tutar, Ritmi Tut'ta çoklu dokunuş (`UI/TouchDownPad`) ve bitiş sesi kesilmez, akor şıkları 60 pt (iç boşluk
+  dahil), süre sayacı başlangıca bağlı, tanıtım satır araları, yer tutucu rengi `textFaint`, açılış notalarının solması,
+  Hareketi azalt'ta açılış anında kalkar, Sistem temasında pencere ayarı da güncellenir.
 - **Ayarlar düzeni (yalnız native, `docs/ozellikler/ayarlar.md`):** dört kart (Çalışma · Sorular · Ses ve bildirim ·
   Diğer); satırda o anki değer, dokununca seçim penceresi (`UI/SettingsRows.swift`, değer yazıları `SettingsText`).
   Çalışılacak notalar ayrı ekran (`AppView.notes`). Hatırlatma saati Ayarlar'da satır ("19:00 ›"), tanıtımda büyük kutu.

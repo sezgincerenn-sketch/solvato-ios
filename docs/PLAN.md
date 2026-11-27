@@ -101,6 +101,11 @@ Gizlilik ve Lisanslar, bildirim, titreşim, paylaşım, koyu/açık tema. Bugün
 
 Toplam kabaca 25–30 oturum; Ceren'in TestFlight geri bildirimine bağlı olarak **5–7 hafta**.
 
+**Durum (27 Kasım):** 0.9'un karşılaştırma adımı yapıldı: dört `inceleyici` envantere göre bütün ekranlara baktı; yanlış
+veri yok, bulunan 14 farktan 11'i düzeltildi (README "0.9 karşılaştırması"); akor kartı klavye çizgisi ve sekme başlığı
+hizası web'le zaten aynı çıktı. R32 (App Store bağlantısı) eklendi. Kalan 0.9: TestFlight'ta kapalı test, web kodunun silinmesi;
+0.8 (erişilebilirlik, iPad, performans) hâlâ sırada.
+
 **Durum (26 Kasım akşamı):** 0.5–0.7 bitti: bütün ekranlar native'de; tasarım revizeleri (R1–R41) uygulandı ya da
 karara bağlandı (kalan: R11 TestFlight'ta bakılacak; R32 App Store bağlantısı 26 Kasım'da eklendi). Alt menü Apple'ın
 sekme çubuğu. TestFlight artık GitHub Actions'tan (`testflight.yml`, son sürüm 2005); web revize önizlemesi
