@@ -206,13 +206,13 @@ dokunuş; iPad'de Split View 1/3, 1/2, 2/3 ve Stage Manager'ın en küçük penc
 
 ### Mağaza erişilebilirlik etiketleri (App Store Connect › Accessibility)
 
-| Etiket              | Öneri                                       | Neden                                                                                                                                                                         |
-| ------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dark Interface      | İşaretlendi (Ceren, 27 Kasım)               | Koyu tema var ve varsayılan; sistem ayarına da uyuyor.                                                                                                                        |
-| Reduced Motion      | İşaretlendi (Ceren, 27 Kasım)               | Hareketi azalt açıkken animasyon, konfeti ve titreyen alev yok.                                                                                                               |
-| Sufficient Contrast | İşaretlenebilir (renk düzeltmesinden sonra) | Otomatik denetimin kontrast bulguları temizlenince; soluk yazılar yalnız süs metinlerinde olmalı.                                                                             |
-| VoiceOver           | Şimdilik işaretlenmez                       | Ekranlar okunuyor, ama ana iş (portedeki notayı okumak) görerek yapılıyor; Apple "temel işler VoiceOver'la yapılabilmeli" diyor. Ceren'in denemesinden sonra yeniden bakılır. |
-| Larger Text         | İşaretlenmez                                | Apple en az %200 büyüme bekliyor; yazı bilerek xxxLarge'da (yaklaşık %135) duruyor.                                                                                           |
+| Etiket              | Öneri                         | Neden                                                                                                                                                                         |
+| ------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dark Interface      | İşaretlendi (Ceren, 27 Kasım) | Koyu tema var ve varsayılan; sistem ayarına da uyuyor.                                                                                                                        |
+| Reduced Motion      | İşaretlendi (Ceren, 27 Kasım) | Hareketi azalt açıkken animasyon, konfeti ve titreyen alev yok.                                                                                                               |
+| Sufficient Contrast | İşaretlendi (Ceren, 27 Kasım) | Otomatik denetimin kontrast bulguları temizlenince; soluk yazılar yalnız süs metinlerinde olmalı.                                                                             |
+| VoiceOver           | Şimdilik işaretlenmez         | Ekranlar okunuyor, ama ana iş (portedeki notayı okumak) görerek yapılıyor; Apple "temel işler VoiceOver'la yapılabilmeli" diyor. Ceren'in denemesinden sonra yeniden bakılır. |
+| Larger Text         | İşaretlenmez                  | Apple en az %200 büyüme bekliyor; yazı bilerek xxxLarge'da (yaklaşık %135) duruyor.                                                                                           |
 
 ### İlk ölçümler (27 Kasım, commit 7bfd203, GitHub Actions iPhone simülatörü)
 
