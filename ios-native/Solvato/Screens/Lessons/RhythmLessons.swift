@@ -177,7 +177,8 @@ struct NoteTreeCard: View {
                         Text("\(v.n) \(v.name.lowercased(with: Locale(identifier: "tr")))")
                             .font(.ui(FontSize.sm, .bold))
                             .foregroundStyle(v.color.color)
-                            .frame(width: 74, alignment: .leading)
+                            // Büyük yazıda sütun genişler, yazı kesilmez
+                            .frame(minWidth: 74, alignment: .leading)
                         HStack(spacing: v.n >= 16 ? 1 : 2) {
                             ForEach(0..<v.n, id: \.self) { _ in
                                 RoundedRectangle(cornerRadius: Radius.xs)

@@ -56,7 +56,7 @@ private struct KeyLabels: View {
     let labels: [KeyLabel]
     var body: some View {
         ForEach(Array(labels.enumerated()), id: \.offset) { _, l in
-            let font = Font.ui(l.size, FontWeight(rawValue: l.weight) ?? .regular)
+            let font = Font.uiFixed(l.size, FontWeight(rawValue: l.weight) ?? .regular)
             ViewThatFits(in: .horizontal) {
                 Text(l.text).fixedSize()
                 VStack(spacing: 0) {
@@ -162,6 +162,7 @@ struct MultiPianoView: View {
                             .buttonStyle(.plain)
                             .allowsHitTesting(!disabled)
                             .accessibilityLabel("\(k.note)\(k.octave)")
+                            .accessibilityValue(k.stateAccessibilityValue ?? "")
                         }
                     }
                     ForEach(Array(blacks.enumerated()), id: \.offset) { _, k in
@@ -169,6 +170,7 @@ struct MultiPianoView: View {
                             .buttonStyle(.plain)
                             .allowsHitTesting(!disabled)
                             .accessibilityLabel("\(k.note)\(k.octave)")
+                            .accessibilityValue(k.stateAccessibilityValue ?? "")
                             .frame(width: g.size.width * (k.widthPct ?? 0) / 100, height: g.size.height * 0.62)
                             .offset(x: g.size.width * (k.leftPct ?? 0) / 100)
                     }
@@ -178,7 +180,7 @@ struct MultiPianoView: View {
             HStack(spacing: 0) {
                 ForEach(Piano.octaveMarkers, id: \.self) { m in
                     Text(m)
-                        .font(.mono(FontSize.xs))
+                        .font(.monoFixed(FontSize.xs))
                         .foregroundStyle(PaletteColor.slate700.color)
                         .frame(maxWidth: .infinity)
                 }

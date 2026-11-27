@@ -17,6 +17,8 @@ struct ChordQuizScreen: View {
     @State private var rotateHint: Bool
     @Environment(\.horizontalSizeClass) private var hClass
     @Environment(\.verticalSizeClass) private var vClass
+    /// VoiceOver: sıradaki soruda odak sorunun başına gelir
+    @AccessibilityFocusState private var questionFocused: Bool
     private let timerOn: Bool
 
     init(model: AppModel) {
@@ -98,6 +100,7 @@ struct ChordQuizScreen: View {
                     .font(.mono(FontSize.sm, .bold))
                     .foregroundStyle(ThemeColor.textMuted.color)
                     .padding(.leading, 4)
+                    .accessibilityHidden(true)
             }
             .frame(maxWidth: .infinity)
             .animation(.easeInOut(duration: 0.3), value: round.index)
@@ -135,6 +138,7 @@ struct ChordQuizScreen: View {
                         guard round.pending else { return }
                         round.timeout(timeMs: elapsed)
                         Haptics.error()
+                        if let a = round.answerAnnouncement { Announce.post(a, high: true) }
                     }
                         .id(round.index)
                 }
@@ -145,6 +149,8 @@ struct ChordQuizScreen: View {
                     .font(.ui(FontSize.md, .bold))
                     .foregroundStyle(ThemeColor.textSecondary.color)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($questionFocused)
                 Button(action: listenChord) {
                     HStack(spacing: 6) {
                         Icon(.speaker, size: 16)
@@ -159,6 +165,7 @@ struct ChordQuizScreen: View {
                     .animation(.easeInOut(duration: 0.15), value: playingChord)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(AccessibilityText.listen)
             }
             .padding(.bottom, 10)
             switch q.type {
@@ -255,6 +262,7 @@ struct ChordQuizScreen: View {
                 }
                 .buttonStyle(.plain)
                 .allowsHitTesting(round.pending)
+                .accessibilityAddTraits(st == .chosen ? .isSelected : [])
             }
         }
         .id(round.index)
@@ -297,6 +305,8 @@ struct ChordQuizScreen: View {
             .padding(.horizontal, 14)
             .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fill.color))
             .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(ThemeColor.border.color, lineWidth: 1))
+            // VoiceOver: "Seçilen: Do, Mi, Sol" tek öğe; Temizle düğmesi ayrı kalır
+            .accessibilityElement(children: .combine)
             MultiPianoView(keys: round.pianoKeys, disabled: !round.pending) { key in round.toggleKey(key.note) }
                 .padding(.horizontal, 2)
                 .padding(.bottom, 28)
@@ -329,7 +339,7 @@ struct ChordQuizScreen: View {
                     .tracking(em: -0.01, size: FontSize.md)
                     .foregroundStyle(active ? Brand.onPrimary.color : ThemeColor.textFaint.color)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 52)
+                    .frame(minHeight: 52)
                     .background {
                         if active {
                             CSSLinearGradient(.primaryFlat).clipShape(RoundedRectangle(cornerRadius: Radius.lg))
@@ -353,6 +363,7 @@ struct ChordQuizScreen: View {
     private func mainAction() {
         if round.pending {
             let correct = round.check(timeMs: elapsed)
+            if let a = round.answerAnnouncement { Announce.post(a, high: true) }
             if correct {
                 Haptics.success()
                 withAnimation(.easeOut(duration: 0.2)) { toast = round.successToast }
@@ -375,6 +386,10 @@ struct ChordQuizScreen: View {
             model.completeSpecial(.chords, answers: answers)
         } else {
             shownAt = Date()
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(150))
+                questionFocused = true
+            }
         }
     }
 }
@@ -402,11 +417,14 @@ private struct CountdownRing: View {
                     .rotationEffect(.degrees(-90))
                     .frame(width: 40, height: 40)
                     .animation(.linear(duration: 1), value: rem)
-                Text(verbatim: "\(rem)").font(.mono(FontSize.sm, .heavy)).foregroundStyle(col)
+                Text(verbatim: "\(rem)").font(.monoFixed(FontSize.sm, .heavy)).foregroundStyle(col)
             }
             .frame(width: 52, height: 52)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(AccessibilityText.timeLeft(rem))
             .onChange(of: running) { _, on in if !on && frozen == nil { frozen = rem } }
             .onChange(of: rem) { _, r in
+                if running && AccessibilityText.announcesTime(r) { Announce.post("\(r)") }
                 if r == 0 && running && !fired {
                     fired = true
                     onTimeout()

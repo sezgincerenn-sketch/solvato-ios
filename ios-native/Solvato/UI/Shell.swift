@@ -24,7 +24,7 @@ struct Avatar: View {
             if initial.isEmpty {
                 Icon(.note, size: (size * 0.46).rounded())
             } else {
-                Text(initial).font(.ui((size * 0.44).rounded(), .heavy))
+                Text(initial).font(.uiFixed((size * 0.44).rounded(), .heavy))
             }
         }
         .foregroundStyle(PaletteColor.white.color)
@@ -320,17 +320,14 @@ enum NavTab: String, CaseIterable, Sendable {
 }
 
 // MARK: - Tablet sütunu
-/// Tablette okunur genişlik: içerik ortada, en fazla `width` pt. Telefonda bir şey yapmaz.
+/// Tablette okunur genişlik: içerik ortada, en fazla `width` pt. Telefonda (ve iPad'in dar penceresinde) tam genişlik.
+/// Dal yok: Split View / Stage Manager'da pencere daralıp genişleyince ekranın durumu (ör. Ritmi Tut turu) korunur.
 struct TabletColumn<Content: View>: View {
     var width: Double = 680
     @ViewBuilder var content: Content
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
-        if sizeClass == .regular {
-            content.frame(maxWidth: width).frame(maxWidth: .infinity)
-        } else {
-            content
-        }
+        content.frame(maxWidth: CGFloat(sizeClass == .regular ? width : .infinity)).frame(maxWidth: .infinity)
     }
 }

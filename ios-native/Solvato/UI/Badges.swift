@@ -78,9 +78,12 @@ struct StatTile<IconView: View>: View {
             if IconView.self != EmptyView.self {
                 icon.padding(.bottom, Space.s1)
             }
+            // Büyük yazıda yan yana kutular alta geçmez; sayı gerekirse %80'e kadar küçülür
             Text(value)
                 .font(.mono(FontSize.lg, .heavy))
                 .foregroundStyle(ThemeColor.text.color)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
             Text(label)
                 .font(.ui(FontSize.xs))
                 .foregroundStyle(ThemeColor.textSubtle.color)

@@ -82,7 +82,7 @@ enum DrawingRenderer {
     static func font(_ role: FontRole, size: Double, weight: Int, italic: Bool) -> Font {
         let w = FontWeight(rawValue: weight) ?? .regular
         switch role {
-        case .ui: return .ui(size, w)
+        case .ui: return .uiFixed(size, w)
         case .serif:
             let bold = weight >= 600
             let name =
@@ -172,10 +172,12 @@ struct ChordStaffView: View {
     let chord: Chord
     var color: Paint = .theme(.violetText)
     var maxWidth: Double = 310
+    /// VoiceOver adı: akorun adı söylenmez ("Porte: Sol anahtarı, bir akor"; erisilebilirlik-ipad.md)
+    var label = AccessibilityText.chordStaff()
     var body: some View {
         DrawingView(drawing: Staves.chord(chord, color: color, maxWidth: maxWidth))
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Portede akor")
+            .accessibilityLabel(label)
             .accessibilityAddTraits(.isImage)
     }
 }

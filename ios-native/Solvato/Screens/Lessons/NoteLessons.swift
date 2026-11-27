@@ -34,7 +34,7 @@ struct StaffStudyLesson: View {
             VStack(alignment: .leading, spacing: 16) {
                 HStack(spacing: 12) {
                     Text(st.badge)
-                        .font(.ui(FontSize.lg, .heavy))
+                        .font(.uiFixed(FontSize.lg, .heavy))
                         .foregroundStyle(color?.color ?? ThemeColor.violetText.color)
                         .frame(width: 44, height: 44)
                         .background(RoundedRectangle(cornerRadius: Radius.md).fill((color ?? .violet600).opacity(Double(0x22) / 255)))
@@ -67,7 +67,7 @@ struct StaffStudyLesson: View {
     private func arrow(_ t: String, _ label: String, _ action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(t)
-                .font(.ui(FontSize.xl))
+                .font(.uiFixed(FontSize.xl))
                 .foregroundStyle(ThemeColor.textSecondary.color)
                 .frame(width: 48, height: 48)
                 .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fillStrong.color))
@@ -272,7 +272,7 @@ private struct MnemonicCardView: View {
                         } label: {
                             ZStack(alignment: .bottom) {
                                 Rectangle().fill(c?.color ?? PaletteColor.slate50.color)
-                                Text(n).font(.ui(FontSize.xs, .heavy))
+                                Text(n).font(.uiFixed(FontSize.xs, .heavy))
                                     .foregroundStyle(c != nil ? PaletteColor.slate900.color : ThemeColor.textMuted.color)
                                     .padding(.bottom, 3)
                             }

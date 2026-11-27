@@ -33,6 +33,8 @@ struct SolvatoApp: App {
                 }
             }
             .preferredColorScheme(effectiveMode.colorScheme)
+            // Dinamik Yazı sınırı: xSmall…xxxLarge (erisilebilirlik-ipad.md §1; AX boyutlarında xxxLarge'da kalır)
+            .dynamicTypeSize(AppTypeSize.app)
             // Koyu/Açık'tan Sistem'e dönünce bazı iOS sürümlerinde preferredColorScheme(nil) uygulamayı yeniden
             // açana kadar etkisiz kalır; pencerenin kendi ayarı da güncellenir (G-04: Sistem anında değişir)
             .onChange(of: effectiveMode, initial: true) { _, m in

@@ -23,6 +23,8 @@ struct QuizScreen: View {
     @State private var wide = false
     @Environment(\.horizontalSizeClass) private var hClass
     @Environment(\.verticalSizeClass) private var vClass
+    /// VoiceOver: sıradaki soruda odak sorunun başına gelir
+    @AccessibilityFocusState private var questionFocused: Bool
 
     init(model: AppModel, questions: [Question], noHints: Bool = false, timerSeconds: Int? = nil) {
         self.model = model
@@ -118,6 +120,8 @@ struct QuizScreen: View {
     private var elapsed: Int { Int(Date().timeIntervalSince(startedAt) * 1000) }
 
     private func finish(_ outcome: QuizRound.Outcome) {
+        // VoiceOver: "Doğru" / "Yanlış. Doğru cevap: Sol" / "Süre doldu. Doğru cevap: Sol"
+        if outcome != .ignored, let a = round.answerAnnouncement { Announce.post(a, high: true) }
         switch outcome {
         case let .correct(f):
             Sound.play(Sounds.correctChime)
@@ -141,6 +145,10 @@ struct QuizScreen: View {
             model.completeQuiz(results)
         } else {
             startedAt = Date()
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(150))
+                questionFocused = true
+            }
         }
     }
 
@@ -153,6 +161,7 @@ struct QuizScreen: View {
                     .font(.mono(FontSize.sm, .bold))
                     .foregroundStyle(ThemeColor.textMuted.color)
                     .padding(.leading, 2)
+                    .accessibilityHidden(true)
             }
             .animation(.easeInOut(duration: 0.3), value: round.index)
             HStack {
@@ -165,6 +174,7 @@ struct QuizScreen: View {
                     .padding(.horizontal, 11)
                     .background(Capsule().fill(PaletteColor.green500.opacity(0.1)))
                     .overlay(Capsule().strokeBorder(PaletteColor.green500.opacity(0.25), lineWidth: 1))
+                    .accessibilityLabel("\(round.score) doğru")
                     .overlay(alignment: .top) {
                         if flare {
                             StreakFlare { Icon(.flame, size: 20, fill: true).foregroundStyle(ThemeColor.orangeText.color) }
@@ -198,6 +208,8 @@ struct QuizScreen: View {
                 .foregroundStyle(ThemeColor.text.color)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.bottom, 12)
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityFocused($questionFocused)
         }
     }
 
@@ -270,11 +282,16 @@ struct QuizScreen: View {
                 MusicalStaffView(
                     clef: clef, noteY: y, ledgerLines: q.ledgerLines ?? [], accidental: q.accidental,
                     feedback: round.answerState == .correct ? .correct : round.answerState == .wrong ? .wrong : nil,
-                    maxHeight: land ? 130 : nil)
+                    maxHeight: land ? 130 : nil,
+                    // "Porte: Sol anahtarı, bir nota": notanın adı ve yeri okunmaz
+                    label: round.promptAccessibilityLabel ?? "")
             }
         case .rhythm:
             if let score = q.score ?? NotationLayout.rhythmScore(rhythmType: q.rhythmType ?? "", displayText: q.displayText) {
                 NotationView(score: score, maxW: q.score == nil ? 220 : nil).padding(.horizontal, 12)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(AccessibilityText.rhythmStaff)
+                    .accessibilityAddTraits(.isImage)
             } else {
                 Text(q.displayText ?? "")
                     .font(.ui(FontSize.xl, .bold))
@@ -283,11 +300,15 @@ struct QuizScreen: View {
             }
         case .musicalTerms:
             if let score = round.termScore {
+                // Terimin kendisi okunur (cevap değil)
                 NotationView(score: score).padding(.horizontal, 12)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(round.promptAccessibilityLabel ?? "")
+                    .accessibilityAddTraits(.isImage)
             } else {
                 let t = round.termText
                 Text(t)
-                    .font(.term(t.count <= 4 ? 72 : 38.4, .regular))
+                    .font(.termFixed(t.count <= 4 ? 72 : 38.4, .regular))
                     .foregroundStyle(ThemeColor.termSymbol.color)
                     .multilineTextAlignment(.center)
                     .shadow(color: PaletteColor.violet500.opacity(0.4), radius: 12)
@@ -412,8 +433,10 @@ struct QuizScreen: View {
         .background(ThemeColor.bg.color)
     }
 
+    /// Web'deki vh: pencerenin tam yüksekliği. Telefonda ekranla aynı; iPad'de Split View / Stage Manager penceresi
     private var screenHeight: Double {
-        Double((UIApplication.shared.connectedScenes.first as? UIWindowScene)?.screen.bounds.height ?? 844)
+        let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+        return Double(scene?.keyWindow?.bounds.height ?? scene?.screen.bounds.height ?? 844)
     }
 
     private var choices: some View {
@@ -494,7 +517,13 @@ private struct TimerBar: View {
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
-            .onChange(of: left) { _, l in if l == 0 { onTimeout() } }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(AccessibilityText.timeLeft(left))
+            .onChange(of: left) { _, l in
+                // VoiceOver: her saniye değil, yalnız son 3 saniye
+                if AccessibilityText.announcesTime(l) { Announce.post("\(l)") }
+                if l == 0 { onTimeout() }
+            }
         }
         .onAppear { started = Date() }
     }
@@ -543,7 +572,8 @@ struct EarPromptView: View {
                         .overlay { if playing > 0 { EarPulse(color: base.color).padding(-8) } }
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Tekrar dinle")
+                // "Dinle, düğme": notanın adı okunmaz
+                .accessibilityLabel(AccessibilityText.listen)
                 Text(
                     answerState != .pending
                         ? "Bir daha dinlemek için dokun"

@@ -4,13 +4,14 @@
 //  3. Üçüncü tuş "çalınır": basılır, sarıya döner, anahtar deliği belirir, halka yayılır
 //  4. Çalınan tuştan üç sekizlik nota yükselip söner
 //  5. "Solvato" harf harf gelir, ekran söner
-// "Hareketi azalt" açıksa son kare görünür (G-06).
+// "Hareketi azalt" açıksa son kare görünür (G-06). VoiceOver açıkken beklemeden geçer (erisilebilirlik-ipad.md).
 import SolvatoCore
 import SwiftUI
 
 struct SplashScreen: View {
     let onDone: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
     @State private var start = Date()
     @State private var out = false
 
@@ -48,7 +49,7 @@ struct SplashScreen: View {
         .onTapGesture { finish() }
         .accessibilityHidden(true)
         .task {
-            try? await Task.sleep(for: .seconds(Self.duration))
+            if !voiceOver { try? await Task.sleep(for: .seconds(Self.duration)) }
             finish()
         }
     }
@@ -68,7 +69,7 @@ struct SplashScreen: View {
             ForEach(Array("Solvato".enumerated()), id: \.offset) { i, ch in
                 let p = Motion.ease.progress(t, delay: 1.15 + Double(i) * 0.05, duration: 0.4)
                 Text(String(ch))
-                    .font(.ui(40, i >= 4 ? .semibold : .heavy))
+                    .font(.uiFixed(40, i >= 4 ? .semibold : .heavy))
                     .tracking(em: i >= 4 ? 0.03 : -0.02, size: 40)
                     .foregroundStyle((i >= 4 ? ThemeColor.violetText : ThemeColor.text).color)
                     .opacity(min(1, max(0, p)))

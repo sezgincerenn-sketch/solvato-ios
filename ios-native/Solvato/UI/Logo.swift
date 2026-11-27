@@ -53,11 +53,11 @@ struct Logo: View {
             LogoMark(size: size)
             HStack(alignment: .firstTextBaseline, spacing: 1) {
                 Text("Solv")
-                    .font(.ui(fontSize, .heavy))
+                    .font(.uiFixed(fontSize, .heavy))
                     .tracking(-0.02 * fontSize)
                     .foregroundStyle(ThemeColor.text.color)
                 Text("ato")
-                    .font(.ui(fontSize, .semibold))
+                    .font(.uiFixed(fontSize, .semibold))
                     .tracking(0.03 * fontSize)
                     .foregroundStyle(ThemeColor.violetText.color)
             }

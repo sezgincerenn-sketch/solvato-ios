@@ -94,6 +94,9 @@ struct ChordDuelScreen: View {
             DuelHalf(q: q, name: names[1], score: g.scores[1], color: DuelGame.colors[1], flipped: true, locked: g.locked[1], reveal: g.reveal, picked: g.picked[1]) {
                 pick(1, $0)
             }
+            // VoiceOver: iki oyuncunun alanı ayrı gruplar
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("2. oyuncu")
             HStack {
                 RoundCloseButton { model.exitRound() }
                 Spacer(minLength: 0)
@@ -107,6 +110,8 @@ struct ChordDuelScreen: View {
             DuelHalf(q: q, name: names[0], score: g.scores[0], color: DuelGame.colors[0], flipped: false, locked: g.locked[0], reveal: g.reveal, picked: g.picked[0]) {
                 pick(0, $0)
             }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("1. oyuncu")
         }
     }
 

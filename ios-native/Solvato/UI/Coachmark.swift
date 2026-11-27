@@ -41,6 +41,8 @@ struct CoachmarkView: View {
     let rect: CGRect?
     let onNext: () -> Void
     let onDone: () -> Void
+    /// VoiceOver: balon açılınca ve her adımda odak balonun yazısına gelir
+    @AccessibilityFocusState private var focused: Bool
 
     var body: some View {
         GeometryReader { geo in
@@ -87,13 +89,24 @@ struct CoachmarkView: View {
 
     private func bubble(_ step: CoachStep) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(verbatim: "\(index + 1)/\(steps.count)")
-                .font(.ui(FontSize.xs, .bold))
-                .tracking(em: Tracking.label, size: FontSize.xs)
-                .foregroundStyle(ThemeColor.textSubtle.color)
-            Text(step.title).font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color).padding(.top, 2)
-            Text(step.text).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color).lineHeight(1.5, size: FontSize.sm).padding(.top, 4)
-                .fixedSize(horizontal: false, vertical: true)
+            // "1/5", başlık ve metin tek öğe; Atla / Sıradaki ayrı düğmeler
+            VStack(alignment: .leading, spacing: 0) {
+                Text(verbatim: "\(index + 1)/\(steps.count)")
+                    .font(.ui(FontSize.xs, .bold))
+                    .tracking(em: Tracking.label, size: FontSize.xs)
+                    .foregroundStyle(ThemeColor.textSubtle.color)
+                Text(step.title).font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color).padding(.top, 2)
+                Text(step.text).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color).lineHeight(1.5, size: FontSize.sm).padding(.top, 4)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityFocused($focused)
+            .onAppear {
+                Task { @MainActor in
+                    try? await Task.sleep(for: .milliseconds(300))
+                    focused = true
+                }
+            }
             HStack {
                 AppButton("Atla", variant: .ghost, action: onDone)
                 Spacer()

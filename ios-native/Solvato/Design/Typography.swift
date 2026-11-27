@@ -1,6 +1,8 @@
 // Yazı tipleri: arayüz Outfit, sayılar ve kodlar JetBrains Mono, müzik terimleri Times New Roman italik (web: font.family).
-// Dosyalar Resources/Fonts altında, Info.plist UIAppFonts ile yüklenir. Boyutlar sabit (web'deki px ile aynı);
-// Dinamik Yazı desteği aşama 0.8'de eklenecek.
+// Dosyalar Resources/Fonts altında, Info.plist UIAppFonts ile yüklenir. Boyutlar web'deki px ile aynı.
+// Dinamik Yazı (0.8, erisilebilirlik-ipad.md): `.ui` / `.mono` / `.term` telefonun yazı boyutuyla büyür ya da küçülür
+// (varsayılan Large'da tam bu boyut); sınır xSmall…xxxLarge (SolvatoApp, `AppTypeSize`). Porte, klavye, halkalar,
+// açılış ve logo gibi büyümemesi gereken yerler `…Fixed` kullanır.
 import SolvatoCore
 import SwiftUI
 
@@ -27,20 +29,42 @@ enum FontFamily {
 }
 
 extension Font {
-    /// Arayüz yazısı (Outfit). Örnek: .ui(FontSize.md, .bold)
+    /// Arayüz yazısı (Outfit), Dinamik Yazı ile ölçeklenir. Örnek: .ui(FontSize.md, .bold)
     static func ui(_ size: Double, _ weight: FontWeight = .regular) -> Font {
+        .custom(FontFamily.ui.postScriptName(weight), size: size, relativeTo: .body)
+    }
+
+    /// Sayı ve kod yazısı (JetBrains Mono), ölçeklenir
+    static func mono(_ size: Double, _ weight: FontWeight = .regular) -> Font {
+        .custom(FontFamily.mono.postScriptName(weight), size: size, relativeTo: .body)
+    }
+
+    /// Müzik terimi (italik serif), ölçeklenir
+    static func term(_ size: Double, _ weight: FontWeight = .regular) -> Font {
+        .custom(FontFamily.serif.postScriptName(weight), size: size, relativeTo: .body)
+    }
+
+    /// Büyümeyen arayüz yazısı: klavye tuş adları, halka içindeki sayılar, açılış, logo, çizim içindeki yazılar
+    static func uiFixed(_ size: Double, _ weight: FontWeight = .regular) -> Font {
         .custom(FontFamily.ui.postScriptName(weight), fixedSize: size)
     }
 
-    /// Sayı ve kod yazısı (JetBrains Mono)
-    static func mono(_ size: Double, _ weight: FontWeight = .regular) -> Font {
+    /// Büyümeyen sayı yazısı (halkalar, klavyedeki oktav rakamı)
+    static func monoFixed(_ size: Double, _ weight: FontWeight = .regular) -> Font {
         .custom(FontFamily.mono.postScriptName(weight), fixedSize: size)
     }
 
-    /// Müzik terimi (italik serif)
-    static func term(_ size: Double, _ weight: FontWeight = .regular) -> Font {
+    /// Büyümeyen terim sembolü (soru turundaki büyük "p", "mf")
+    static func termFixed(_ size: Double, _ weight: FontWeight = .regular) -> Font {
         .custom(FontFamily.serif.postScriptName(weight), fixedSize: size)
     }
+}
+
+/// Dinamik Yazı sınırları (erisilebilirlik-ipad.md §1): uygulama genelinde xSmall…xxxLarge (AX boyutlarında
+/// xxxLarge'da kalır); tur ekranlarında (soru, akor, Ritmi Tut, düello) kaydırmasız sığsın diye en çok xxLarge.
+enum AppTypeSize {
+    static var app: ClosedRange<DynamicTypeSize> { .xSmall ... .xxxLarge }
+    static var round: ClosedRange<DynamicTypeSize> { .xSmall ... .xxLarge }
 }
 
 extension View {

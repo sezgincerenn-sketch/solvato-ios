@@ -53,9 +53,11 @@ public struct FileStore: KeyValueStore {
             try? FileManager.default.removeItem(at: u)
             return
         }
-        // Kilitliyken şifreli; uygulama arka plana geçip telefon kilitlenirken süren yazım yarım kalmaz
-        try? Data(value.utf8).write(to: u, options: [.atomic, .completeFileProtectionUnlessOpen])
+        try? Data(value.utf8).write(to: u, options: Self.writeOptions)
     }
+
+    /// Kilitliyken şifreli; uygulama arka plana geçip telefon kilitlenirken süren yazım yarım kalmaz (G-09; testli)
+    public static let writeOptions: Data.WritingOptions = [.atomic, .completeFileProtectionUnlessOpen]
 }
 
 /// Uygulamanın kalıcı verileri, web'deki anahtar adları ve biçimleriyle

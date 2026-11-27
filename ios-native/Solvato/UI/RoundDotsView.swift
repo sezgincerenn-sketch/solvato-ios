@@ -26,7 +26,9 @@ struct RoundDotsView: View {
         .animation(.easeInOut(duration: 0.3), value: dots)
         .animation(.easeInOut(duration: 0.3), value: index)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(dots.filter { $0 == .correct }.count) doğru, \(dots.filter { $0 == .wrong }.count) yanlış")
+        // "3. soru, 10 sorudan" (erisilebilirlik-ipad.md); doğru/yanlış sayısı değer olarak
+        .accessibilityLabel(AccessibilityText.roundPosition(index: index, count: dots.count))
+        .accessibilityValue("\(dots.filter { $0 == .correct }.count) doğru, \(dots.filter { $0 == .wrong }.count) yanlış")
     }
 
     private func style(_ d: RoundDot) -> AnyShapeStyle {

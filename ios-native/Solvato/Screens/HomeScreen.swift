@@ -92,7 +92,7 @@ struct HomeScreen: View {
                 }
                 StatPill(tone: .amber, value: c.xpValue, label: c.xpLabel, action: { model.selectTab(.profile) }) {
                     Text(String(c.rank.rank))
-                        .font(.ui(FontSize.sm, .heavy))
+                        .font(.uiFixed(FontSize.sm, .heavy))
                         .foregroundStyle(PaletteColor.black.color)
                         .frame(width: 24, height: 24)
                         .background(Circle().fill(PaletteColor.amber400.color))
@@ -234,7 +234,7 @@ private struct CategoryCard: View {
                     switch cat.icon {
                     case let .clef(c): ClefIconView(clef: c, size: 24)
                     case .speaker: Icon(.speaker, size: 22)
-                    case let .symbol(s): Text(s).font(.ui(FontSize.lg))
+                    case let .symbol(s): Text(s).font(.uiFixed(FontSize.lg))
                     }
                 }
                 .foregroundStyle(base.color)

@@ -32,6 +32,9 @@ struct RhythmTapScreen: View {
                 }
                 VStack(spacing: Space.s3) {
                     NotationView(score: round.notation, maxW: 340).padding(.horizontal, Space.s2)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(AccessibilityText.rhythmStaff)
+                        .accessibilityAddTraits(.isImage)
                     RhythmTimelineView(score: round.score, result: round.result, bpm: round.bpm, progress: round.progress)
                         .padding(.horizontal, Space.s3)
                 }
@@ -51,6 +54,11 @@ struct RhythmTapScreen: View {
         .onChange(of: model.exitRequest) { _, _ in if showExit { showExit = false } else { askExit() } }
         // Denenmiş ritim varsa ✕ ve kenardan kaydırma onay açar; yoksa sormadan çıkılır (tur-ekranlari.md)
         .onChange(of: round.hasAnswers, initial: true) { _, a in model.roundHasAnswers = a }
+        // VoiceOver: sonuç başlığı ve ipucu duyurulur
+        .onChange(of: round.phase == .result) { _, done in
+            guard done, let s = round.summary else { return }
+            Announce.post(s.main + s.pct + (round.hint.map { ". " + $0 } ?? ""), high: true)
+        }
         .onDisappear {
             loop?.cancel()
             // Yalnız ritim çalarken susturulur: "Turu bitir"le açılan sonuç ekranının melodisi ya da kutlama sesi kesilmesin
@@ -101,7 +109,7 @@ struct RhythmTapScreen: View {
                 ForEach(1...4, id: \.self) { n in
                     let on = round.count == n
                     Text("\(n)")
-                        .font(.mono(FontSize.md, .heavy))
+                        .font(.monoFixed(FontSize.md, .heavy))
                         .foregroundStyle(on ? PaletteColor.white.color : ThemeColor.textMuted.color)
                         .frame(width: 40, height: 40)
                         .background(Circle().fill(on ? accent.color : ThemeColor.fillStrong.color))
@@ -110,8 +118,8 @@ struct RhythmTapScreen: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(round.count.map { "Vuruş \($0)" } ?? "")
+            // Sayma "1, 2, 3, 4" VoiceOver'da okunmaz (tıklar zaten duyuluyor)
+            .accessibilityHidden(true)
         }
     }
 
@@ -164,7 +172,8 @@ struct RhythmTapScreen: View {
             .overlay(TouchDownPad { if enabled { tap() } })
             .accessibilityElement()
             .accessibilityLabel("Dokun")
-            .accessibilityAddTraits(.isButton)
+            // VoiceOver açıkken de parmak değdiği an vuruş sayılır (çift dokunma gerekmez)
+            .accessibilityAddTraits([.isButton, .allowsDirectInteraction])
             .accessibilityAction { tap() }
     }
 
@@ -235,7 +244,7 @@ struct RhythmTimelineView: View {
                         }
                     }
                     ForEach(Array(r.extra.enumerated()), id: \.offset) { _, b in
-                        Text("×").font(.ui(FontSize.md, .heavy)).foregroundStyle(PaletteColor.red500.color)
+                        Text("×").font(.uiFixed(FontSize.md, .heavy)).foregroundStyle(PaletteColor.red500.color)
                             .offset(x: x(b) - 7, y: h - 6 - 16)
                     }
                 }

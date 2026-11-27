@@ -77,7 +77,13 @@ struct AppRoot: View {
     @ViewBuilder
     private func screenWithNav(_ v: AppView) -> some View {
         if v.isTab {
-            SystemTabs(active: NavTab(rawValue: v.rawValue) ?? .home, onSelect: { model.selectTab(AppView(rawValue: $0.rawValue) ?? .home) }) { t in
+            SystemTabs(
+                active: NavTab(rawValue: v.rawValue) ?? .home,
+                onSelect: {
+                    if $0.rawValue != v.rawValue { Perf.beginTab() }
+                    model.selectTab(AppView(rawValue: $0.rawValue) ?? .home)
+                }
+            ) { t in
                 screen(AppView(rawValue: t.rawValue) ?? .home).frame(maxHeight: .infinity)
             }
         } else {
@@ -93,18 +99,19 @@ struct AppRoot: View {
     @ViewBuilder
     private func screen(_ v: AppView) -> some View {
         switch v {
-        case .home: HomeScreen(model: model, coachTarget: showCoach ? CoachStep.home[coach].target : nil)
+        case .home: HomeScreen(model: model, coachTarget: showCoach ? CoachStep.home[coach].target : nil).onAppear { Perf.endTab() }
         case .quiz:
             QuizScreen(
                 model: model, questions: model.sessionQuestions, noHints: model.game != nil,
                 timerSeconds: model.settings.timer && model.game == nil ? AppModel.timerSeconds : nil
             )
             .id(model.quizToken)
-        case .dashboard: ProgressScreen(model: model)
+            .dynamicTypeSize(AppTypeSize.round)
+        case .dashboard: ProgressScreen(model: model).onAppear { Perf.endTab() }
         case .profile: TabletColumn { ProfileScreen(model: model) }
         case .settings: TabletColumn { SettingsScreen(model: model) }
         case .notes: TabletColumn { NotesSettingsScreen(model: model) }
-        case .chordquiz: ChordQuizScreen(model: model).id(model.quizToken)
+        case .chordquiz: ChordQuizScreen(model: model).id(model.quizToken).dynamicTypeSize(AppTypeSize.round)
         case .result: TabletColumn { ResultScreen(model: model) }
         case .study: TabletColumn(width: 820) { StudyScreen(model: model) }
         case .lesson: TabletColumn(width: 820) { LessonScreen(model: model) }
@@ -112,8 +119,8 @@ struct AppRoot: View {
         case .gameDaily: TabletColumn { DailyGameScreen(model: model) }
         case .gameChallenge: TabletColumn { ChallengeGameScreen(model: model) }
         case .gameresult: TabletColumn { GameResultScreen(model: model) }
-        case .duel: ChordDuelScreen(model: model)
-        case .rhythmtap: TabletColumn(width: 680) { RhythmTapScreen(model: model).id(model.quizToken) }
+        case .duel: ChordDuelScreen(model: model).dynamicTypeSize(AppTypeSize.round)
+        case .rhythmtap: TabletColumn(width: 680) { RhythmTapScreen(model: model).id(model.quizToken) }.dynamicTypeSize(AppTypeSize.round)
         case .teacher: TabletColumn { TeacherScreen(model: model) }
         case .privacy: TabletColumn { LegalScreen(model: model, page: .privacy) }
         case .licenses: TabletColumn { LegalScreen(model: model, page: .licenses) }

@@ -246,7 +246,7 @@ struct ChordCardView: View {
                     caption("Parmak")
                     HStack(spacing: 4) {
                         ForEach(Array(card.fingers.enumerated()), id: \.offset) { _, f in
-                            Text(f).font(.mono(FontSize.sm, .heavy)).foregroundStyle(c.color)
+                            Text(f).font(.monoFixed(FontSize.sm, .heavy)).foregroundStyle(c.color)
                                 .frame(width: 22, height: 22)
                                 .background(RoundedRectangle(cornerRadius: Radius.sm).fill(hexA(c, 0x22)))
                                 .overlay(RoundedRectangle(cornerRadius: Radius.sm).strokeBorder(hexA(c, 0x44), lineWidth: 1))
@@ -387,7 +387,7 @@ private struct ChordPianoStrip: View {
                                 Color.black.opacity(0.15).frame(height: 3).clipShape(shape)
                             }
                             if on {
-                                Text(labels[n] ?? n).font(.ui(FontSize.xs, .heavy)).foregroundStyle(c.color).padding(.bottom, 4)
+                                Text(labels[n] ?? n).font(.uiFixed(FontSize.xs, .heavy)).foregroundStyle(c.color).padding(.bottom, 4)
                             }
                         }
                         .overlay(shape.stroke(PaletteColor.slate800.color, lineWidth: 1))
@@ -403,7 +403,7 @@ private struct ChordPianoStrip: View {
                     ZStack(alignment: .bottom) {
                         shape.fill(on ? c.color : Piano.diagramBlack.color)
                         if on {
-                            Text(labels[bk.0] ?? bk.0).font(.ui(FontSize.xs, .heavy)).foregroundStyle(PaletteColor.slate900.color)
+                            Text(labels[bk.0] ?? bk.0).font(.uiFixed(FontSize.xs, .heavy)).foregroundStyle(PaletteColor.slate900.color)
                                 .fixedSize()
                                 .padding(.bottom, 2)
                         }

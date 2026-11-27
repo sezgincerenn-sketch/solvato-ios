@@ -41,20 +41,20 @@ struct ScoreRing: View {
 
             baseline(
                 Text(label ?? "\(value)/\(max)")
-                    .font(.mono(big ? FontSize.xxl : FontSize.xl, .heavy))
+                    .font(.monoFixed(big ? FontSize.xxl : FontSize.xl, .heavy))
                     .foregroundStyle(ThemeColor.text.color),
                 at: c + (big ? 4 : 2) - lift)
             if let caption {
                 baseline(
                     Text(caption)
-                        .font(.ui(big ? FontSize.xs : 11))
+                        .font(.uiFixed(big ? FontSize.xs : 11))
                         .foregroundStyle(ThemeColor.textSubtle.color),
                     at: c + (big ? 24 : 20) - lift)
             }
             if let detail {
                 baseline(
                     Text(detail)
-                        .font(.mono(10, .bold))
+                        .font(.monoFixed(10, .bold))
                         .foregroundStyle(color.color),
                     at: c + (big ? 39 : 33) - lift)
             }

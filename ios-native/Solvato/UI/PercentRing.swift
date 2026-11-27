@@ -24,7 +24,7 @@ struct PercentRing: View {
                     .frame(width: r * 2, height: r * 2)
             }
             Text(verbatim: pct.map { "%\($0)" } ?? "–")
-                .font(.ui(pct == nil ? 13 : 11, .bold))
+                .font(.uiFixed(pct == nil ? 13 : 11, .bold))
                 .foregroundStyle((pct == nil ? ThemeColor.textFaint : ThemeColor.text).color)
                 .lineLimit(1)
                 .fixedSize()

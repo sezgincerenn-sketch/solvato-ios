@@ -151,6 +151,8 @@ struct ProgressScreen: View {
                         Text(verbatim: t.pct.map { "%\($0)" } ?? "—")
                             .font(.mono(FontSize.sm, .bold))
                             .foregroundStyle(t.pct == nil ? ThemeColor.textFaint.color : t.color.text.color)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
                             .frame(width: 40, alignment: .trailing)
                         StudyPill()
                     }

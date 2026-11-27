@@ -21,13 +21,16 @@ struct ResultScreen: View {
         let c = content
         ScrollView {
             VStack(spacing: 0) {
-                Stars(value: c.stars, size: 52, animate: true).padding(.bottom, 14)
+                // VoiceOver: başlık, doğruluk, yıldız ve XP başlıkta tek seferde okunur (erisilebilirlik-ipad.md)
+                Stars(value: c.stars, size: 52, animate: true).padding(.bottom, 14).accessibilityHidden(true)
                 Text(c.title)
                     .font(.ui(FontSize.xl, .heavy))
                     .tracking(em: -0.03, size: FontSize.xl)
                     .foregroundStyle(ThemeColor.text.color)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 4)
+                    .accessibilityLabel(
+                        AccessibilityText.join([c.title, "%\(c.pct) doğru", AccessibilityText.stars(c.stars), c.points > 0 ? "+\(c.points) XP" : nil]))
                     .accessibilityAddTraits(.isHeader)
                 Text(c.categoryLabel)
                     .font(.ui(FontSize.sm, .medium))
@@ -61,7 +64,7 @@ struct ResultScreen: View {
                         }
                         .foregroundStyle(Brand.onPrimary.color)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 56)
+                        .frame(minHeight: 56)
                         .background(CSSLinearGradient(.primaryFlat).clipShape(RoundedRectangle(cornerRadius: Radius.lg)))
                         .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(PaletteColor.violet500.opacity(0.3), lineWidth: 1))
                         .shadow(color: PaletteColor.violet600.opacity(0.5), radius: 14, y: 6)
@@ -72,7 +75,7 @@ struct ResultScreen: View {
                             .font(.ui(FontSize.sm, .semibold))
                             .foregroundStyle(ThemeColor.textSubtle.color)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 46)
+                            .frame(minHeight: 46)
                             .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fill.color))
                             .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(ThemeColor.border.color, lineWidth: 1))
                     }
@@ -186,7 +189,7 @@ struct RankCardView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: Space.s3) {
                 Text(verbatim: String(r.rank))
-                    .font(.ui(FontSize.lg, .heavy))
+                    .font(.uiFixed(FontSize.lg, .heavy))
                     .foregroundStyle(PaletteColor.black.color)
                     .frame(width: 40, height: 40)
                     .background(Circle().fill(PaletteColor.amber400.color))
@@ -236,7 +239,7 @@ struct RankCardView: View {
                 let cur = i + 1 == r.rank
                 HStack(spacing: Space.s2) {
                     Text(verbatim: done ? "✓" : String(i + 1))
-                        .font(.ui(11, .bold))
+                        .font(.uiFixed(11, .bold))
                         .foregroundStyle(cur ? PaletteColor.black.color : ThemeColor.amberText.color)
                         .frame(width: 18, height: 18)
                         .background(Circle().fill(cur ? PaletteColor.amber400.color : done ? PaletteColor.amber500.opacity(0.25) : ThemeColor.fillStrong.color))
@@ -282,6 +285,8 @@ struct CelebrationView: View {
                         .padding(.horizontal, 14)
                         .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.fill.color))
                         .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(r.color.color.opacity(0x44 / 255), lineWidth: 1))
+                        // VoiceOver: kazanılan her şey tek öğe ("Seri 5 gün, …")
+                        .accessibilityElement(children: .combine)
                     }
                 }
                 .padding(.bottom, 18)

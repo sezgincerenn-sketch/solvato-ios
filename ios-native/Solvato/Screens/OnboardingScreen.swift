@@ -307,7 +307,9 @@ private func primary(_ title: String, enabled: Bool = true, action: @escaping ()
 private struct TryStep: View {
     /// Web 21vh (en çok 190): vh tam ekran yüksekliği
     static var screenHeight: Double {
-        Double((UIApplication.shared.connectedScenes.first as? UIWindowScene)?.screen.bounds.height ?? 844)
+        // Pencerenin yüksekliği (iPad'de Split View / Stage Manager); telefonda ekranla aynı
+        let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+        return Double(scene?.keyWindow?.bounds.height ?? scene?.screen.bounds.height ?? 844)
     }
 
     let note: String
@@ -322,7 +324,7 @@ private struct TryStep: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(title).font(.ui(FontSize.xl, .heavy)).tracking(em: -0.03, size: FontSize.xl).foregroundStyle(ThemeColor.text.color)
-            MusicalStaffView(clef: .treble, noteY: noteY, ledgerLines: ledger)
+            MusicalStaffView(clef: .treble, noteY: noteY, ledgerLines: ledger, label: AccessibilityText.noteStaff(.treble))
                 .frame(maxWidth: .infinity, minHeight: 170)
                 .background(RoundedRectangle(cornerRadius: Radius.lg).fill(ThemeColor.fill.color))
                 .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(ThemeColor.border.color, lineWidth: 1))
