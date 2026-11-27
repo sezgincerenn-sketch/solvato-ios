@@ -103,8 +103,9 @@ Toplam kabaca 25–30 oturum; Ceren'in TestFlight geri bildirimine bağlı olara
 
 **Durum (27 Kasım):** 0.9'un karşılaştırma adımı yapıldı: dört `inceleyici` envantere göre bütün ekranlara baktı; yanlış
 veri yok, bulunan 14 farktan 11'i düzeltildi (README "0.9 karşılaştırması"); akor kartı klavye çizgisi ve sekme başlığı
-hizası web'le zaten aynı çıktı. R32 (App Store bağlantısı) eklendi. Kalan 0.9: TestFlight'ta kapalı test, web kodunun silinmesi;
-0.8 (erişilebilirlik, iPad, performans) hâlâ sırada.
+hizası web'le zaten aynı çıktı. R32 (App Store bağlantısı) eklendi. Kalan 0.9: TestFlight'ta kapalı test, web kodunun silinmesi.
+**0.8 dokümanı yazıldı (27 Kasım):** `docs/ozellikler/erisilebilirlik-ipad.md` (yazı xxxLarge'a kadar büyür, VoiceOver
+nota adını söylemez, iPad'de yan yana pencere, performans her derlemede otomatik). Uygulama ayrı oturumda.
 
 **Durum (26 Kasım akşamı):** 0.5–0.7 bitti: bütün ekranlar native'de; tasarım revizeleri (R1–R41) uygulandı ya da
 karara bağlandı (kalan: R11 TestFlight'ta bakılacak; R32 App Store bağlantısı 26 Kasım'da eklendi). Alt menü Apple'ın

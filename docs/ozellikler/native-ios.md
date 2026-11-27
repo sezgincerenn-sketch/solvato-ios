@@ -684,6 +684,9 @@ yazılır.
 - İleri seviyede İleri ritim ve terim soruları geliyor (eski İleri listesindeki kimliklerin çoğu bankada yoktu).
 - Ayarlar › Ses açıklaması: "Telefon sessiz moddayken de çalar." (Ses sessiz modda da çalıyor.)
 
+- 0.8 (Ceren, 27 Kasım; `docs/ozellikler/erisilebilirlik-ipad.md`): telefonda yazı boyutu büyütülünce metinler
+  xxxLarge'a kadar büyür; VoiceOver adları ve duyuruları; iPad'de Split View ve Stage Manager. Varsayılan ayarlarda
+  görünüm aynı kalır.
 - Bilgisayara özgü davranışlar taşınmaz: fareyle üzerine gelme renkleri, boşluk tuşuyla Ritmi Tut, masaüstünde telefon
   çerçevesi, Android geri tuşu.
 
