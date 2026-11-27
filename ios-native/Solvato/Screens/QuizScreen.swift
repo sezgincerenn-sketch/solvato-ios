@@ -476,8 +476,9 @@ private struct TimerBar: View {
     @State private var started = Date()
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 1)) { ctx in
-            let left = max(0, seconds - Int(ctx.date.timeIntervalSince(started)))
+        // Tıklar başlangıç anına bağlı: ekran yeniden çizilse de (ör. İpucu) sayaç tam saniyelerde ilerler (web setInterval 1 sn)
+        TimelineView(.periodic(from: started, by: 1)) { ctx in
+            let left = max(0, seconds - Int((ctx.date.timeIntervalSince(started) + 0.001).rounded(.down)))
             let pct = Double(left) / Double(max(seconds, 1)) * 100
             let color = (pct > 50 ? PaletteColor.green500 : pct > 25 ? PaletteColor.amber500 : PaletteColor.red500).color
             HStack(spacing: 10) {

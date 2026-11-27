@@ -21,7 +21,7 @@ struct CodeField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Space.s3) {
             HStack(spacing: Space.s2) {
-                TextField("", text: $code, prompt: Text(placeholder).foregroundStyle(ThemeColor.textMuted.color))
+                TextField("", text: $code, prompt: Text(placeholder).foregroundStyle(ThemeColor.textFaint.color))
                     .font(.mono(FontSize.md))
                     .tracking(2)
                     .lineHeight(1.5, size: FontSize.md, natural: 1.32)

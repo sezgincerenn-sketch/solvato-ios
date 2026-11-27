@@ -152,10 +152,11 @@ struct OnboardingScreen: View {
                 title("Hadi bir nota bulalım").padding(.bottom, 12)
                 Text("Portedeki notayı görüp piyano tuşunda bulacaksın. Önce iki küçük denemeyle başlıyoruz.")
                     .font(.ui(FontSize.md))
+                    .lineHeight(1.55, size: FontSize.md)
                     .foregroundStyle(ThemeColor.textMuted.color)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 300)
-                TextField("", text: $name, prompt: Text("Adın (isteğe bağlı)").foregroundStyle(ThemeColor.textMuted.color))
+                TextField("", text: $name, prompt: Text("Adın (isteğe bağlı)").foregroundStyle(ThemeColor.textFaint.color))
                     .font(.ui(FontSize.md))
                     .foregroundStyle(ThemeColor.text.color)
                     .multilineTextAlignment(.center)
@@ -264,6 +265,7 @@ struct OnboardingScreen: View {
                 title("Hazırsın").padding(.bottom, 12)
                 Text(verbatim: "Günde \(goal) soru yeter. Doğru cevapladıkça yeni sorular açılır.")
                     .font(.ui(FontSize.md))
+                    .lineHeight(1.55, size: FontSize.md)
                     .foregroundStyle(ThemeColor.textMuted.color)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 300)
@@ -280,7 +282,7 @@ struct OnboardingScreen: View {
     }
 
     private func bodyText(_ s: String) -> some View {
-        Text(s).font(.ui(FontSize.md)).foregroundStyle(ThemeColor.textMuted.color).fixedSize(horizontal: false, vertical: true)
+        Text(s).font(.ui(FontSize.md)).foregroundStyle(ThemeColor.textMuted.color).lineHeight(1.5, size: FontSize.md).fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -327,8 +329,8 @@ private struct TryStep: View {
             Group {
                 switch state {
                 case .correct: Text("Doğru! Bu nota \(note).").font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.greenText.color)
-                case .wrong: Text(helpWrong).font(.ui(FontSize.md)).foregroundStyle(ThemeColor.redText.color)
-                case .pending: Text("Piyano tuşlarından birine dokun.").font(.ui(FontSize.md)).foregroundStyle(ThemeColor.textMuted.color)
+                case .wrong: Text(helpWrong).font(.ui(FontSize.md)).foregroundStyle(ThemeColor.redText.color).lineHeight(1.45, size: FontSize.md)
+                case .pending: Text("Piyano tuşlarından birine dokun.").font(.ui(FontSize.md)).foregroundStyle(ThemeColor.textMuted.color).lineHeight(1.45, size: FontSize.md)
                 }
             }
             .fixedSize(horizontal: false, vertical: true)

@@ -4,6 +4,7 @@
 // verilirse uygulama o veriyle bellekte ve sabit tarihle açılır; `-UITestDesignSystem` tasarım sistemi önizlemesini açar.
 import SolvatoCore
 import SwiftUI
+import UIKit
 
 @main
 struct SolvatoApp: App {
@@ -32,6 +33,14 @@ struct SolvatoApp: App {
                 }
             }
             .preferredColorScheme(effectiveMode.colorScheme)
+            // Koyu/Açık'tan Sistem'e dönünce bazı iOS sürümlerinde preferredColorScheme(nil) uygulamayı yeniden
+            // açana kadar etkisiz kalır; pencerenin kendi ayarı da güncellenir (G-04: Sistem anında değişir)
+            .onChange(of: effectiveMode, initial: true) { _, m in
+                let style: UIUserInterfaceStyle = m == .dark ? .dark : m == .light ? .light : .unspecified
+                for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
+                    for w in scene.windows { w.overrideUserInterfaceStyle = style }
+                }
+            }
         }
     }
 }

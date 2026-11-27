@@ -56,6 +56,9 @@ struct CoachmarkView: View {
                     if let hole { p.addRoundedRect(in: hole, cornerSize: CGSize(width: Radius.lg, height: Radius.lg)) }
                 }
                 .fill(PaletteColor.slate950.opacity(0.72), style: FillStyle(eoFill: true))
+                // Web'deki tam ekran katman gibi bütün dokunuşları tutar: aydınlatılan alana dokunulup turdan çıkılamaz
+                .contentShape(Rectangle())
+                .onTapGesture {}
                 .animation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.22), value: hole)
                 if let hole {
                     RoundedRectangle(cornerRadius: Radius.lg)
@@ -89,7 +92,7 @@ struct CoachmarkView: View {
                 .tracking(em: Tracking.label, size: FontSize.xs)
                 .foregroundStyle(ThemeColor.textSubtle.color)
             Text(step.title).font(.ui(FontSize.md, .bold)).foregroundStyle(ThemeColor.text.color).padding(.top, 2)
-            Text(step.text).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color).padding(.top, 4)
+            Text(step.text).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color).lineHeight(1.5, size: FontSize.sm).padding(.top, 4)
                 .fixedSize(horizontal: false, vertical: true)
             HStack {
                 AppButton("Atla", variant: .ghost, action: onDone)

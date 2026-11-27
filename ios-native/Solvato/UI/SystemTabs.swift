@@ -15,6 +15,9 @@ struct SystemTabs<Content: View>: View {
         TabView(selection: Binding(get: { active }, set: { onSelect($0) })) {
             ForEach(NavTab.allCases, id: \.self) { t in
                 content(t)
+                    // Sekmeye geçince sayfa yeniden kurulur (web gibi): en üstten açılır, Ana sayfa'daki "Diğer konular"
+                    // Profil'deki ayara göre gelir. Açık sekme kimliği değişince yeniden çizilir.
+                    .id(t == active)
                     .tabItem { Label(t.label, systemImage: t.symbol) }
                     .tag(t)
             }

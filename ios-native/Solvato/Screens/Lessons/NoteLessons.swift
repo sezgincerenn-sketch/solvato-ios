@@ -325,8 +325,12 @@ struct AccidentalMemoView: View {
                 card {
                     cardTitle("Siyah tuşlar — dokun ve dinle")
                     Text("Her siyah tuşun iki adı vardır (aynı ses).").modifier(BodyText())
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
-                        ForEach(AccidentalMemoContent.blackKeys, id: \.self) { k in
+                    // Web flex "1 1 30%": satırda 3 düğme, son satırdakiler kalan genişliğe yayılır (5 tuş: 3 + 2)
+                    let keys = AccidentalMemoContent.blackKeys
+                    VStack(spacing: 8) {
+                    ForEach(Array(stride(from: 0, to: keys.count, by: 3)), id: \.self) { row in
+                    HStack(spacing: 8) {
+                        ForEach(keys[row..<min(row + 3, keys.count)], id: \.self) { k in
                             Button {
                                 active = k
                                 Sound.note(k, octave: 4)
@@ -348,6 +352,8 @@ struct AccidentalMemoView: View {
                             }
                             .buttonStyle(.plain)
                         }
+                    }
+                    }
                     }
                     .padding(.top, 8)
                 }

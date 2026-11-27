@@ -119,8 +119,8 @@ yetki ve imzalama değişikliği isterdi; dosyada veri koruması doğrudan açı
 - Veri koruması açık (cihaz kilitliyken şifreli): dosyalar `completeFileProtectionUnlessOpen` ile yazılır.
   `solvato_last_lesson_v1` yedeğe girmeyen `NoBackup` alt klasöründe.
 - İlerlemeyi sıfırla: istatistikler sıfırlanır; ayarlar ve günün meydan okuması kayıtları kalır.
-- Kod hazır ve testli (0.3); tema bugün uygulamada hâlâ `@AppStorage` ile okunuyor, ekranlarla birlikte (0.5) bu katmana
-  geçer. Aşağıdaki iki madde cihazda doğrulanınca işaretlenir.
+- Kod hazır ve testli (0.3); tema da bu katmanda (`Persistence`, `pianote_theme_v1`); UserDefaults yalnız UI testinin
+  tema argümanı için okunur. Aşağıdaki iki madde cihazda doğrulanınca işaretlenir.
 - Kabul:
   - [ ] Uygulama silinip yeniden kurulmadıkça veriler kalıcı; güncellemede kaybolmuyor.
   - [ ] `solvato_last_lesson_v1` iCloud yedeğine girmiyor; diğerleri giriyor.
@@ -342,13 +342,12 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 ### E-02 Tanıtım (ilk açılış)
 
 - [x] Tanıtım revizesi native'de yapıldı (26 Kasım, `docs/ozellikler/tanitim.md`: R5, R9, R12, R27, R28): adım sırası
-  çekirdekte `OnboardingFlow` (testli), ekran `OnboardingScreen`, saat satırı `UI/TimeField`.
+      çekirdekte `OnboardingFlow` (testli), ekran `OnboardingScreen`, saat satırı `UI/TimeField`.
 
 - Kaynak: `screens/Onboarding.tsx` (`revize-onizleme` dalı). Yalnız `onboarded` false iken; Ayarlar › Tanıtımı tekrar göster ile yeniden.
 - 9 adım, üstte solda geri oku (ikinci adımdan itibaren; seçimler korunur), ortada adım noktaları (6 pt, açık adım
-  18 pt), sağ üstte "Atla" (son adım hariç):
-  0. **Giriş**: logo, "Her gün birkaç dakika, nota okumak kolaylaşsın", açıklama, 2×2 kutu (Nota okuma, Ritim, Akor,
-     Kulak), Başlayalım.
+  18 pt), sağ üstte "Atla" (son adım hariç): 0. **Giriş**: logo, "Her gün birkaç dakika, nota okumak kolaylaşsın", açıklama, 2×2 kutu (Nota okuma, Ritim, Akor,
+  Kulak), Başlayalım.
   1. **Merhaba**: Solfie (el sallar) "Merhaba, ben Solfie!", "Hadi bir nota bulalım", isim alanı (isteğe bağlı, en
      çok 24 harf), Devam.
   2. **Deneme 1**: Sol anahtarında Do4, "Bu nota Do. Tuşunu bul.", tuş adları görünen klavye. Yanlışta yardım metni,
@@ -432,7 +431,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 - Kaynak: `screens/ChordQuizSession.tsx`, `components/ChordStaffSvg.tsx`, `components/piano/MultiPiano.tsx`.
 - Üst çubuk: çıkış, noktalar, "3/10", XP. Etiket: AKOR TANIMA / TUŞLARDAN BUL / AKORU BAS + seviye adı; süre halkası.
 - Soru: "Portedeki akor hangisi?", "Klavyede basılı akor hangisi?", "Bu akorun tuşlarına bas" (akor adı ve sembolü).
-  Dinle (birlikte) ve arpej düğmeleri; cevaptan sonra formül ipucu.
+  Tek "Dinle" düğmesi (notalar 0,22 sn arayla, arpej); cevaptan sonra formül ipucu.
 - Şıklar: akor adı + sembol. Akoru bas: çok tuşlu klavye, "Seçilen" listesi, "✕ Temizle".
 - Alt düğme: "Seçenek Seç..." / "Tuşlara Bas..." / "Kontrol Et ✓" / "Sıradaki" / "Turu bitir".
 - Doğru: üstte bildirim "Harika! Do majör (+10 XP)", 1,5 sn sonra sıradaki. Yanlış/süre: "Süre doldu. Doğru cevap:
@@ -442,7 +441,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 ### E-07 Ritmi Tut
 
 - [x] Native'de yapıldı (22 Kasım): akış çekirdekte `RhythmTapRound` (sayma, çalma, dokunuş kaydı, değerlendirme, çıkışta
-  durma; testli), ekran `RhythmTapScreen` + `RhythmTimelineView`. Metronom sesi ve ses gecikmesi düzeltmesi 0.6'da.
+      durma; testli), ekran `RhythmTapScreen` + `RhythmTimelineView`. Metronom sesi ve ses gecikmesi düzeltmesi 0.6'da.
 
 - Kaynak: `screens/RhythmTapSession.tsx`, `components/RhythmTimeline.tsx`.
 - Üst: çıkış (onay), 6 bölüm (geçilen yeşil, geçilmeyen amber, şimdiki mor), "76 BPM".
@@ -451,7 +450,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 - 1–4 vuruş ışıkları; büyük dokunma alanı ("Dokunma alanı" / "Hazır…" / "Dinle…" / "Dokun"); Dinle ve Başla.
 - Sonuç: "5/6 vuruş yerinde · 1 fazla dokunuş · %72", yön ipucu; Tekrar dene, Sıradaki / Turu bitir.
 - Ses kapalıysa "Bu oyun metronomla oynanır; ses kapalı." + "Sesi aç".
-- Çalarken çıkış onayı açılırsa deneme durur; "Devam et" aynı ritmi baştan başlatır.
+- Çalarken çıkış onayı açılırsa deneme durur; "Devam et" hazır durumuna döner, öğrenci Başla'ya yeniden basar.
 - Görüntü: `ritmi-tut`, `ritmi-tut-ses-kapali`.
 
 ### E-08 Tur sonucu
@@ -481,7 +480,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
   (3 sütun küçük porte, "Bu notaları çalış"), **Son turlar** (ilk 3, "Tümünü göster" ile 30).
 - Kabul:
   - [ ] Bu hafta şeridinde dolu/yarım/boş/bugün (kesikli)/gelecek (silik) durumları aynı.
-  - [ ] Rapor paylaşım menüsünde açılıyor; metin K-13 ile aynı.
+  - [ ] Rapor paylaşım menüsünde açılıyor; metin K-13 ile aynı, sonunda App Store bağlantısı (R32).
 - Görüntü: `ilerleme-bos`, `ilerleme`, `ilerleme-alt`.
 
 ### E-11 Profil
@@ -496,8 +495,8 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 ### E-12 Ayarlar
 
 - [x] Yeni düzen native'de yapıldı (26 Kasım, `docs/ozellikler/ayarlar.md`, R36): dört kart (Çalışma · Sorular · Ses ve
-  bildirim · Diğer), satırda değer ve seçim penceresi, Çalışılacak notalar ayrı ekran, en altta İlerlemeyi sıfırla.
-  Aşağıdaki liste web'deki eski düzeni anlatır. Görüntü: `ayarlar-pencere`, `ayarlar-notalar` eklendi.
+      bildirim · Diğer), satırda değer ve seçim penceresi, Çalışılacak notalar ayrı ekran, en altta İlerlemeyi sıfırla.
+      Aşağıdaki liste web'deki eski düzeni anlatır. Görüntü: `ayarlar-pencere`, `ayarlar-notalar` eklendi.
 
 - Kaynak: `screens/SettingsScreen.tsx`, `components/NotesPicker.tsx`.
 - Öğretmen kodu satırı Profil'e taşındı (gezinme revizesi). Çalışma: Günlük hedef (10/20/30/50 + açıklama), Seviye (değişince sayaç sıfır),
@@ -514,8 +513,8 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 
 - [x] Native'de yapıldı (22 Kasım): kurallar çekirdekte `TeacherFlow` (testli), ekran `TeacherScreen`.
 - [x] Role göre bölüm (26 Kasım, `tanitim.md` R35): öğrenci yalnız kod girme ("Öğretmen kodunu gir"), öğretmen yalnız
-  hazırlama ("Öğrenci kodu hazırla"), diğerleri ikisi ("Öğretmen kodu"); alttaki mor bağlantı bölümü ve rolü kalıcı
-  değiştirir. Kural `TeacherSection`. Görüntü: `ogretmen-kodu-hazirla`, `ogretmen-kodu-gir`.
+      hazırlama ("Öğrenci kodu hazırla"), diğerleri ikisi ("Öğretmen kodu"); alttaki mor bağlantı bölümü ve rolü kalıcı
+      değiştirir. Kural `TeacherSection`. Görüntü: `ogretmen-kodu-hazirla`, `ogretmen-kodu-gir`.
 
 - Kaynak: `screens/TeacherScreen.tsx`.
 - Açıklama. **Öğrenci** kartı: kod alanı (büyük harf, en çok 7, "ABC-DEF"), Uygula; hata "Kod geçersiz. 6 karakteri
@@ -527,7 +526,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 ### E-14 Gizlilik ve Lisanslar
 
 - [x] Native'de yapıldı (22 Kasım): metinler `node scripts/altin.mjs` ile `legal.ts`'den birebir `hukuk.json`'a aktarılır;
-  lisanslarda yalnız Bravura, Outfit, JetBrains Mono.
+      lisanslarda yalnız Bravura, Outfit, JetBrains Mono.
 
 - Kaynak: `screens/LegalScreen.tsx`, metinler `data/legal.ts`. Lisanslar: her biri için "Lisans metnini göster/gizle".
 - Native'de lisans listesi değişir: React, Capacitor ve web paketleri çıkar; Outfit, JetBrains Mono, Bravura kalır.
@@ -537,7 +536,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 ### E-15 Çalışma (sekme adı artık Öğren)
 
 - [x] Native'de yapıldı (22 Kasım): ders listesi, terim tablosu ve arama çekirdekte (`Lessons`, `Terms`; altın tablo
-  `calisma.json`, 35 aramada web'le aynı sonuç), ekran `StudyScreen`. Ders içerikleri E-16'da.
+      `calisma.json`, 35 aramada web'le aynı sonuç), ekran `StudyScreen`. Ders içerikleri E-16'da.
 
 - Kaynak: `screens/study/StudyScreen.tsx`, `lessons.tsx`.
 - Başlık, arama ("Konu ara: legato, Fa anahtarı…"; Türkçe harf ve aksan farkı yok sayılır, başlık/alt yazı/bölümde
@@ -548,7 +547,7 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 ### E-16 Dersler
 
 - [x] Native'de yapıldı (22 Kasım): 19 dersin hepsi. Nota tabloları, ezber kartları, açılış yazıları, ezber portesi,
-  şema klavye ve 94 akor kartı web'le altın tabloyla aynı. Çalma düğmeleri ses aşamasında (0.6) bağlanacak.
+      şema klavye ve 94 akor kartı web'le altın tabloyla aynı. Çalma düğmeleri ses aşamasında (0.6) bağlanacak.
 
 - Kaynak: `screens/study/LessonScreen.tsx` ve ders içerikleri:
   - Sol/Fa anahtarı notaları: ‹ › ile nota gezinme, porte + klavye, notayı çalma (`NotesStudy.tsx` `StaffStudy`).
@@ -564,8 +563,8 @@ ekran için geçerli; aşağıda yalnızca kolay gözden kaçacak olanlar yazıl
 ### E-17 Oyunlar
 
 - [x] Native'de yapıldı (22 Kasım): liste, günün meydan okuması, arkadaşına meydan oku, oyun sonucu (yazılar çekirdekte
-  `GameScreens`, `GameResultContent`; altın tablo `oyun-ekranlari.json`, 60 durum) ve akor düellosu (`DuelGame`; sorular
-  `duello.json`, 200 tohum). Ses ve titreşim 0.6'da.
+      `GameScreens`, `GameResultContent`; altın tablo `oyun-ekranlari.json`, 60 durum) ve akor düellosu (`DuelGame`; sorular
+      `duello.json`, 200 tohum). Ses ve titreşim 0.6'da.
 
 - Kaynak: `screens/GamesScreen.tsx`, `GameResultScreen.tsx`, `ChordDuel.tsx`.
 - **Liste**: Günün meydan okuması (durum: "Bugün henüz oynanmadı" / "Bugün oynandı · 7/10"), Arkadaşına meydan oku,

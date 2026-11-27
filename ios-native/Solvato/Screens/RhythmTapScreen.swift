@@ -53,7 +53,8 @@ struct RhythmTapScreen: View {
         .onChange(of: round.hasAnswers, initial: true) { _, a in model.roundHasAnswers = a }
         .onDisappear {
             loop?.cancel()
-            Sound.stopAll()
+            // Yalnız ritim çalarken susturulur: "Turu bitir"le açılan sonuç ekranının melodisi ya da kutlama sesi kesilmesin
+            if round.busy { Sound.stopAll() }
         }
     }
 
@@ -159,11 +160,8 @@ struct RhythmTapScreen: View {
                     .strokeBorder(round.busy && round.phase != .listen ? accent.color : ThemeColor.border.color, lineWidth: 2))
             .animation(.linear(duration: 0.06), value: round.pulse)
             .contentShape(Rectangle())
-            // Parmak değdiği an sayılır (web onPointerDown)
-            .gesture(
-                DragGesture(minimumDistance: 0).onChanged { v in
-                    if v.translation == .zero, enabled { tap() }
-                })
+            // Parmak değdiği an sayılır (web onPointerDown); her parmak ayrı vuruş (sırayla iki parmakla vurulabilir)
+            .overlay(TouchDownPad { if enabled { tap() } })
             .accessibilityElement()
             .accessibilityLabel("Dokun")
             .accessibilityAddTraits(.isButton)

@@ -42,7 +42,8 @@ struct SplashScreen: View {
         }
         .opacity(out ? 0 : 1)
         // CSS `ease` = cubic-bezier(0.25, 0.1, 0.25, 1)
-        .animation(.timingCurve(0.25, 0.1, 0.25, 1, duration: Self.fade), value: out)
+        // Hareketi azalt: web gibi solma yok, ekran anında kalkar
+        .animation(reduceMotion ? nil : .timingCurve(0.25, 0.1, 0.25, 1, duration: Self.fade), value: out)
         .contentShape(Rectangle())
         .onTapGesture { finish() }
         .accessibilityHidden(true)
@@ -56,7 +57,7 @@ struct SplashScreen: View {
         guard !out else { return }
         out = true
         Task {
-            try? await Task.sleep(for: .seconds(Self.fade))
+            if !reduceMotion { try? await Task.sleep(for: .seconds(Self.fade)) }
             onDone()
         }
     }
@@ -160,13 +161,16 @@ private enum SplashDrawing {
         for (i, n) in notes.enumerated() {
             let p = Curve.easeOut.progress(t, delay: n.delay, duration: 1)
             guard p > 0 && p < 1 else { continue }
-            let op = p < 0.2 ? p / 0.2 : 1 - (p - 0.2) / 0.8
+            // CSS keyframe'leri (0% → 20% → 100%) her aralıkta ayrı ease-out uygular; saydamlık zamana göre bölünür
+            let u = min(1, max(0, t - n.delay))
+            let op = u < 0.2 ? Curve.easeOut.value(at: u / 0.2) : 1 - Curve.easeOut.value(at: (u - 0.2) / 0.8)
             var nc = ctx
             nc.opacity = op
             nc.translateBy(x: n.dx * p, y: 60 + (-380 - 60) * p)
             let scale = 0.6 + 0.4 * p
-            // kendi merkezi çevresinde
-            let cx = n.x + n.sp * 0.6, cy = 160 - n.sp * 1.7
+            // Web: transform-box fill-box, SVG'de varsayılan köken 0 0 → notanın kapladığı alanın sol üst köşesi
+            let box = eighthBounds(x: n.x, y: 160, sp: n.sp)
+            let cx = box.minX, cy = box.minY
             nc.translateBy(x: cx, y: cy)
             nc.scaleBy(x: scale, y: scale)
             nc.translateBy(x: -cx, y: -cy)
@@ -182,6 +186,21 @@ private enum SplashDrawing {
     }
 
     /// Bravura sekizlik: baş + sap + bayrak (web EighthNote)
+    /// Sekizlik notanın kapladığı alan (baş, sap, bayrak)
+    static func eighthBounds(x: Double, y: Double, sp: Double) -> CGRect {
+        let s = sp / 250
+        let stemX = x + 11.8 * (sp / 10) - 0.65 * (sp / 10)
+        let top = y - 3.4 * sp
+        var r = CGRect(x: stemX - 0.6, y: top, width: 1.3 * (sp / 10), height: y - top - 1)
+        if let head = DrawingRenderer.glyphPaths["noteheadBlack"] {
+            r = r.union(head.applying(CGAffineTransform(a: s, b: 0, c: 0, d: -s, tx: x, ty: y)).boundingRect)
+        }
+        if let flag = DrawingRenderer.glyphPaths["flag8thUp"] {
+            r = r.union(flag.applying(CGAffineTransform(a: s, b: 0, c: 0, d: -s, tx: stemX - 0.6, ty: top)).boundingRect)
+        }
+        return r
+    }
+
     static func eighth(_ c: inout GraphicsContext, x: Double, y: Double, sp: Double, color: Color) {
         let s = sp / 250
         let stemX = x + 11.8 * (sp / 10) - 0.65 * (sp / 10)

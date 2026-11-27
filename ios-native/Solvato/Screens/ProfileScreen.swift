@@ -30,7 +30,7 @@ struct ProfileScreen: View {
                 VStack(spacing: Space.s3) {
                     VStack(spacing: Space.s3) {
                         Avatar(name: name, color: s.avatarColor, size: 80)
-                        TextField("", text: $name, prompt: Text("İsmin").foregroundStyle(ThemeColor.textMuted.color))
+                        TextField("", text: $name, prompt: Text("İsmin").foregroundStyle(ThemeColor.textFaint.color))
                             .font(.ui(FontSize.lg, .heavy))
                             .foregroundStyle(ThemeColor.text.color)
                             .multilineTextAlignment(.center)

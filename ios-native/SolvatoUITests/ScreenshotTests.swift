@@ -340,6 +340,8 @@ final class ScreenshotTests: XCTestCase {
     @MainActor
     func testOyunlar() throws {
         continueAfterFailure = false
+        // 10 senaryo × 2 tema; iPad'de varsayılan 10 dakikayı aşıyordu (ekranlar dalı, hata-testOyunlar-ipad)
+        executionTimeAllowance = 1800
         let steps: [(String, [String])] = [
             ("oyunlar", []), ("oyunlar-oynandi", []),
             ("gunun-oyunu", ["Günün meydan okuması"]), ("gunun-oyunu-oynandi", ["Günün meydan okuması"]),

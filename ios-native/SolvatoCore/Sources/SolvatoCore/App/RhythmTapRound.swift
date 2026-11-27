@@ -36,7 +36,9 @@ public struct RhythmTapRound: Sendable {
     /// Ekrandaki partisyon
     public var notation: String { "ts:4/4 \(score) ||" }
     /// En az bir ritim denendi mi (yoksa çıkış sormadan olur)
-    public var hasAnswers: Bool { !answers.isEmpty || result != nil }
+    /// "Tekrar dene" sonucu silse de ritim denenmiş sayılır (tur-ekranlari.md: bir ritim denendiyse onay sorulur)
+    public var hasAnswers: Bool { !answers.isEmpty || result != nil || tried }
+    private var tried = false
     public var busy: Bool { phase == .countin || phase == .play || phase == .listen }
     public var isLast: Bool { index + 1 >= patterns.count }
 
@@ -75,6 +77,7 @@ public struct RhythmTapRound: Sendable {
             phase = .ready
         } else {
             result = RhythmTap.grade(score, taps: taps, bpm: bpm, level: level)
+            tried = true
             phase = .result
         }
         return true

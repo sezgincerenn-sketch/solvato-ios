@@ -59,4 +59,16 @@ final class RhythmTapRoundTests: XCTestCase {
             if let out { XCTAssertEqual(out.map(\.questionId), Array(3000..<3006)) }
         }
     }
+
+    /// "Tekrar dene" sonucu silse de denenmiş ritim çıkışta onay ister (tur-ekranlari.md)
+    func testRetryKeepsHasAnswers() {
+        var r = RhythmTapRound(level: 1, random: seededRandom(5))
+        XCTAssertFalse(r.hasAnswers)
+        _ = r.start(.play, now: 0)
+        r.tick(now: 0.15 + 8 * r.beat + 0.4)
+        XCTAssertNotNil(r.result)
+        _ = r.start(.play, now: 20)
+        XCTAssertNil(r.result)
+        XCTAssertTrue(r.hasAnswers)
+    }
 }

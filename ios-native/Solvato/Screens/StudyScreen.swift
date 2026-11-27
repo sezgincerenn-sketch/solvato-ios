@@ -76,7 +76,7 @@ struct StudyScreen: View {
     private var searchField: some View {
         HStack(spacing: Space.s2) {
             Icon(.search, size: 18).foregroundStyle(ThemeColor.textMuted.color)
-            TextField("", text: $query, prompt: Text("Konu ara: legato, Fa anahtarı…").foregroundStyle(ThemeColor.textMuted.color))
+            TextField("", text: $query, prompt: Text("Konu ara: legato, Fa anahtarı…").foregroundStyle(ThemeColor.textFaint.color))
                 .font(.ui(FontSize.md))
                 .foregroundStyle(ThemeColor.text.color)
                 .autocorrectionDisabled()

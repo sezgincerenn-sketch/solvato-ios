@@ -243,9 +243,10 @@ struct ChordQuizScreen: View {
                     }
                     .multilineTextAlignment(.center)
                     .foregroundStyle(fg)
-                    .frame(maxWidth: .infinity, minHeight: 60)
                     .padding(.vertical, 14)
                     .padding(.horizontal, 12)
+                    // En az 60 pt, iç boşluk dahil (web min-height, border-box)
+                    .frame(maxWidth: .infinity, minHeight: 60)
                     .background(RoundedRectangle(cornerRadius: Radius.lg).fill(bg))
                     .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(border, lineWidth: 1))
                     .shadow(color: glow, radius: 6)
@@ -389,7 +390,7 @@ private struct CountdownRing: View {
     @State private var frozen: Int?
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 1)) { tl in
+        TimelineView(.periodic(from: started, by: 1)) { tl in
             let rem = frozen ?? max(0, seconds - Int(tl.date.timeIntervalSince(started)))
             let pct = Double(rem) / Double(seconds)
             let col = (pct > 0.5 ? PaletteColor.green500 : pct > 0.25 ? PaletteColor.amber500 : PaletteColor.red500).color
