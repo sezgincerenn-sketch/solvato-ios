@@ -2,5 +2,5 @@
 # Hepsi üç cihazda 90 dakikayı aşıyor; o yüzden her adımda yalnız değişen ekranların testleri seçilir.
 # cihazlar: iphone, iphone-kucuk, ipad (boşluklu liste). testler: ScreenshotTests içindeki test adları ya da
 # "Sınıf/testAdı" (ör. AccessibilityTests/testBuyukYazi); boşsa hepsi. Performans testleri her koşuda ayrıca iPhone'da.
-cihazlar: iphone iphone-kucuk
-testler: testPratik testIlerleme testProfilAyarlar testAkor testOyunlar AccessibilityTests/testBuyukYazi
+cihazlar: iphone iphone-kucuk ipad
+testler: testAcilis testPratik

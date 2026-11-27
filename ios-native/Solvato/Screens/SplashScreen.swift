@@ -34,6 +34,9 @@ struct SplashScreen: View {
                 .scaleEffect(0.6 + 0.4 * g)
                 .opacity(g)
                 .offset(y: -40)
+                // Parıltı ekrandan geniş (420 pt): ölçüye katılmasın, yoksa açılış ve altındaki Ana sayfa bir an ekrandan
+                // geniş çizilir, açılış kalkınca daralır (R11). Çizim aynı: ortada, taşarak.
+                .frame(width: 0, height: 0)
                 VStack(spacing: 18) {
                     Canvas { ctx, size in SplashDrawing.draw(t, in: &ctx, size: size) }
                         .frame(width: 180, height: 250)
