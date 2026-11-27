@@ -1,5 +1,3 @@
-dist
-dist-single
-ios
 node_modules
-src/data/smufl.ts
+ios-native/SolvatoCore/.build
+site/dist

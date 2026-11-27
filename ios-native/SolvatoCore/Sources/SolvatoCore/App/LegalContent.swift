@@ -1,5 +1,5 @@
-// Ayarlar › Gizlilik ve Ayarlar › Lisanslar sayfalarının metinleri. Kaynak web src/data/legal.ts; `node scripts/altin.mjs`
-// Resources/hukuk.json'a birebir aktarır (elle düzenlemeyin). Ekran Solvato/Screens/LegalScreen.swift.
+// Ayarlar › Gizlilik ve Ayarlar › Lisanslar sayfalarının metinleri: Resources/hukuk.json (tek kaynak; web kodu
+// silindikten sonra elle düzenlenir, herkese açık site de bunu okur: scripts/site.mjs). Ekran Solvato/Screens/LegalScreen.swift.
 import Foundation
 
 public struct LegalSection: Decodable, Equatable, Sendable {

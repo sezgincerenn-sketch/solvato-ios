@@ -18,28 +18,29 @@ Claude Code'un bu repoda nasıl çalışacağı. Kodun yapısı `README.md`'de, 
 ## Repolar
 
 - **Bu repo (`solvato-ios`)**: aktif geliştirme, iPhone + iPad. Değişiklikler buraya, `main`e.
-- **Native iOS'a geçiliyor (1. öncelik, `docs/PLAN.md` Paket 0):** Swift/SwiftUI, web görünümü ve üçüncü taraf kod yok.
-  Bugünkü React kodu (`src/`) native sürüm aynı işlevlere ulaşana kadar başvuru kaynağı; ona yeni özellik ekleme.
-- `solvato-android`: dondurulmuş kopya; Android işi başlayana kadar **kod yazma**. Başlayınca `src/` buradan alınır.
-  Bu yüzden `src/` içindeki Android'e özel küçük parçaları (geri tuşu) silme.
+- **Uygulama native (Swift/SwiftUI, `ios-native/`)**; web görünümü ve üçüncü taraf kod yok. React web kodu (`src/`,
+  Capacitor `ios/`) 27 Kasım'da main'den silindi; son hâli **`web-arsiv`** dalında. Kodda ve dokümanlarda geçen
+  `src/...`, `scripts/altin.mjs`, `scripts/referans.mjs` gibi adlar o dalda. `web-arsiv` dalına commit atma.
+- `solvato-android`: dondurulmuş kopya; Android işi başlayana kadar **kod yazma**. Başlayınca web kodu `web-arsiv`
+  dalından alınır (Android'e özel parçalar, ör. geri tuşu, orada duruyor).
 - `solvato-admin`: analitik sunucusu, veritabanı ve admin paneli (1.1, `docs/PLAN.md`).
 - **`solvato` reposu yedek: ona hiçbir şekilde dokunma** (commit, push, dal, etiket yok). Bugünkü React sürümünün
   çalışan kopyası olarak olduğu gibi kalır. Değişiklikler yalnızca `solvato-ios` ve `solvato-android`'de.
-- **Birebir uyum:** native iOS (ve ileride Android) mevcut uygulamayla birebir aynı olmalı: aynı ekranlar ve akışlar,
-  aynı metinler, renkler, yazı tipleri, ölçüler, animasyonlar ve aynı kurallar (puan, seviye, seri, kodlar). Yeniden
-  tasarlama ya da "iyileştirme" yapma; fark gerekiyorsa önce Ceren'e sor. Başvuru kaynağı bu repodaki `src/` ve
-  `node scripts/ekran.mjs` ile alınan ekran görüntüleri.
+- **Birebir uyum:** native sürüm React sürümüyle birebir aynı yazıldı (aynı ekranlar, metinler, renkler, ölçüler,
+  animasyonlar ve kurallar; `docs/ozellikler/native-ios.md`). Bilinçli farklar o dokümanın "Bilinçli farklar"
+  bölümünde; yeni bir fark gerekiyorsa önce Ceren'e sor. Eski davranışa bakmak için `web-arsiv` dalı ve altın tablolar
+  (`ios-native/SolvatoCore/Tests/SolvatoCoreTests/Fixtures/`).
 
 ## Çalışma şekli
 
 - Küçük, net istekleri doğrudan yap. Geri dönmesi zor ya da birden çok yoruma açık işlerde önce tek soru sor.
 - Birden çok ekranı etkileyen ya da ürün kararı içeren isteklerde koda geçmeden **`ozellik`** becerisiyle özellik
   dokümanı yaz (`docs/ozellikler/`). Uygulama ayrı oturumda o dokümandan yapılır.
-- Kod değiştiren her işi **`bitir`** becerisiyle bitir (kontrol, ekran, README, commit, push, TestFlight, özet).
-- **Native iş akışı (26 Kasım):** web revize önizlemesi artık güncellenmez; değişiklik TestFlight'tan denenir.
-  Çekirdek: `cd ios-native/SolvatoCore && swift test`. Ekranlar: `main`e gönderince GitHub Actions görüntüleri `ekranlar`
-  dalına koyar (seçim `ios-native/ui-testleri.txt`, yalnız değişen ekranların testleri). TestFlight: GitHub Actions
-  `testflight.yml` (`mcp__github__actions_run_trigger`, ref `main`); Codemagic kullanılmaz.
+- Kod değiştiren her işi **`bitir`** becerisiyle bitir (testler, ekranlar, README, commit, push, TestFlight, özet).
+- **İş akışı:** değişiklik TestFlight'tan denenir. Çekirdek: `cd ios-native/SolvatoCore && swift test`. Ekranlar:
+  `main`e gönderince GitHub Actions görüntüleri, performans tablosunu ve erişilebilirlik denetimini `ekranlar` dalına
+  koyar (seçim `ios-native/ui-testleri.txt`, yalnız değişen ekranların testleri). TestFlight: GitHub Actions
+  `testflight.yml` (`mcp__github__actions_run_trigger`, ref `main`). Codemagic kullanılmaz.
 - Bir özellik bitince main'e göndermeden önce **`inceleyici`** ajanına dokümana göre inceletebilirsin; yalnız doğruluk
   bulgularını düzelt.
 - Kanıtla konuş: "geçti" deme, komutu ve sonucunu ya da ekran görüntüsünü göster.
@@ -47,40 +48,44 @@ Claude Code'un bu repoda nasıl çalışacağı. Kodun yapısı `README.md`'de, 
 ## Komutlar
 
 ```bash
-npm run check          # tür kontrolü (noUnused açık) + Prettier kontrolü
-npm run format         # biçim hatalarını düzeltir
-node scripts/ekran.mjs --ad x --adim Profil --se   # ekran görüntüsü (önce npm run build); `ekran` becerisine bak
-npm run build:single   # tek dosyalık önizleme: dist-single/index.html
-npm run sync           # derle + cap sync ios (ios/ projesini günceller)
+cd ios-native/SolvatoCore && swift test     # çekirdek testleri (mantık, metinler, çizim, sesler; Linux'ta da koşar)
+python3 scripts/native-guvenlik.py          # ağ API'si, dış adres, bağımlılık, gizlilik bildirimi taraması
+npx prettier --write README.md docs/x.md    # dokümanları biçimle
+node scripts/site.mjs                       # gizlilik/destek sitesi (site/dist), metin hukuk.json'dan
 ```
 
-Kancalar (`.claude/settings.json`): oturum başında `node_modules` yoksa `npm install`; düzenlenen `src/` dosyası Prettier'dan
-geçer; `src/` değişmişken iş bitirilmek istenirse `npm run check` koşar ve geçmezse durdurur.
+Arayüz (SwiftUI) burada derlenmez; GitHub Actions'ın Mac sunucusunda derlenir (`native-ekranlar.yml`, `testflight.yml`).
+Kancalar (`.claude/settings.json`): oturum başında `node_modules` yoksa Prettier kurulur; düzenlenen `.md` dosyası
+Prettier'dan geçer.
 
 ## Kod kuralları
 
-- **Ham renk ve sayı yok**: her şey `src/design/tokens.ts`. Yazı rengi `colors.*`, dolgu `palette.*` / `category.*`.
-  Açık tema yalnızca token kullanılırsa çalışır. (Eski dosyalarda 16 ham hex ve 57 `rgba(` kaldı: bilinen borç, yenisini ekleme.)
-- **Tekrar yok**: aynı parça iki yerde gerekiyorsa `src/ui/` (genel) ya da `src/components/` (müziğe özgü) altına
-  çıkar. Örnekler: `ExitConfirm`, `PlayChip`, `TopicLink`, `GoalStaff`, `MusicalStaff`.
-- Yeni bileşenlerde Tailwind sınıfı değil satır içi stil + token kullan (tasarım sistemi önizlemesi Tailwind'i
-  yüklemez). Eski dosyalarda kalan Tailwind sınıfları bilinen borç.
+- **Ham renk ve sayı yok**: tasarım değerleri `SolvatoCore` `Tokens.swift` / `Colors.swift` (`ThemeColor`,
+  `PaletteColor`, `CategoryColor`, `FontSize`, `Space`, `Radius`). Açık tema yalnızca token kullanılırsa çalışır.
+  Okunan yazıda `textFaint` kullanma (kontrast); yalnız yer tutucu ve süs.
+- **Yazı:** `Font.ui` / `.mono` / `.term` (Dinamik Yazı ile büyür); büyümemesi gereken yerde (klavye, halka, rozet,
+  porte) `…Fixed`. Sınırlar `AppTypeSize`.
+- **Tekrar yok**: aynı parça iki yerde gerekiyorsa `ios-native/Solvato/UI/` altına çıkar. Örnekler: `ExitConfirm`,
+  `PlayChip`, `TopicLink`, `RoundCloseButton`, `MusicalStaffView`.
+- Mantık ve kullanıcıya görünen metinler test edilebilsin diye `SolvatoCore`'da (testiyle); SwiftUI dosyası yalnız çizer.
+  VoiceOver metinleri `SolvatoCore/App/AccessibilityText.swift`.
 - Dosyanın başına bir-iki satır Türkçe açıklama yaz: ne yapar, nerede kullanılır.
 - Depolama anahtarlarını **yeniden adlandırma** (eski adlar bilerek korunuyor). Yeni anahtar `solvato_` önekiyle.
 - Kullanıcıya görünen metin Türkçe. Yazım kuralları:
-  - Yüzde önde: **%40** (40% değil). Süre: **0,4 sn** (`fmtSec`).
+  - Yüzde önde: **%40** (40% değil). Süre: **0,4 sn**.
   - "Seviye" yalnızca Başlangıç / Orta / İleri için; XP basamakları "ünvan".
   - **"Öğretmen"** de, "hoca" deme.
   - Nota adları Do Re Mi Fa Sol La Si; oktavlı yazımda "Fa4".
 
 ## Tuzaklar
 
-- `src/data/smufl.ts` otomatik üretildi; düzenleme izinlerle engelli.
-- `ios/App/App.xcodeproj/project.pbxproj` elle (betikle) düzenlenir; `cap sync` ona dokunmaz. Yeni dosya eklerken
-  PBXFileReference + PBXBuildFile + grup + Resources aşamasına dört kayıt gerekir (örnek: `PrivacyInfo.xcprivacy`).
-- Yeni native eklenti → `ios/App/App/PrivacyInfo.xcprivacy` beyanını kontrol et. Yeni bağımlılık ya da yazı tipi →
-  `src/data/legal.ts` `LICENSES`. Gizlilik politikası değişirse aynı dosyadaki `PRIVACY` metni de değişir.
-- `utils/persist.ts` yalnızca üç anahtarı UserDefaults'a yansıtıyor; yeni kalıcı veri eklersen listeye ekle.
+- Xcode projesi (`.xcodeproj`) repoda yok; `ios-native/project.yml`'den XcodeGen üretir. Yeni Swift dosyasını klasöre
+  koymak yeter.
+- Yeni Apple API'si → `ios-native/Solvato/PrivacyInfo.xcprivacy` beyanı ve `scripts/native-guvenlik.py`'deki beklenen
+  liste. Yeni yazı tipi ya da kod parçası → `hukuk.json` `licenses`. Gizlilik politikası değişirse `hukuk.json`
+  `privacy` (uygulama ve site aynı metni gösterir).
+- Altın tablolar (`Fixtures/altin/`), `soru-bankasi.json`, `smufl.json`, `senaryolar.json` React'tan döküldü; üreten
+  betikler `web-arsiv` dalında. Artık elle düzenlenir; testleri de birlikte güncelle.
 - Uygulama hiçbir yere ağ isteği göndermez ("Data Not Collected"). Bir şey gönderen özellik eklenecekse önce Ceren'e sor.
 
 ## Ürün ilkeleri (kısa)

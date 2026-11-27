@@ -1,5 +1,6 @@
 // Soru modeli ve soru bankası. Web karşılığı src/types.ts `Question` ve src/data/questions.ts.
-// Banka elle yazılmaz: scripts/altin.mjs React üreteçlerinin çıktısını Resources/soru-bankasi.json'a döker.
+// Banka Resources/soru-bankasi.json'da; React üreteçlerinin çıktısından döküldü (scripts/altin.mjs, `web-arsiv` dalı),
+// bundan sonra soru eklemek ya da düzeltmek için JSON elle düzenlenir.
 import Foundation
 
 public enum QuestionCategory: String, Codable, Sendable, CaseIterable {

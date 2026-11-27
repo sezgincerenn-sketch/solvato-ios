@@ -1,27 +1,19 @@
 {
   "permissions": {
-    "deny": [
-      "Edit(**/src/data/smufl.ts)",
-      "Write(**/src/data/smufl.ts)",
-      "Bash(git push --force*)",
-      "Bash(git push -f *)"
-    ]
+    "deny": ["Bash(git push --force*)", "Bash(git push -f *)"]
   },
   "hooks": {
     "SessionStart": [
       {
-        "hooks": [{ "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/claude-oturum.sh\"", "timeout": 300 }]
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/claude-oturum.sh\"", "timeout": 300 }
+        ]
       }
     ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
         "hooks": [{ "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/claude-bicim.sh\"" }]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [{ "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/claude-kontrol.sh\"", "timeout": 120 }]
       }
     ]
   }

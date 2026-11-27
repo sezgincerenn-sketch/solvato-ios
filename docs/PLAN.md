@@ -103,7 +103,7 @@ Toplam kabaca 25–30 oturum; Ceren'in TestFlight geri bildirimine bağlı olara
 
 **Durum (27 Kasım):** 0.9'un karşılaştırma adımı yapıldı: dört `inceleyici` envantere göre bütün ekranlara baktı; yanlış
 veri yok, bulunan 14 farktan 11'i düzeltildi (README "0.9 karşılaştırması"); akor kartı klavye çizgisi ve sekme başlığı
-hizası web'le zaten aynı çıktı. R32 (App Store bağlantısı) eklendi. Kalan 0.9: TestFlight'ta kapalı test (27 Kasım: Ceren yakın çevresiyle yüz yüze yapacak; rehber `docs/KAPALI-TEST.md`), web kodunun silinmesi.
+hizası web'le zaten aynı çıktı. R32 (App Store bağlantısı) eklendi. Kalan 0.9: TestFlight'ta kapalı test (27 Kasım: Ceren yakın çevresiyle yüz yüze yapacak; rehber `docs/KAPALI-TEST.md`). **Web kodu silindi (27 Kasım):** `src/`, Capacitor `ios/`, Vite/npm yapılandırması, `codemagic.yaml` ve React'tan veri üreten betikler main'den kalktı; son hâli `web-arsiv` dalında (Android oradan alır). Gizlilik sitesi metni artık `hukuk.json`'dan.
 **0.8 dokümanı yazıldı (27 Kasım):** `docs/ozellikler/erisilebilirlik-ipad.md` (yazı xxxLarge'a kadar büyür, VoiceOver
 nota adını söylemez, iPad'de yan yana pencere, performans her derlemede otomatik). **0.8 uygulandı (27 Kasım):** yazı
 boyutu, VoiceOver adları ve duyuruları, iPad pencere boyutu; büyük yazı / iPad yön / erişilebilirlik denetimi / performans
@@ -206,7 +206,7 @@ iPhone'da ~27 pt fark olabilir) ekran görüntüsüyle kontrol edilecek. Çekird
 | `solvato-android` (yeni) | Bugünkü `src/` + `android/` anlık kopyası                 | Dondurulmuş, kod yazılmaz |
 | `solvato-admin` (yeni)   | Sunucu (Cloudflare Worker), veritabanı (D1), admin paneli | Paket 4'te                |
 
-- Android işi başlayınca `solvato-android`, iOS reposundan o günün `src/`'sini alır. İki repoda aynı kodun iki
+- Android işi başlayınca `solvato-android`, iOS reposunun `web-arsiv` dalından `src/`'yi alır (27 Kasım'da main'den silindi). İki repoda aynı kodun iki
   kopyası oluşur; bu bilinen bir maliyet. Ortak bir çekirdek repo (iki uygulama onu paket olarak kullanır)
   daha temiz bir yöntem ama Android başlayana kadar gereksiz karmaşa. O gün yeniden bakarız.
 - Bu repodan `android/`, `@capacitor/android` ve Android'e özel kod parçaları (geri tuşu) kaldırılır.
@@ -284,7 +284,7 @@ Mevcut React sürümüne bundan sonra yeni özellik eklenmez; yalnızca TestFlig
 | -------------------- | ----------------------------------------------------------------------------------------- |
 | Veri modeli          | **Anonim analitik**: isim ve hesap yok, rastgele cihaz kimliği, Ayarlar'dan kapatılabilir |
 | Analitik zamanlaması | **1.1**: 1.0 veri toplamadan çıkar                                                        |
-| Web önizlemesi       | **TestFlight çalışınca** silinir                                                          |
+| Web önizlemesi       | Silindi (27 Kasım); web kodu `web-arsiv` dalında                                          |
 | Apple Developer      | **Bireysel üyelik** (22 Kasım onaylandı); imzalama ve TestFlight kurulu                   |
 | Cihazlar             | iPhone + iPad                                                                             |
 

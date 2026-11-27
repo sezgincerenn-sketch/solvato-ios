@@ -1,6 +1,6 @@
 # Native çekirdek testleri (ios-native/SolvatoCore: soru bankası, puan, seviye, seri, kodlar, nota çizimi, sesler) her
 # gönderimde GitHub'ın ücretsiz Linux sunucusunda koşar; Codemagic dakikası harcamaz. Arayüz (SwiftUI) burada derlenmez,
-# o Codemagic'te. Sonuç GitHub'da commit'in yanında yeşil tik / kırmızı çarpı olarak görünür.
+# o native-ekranlar.yml ve testflight.yml'de (Mac). Sonuç GitHub'da commit'in yanında yeşil tik / kırmızı çarpı olarak görünür.
 name: Çekirdek testleri
 on:
   push:

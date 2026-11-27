@@ -5,7 +5,7 @@
 # Ayrıca: derlenen paketin güvenlik denetimi (scripts/native-guvenlik.py --paket) ve iPhone'da performans ölçümleri
 # (PerformanceTests → build/xcodebuild-performans.log; tabloyu scripts/native-performans.py yazar). Erişilebilirlik
 # denetiminin bulguları build/ekranlar/denetim-<cihaz>.txt'te.
-# Mac'te, `xcodegen generate` sonrası depo kökünden çalışır. Kullananlar: codemagic.yaml (ios-native-test) ve
+# Mac'te, `xcodegen generate` sonrası depo kökünden çalışır. Kullanan:
 # .github/workflows/native-ekranlar.yml. Görüntü yoksa hata koduyla biter.
 cd "$(dirname "$0")/.."
 set -o pipefail

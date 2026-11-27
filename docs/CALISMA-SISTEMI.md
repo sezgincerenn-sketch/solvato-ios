@@ -9,21 +9,21 @@ Claude Code ile Solvato üzerinde nasıl çalıştığımız. Kaynak: Anthropic'
 Sayfanın ana mesajı: Claude koddan göremediği şeyi bilemez, bittiğini kontrol edemediği işi "bitti" sanır ve yazılı
 bir kural olsa bile ara sıra atlayabilir. Bu yüzden sistem üç katmanlı:
 
-| Katman                          | Ne işe yarar                               | Solvato'da                                               |
-| ------------------------------- | ------------------------------------------ | -------------------------------------------------------- |
-| **Bilgi** (Claude okur)         | Koddan çıkmayan kararlar, tuzaklar         | `CLAUDE.md` (kısa), `docs/URUN.md`, özellik dokümanları  |
-| **Prosedür** (gerekince açılır) | Uzun, adım adım işler                      | Beceriler: `ozellik`, `bitir`, `ekran`, `magaza-kontrol` |
-| **Zorunlu kural** (otomatik)    | İstisnası olmayan şeyler; Claude atlayamaz | Kancalar ve izin kuralları (`.claude/settings.json`)     |
+| Katman                          | Ne işe yarar                               | Solvato'da                                              |
+| ------------------------------- | ------------------------------------------ | ------------------------------------------------------- |
+| **Bilgi** (Claude okur)         | Koddan çıkmayan kararlar, tuzaklar         | `CLAUDE.md` (kısa), `docs/URUN.md`, özellik dokümanları |
+| **Prosedür** (gerekince açılır) | Uzun, adım adım işler                      | Beceriler: `ozellik`, `bitir`, `magaza-kontrol`         |
+| **Zorunlu kural** (otomatik)    | İstisnası olmayan şeyler; Claude atlayamaz | Kancalar ve izin kuralları (`.claude/settings.json`)    |
 
 ## Otomatik çalışanlar
 
 Bunları istemene gerek yok; her oturumda kendiliğinden çalışır.
 
-- **Oturum açılınca:** bağımlılıklar kurulu değilse kurulur (bulut oturumu her seferinde temiz başlar).
-- **Claude bir kod dosyasını değiştirince:** dosya otomatik biçimlendirilir.
-- **Claude işi bitirmek isteyince:** kodda değişiklik varsa tür ve biçim kontrolü koşar; geçmezse Claude bitiremez,
-  düzeltmeye geri döner.
-- **Engelli işlemler:** otomatik üretilmiş nota sembolleri dosyası düzenlenemez, GitHub'a zorla push yapılamaz.
+- **Oturum açılınca:** doküman biçimleyicisi kurulu değilse kurulur (bulut oturumu her seferinde temiz başlar).
+- **Claude bir doküman (.md) değiştirince:** dosya otomatik biçimlendirilir.
+- **main'e gönderilince (GitHub Actions):** çekirdek testleri, güvenlik taraması, seçilen ekranların görüntüleri,
+  performans ölçümü ve erişilebilirlik denetimi koşar; sonuçlar `ekranlar` dalında. Kırmızı olursa Claude düzeltir.
+- **Engelli işlemler:** GitHub'a zorla push yapılamaz.
 
 ## Üç tür iş
 
@@ -61,9 +61,8 @@ lisansları ve mağaza metinlerini kontrol eder, `docs/APP-STORE-KONTROL.md`'ye 
 Claude her kod değişikliğini `bitir` adımlarıyla kapatır. Sonunda şunlar olmalı; eksikse sor:
 
 - Kısa Türkçe özet: ne değişti, ekranda ne göreceksin, senden beklenen bir karar var mı, atlanan adım var mı.
-- Arayüz değiştiyse koyu ve açık temada ekran görüntüleri (`ekran/` klasöründe; gerekirse sana gönderilir).
-- [Güncellenmiş önizleme](https://claude.ai/artifact/AK45sA3bSP2kZX5TZacarf).
-- GitHub'da Türkçe commit mesajlarıyla `main`.
+- Arayüz değiştiyse Claude'un baktığı ekran görüntüleri (`ekranlar` dalı; gerekirse sana gönderilir).
+- Yeni TestFlight sürümü (numarası özette) ve GitHub'da Türkçe commit mesajlarıyla `main`.
 
 "Testler geçti" demek tek başına yetmez; Claude komutun çıktısını ya da ekran görüntüsünü göstermeli.
 
@@ -103,6 +102,5 @@ Claude seninle her zaman Türkçe konuşur. Kendi alt ajanlarına (ör. `inceley
 | ----------------- | ---------------------------------------------------- |
 | `/ozellik`        | Sorular → özellik dokümanı (kod yok)                 |
 | `/bitir`          | Bitirme adımları (genelde Claude kendisi çalıştırır) |
-| `/ekran`          | Ekran görüntüsü: koyu/açık, telefon/SE/iPad          |
 | `/magaza-kontrol` | Mağaza öncesi uygunluk kontrolü                      |
 | `/code-review`    | Son değişikliğin hata incelemesi                     |

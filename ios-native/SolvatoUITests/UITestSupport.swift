@@ -10,7 +10,7 @@ extension XCTestCase {
         // Ses motoru açılmaz: Codemagic simülatöründe ses servisi yanıt vermiyor (Audio.swift)
         app.launchArguments = ["-UITestTheme", theme, "-UITestNoAudio"] + (designSystem ? ["-UITestDesignSystem"] : []) + extraArgs
         if let scenario {
-            // senaryolar.json: `node scripts/referans.mjs --json ios-native/SolvatoUITests/senaryolar.json`
+            // senaryolar.json: web referans senaryolarından döküldü (scripts/referans.mjs, `web-arsiv` dalı); artık elle düzenlenir
             let url = try XCTUnwrap(Bundle(for: ScreenshotTests.self).url(forResource: "senaryolar", withExtension: "json"))
             let all = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
             let sc = try XCTUnwrap((all["senaryolar"] as? [String: Any])?[scenario] as? [String: Any], scenario)

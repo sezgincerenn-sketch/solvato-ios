@@ -110,11 +110,11 @@ Depo herkese açık olduğu sürece GitHub'ın Mac sunucusu ücretsiz; TestFligh
 github.com/sezgincerenn-sketch/solvato-ios → **Settings** → **Secrets and variables** → **Actions** →
 **New repository secret**. Her biri için **Name** ve **Secret** kutusunu doldur, **Add secret**:
 
-| Name | Secret kutusuna |
-| --- | --- |
-| `ASC_ISSUER_ID` | Issuer ID (ör. `69a6de7e-…`) |
-| `ASC_KEY_ID` | Key ID (ör. `ABC123DEFG`) |
-| `ASC_PRIVATE_KEY` | `.p8` dosyasının **tamamı** (`-----BEGIN PRIVATE KEY-----` satırından `-----END PRIVATE KEY-----` satırına kadar) |
+| Name                      | Secret kutusuna                                                                                                                         |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `ASC_ISSUER_ID`           | Issuer ID (ör. `69a6de7e-…`)                                                                                                            |
+| `ASC_KEY_ID`              | Key ID (ör. `ABC123DEFG`)                                                                                                               |
+| `ASC_PRIVATE_KEY`         | `.p8` dosyasının **tamamı** (`-----BEGIN PRIVATE KEY-----` satırından `-----END PRIVATE KEY-----` satırına kadar)                       |
 | `CERTIFICATE_PRIVATE_KEY` | Claude'un verdiği `CERTIFICATE_PRIVATE_KEY.txt` dosyasının tamamı (`-----BEGIN RSA PRIVATE KEY-----` … `-----END RSA PRIVATE KEY-----`) |
 
 Bu bilgileri sohbete yapıştırma; yalnız bu sayfaya girilir. GitHub girildikten sonra kimseye göstermez.
@@ -149,13 +149,10 @@ incelemesi gerekir.
 
 ### 11. Sonraki sürümler
 
-- Codemagic'te **Start new build** → dal **main** → iş akışı **Native iOS → TestFlight** (native sürüm) ya da
-  **iOS → TestFlight** (eski React sürümü). Bulut oturumundaki Claude git etiketi gönderemediği için derlemeyi
-  etiketle başlatamaz.
-- **Native iOS → testler ve ekranlar** TestFlight'a yüklemez ve imza istemez; `ios-native/` klasörü `main`e
-  gönderilince kendiliğinden başlar. Ekran görüntüleri derleme sayfasında **Artifacts** › `native-ekranlar.zip`.
-- Her derleme 500 aylık ücretsiz dakikanın yaklaşık 15–20'sini kullanır (ayda ~25 derleme). Her küçük değişiklik için
-  değil, denemeye değer bir grup değişiklik birikince gönder.
+- GitHub › Actions › **TestFlight** › **Run workflow** (dal `main`); ya da Claude başlatır. ~5 dakikada biter, sürüm
+  numarası 2000 + koşu numarası. Codemagic artık kullanılmıyor (27 Kasım'da `codemagic.yaml` silindi).
+- Ekran görüntüleri ve testler `ios-native/` `main`e gönderilince kendiliğinden koşar (`native-ekranlar.yml`); sonuçlar
+  `ekranlar` dalında.
 - Yeni derleme işlenince TestFlight bildirim gönderir; **Update** ile güncellenir, ilerleme silinmez.
 
 ---
