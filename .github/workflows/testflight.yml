@@ -79,6 +79,14 @@ jobs:
           echo "build $N" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: IPA oluştur
         run: xcode-project build-ipa --project ios-native/Solvato.xcodeproj --scheme Solvato
+      - name: Uygulama boyutu
+        # 0.8 performans ölçümü (erisilebilirlik-ipad.md §4): TestFlight paketi en çok 25 MB. Aşarsa uyarı verir,
+        # yüklemeyi durdurmaz.
+        run: |
+          BYTES=$(stat -f%z build/ios/ipa/*.ipa | head -1)
+          MB=$(python3 -c "print(f'{$BYTES/1048576:.1f}'.replace('.', ','))")
+          echo "Uygulama boyutu (IPA): $MB MB · sınır 25 MB" | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ "$BYTES" -gt $((25 * 1048576)) ]; then echo "::warning::Uygulama boyutu $MB MB, sınır 25 MB"; fi
       - name: TestFlight'a yükle
         run: |
           app-store-connect publish --path build/ios/ipa/*.ipa

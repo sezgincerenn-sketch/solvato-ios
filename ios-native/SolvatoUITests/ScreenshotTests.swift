@@ -464,40 +464,4 @@ final class ScreenshotTests: XCTestCase {
             Thread.sleep(forTimeInterval: 0.9)
         }
     }
-
-    @MainActor
-    private func launch(theme: String, scenario: String? = nil, designSystem: Bool = false) throws -> XCUIApplication {
-        let app = XCUIApplication()
-        // Ses motoru açılmaz: Codemagic simülatöründe ses servisi yanıt vermiyor (Audio.swift)
-        app.launchArguments = ["-UITestTheme", theme, "-UITestNoAudio"] + (designSystem ? ["-UITestDesignSystem"] : [])
-        if let scenario {
-            // senaryolar.json: `node scripts/referans.mjs --json ios-native/SolvatoUITests/senaryolar.json`
-            let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "senaryolar", withExtension: "json"))
-            let all = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
-            let sc = try XCTUnwrap((all["senaryolar"] as? [String: Any])?[scenario] as? [String: Any], scenario)
-            let store = try JSONSerialization.data(withJSONObject: sc["store"] as Any)
-            app.launchEnvironment["SOLVATO_SENARYO_STORE"] = String(decoding: store, as: UTF8.self)
-            app.launchEnvironment["SOLVATO_SENARYO_SIMDI"] = all["simdi"] as? String
-            app.launchEnvironment["SOLVATO_SENARYO_TOHUM"] = String(describing: all["tohum"] ?? "")
-            app.launchEnvironment["SOLVATO_SENARYO_ACILIS"] = (sc["splash"] as? Bool) == true ? "1" : "0"
-        }
-        app.launch()
-        return app
-    }
-
-    @MainActor
-    /// Öğe gelmezse o anki ekranı (ad: `<senaryo>-hata-<tema>`) ve erişilebilirlik ağacını kayda yazıp testi durdurur
-    private func must(_ app: XCUIApplication, _ el: XCUIElement, _ msg: String, shot: String, timeout: Double = 10) throws {
-        if el.waitForExistence(timeout: timeout) { return }
-        snap(shot)
-        print("── \(msg) · ekran ağacı ──\n\(app.debugDescription)")
-        XCTFail(msg)
-    }
-
-    private func snap(_ name: String) {
-        let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-        shot.name = name
-        shot.lifetime = .keepAlways
-        add(shot)
-    }
 }

@@ -4,6 +4,9 @@
 # Sonuç:
 # - Görüntüler (JPEG, küçültülmüş) ve hata özetleri `ekranlar` dalında; her koşu dalı baştan yazar (BENIOKU.md'de commit).
 # - Tam boy PNG'ler ve derleme günlükleri koşunun "Artifacts" bölümünde (native-ekranlar).
+# - Performans ölçümleri (0.8): `ekranlar` dalındaki performans.md tablosuna her koşuda bir satır eklenir (eski satırlar
+#   korunur); sınır aşılırsa iş kırmızı olur. Erişilebilirlik denetimi bulguları denetim-<cihaz>.txt.
+# - Güvenlik denetimi (0.8): kaynak taraması ayrı, hızlı Linux işinde (guvenlik); derlenmiş paket ekranlar işinde.
 name: Native ekranlar
 on:
   push:
@@ -21,6 +24,14 @@ concurrency:
 permissions:
   contents: write # ekranlar dalına yazmak için
 jobs:
+  guvenlik:
+    # Ağ API'si, dış adres, üçüncü taraf bağımlılık ve gizlilik bildirimi taraması (scripts/native-guvenlik.py)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Güvenlik denetimi (kaynak)
+        run: python3 scripts/native-guvenlik.py
   ekranlar:
     runs-on: macos-26
     timeout-minutes: 330 # 11+ test × 3 cihaz 2,5 saati aşabiliyor (GitHub sınırı 6 saat)
@@ -58,6 +69,10 @@ jobs:
             sips -s format jpeg -s formatOptions 75 --resampleWidth 700 "$f" --out "$D/$(basename "${f%.png}").jpg" > /dev/null
           done
           cp build/ekranlar/*.txt "$D/" 2>/dev/null || true
+          # Performans tablosu: dalda duran eski tabloya bu koşunun satırı eklenir
+          git fetch -q --depth=1 origin ekranlar 2>/dev/null && git show FETCH_HEAD:performans.md > /tmp/performans-eski.md 2>/dev/null || rm -f /tmp/performans-eski.md
+          python3 scripts/native-performans.py build/xcodebuild-performans.log "$( [ -s /tmp/performans-eski.md ] && echo /tmp/performans-eski.md || echo - )" \
+            "$D/performans.md" build/performans-asildi "$GITHUB_SHA" || true
           cp build/xcodebuild-derleme.log "$D/" 2>/dev/null || true
           {
             echo "# Native ekran görüntüleri"
@@ -66,9 +81,15 @@ jobs:
             echo "- Koşu: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
             echo "- Sonuç: $SONUC · $(ls "$D"/*.jpg 2>/dev/null | wc -l | tr -d ' ') görüntü"
             echo "- Testler ve cihazlar: $(grep -E '^(cihazlar|testler):' ios-native/ui-testleri.txt | tr '\n' ' ')"
+            echo "- Performans: performans.md$( [ -f build/performans-asildi ] && echo " · SINIR AŞILDI: $(tr '\n' ' ' < build/performans-asildi)")"
           } > "$D/BENIOKU.md"
           cd "$D"
           git init -q -b ekranlar
           git add -A
           git -c user.name="github-actions" -c user.email="github-actions@users.noreply.github.com" commit -qm "Ekranlar: ${GITHUB_SHA::7}"
           git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ekranlar
+      - name: Performans sınırları
+        if: always()
+        run: |
+          if [ -f build/performans-asildi ]; then echo "Sınır aşıldı:"; cat build/performans-asildi; exit 1; fi
+          echo "Performans sınırların altında (ya da ölçüm yok)"
