@@ -685,8 +685,10 @@ yazılır.
 - Ayarlar › Ses açıklaması: "Telefon sessiz moddayken de çalar." (Ses sessiz modda da çalıyor.)
 
 - 0.8 (Ceren, 27 Kasım; `docs/ozellikler/erisilebilirlik-ipad.md`): telefonda yazı boyutu büyütülünce metinler
-  xxxLarge'a kadar büyür; VoiceOver adları ve duyuruları; iPad'de Split View ve Stage Manager. Varsayılan ayarlarda
-  görünüm aynı kalır.
+  xxxLarge'a kadar büyür (tur ekranlarında xxLarge; porte, klavye, halkalar, ikonlar ve Solfie büyümez); VoiceOver adları
+  ve duyuruları (portedeki nota adı okunmaz); VoiceOver açıkken açılış beklemeden geçer; iPad'de Split View ve Stage
+  Manager (dar pencerede iPhone düzeni). Varsayılan ayarlarda görünüm aynı kalır.
+- Tablette donanım klavyesi kısayolları ve fare imleci yok (0.8 kapsam dışı).
 - Bilgisayara özgü davranışlar taşınmaz: fareyle üzerine gelme renkleri, boşluk tuşuyla Ritmi Tut, masaüstünde telefon
   çerçevesi, Android geri tuşu.
 

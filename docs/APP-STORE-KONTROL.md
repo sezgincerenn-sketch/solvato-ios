@@ -306,3 +306,4 @@ Her yeni özellik ya da bağımlılıktan sonra kısa kontrol (`bitir` becerisi,
 | 21.11.2026 | Sessiz modda ses (AppDelegate)            | Tamam: yeni izin yok, ağ isteği yok. 5c kapandı; cihazda doğrulanacak      |
 | 21.11.2026 | Codemagic derlemesi, Android'in ayrılması | Tamam: Xcode 26+ derlemede kontrol ediliyor (madde 0)                      |
 | 26.11.2026 | Native gezinme revizesi (4 sekme, Profil) | Tamam: yeni izin, bağımlılık ve ağ isteği yok; yeni ayarlar yalnız cihazda |
+| 27.11.2026 | 0.8 erişilebilirlik, iPad, ölçümler       | Tamam: yeni izin, bağımlılık ve ağ isteği yok; güvenlik denetimi otomatik  |

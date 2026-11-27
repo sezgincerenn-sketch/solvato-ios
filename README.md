@@ -115,6 +115,14 @@ ios-native/
   `main`e `ios-native/` değişince Mac sunucusunda uygulamayı derler, UI testlerini koşar (`scripts/native-ui-testleri.sh`,
   seçim `ios-native/ui-testleri.txt`). Küçültülmüş görüntüler ve hata özetleri **`ekranlar` dalında** (her koşu baştan
   yazar; `BENIOKU.md` hangi commit olduğunu söyler), tam boy PNG'ler koşunun Artifacts bölümünde.
+- **Erişilebilirlik ve iPad (0.8, `docs/ozellikler/erisilebilirlik-ipad.md`):** yazılar telefonun yazı boyutuyla
+  büyür (`Font.ui` ölçeklenir, büyümemesi gerekenler `Font.uiFixed`; sınır `AppTypeSize`: uygulama xxxLarge, turlar
+  xxLarge). VoiceOver metinleri `SolvatoCore/App/AccessibilityText.swift`'te (testli; soru portesinde nota adı yok),
+  duyurular `UI/Accessibility.swift` (`Announce`). iPad'de düzen pencere genişliğine bakar (Split View / Stage Manager).
+  Her `ios-native` gönderiminde: `scripts/native-guvenlik.py` (ağ API'si, dış adres, bağımlılık, gizlilik bildirimi; kaynak
+  ve derlenmiş paket), iPhone'da `PerformanceTests` → `ekranlar` dalında `performans.md` (sınır aşılırsa iş kırmızı),
+  `AccessibilityTests` seçilirse büyük yazı, iPad dört yön ve otomatik erişilebilirlik denetimi (`denetim-<cihaz>.txt`).
+  `ui-testleri.txt`'te `Sınıf/test` biçimi de olur.
 - **Derleme (Codemagic, iki iş akışı; ikisi de elle başlatılır, dakikalar TestFlight için):**
   - `ios-native-test`, imzasız: `swift test`, `xcodegen generate`, iPhone / küçük iPhone / iPad simülatörlerinde UI
     testleri ve ekran görüntüleri (`native-ekranlar.zip`, adlar web referanslarıyla aynı:

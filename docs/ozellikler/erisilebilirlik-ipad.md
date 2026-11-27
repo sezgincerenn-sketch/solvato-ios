@@ -166,3 +166,50 @@ Mağaza
 
 Yok. Ölçümler yalnız GitHub Actions'ta, simülatörde yapılır; uygulama hiçbir yere veri göndermez. VoiceOver ve yazı
 boyutu iOS'un kendi ayarlarıdır, uygulama kaydetmez.
+
+## Uygulama notları (27 Kasım)
+
+Ne nerede:
+
+- **Yazı boyutu:** `Typography.swift` `.ui` / `.mono` / `.term` telefonun yazı boyutuyla ölçeklenir (varsayılan
+  Large'da piksel piksel aynı); büyümeyen yerler `…Fixed` (klavye tuş adları, halka ve rozet içindeki sayılar, açılış,
+  logo, porte içindeki yazılar, soru turundaki büyük terim sembolü, ders şemalarındaki tuş adları). Sınır
+  `AppTypeSize`: uygulama xSmall…xxxLarge (`SolvatoApp`), tur ekranları (soru, akor, Ritmi Tut, düello) xxLarge
+  (`AppRoot`). Sabit yükseklikli düğmeler (tur sonucu, akor turu ana düğmesi) en az o yükseklikte büyür; yan yana
+  kutulardaki sayılar en çok %80'e küçülür.
+- **VoiceOver metinleri** çekirdekte ve testli: `SolvatoCore/App/AccessibilityText.swift` (noktalar, porte, cevap
+  duyurusu, süre, yıldız). Duyurular `UI/Accessibility.swift` (`Announce`, VoiceOver kapalıyken bir şey yapmaz).
+  Soru ve akor turunda sıradaki soruda odak soru başlığına gelir; ana sayfa ipucu balonu açılınca odak balona gelir.
+  Akor portesi de adı söylemeden okunur ("Porte: Sol anahtarı, bir akor"); akor klavyesinde tuşlar "seçili / doğru /
+  yanlış" değeriyle.
+- **Hareketi azalt:** sayfa geçişleri zaten anında (kayan geçiş yalnız parmakla kenardan kaydırırken); kart
+  animasyonları, konfeti, yıldızlar ve seri alevi `UI/Motion.swift` ve `CelebrationView`'da daha önce de hareketsizdi.
+- **iPad:** düzenler pencere genişliğine (size class) bakıyor; dar pencerede iPhone düzeni. `TabletColumn` artık dal
+  kurmuyor, pencere boyutu değişince ekran (ör. Ritmi Tut turu) sıfırlanmıyor. Soru turu ve tanıtım denemesi yüksekliği
+  ekranın değil pencerenin yüksekliğinden alıyor (Stage Manager).
+- **Testler:** `SolvatoUITests/AccessibilityTests.swift` (büyük yazı, iPad dört yön, otomatik erişilebilirlik
+  denetimi), `PerformanceTests.swift` (açılış, sekme geçişi, bellek, kaydırma; sekme geçişi uygulamadaki işaretle
+  ölçülür, `Solvato/Perf.swift`). Bozuk girdi ve veri koruması `SolvatoCore/Tests/.../InputFuzzTests.swift`.
+- **Güvenlik:** `scripts/native-guvenlik.py` (kaynak: ayrı Linux işi; paket: ekran işinde derlemeden sonra).
+  Performans tablosu `scripts/native-performans.py` → `ekranlar` dalı `performans.md`. Uygulama boyutu TestFlight
+  koşusunun özetinde (25 MB'ı aşarsa uyarı); Ritmi Tut dokunuş gecikmesi elle (otomatik ölçümü simülatörde anlamlı değil).
+
+Dokümandan sapmalar (Ceren'e bildirildi):
+
+- **Veri koruması:** kayıtlar bugün `completeUntilFirstUserAuthentication` değil, daha sıkı
+  `completeFileProtectionUnlessOpen` ile yazılıyor (G-09). Test bugünkü değeri doğrular; değiştirilmedi.
+- **Gizlilik bildirimi** UserDefaults'un yanında Ritmi Tut'un kullandığı sistem saatini de (SystemBootTime, 35F9.1)
+  beyan ediyor; doğru ve gerekli. Denetim ikisini birlikte bekler.
+
+Elle denenecekler (simülatörde otomatik yapılamıyor): VoiceOver'la tanıtım ve ilk tur; Ritmi Tut'ta VoiceOver açıkken tek
+dokunuş; iPad'de Split View 1/3, 1/2, 2/3 ve Stage Manager'ın en küçük penceresi.
+
+### Mağaza erişilebilirlik etiketleri (App Store Connect › Accessibility)
+
+| Etiket              | Öneri                 | Neden                                                                                                                                                                         |
+| ------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dark Interface      | İşaretlenebilir       | Koyu tema var ve varsayılan; sistem ayarına da uyuyor.                                                                                                                        |
+| Reduced Motion      | İşaretlenebilir       | Hareketi azalt açıkken animasyon, konfeti ve titreyen alev yok.                                                                                                               |
+| Sufficient Contrast | Denetimden sonra      | Otomatik denetimin kontrast bulguları temizlenince; soluk yazılar yalnız süs metinlerinde olmalı.                                                                             |
+| VoiceOver           | Şimdilik işaretlenmez | Ekranlar okunuyor, ama ana iş (portedeki notayı okumak) görerek yapılıyor; Apple "temel işler VoiceOver'la yapılabilmeli" diyor. Ceren'in denemesinden sonra yeniden bakılır. |
+| Larger Text         | İşaretlenmez          | Apple en az %200 büyüme bekliyor; yazı bilerek xxxLarge'da (yaklaşık %135) duruyor.                                                                                           |
