@@ -153,7 +153,7 @@ private struct MiniPiano: View {
             .clipShape(RoundedRectangle(cornerRadius: Radius.sm))
             Text(st.hint)
                 .font(.ui(FontSize.xs))
-                .foregroundStyle(ThemeColor.textFaint.color)
+                .foregroundStyle(ThemeColor.textSubtle.color)
                 .lineHeight(1.5, size: FontSize.xs)
                 .fixedSize(horizontal: false, vertical: true)
         }

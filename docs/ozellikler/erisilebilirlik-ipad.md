@@ -69,7 +69,7 @@ GitHub Actions her `main` gönderiminde simülatörde ölçer; sonuçlar `ekranl
 
 | Ölçüm                                 | Sınır (simülatörde)          |
 | ------------------------------------- | ---------------------------- |
-| Soğuk açılış (ilk kareye kadar)       | 1,5 sn                       |
+| Soğuk açılış (ilk kareye kadar)       | 4 sn                         |
 | Pratik ↔ İlerleme sekme geçişi        | 0,3 sn                       |
 | Bellek (10 soruluk tur boyunca, tepe) | 150 MB                       |
 | Pratik ve İlerleme kaydırma           | takılan kare oranı %1'den az |
@@ -206,23 +206,23 @@ dokunuş; iPad'de Split View 1/3, 1/2, 2/3 ve Stage Manager'ın en küçük penc
 
 ### Mağaza erişilebilirlik etiketleri (App Store Connect › Accessibility)
 
-| Etiket              | Öneri                         | Neden                                                                                                                                                                         |
-| ------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dark Interface      | İşaretlendi (Ceren, 27 Kasım) | Koyu tema var ve varsayılan; sistem ayarına da uyuyor.                                                                                                                        |
-| Reduced Motion      | İşaretlendi (Ceren, 27 Kasım) | Hareketi azalt açıkken animasyon, konfeti ve titreyen alev yok.                                                                                                               |
-| Sufficient Contrast | Denetimden sonra              | Otomatik denetimin kontrast bulguları temizlenince; soluk yazılar yalnız süs metinlerinde olmalı.                                                                             |
-| VoiceOver           | Şimdilik işaretlenmez         | Ekranlar okunuyor, ama ana iş (portedeki notayı okumak) görerek yapılıyor; Apple "temel işler VoiceOver'la yapılabilmeli" diyor. Ceren'in denemesinden sonra yeniden bakılır. |
-| Larger Text         | İşaretlenmez                  | Apple en az %200 büyüme bekliyor; yazı bilerek xxxLarge'da (yaklaşık %135) duruyor.                                                                                           |
+| Etiket              | Öneri                                       | Neden                                                                                                                                                                         |
+| ------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dark Interface      | İşaretlendi (Ceren, 27 Kasım)               | Koyu tema var ve varsayılan; sistem ayarına da uyuyor.                                                                                                                        |
+| Reduced Motion      | İşaretlendi (Ceren, 27 Kasım)               | Hareketi azalt açıkken animasyon, konfeti ve titreyen alev yok.                                                                                                               |
+| Sufficient Contrast | İşaretlenebilir (renk düzeltmesinden sonra) | Otomatik denetimin kontrast bulguları temizlenince; soluk yazılar yalnız süs metinlerinde olmalı.                                                                             |
+| VoiceOver           | Şimdilik işaretlenmez                       | Ekranlar okunuyor, ama ana iş (portedeki notayı okumak) görerek yapılıyor; Apple "temel işler VoiceOver'la yapılabilmeli" diyor. Ceren'in denemesinden sonra yeniden bakılır. |
+| Larger Text         | İşaretlenmez                                | Apple en az %200 büyüme bekliyor; yazı bilerek xxxLarge'da (yaklaşık %135) duruyor.                                                                                           |
 
 ### İlk ölçümler (27 Kasım, commit 7bfd203, GitHub Actions iPhone simülatörü)
 
-| Ölçüm                      | Değer               | Sınır  | Not                                                                                 |
-| -------------------------- | ------------------- | ------ | ----------------------------------------------------------------------------------- |
-| Soğuk açılış (ilk kare)    | 3,41 sn (3,19–4,01) | 1,5 sn | Aşıyor. Bulut Mac'teki simülatör yavaş; telefonda ölçülmedi. Sınır kararı Ceren'de. |
-| Pratik → İlerleme geçişi   | 0,07 sn             | 0,3 sn | Tamam (uygulamadaki işaretle ölçülür).                                              |
-| Bellek (tur boyunca, tepe) | 55 MB               | 150 MB | İlk koşuda tur testi yarıda kaldı (test düzeltildi); tam tur değeri sonraki koşuda. |
-| Kaydırma takılması         | ölçülemiyor         | %1     | Simülatör takılma oranı vermiyor, yalnız süre; cihazda Instruments ile bakılır.     |
-| Uygulama boyutu (IPA)      | 4,4 MB              | 25 MB  | Tamam (TestFlight 2008).                                                            |
+| Ölçüm                      | Değer               | Sınır            | Not                                                                                                       |
+| -------------------------- | ------------------- | ---------------- | --------------------------------------------------------------------------------------------------------- |
+| Soğuk açılış (ilk kare)    | 3,41 sn (3,19–4,01) | 4 sn (simülatör) | İlk ölçümde 1,5 sn sınırı aşıldı; Ceren sınırı simülatör için 4 sn yaptı (27 Kasım). Telefonda ölçülmedi. |
+| Pratik → İlerleme geçişi   | 0,07 sn             | 0,3 sn           | Tamam (uygulamadaki işaretle ölçülür).                                                                    |
+| Bellek (tur boyunca, tepe) | 55 MB               | 150 MB           | İlk koşuda tur testi yarıda kaldı (test düzeltildi); tam tur değeri sonraki koşuda.                       |
+| Kaydırma takılması         | ölçülemiyor         | %1               | Simülatör takılma oranı vermiyor, yalnız süre; cihazda Instruments ile bakılır.                           |
+| Uygulama boyutu (IPA)      | 4,4 MB              | 25 MB            | Tamam (TestFlight 2008).                                                                                  |
 
 ### Otomatik erişilebilirlik denetimi (27 Kasım)
 
@@ -233,7 +233,9 @@ dokunuş; iPad'de Split View 1/3, 1/2, 2/3 ve Stage Manager'ın en küçük penc
   veriyor. Token hesabı: bütün metin renkleri (`text`…`textSubtle`, renkli `…Text`) iki temada kart zemininde 4,5:1'in
   üstünde; ana düğme beyaz/mor 5,7:1. Tek eksik `textFaint` koyu temada kart üstünde **4,29:1**; yer tutucunun
   yanında birkaç okunan yazıda da kullanılıyor (ünvan listesindeki XP'ler, "SEÇİLEN", "✕ Temizle", İlerleme'de zayıf
-  not). Düzeltme görünümü değiştireceği için Ceren'e soruldu.
+  not). Ceren'in onayıyla (27 Kasım) okunan yazılarda `textSubtle`'a alındı (4,73:1): ünvan listesindeki
+  XP ve gelecek ünvanlar, akor turunda "SEÇİLEN" ve "✕ Temizle", İlerleme'deki zayıf not, Ana sayfa seviye açıklaması,
+  meydan okuma seviye notu, nota dersi ipucu. `textFaint` artık yalnız yer tutucu, boş durum ve süs yazılarında.
 - **Dokunma alanı (48):** akor ve ders klavyelerindeki siyah tuşlar (gerçek piyano oranı, küçültülemez) ve tıklanamayan
   bilgi öğeleri (noktalar, hedef çubuğu); denetim bunları yanlışlıkla dokunulabilir sayıyor.
 - **Kesik yazı (8):** ders listesi alt yazıları ve Oyunlar kartı alt yazısı tek satırda "…" ile kısalıyor (web'le aynı

@@ -332,7 +332,7 @@ struct LevelCardView: View {
             if detailed {
                 Text("Seviye, gelen soruların zorluğunu belirler. Ayarlar'dan elle de değiştirebilirsin.")
                     .font(.ui(FontSize.sm))
-                    .foregroundStyle(ThemeColor.textFaint.color)
+                    .foregroundStyle(ThemeColor.textSubtle.color)
                     .padding(.top, Space.s2)
             }
         }

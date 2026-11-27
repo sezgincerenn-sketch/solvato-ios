@@ -122,7 +122,7 @@ struct ProgressScreen: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(a.summary).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textMuted.color)
                         if let d = a.delta { Text(d).font(.ui(FontSize.sm, .semibold)).foregroundStyle(ThemeColor.greenText.color) }
-                        if let n = a.lowNote { Text(n).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textFaint.color) }
+                        if let n = a.lowNote { Text(n).font(.ui(FontSize.sm)).foregroundStyle(ThemeColor.textSubtle.color) }
                     }
                 }
             }

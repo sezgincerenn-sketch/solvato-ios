@@ -278,7 +278,7 @@ struct ChordQuizScreen: View {
                 Text("SEÇİLEN")
                     .font(.ui(FontSize.xs, .bold))
                     .tracking(em: 0.06, size: FontSize.xs)
-                    .foregroundStyle(ThemeColor.textFaint.color)
+                    .foregroundStyle(ThemeColor.textSubtle.color)
                 HStack(spacing: 5) {
                     if round.selectedKeys.isEmpty {
                         Text(round.emptyKeysText).font(.ui(FontSize.xs)).foregroundStyle(ThemeColor.textFaint.color)
@@ -298,7 +298,7 @@ struct ChordQuizScreen: View {
                 if !round.selectedKeys.isEmpty && round.pending {
                     Button("✕ Temizle") { round.clearKeys() }
                         .font(.ui(FontSize.sm))
-                        .foregroundStyle(ThemeColor.textFaint.color)
+                        .foregroundStyle(ThemeColor.textSubtle.color)
                 }
             }
             .padding(.vertical, 8)

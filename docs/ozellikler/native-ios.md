@@ -689,6 +689,9 @@ yazılır.
   ve duyuruları (portedeki nota adı okunmaz); VoiceOver açıkken açılış beklemeden geçer; iPad'de Split View ve Stage
   Manager (dar pencerede iPhone düzeni). Varsayılan ayarlarda görünüm aynı kalır.
 - Tablette donanım klavyesi kısayolları ve fare imleci yok (0.8 kapsam dışı).
+- Kontrast (Ceren, 27 Kasım): en soluk gri (`textFaint`) koyu temada kart üstünde 4,29:1 kaldığı için okunan yazılarda bir
+  ton koyusu (`textSubtle`) kullanılır: ünvan listesi, akor turunda "SEÇİLEN" ve "✕ Temizle", İlerleme'deki zayıf not,
+  Ana sayfa seviye açıklaması, meydan okuma seviye notu, nota dersi ipucu. Web'de bu yazılar daha soluk.
 - Bilgisayara özgü davranışlar taşınmaz: fareyle üzerine gelme renkleri, boşluk tuşuyla Ritmi Tut, masaüstünde telefon
   çerçevesi, Android geri tuşu.
 

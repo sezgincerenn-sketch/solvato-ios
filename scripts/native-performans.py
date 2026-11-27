@@ -11,7 +11,8 @@ from pathlib import Path
 
 # (test adı, ölçü adında geçen, tablo başlığı, birim dönüştürme, birim yazısı, sınır)
 METRICS = [
-    ("testSogukAcilis", "AppLaunch", "Soğuk açılış", lambda v, u: v, "sn", 1.5),
+    # Simülatör sınırı 4 sn (Ceren, 27 Kasım): bulut Mac simülatörü telefondan yavaş; yavaşlamayı yakalamak için
+    ("testSogukAcilis", "AppLaunch", "Soğuk açılış", lambda v, u: v, "sn", 4.0),
     ("testSekmeGecisi", "sekme", "Sekme geçişi", lambda v, u: v, "sn", 0.3),
     ("testBellekTur", "Memory Peak Physical", "Bellek (tur, tepe)", lambda v, u: v / 1024 if "kB" in u else v, "MB", 150),
     # Kaydırmada takılan kare oranı simülatörde gelmiyor (27 Kasım); cihazda elle bakılır

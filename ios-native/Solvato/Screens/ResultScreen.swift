@@ -245,10 +245,10 @@ struct RankCardView: View {
                         .background(Circle().fill(cur ? PaletteColor.amber400.color : done ? PaletteColor.amber500.opacity(0.25) : ThemeColor.fillStrong.color))
                         .accessibilityHidden(true)
                     Text(Ranks.all[i].label).frame(maxWidth: .infinity, alignment: .leading)
-                    Text(verbatim: "\(trNumber(Double(Ranks.all[i].min))) XP").font(.mono(FontSize.xs)).foregroundStyle(ThemeColor.textFaint.color)
+                    Text(verbatim: "\(trNumber(Double(Ranks.all[i].min))) XP").font(.mono(FontSize.xs)).foregroundStyle(ThemeColor.textSubtle.color)
                 }
                 .font(.ui(FontSize.sm, cur ? .bold : .medium))
-                .foregroundStyle((cur ? ThemeColor.text : done ? ThemeColor.textMuted : ThemeColor.textFaint).color)
+                .foregroundStyle((cur ? ThemeColor.text : done ? ThemeColor.textMuted : ThemeColor.textSubtle).color)
             }
         }
         .padding(.top, Space.s3)

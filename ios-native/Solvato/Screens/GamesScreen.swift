@@ -139,7 +139,7 @@ struct ChallengeGameScreen: View {
                     }
                     Text("Sorular senin seviyende gelir (\(QuestionLevel.label(level))).")
                         .font(.ui(FontSize.xs))
-                        .foregroundStyle(ThemeColor.textFaint.color)
+                        .foregroundStyle(ThemeColor.textSubtle.color)
                     AppButton("Başla", block: true) { model.startNewChallenge(category) }
                 }
             }
