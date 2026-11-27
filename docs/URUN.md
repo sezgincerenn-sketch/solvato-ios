@@ -43,7 +43,7 @@ ayarlar, öğrenci haftalık raporunu paylaşım menüsüyle öğretmenine gönd
 - [ ] **Telefonda oktav kontrolü**: telefonda piyano tek oktav gösterildiği için cevabın oktavı kontrol edilmiyor,
       geniş ekranda ediliyor. Orta ve İleri seviyede telefonda da oktavlı cevap düşünülmeli.
 - [ ] **Ritmi Tut gerçek telefonda**: dokunuş gecikmesi cihaza göre değişir; gerekirse `audioLatency`ye düzeltme.
-- [ ] Kapalı test: ses, bildirim, iPad, Ritmi Tut zamanlaması.
+- [ ] Kapalı test: ses, bildirim, iPad, Ritmi Tut zamanlaması. Yüz yüze, yakın çevreyle; rehber `docs/KAPALI-TEST.md`.
 
 Yayın sonrası adaylar:
 
