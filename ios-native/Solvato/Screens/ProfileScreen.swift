@@ -15,7 +15,7 @@ struct ProfileScreen: View {
         let rank = Ranks.from(xp: stats.totalPoints)
         let home = HomeContent(stats: stats, settings: s, daily: nil, now: model.now)
         VStack(spacing: 0) {
-            ScreenHeader(title: "Profil", onBack: nil) {
+            ScreenHeader(title: "Profil", tab: true, onBack: nil) {
                 Button { model.go(.settings) } label: {
                     Icon(.settings, size: 20)
                         .foregroundStyle(ThemeColor.textSecondary.color)

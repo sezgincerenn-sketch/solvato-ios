@@ -72,6 +72,8 @@ private struct BackArrow: Shape {
 struct ScreenHeader<Right: View>: View {
     let title: String
     var flush = false
+    /// Sekme ekranı (Profil): başlık İlerleme ve Öğren'deki TabTitle ile aynı yükseklikte (Ceren, 27 Kasım)
+    var tab = false
     let onBack: (() -> Void)?
     @ViewBuilder var right: Right
 
@@ -86,10 +88,13 @@ struct ScreenHeader<Right: View>: View {
                 .accessibilityAddTraits(.isHeader)
             right
         }
-        .padding(.top, flush ? 0 : Space.s4)
+        .padding(.top, flush ? 0 : tab ? Self.tabTop : Space.s4)
         .padding(.horizontal, flush ? 0 : Space.s4)
         .padding(.bottom, flush ? 0 : Space.s2)
     }
+
+    /// TabTitle yazısı kaydırma alanının 32 pt altında başlar; burada yazı 44 pt'lik satırda ortalı (sağdaki düğme)
+    static var tabTop: Double { 32 - (Touch.min - FontSize.xl * 1.26) / 2 }
 }
 
 extension ScreenHeader where Right == EmptyView {
