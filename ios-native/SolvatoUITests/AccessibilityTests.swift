@@ -64,11 +64,24 @@ final class AccessibilityTests: XCTestCase {
         }
     }
 
+    /// Erişilebilirlik denetimi üç teste bölünür: 10 ekran × 2 tema tek testte simülatörün 10 dakikalık sınırını aşıyor.
+    /// Bulgular test adından bağımsız "DENETIM|" satırlarıyla denetim-<cihaz>.txt'ye toplanır.
     @MainActor
-    func testErisilebilirlikDenetimi() throws {
+    func testErisilebilirlikDenetimi() throws { try audit(["pratik", "ilerleme", "ogren", "ders"]) }
+
+    /// Denetimin ikinci bölümü: Profil, Ayarlar, Oyunlar
+    @MainActor
+    func testErisilebilirlikDenetimiAlt() throws { try audit(["profil", "ayarlar", "oyunlar"]) }
+
+    /// Denetimin üçüncü bölümü: turlar
+    @MainActor
+    func testErisilebilirlikDenetimiTur() throws { try audit(["soru", "akor", "ritmi-tut"]) }
+
+    @MainActor
+    private func audit(_ screens: [String]) throws {
         continueAfterFailure = true
         executionTimeAllowance = 1800
-        for screen in ["pratik", "ilerleme", "ogren", "ders", "profil", "ayarlar", "oyunlar", "soru", "akor", "ritmi-tut"] {
+        for screen in screens {
             for theme in ["dark", "light"] {
                 let app = try launch(theme: theme, scenario: scenario(for: screen))
                 if !goTo(app, screen) { XCTFail("\(screen) açılmadı") }

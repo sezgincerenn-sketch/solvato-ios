@@ -58,7 +58,7 @@ while IFS='|' read -r SLUG TYPE RUNTIME; do
   { grep -E "error:|: error|failed \(|XCTAssert|Test Case .* failed|crash|Fatal error" "build/xcodebuild-$SLUG.log" | sort -u | head -80
     echo "── son satırlar ──"; tail -40 "build/xcodebuild-$SLUG.log"; } > "build/ekranlar/xcodebuild-$SLUG.txt" || true
   python3 scripts/native-ekranlar.py "build/ui-$SLUG.xcresult" "$SLUG" build/ekranlar || true
-  # Erişilebilirlik denetimi bulguları (AccessibilityTests/testErisilebilirlikDenetimi)
+  # Erişilebilirlik denetimi bulguları (AccessibilityTests/testErisilebilirlikDenetimi, …Alt, …Tur)
   grep -E "^DENETIM\|" "build/xcodebuild-$SLUG.log" | sort -u > "build/ekranlar/denetim-$SLUG.txt" || true
   [ -s "build/ekranlar/denetim-$SLUG.txt" ] || rm -f "build/ekranlar/denetim-$SLUG.txt"
   # Uygulama kapandıysa simülatörün çökme raporları (hangi satırda, hangi iş parçacığında) zip'e girer
