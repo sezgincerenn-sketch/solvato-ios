@@ -24,11 +24,7 @@ struct ShareTextLink<Label: View>: View {
         // Gezinme çubuğundaki düğmede (İlerleme'nin sağ üstü) alttaki görünüm pencereye bağlı olmayabilir: o zaman
         // uygulamanın açık penceresi kullanılır, iPad'de menü sağ üstten açılır
         let anchored = anchor.view.flatMap { $0.window != nil ? $0 : nil }
-        let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
-            .first { $0.activationState == .foregroundActive } ?? UIApplication.shared.connectedScenes.first as? UIWindowScene
-        guard let window = anchored?.window ?? scene?.keyWindow ?? scene?.windows.first, var top = window.rootViewController
-        else { return }
-        while let p = top.presentedViewController { top = p }
+        guard let top = Presenter.top(from: anchored) else { return }
         let sheet = UIActivityViewController(activityItems: [PlainTextShareItem(text: text)], applicationActivities: nil)
         if let popover = sheet.popoverPresentationController {
             if let anchored {

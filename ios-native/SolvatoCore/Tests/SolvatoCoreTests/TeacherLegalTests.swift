@@ -101,3 +101,15 @@ final class HelpContentTests: XCTestCase {
         XCTAssertEqual(AccessibilityText.disclosure(expanded: false), "daraltılmış")
     }
 }
+
+/// "Bize yaz": adres, konu ve gövdedeki sürüm satırı
+final class SupportMailTests: XCTestCase {
+    func testMail() {
+        XCTAssertEqual(HelpContent.supportEmail, "solfado.destek@gmail.com")
+        XCTAssertEqual(HelpContent.mailSubject, "Solfado destek")
+        XCTAssertEqual(HelpContent.copied, "E-posta adresi kopyalandı")
+        XCTAssertEqual(
+            HelpContent.mailBody(version: "1.0", build: "2017", system: "26.1", device: "iPhone"),
+            "\n\n\n—\nSolfado 1.0 (2017) · iPhone · iOS 26.1")
+    }
+}

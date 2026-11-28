@@ -1,6 +1,6 @@
 # Kullanıcı testi revizeleri (28 Kasım)
 
-Durum: **uygulandı (28 Kasım 2026)**; "Bize yaz" destek adresini bekliyor. SSS metinleri Ceren'in onayından geçti; yan çevirme, akor sesi, Ritmi Tut ve WhatsApp paylaşımı TestFlight 2016'da denendi (28 Kasım). Yalnız native iOS (`ios-native/`). Kaynak: kapalı
+Durum: **uygulandı (28 Kasım 2026)**; "Bize yaz" eklendi (solfado.destek@gmail.com). SSS metinleri Ceren'in onayından geçti; yan çevirme, akor sesi, Ritmi Tut ve WhatsApp paylaşımı TestFlight 2016'da denendi (28 Kasım). Yalnız native iOS (`ios-native/`). Kaynak: kapalı
 test (yüz yüze) notları. Bitince `inceleyici` ajanının karşılaştıracağı ölçüttür. Her madde ayrı commit olabilir.
 
 **Vazgeçilen:** sekme başlıklarının (İlerleme, Öğren, Profil) büyükten küçüğe geçişi bugünkü gibi kalır (Ceren: "bu
@@ -123,7 +123,7 @@ emeğini gösteren küçük eklemeler (toplam çalışma süresi, yardım ekran�
 - En altta **"Bize yaz"**: telefonun Mail uygulamasını destek adresiyle açar (konu: "Solfado destek", gövdede sürüm
   numarası). Uygulama kendisi bir şey göndermez. Mail kurulu değilse adres kopyalanır ve "E-posta adresi kopyalandı"
   bildirimi çıkar.
-- **Açık:** destek e-posta adresi Ceren'den gelecek; adres gelmeden "Bize yaz" eklenmez.
+- Destek adresi: **solfado.destek@gmail.com** (Ceren, 28 Kasım). E-posta penceresi uygulamanın içinde açılır (Apple'ın Mail penceresi); telefonda e-posta hesabı yoksa adres kopyalanır.
 
 ### 11. Akor düellosu › oyuncu adları
 
@@ -164,7 +164,7 @@ emeğini gösteren küçük eklemeler (toplam çalışma süresi, yardım ekran�
 - [ ] İlerleme'de Toplam süre · Tamamlanan tur · Çözülen soru; süre turlarda ve derslerde artıyor, diğer ekranlarda
       artmıyor; "35 dk" / "2 sa 15 dk" biçimi (çekirdek testi).
 - [ ] Profil'de renk seçimi yok; profil resmi mor.
-- [ ] Ayarlar'da Yardım ve destek satırı ve SSS ekranı var; "Bize yaz" Mail'i açıyor (adres geldikten sonra).
+- [ ] Ayarlar'da Yardım ve destek satırı ve SSS ekranı var; "Bize yaz" Mail'i açıyor (solfado.destek@gmail.com).
 - [ ] Düello kurulumunda ad kutuları boş, yer tutucu soluk; boş bırakılınca oyunda "1. oyuncu".
 - [x] WhatsApp'ta uygulama içinden kişi seçince metnin tamamı gidiyor (TestFlight'ta elle denenir).
 - [ ] Koyu/açık tema, iPhone SE, iPhone, iPad ekran görüntülerinde yeni parçalar taşmıyor; erişilebilirlik denetiminde
@@ -176,7 +176,7 @@ emeğini gösteren küçük eklemeler (toplam çalışma süresi, yardım ekran�
 - Giriş / hesap (`hesap.md`).
 - App Store Connect'teki ad, açıklama ve ekran görüntüleri (Ceren elle).
 - Android (dondurulmuş).
-- Destek e-posta adresi gelene kadar "Bize yaz".
+- Kendi alan adıyla destek adresi (şimdilik Gmail).
 
 ## Etkilenen dosyalar (tahmini)
 

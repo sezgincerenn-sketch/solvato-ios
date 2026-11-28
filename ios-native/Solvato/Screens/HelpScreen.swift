@@ -1,12 +1,13 @@
 // Ayarlar › Yardım ve destek: kısa sık sorulan sorular, açılır-kapanır satırlar (kullanici-testi-revize.md madde 10).
-// Başlık ve "‹ Ayarlar" geri düğmesi Apple'ın gezinme çubuğunda. Metinler SolvatoCore HelpContent'te. "Bize yaz" destek
-// adresi gelince eklenecek (dokümanda açık madde).
+// Başlık ve "‹ Ayarlar" geri düğmesi Apple'ın gezinme çubuğunda. En altta "Bize yaz": e-posta penceresini destek
+// adresiyle açar (UI/MailSupport), e-posta hesabı yoksa adresi kopyalar. Metinler SolvatoCore HelpContent'te.
 import SolvatoCore
 import SwiftUI
 
 struct HelpScreen: View {
     let model: AppModel
     @State private var open: Set<Int> = []
+    @State private var toast = ToastModel()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -27,6 +28,7 @@ struct HelpScreen: View {
                         }
                     }
                 }
+                contact.padding(.top, Space.s6)
             }
             .padding(.horizontal, 20)
             .padding(.top, Space.s2)
@@ -35,6 +37,25 @@ struct HelpScreen: View {
         }
         .scrollIndicators(.hidden)
         .background(ThemeColor.bg.color)
+        .overlay { ToastView(model: toast) }
+    }
+
+    /// Bize yaz: kısa not, adres ve düğme
+    private var contact: some View {
+        VStack(alignment: .leading, spacing: Space.s3) {
+            Text(HelpContent.mailNote)
+                .font(.ui(FontSize.sm))
+                .foregroundStyle(ThemeColor.textMuted.color)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(verbatim: HelpContent.supportEmail)
+                .font(.ui(FontSize.md, .semibold))
+                .foregroundStyle(ThemeColor.text.color)
+                .textSelection(.enabled)
+            AppButton(HelpContent.mailTitle, block: true) {
+                if !MailSupport.compose() { toast.show(HelpContent.copied) }
+            }
+        }
+        .padding(.horizontal, 4)
     }
 
     private func row(_ i: Int, _ item: HelpItem) -> some View {

@@ -11,6 +11,19 @@ public struct HelpItem: Equatable, Sendable {
 public enum HelpContent {
     public static let title = "Yardım ve destek"
 
+    // MARK: Bize yaz
+    public static let supportEmail = "solfado.destek@gmail.com"
+    public static let mailTitle = "Bize yaz"
+    public static let mailNote = "Bir sorun ya da önerin mi var? E-postayla yaz, en kısa sürede dönelim."
+    public static let mailSubject = "Solfado destek"
+    /// E-posta hesabı yoksa adres panoya kopyalanır
+    public static let copied = "E-posta adresi kopyalandı"
+
+    /// E-postanın gövdesi: yazı için boş satırlar, altta sürüm ve cihaz (sorunu bulmaya yardım eder)
+    public static func mailBody(version: String, build: String, system: String, device: String) -> String {
+        "\n\n\n—\nSolfado \(version) (\(build)) · \(device) · iOS \(system)"
+    }
+
     public static let items: [HelpItem] = [
         HelpItem(
             question: "Günlük hedef ve seri nasıl işler?",
