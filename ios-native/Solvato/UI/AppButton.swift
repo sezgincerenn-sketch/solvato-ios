@@ -52,7 +52,7 @@ struct AppButton<Icon: View>: View {
     var body: some View {
         Group {
             if let shareText {
-                ShareLink(item: AppStoreLink.appended(to: shareText)) { label }
+                ShareTextLink(text: AppStoreLink.appended(to: shareText)) { label }
             } else {
                 Button(action: action) { label }
             }

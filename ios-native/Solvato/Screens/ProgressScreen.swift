@@ -73,7 +73,7 @@ struct ProgressScreen: View {
             // Bu hafta kartı görünürken (çözülmüş soru varken): aynı metin, sonunda App Store bağlantısı
             if c.hasAnswers {
                 ToolbarItem(placement: .topBarTrailing) {
-                    ShareLink(item: AppStoreLink.appended(to: c.report.text)) {
+                    ShareTextLink(text: AppStoreLink.appended(to: c.report.text)) {
                         Label(AccessibilityText.shareWeeklyReport, systemImage: "square.and.arrow.up")
                     }
                 }

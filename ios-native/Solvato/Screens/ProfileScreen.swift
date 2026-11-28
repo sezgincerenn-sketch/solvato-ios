@@ -46,7 +46,7 @@ struct ProfileScreen: View {
                 TeacherCodeCard(model: model) { toast.show("Öğretmen kodu kaldırıldı") }
                 LevelCardView(content: home, detailed: true, actionLabel: "Ayarları aç") { model.go(.settings) }
                 RankCardView(xp: stats.totalPoints, detailed: true)
-                ShareLink(item: AppStoreLink.appended(to: WeeklyReport(stats: stats, settings: s, now: model.now).text)) {
+                ShareTextLink(text: AppStoreLink.appended(to: WeeklyReport(stats: stats, settings: s, now: model.now).text)) {
                     HStack(spacing: Space.s2) {
                         Icon(.share, size: 18)
                         Text("Haftalık raporu öğretmenine gönder")
