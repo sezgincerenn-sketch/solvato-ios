@@ -39,6 +39,9 @@ public enum AccessibilityText {
     /// Profil'in sağ üstündeki dişli
     public static let openSettings = "Ayarlar"
 
+    /// Açılır-kapanır satırın durumu (Yardım ve destek)
+    public static func disclosure(expanded: Bool) -> String { expanded ? "genişletilmiş" : "daraltılmış" }
+
     /// Ana sayfadaki seri hapının ipucu (dokununca seri balonu açılır)
     public static let streakHint = "Seri hakkında bilgi"
 

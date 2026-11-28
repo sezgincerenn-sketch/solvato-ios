@@ -219,6 +219,7 @@ struct AppRoot: View {
         case .teacher: TabletColumn { TeacherScreen(model: model) }
         case .privacy: TabletColumn { LegalScreen(model: model, page: .privacy) }
         case .licenses: TabletColumn { LegalScreen(model: model, page: .licenses) }
+        case .help: TabletColumn { HelpScreen(model: model) }
         }
     }
 

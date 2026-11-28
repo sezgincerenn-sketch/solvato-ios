@@ -83,3 +83,21 @@ final class TeacherLegalTests: XCTestCase {
         XCTAssertTrue(Legal.licenses.allSatisfy { ($0.text ?? "").count > 500 })
     }
 }
+
+/// Ayarlar › Yardım ve destek (kullanici-testi-revize.md madde 10): sorular ve cevaplardaki kurallar uygulamayla aynı
+final class HelpContentTests: XCTestCase {
+    func testItems() {
+        XCTAssertEqual(AppView.help.title, "Yardım ve destek")
+        XCTAssertTrue(AppView.help.swipesBack)
+        XCTAssertFalse(AppView.help.countsStudyTime)
+        XCTAssertEqual(
+            HelpContent.items.map(\.question),
+            [
+                "Günlük hedef ve seri nasıl işler?", "Seviyem nasıl yükselir?", "Öğretmen kodu nedir, nasıl kullanılır?",
+                "Haftalık raporu öğretmenime nasıl gönderirim?", "Ses gelmiyor, ne yapmalıyım?", "Verilerim nerede, silinir mi?",
+            ])
+        XCTAssertTrue(HelpContent.items[1].answer.contains("son 50 sorunun en az %80'ini"))
+        XCTAssertEqual(AccessibilityText.disclosure(expanded: true), "genişletilmiş")
+        XCTAssertEqual(AccessibilityText.disclosure(expanded: false), "daraltılmış")
+    }
+}

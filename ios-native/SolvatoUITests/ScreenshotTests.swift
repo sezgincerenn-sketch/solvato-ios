@@ -263,7 +263,7 @@ final class ScreenshotTests: XCTestCase {
 
     /// Gizlilik ve Lisanslar (Profil › Ayarlar'dan); ayrı test: 10 dakika sınırı
     @MainActor
-    func testHukuk() throws { try teacherLegalShots(["gizlilik", "lisanslar"]) }
+    func testHukuk() throws { try teacherLegalShots(["gizlilik", "lisanslar", "yardim", "yardim-acik"]) }
 
     @MainActor
     private func teacherLegalShots(_ names: [String]) throws {
@@ -283,9 +283,15 @@ final class ScreenshotTests: XCTestCase {
         }
         for name in names {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
-                let app = try launch(theme: theme, scenario: name)
+                // Yardım ekranları Gizlilik'in verisiyle açılır
+                let app = try launch(theme: theme, scenario: name.hasPrefix("yardim") ? "gizlilik" : name)
                 switch name {
                 case "gizlilik": open(app, "Gizlilik")
+                case "yardim": open(app, "Yardım ve destek")
+                case "yardim-acik":
+                    open(app, "Yardım ve destek")
+                    app.buttons["Seviyem nasıl yükselir?"].firstMatch.tap()
+                    Thread.sleep(forTimeInterval: 0.4)
                 case "lisanslar": open(app, "Lisanslar")
                 default:
                     open(app, "Öğretmen kodu")

@@ -10,6 +10,8 @@ public enum AppView: String, Sendable, CaseIterable {
     case gameDaily = "game-daily"
     case gameChallenge = "game-challenge"
     case gameresult, profile, lesson, teacher, privacy, licenses
+    /// Ayarlar › Yardım ve destek (kullanici-testi-revize.md madde 10)
+    case help
     /// Ayarlar › Çalışılacak notalar (ayarlar.md)
     case notes
 
@@ -31,7 +33,7 @@ public enum AppView: String, Sendable, CaseIterable {
     /// parmakla kayar ama geri dönülmez; bırakınca turun çıkış onayı açılır (R34).
     public var swipesBack: Bool {
         switch self {
-        case .settings, .notes, .result, .games, .gameDaily, .gameChallenge, .gameresult, .lesson, .teacher, .privacy, .licenses: true
+        case .settings, .notes, .result, .games, .gameDaily, .gameChallenge, .gameresult, .lesson, .teacher, .privacy, .licenses, .help: true
         default: false
         }
     }
@@ -64,6 +66,7 @@ public enum AppView: String, Sendable, CaseIterable {
         case .teacher: "Öğretmen kodu"
         case .privacy: "Gizlilik"
         case .licenses: "Lisanslar"
+        case .help: HelpContent.title
         }
     }
 

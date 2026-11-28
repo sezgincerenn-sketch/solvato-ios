@@ -83,6 +83,8 @@ struct SettingsScreen: View {
                     SettingsDivider()
                     LinkRow(title: "Tanıtımı tekrar göster") { model.showTutorial() }
                     SettingsDivider()
+                    LinkRow(title: HelpContent.title) { model.go(.help) }
+                    SettingsDivider()
                     LinkRow(title: "Gizlilik") { model.go(.privacy) }
                     SettingsDivider()
                     LinkRow(title: "Lisanslar") { model.go(.licenses) }

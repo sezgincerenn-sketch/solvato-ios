@@ -49,7 +49,7 @@ final class ScreenStackTests: XCTestCase {
     }
 
     func testSwipeOnlyOnSubScreens() {
-        XCTAssertEqual(AppView.allCases.filter(\.swipesBack).count, 11)
+        XCTAssertEqual(AppView.allCases.filter(\.swipesBack).count, 12)
         for v in [AppView.quiz, .chordquiz, .rhythmtap, .duel, .home, .dashboard, .study, .profile] { XCTAssertFalse(v.swipesBack, v.rawValue) }
         XCTAssertEqual(AppView.allCases.filter(\.isTab), [.home, .dashboard, .study, .profile], "alt menüde dört sekme")
         var s = ScreenStack()
