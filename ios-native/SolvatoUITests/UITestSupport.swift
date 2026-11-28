@@ -47,23 +47,24 @@ extension XCTestCase {
         add(shot)
     }
 
-    /// Pratik'ten bir ekrana gider (goTo). Ekranlar: pratik, ilerleme, ogren, ders, profil, ayarlar, oyunlar, soru, akor,
-    /// ritmi-tut. Ekran gelmezse false.
-    @MainActor
-    @discardableResult
     /// Alt menüde sekmeye dokunur ve seçildiğini doğrular. Simülatörde gezinme çubuğu yerleşirken sekme çubuğu kısa
     /// süre kayabiliyor; dokunuş komşu sekmeye düşerse yeniden dokunulur (gezinme-cubugu.md; telefonda sorun yok)
     @MainActor
     func tapTab(_ app: XCUIApplication, _ label: String) {
         let tab = app.tabBars.buttons[label].firstMatch
         _ = tab.waitForExistence(timeout: 5)
-        for _ in 0..<4 {
-            tab.tap()
+        // Dokunuş hep soldaki sekmeye düştüğü için her denemede biraz daha sağa
+        for i in 0..<4 {
+            tab.coordinate(withNormalizedOffset: CGVector(dx: 0.5 + 0.25 * Double(i), dy: 0.5)).tap()
             Thread.sleep(forTimeInterval: 0.4)
             if tab.isSelected { return }
         }
     }
 
+    /// Pratik'ten bir ekrana gider (goTo). Ekranlar: pratik, ilerleme, ogren, ders, profil, ayarlar, oyunlar, soru, akor,
+    /// ritmi-tut. Ekran gelmezse false.
+    @MainActor
+    @discardableResult
     func goTo(_ app: XCUIApplication, _ screen: String) -> Bool {
         guard app.buttons["Profil"].waitForExistence(timeout: 10) else { return false }
         func tapLabel(_ prefix: String, scroll: Bool = true) -> Bool {
