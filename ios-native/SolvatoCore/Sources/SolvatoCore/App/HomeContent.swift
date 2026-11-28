@@ -44,6 +44,8 @@ public struct HomeContent: Equatable, Sendable {
     // Üst çubuk
     public var streak: Int
     public var streakLabel: String
+    /// Seri hapına dokununca açılan balonun metni
+    public var streakTip: String
     public var rank: RankInfo
     public var xpValue: String
     public var xpLabel: String
@@ -95,6 +97,7 @@ public struct HomeContent: Equatable, Sendable {
         let streak = Progress.currentStreak(stats, now: now)
         self.streak = streak
         streakLabel = streak > 0 ? "\(streak) gün seri" : "Seri yok. Bugün bir tur çözünce başlar"
+        streakTip = HomeContent.streakTip(streak)
         self.rank = rank
         xpValue = "\(stats.totalPoints) XP"
         xpLabel = "\(stats.totalPoints) XP, \(rank.rank). ünvan: \(rank.label). Profili aç"
@@ -190,7 +193,7 @@ public struct HomeContent: Equatable, Sendable {
 
     /// Ekranda görünen yazılar ve erişilebilirlik adları, web'deki sırayla (diğer konular kapalıyken)
     public var texts: (texts: [String], labels: [String]) {
-        var t = ["Solv", "ato", String(streak), String(rank.rank), xpValue]
+        var t = ["Solf", "ado", String(streak), String(rank.rank), xpValue]
         var l = ["Solfado", streakLabel, xpLabel, "Seviye: \(levelLabel). Profili aç", "3 seviyeden \(level).", goalLabel]
         if let greeting { t.append(greeting) }
         t += ["Seviye", levelLabel] + [1, 2, 3].map(QuestionLevel.label) + [levelNote]
@@ -212,4 +215,16 @@ public struct HomeContent: Equatable, Sendable {
         }
         return (t, l)
     }
+}
+
+extension HomeContent {
+    /// Seri balonu (kullanici-testi-revize.md madde 3): seri varsa nasıl arttığı, yoksa nasıl başladığı
+    public static func streakTip(_ streak: Int) -> String {
+        streak > 0
+            ? "\(streak) günlük seri. Her gün günlük hedefini tamamlayınca 1 artar."
+            : "Bugün hedefini tamamlayınca serin başlar."
+    }
+
+    /// Balon kaç saniye açık kalır
+    public static let streakTipSeconds = 3.0
 }

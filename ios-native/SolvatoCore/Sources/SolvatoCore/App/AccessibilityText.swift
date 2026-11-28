@@ -39,6 +39,9 @@ public enum AccessibilityText {
     /// Profil'in sağ üstündeki dişli
     public static let openSettings = "Ayarlar"
 
+    /// Ana sayfadaki seri hapının ipucu (dokununca seri balonu açılır)
+    public static let streakHint = "Seri hakkında bilgi"
+
     /// Yıldızlar: "3 yıldızdan 2"
     public static func stars(_ value: Int, of total: Int = 3) -> String { "\(total) yıldızdan \(value)" }
 

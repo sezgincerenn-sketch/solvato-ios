@@ -11,6 +11,11 @@ struct HomeScreen: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     /// "Diğer konular" grubu; Profil'de "Diğer konuları da göster" açıksa açık gelir
     @State private var showRest: Bool
+    /// Seri hapının altındaki kısa balon (3 sn ya da başka yere dokununca kapanır)
+    @State private var streakTip = false
+    /// Balonun açıldığı an: açan dokunuş "başka yere dokunma" sayılıp hemen kapatmasın
+    @State private var streakTipOpened = Date.distantPast
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     init(model: AppModel, coachTarget: String? = nil) {
         self.model = model
@@ -32,7 +37,7 @@ struct HomeScreen: View {
         ScrollViewReader { proxy in
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                topBar(c).padding(.bottom, 20).id("top")
+                topBar(c).padding(.bottom, 20).id("top").zIndex(1)
                 if let g = c.greeting {
                     Text(g)
                         .font(.ui(FontSize.lg, .heavy))
@@ -64,7 +69,21 @@ struct HomeScreen: View {
             .remembersScroll(model, .home)
         }
         .scrollIndicators(.hidden)
-        .onChange(of: model.nav.rootTab) { _, t in resetOnVisit(t) }
+        // Başka yere dokununca seri balonu kapanır (dokunuş alttaki öğeye de gider)
+        .simultaneousGesture(TapGesture().onEnded {
+            if streakTip && Date().timeIntervalSince(streakTipOpened) > 0.3 { setStreakTip(false) }
+        })
+        .task(id: streakTip) {
+            guard streakTip else { return }
+            do {
+                try await Task.sleep(for: .seconds(HomeContent.streakTipSeconds))
+                setStreakTip(false)
+            } catch {}
+        }
+        .onChange(of: model.nav.rootTab) { _, t in
+            resetOnVisit(t)
+            streakTip = false
+        }
         .onChange(of: coachTarget, initial: true) { old, t in
             // İpuçları bitince (Atla / Anladım) sayfa başa kayar (web Coachmark)
             guard let t else {
@@ -92,8 +111,11 @@ struct HomeScreen: View {
             Logo(size: 30).accessibilityAddTraits(.isHeader).layoutPriority(-1)
             Spacer(minLength: Space.s2)
             HStack(spacing: Space.s2) {
-                // Seri hapı basılmaz (yalnız bilgi); XP hapı Profil sekmesini açar
-                StatPill(tone: c.streak > 0 ? .orange : .muted, value: String(c.streak), label: c.streakLabel, action: nil) {
+                // Seri hapı altında kısa bilgi balonu açar; XP hapı Profil sekmesini açar
+                StatPill(
+                    tone: c.streak > 0 ? .orange : .muted, value: String(c.streak), label: c.streakLabel,
+                    action: { setStreakTip(!streakTip) }, hint: AccessibilityText.streakHint
+                ) {
                     Icon(.flame, size: 17, fill: c.streak > 0).opacity(c.streak > 0 ? 1 : 0.6).flameFlicker(c.streak > 0)
                 }
                 StatPill(tone: .amber, value: c.xpValue, label: c.xpLabel, action: { model.selectTab(.profile) }) {
@@ -104,6 +126,23 @@ struct HomeScreen: View {
                         .background(Circle().fill(PaletteColor.amber400.color))
                 }
             }
+            // Seri balonu hapların altında, sağa hizalı; içerik üstünde durur
+            .overlay(alignment: .topTrailing) {
+                if streakTip {
+                    StreakTipBubble(text: c.streakTip)
+                        .alignmentGuide(.top) { $0[.top] - 44 }
+                        .onTapGesture { setStreakTip(false) }
+                        .transition(.opacity)
+                }
+            }
+        }
+    }
+
+    private func setStreakTip(_ on: Bool) {
+        if reduceMotion { streakTip = on } else { withAnimation(.easeOut(duration: 0.15)) { streakTip = on } }
+        if on {
+            streakTipOpened = Date()
+            Announce.post(content.streakTip)
         }
     }
 
@@ -368,5 +407,26 @@ private struct CoachIf: ViewModifier {
     let name: String
     func body(content: Content) -> some View {
         if on { content.coachTarget(name).id(name) } else { content }
+    }
+}
+
+/// Seri hapının altındaki kısa bilgi balonu (kullanici-testi-revize.md madde 3); büyük yazıda aşağı uzar
+private struct StreakTipBubble: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(.ui(FontSize.sm))
+            .foregroundStyle(ThemeColor.text.color)
+            .lineHeight(1.4, size: FontSize.sm)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(width: 240, alignment: .leading)
+            .padding(.vertical, 10)
+            .padding(.horizontal, 12)
+            .background(RoundedRectangle(cornerRadius: Radius.md).fill(ThemeColor.surface.color))
+            .overlay(RoundedRectangle(cornerRadius: Radius.md).strokeBorder(ThemeColor.borderStrong.color, lineWidth: 1))
+            .shadow(color: PaletteColor.black.opacity(0.25), radius: 10, y: 4)
+            // Açılınca metni VoiceOver'da duyurulur (HomeScreen.setStreakTip)
+            .accessibilityAddTraits(.isStaticText)
     }
 }

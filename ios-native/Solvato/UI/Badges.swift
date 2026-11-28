@@ -132,6 +132,8 @@ struct StatPill<Leading: View>: View {
     let label: String
     /// Verilmezse hap basılmaz, yalnız bilgi verir (seri hapı)
     let action: (() -> Void)?
+    /// VoiceOver ipucu (ör. "Seri hakkında bilgi")
+    var hint: String?
     /// Soldaki ikon ya da rozet; hap rengini alır
     @ViewBuilder var leading: Leading
 
@@ -140,6 +142,7 @@ struct StatPill<Leading: View>: View {
             Button(action: action) { pill }
                 .buttonStyle(.plain)
                 .accessibilityLabel(label)
+                .accessibilityHint(hint ?? "")
         } else {
             pill
                 .accessibilityElement(children: .ignore)

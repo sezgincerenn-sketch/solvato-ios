@@ -84,4 +84,12 @@ final class HomeContentTests: XCTestCase {
         XCTAssertEqual(c.todaySub, "Karma · 10 soru · ~3 dk · öğretmeninin konuları")
         XCTAssertEqual(c.streakLabel, "Seri yok. Bugün bir tur çözünce başlar")
     }
+
+    /// Seri balonu metni (kullanici-testi-revize.md madde 3)
+    func testStreakTip() {
+        XCTAssertEqual(HomeContent.streakTip(5), "5 günlük seri. Her gün günlük hedefini tamamlayınca 1 artar.")
+        XCTAssertEqual(HomeContent.streakTip(0), "Bugün hedefini tamamlayınca serin başlar.")
+        XCTAssertEqual(HomeContent.streakTipSeconds, 3)
+        XCTAssertEqual(AccessibilityText.streakHint, "Seri hakkında bilgi")
+    }
 }
