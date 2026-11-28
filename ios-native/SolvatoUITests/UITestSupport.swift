@@ -51,6 +51,19 @@ extension XCTestCase {
     /// ritmi-tut. Ekran gelmezse false.
     @MainActor
     @discardableResult
+    /// Alt menüde sekmeye dokunur ve seçildiğini doğrular. Simülatörde gezinme çubuğu yerleşirken sekme çubuğu kısa
+    /// süre kayabiliyor; dokunuş komşu sekmeye düşerse yeniden dokunulur (gezinme-cubugu.md; telefonda sorun yok)
+    @MainActor
+    func tapTab(_ app: XCUIApplication, _ label: String) {
+        let tab = app.tabBars.buttons[label].firstMatch
+        _ = tab.waitForExistence(timeout: 5)
+        for _ in 0..<4 {
+            tab.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+            if tab.isSelected { return }
+        }
+    }
+
     func goTo(_ app: XCUIApplication, _ screen: String) -> Bool {
         guard app.buttons["Profil"].waitForExistence(timeout: 10) else { return false }
         func tapLabel(_ prefix: String, scroll: Bool = true) -> Bool {
@@ -64,14 +77,14 @@ extension XCTestCase {
         switch screen {
         case "pratik": return true
         case "ilerleme":
-            app.buttons.matching(NSPredicate(format: "label CONTAINS 'İlerleme'")).firstMatch.tap()
-        case "ogren": app.buttons["Öğren"].firstMatch.tap()
+            tapTab(app, "İlerleme")
+        case "ogren": tapTab(app, "Öğren")
         case "ders":
-            app.buttons["Öğren"].firstMatch.tap()
+            tapTab(app, "Öğren")
             return tapLabel("Sol anahtarı notaları")
-        case "profil": app.buttons["Profil"].firstMatch.tap()
+        case "profil": tapTab(app, "Profil")
         case "ayarlar":
-            app.buttons["Profil"].firstMatch.tap()
+            tapTab(app, "Profil")
             Thread.sleep(forTimeInterval: 0.5)
             return tapLabel("Ayarlar", scroll: false)
         case "oyunlar": return tapLabel("Oyunlar")

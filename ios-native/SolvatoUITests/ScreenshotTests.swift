@@ -190,7 +190,7 @@ final class ScreenshotTests: XCTestCase {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: name)
                 XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
-                app.buttons.matching(NSPredicate(format: "label CONTAINS 'İlerleme'")).firstMatch.tap()
+                tapTab(app, "İlerleme")
                 Thread.sleep(forTimeInterval: 0.6)
                 if name == "ilerleme-alt" { for _ in 0..<5 { app.swipeUp() } }
                 Thread.sleep(forTimeInterval: 0.4)
@@ -209,7 +209,7 @@ final class ScreenshotTests: XCTestCase {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: name.hasPrefix("profil") ? name : "ayarlar")
                 XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
-                app.buttons["Profil"].firstMatch.tap()
+                tapTab(app, "Profil")
                 Thread.sleep(forTimeInterval: 0.5)
                 if name.hasPrefix("ayarlar") {
                     app.buttons["Ayarlar"].firstMatch.tap()
@@ -238,7 +238,7 @@ final class ScreenshotTests: XCTestCase {
         continueAfterFailure = false
         func open(_ app: XCUIApplication, _ row: String) {
             XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
-            app.buttons["Profil"].firstMatch.tap()
+            tapTab(app, "Profil")
             Thread.sleep(forTimeInterval: 0.5)
             if row != "Öğretmen kodu" {
                 app.buttons["Ayarlar"].firstMatch.tap()
@@ -292,7 +292,7 @@ final class ScreenshotTests: XCTestCase {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: name)
                 XCTAssertTrue(app.buttons["Öğren"].waitForExistence(timeout: 10))
-                app.buttons["Öğren"].firstMatch.tap()
+                tapTab(app, "Öğren")
                 let field = app.textFields["Konu ara"]
                 XCTAssertTrue(field.waitForExistence(timeout: 5), "Öğren açılmadı")
                 if name == "calisma-arama" {
@@ -324,7 +324,7 @@ final class ScreenshotTests: XCTestCase {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: "ders-\(id)")
                 XCTAssertTrue(app.buttons["Öğren"].waitForExistence(timeout: 10))
-                app.buttons["Öğren"].firstMatch.tap()
+                tapTab(app, "Öğren")
                 let row = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", title)).firstMatch
                 XCTAssertTrue(row.waitForExistence(timeout: 5), "ders satırı yok: \(title)")
                 for _ in 0..<8 where !row.isHittable { app.swipeUp() }
