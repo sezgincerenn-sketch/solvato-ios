@@ -306,20 +306,30 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
-    /// Çalışma dersleri (web "ders-<id>"): Çalışma'dan başlığa dokunarak açılır (19 ders)
+    /// Çalışma dersleri (web "ders-<id>"): Çalışma'dan başlığa dokunarak açılır (19 ders). İki teste bölünür: 19 ders ×
+    /// 2 tema tek testte simülatörün 10 dakikalık sınırını aşıyor.
     @MainActor
-    func testDersler() throws {
+    func testDersler() throws { try lessonShots(Self.lessons.filter { !$0.0.hasPrefix("terms-") && !$0.0.hasPrefix("rhythm-") }) }
+
+    /// Ritim ve terim dersleri (testDersler'in ikinci yarısı)
+    @MainActor
+    func testDerslerRitimTerim() throws { try lessonShots(Self.lessons.filter { $0.0.hasPrefix("terms-") || $0.0.hasPrefix("rhythm-") }) }
+
+    /// Dersler: kimlik (senaryo ders-<id>) ve Öğren listesindeki başlık
+    static let lessons: [(String, String)] = [
+        ("notes-treble", "Sol anahtarı notaları"), ("notes-bass", "Fa anahtarı notaları"),
+        ("mnemonic-treble", "Kolay hatırla: Sol anahtarı"), ("mnemonic-bass", "Kolay hatırla: Fa anahtarı"),
+        ("accidentals", "Diyez ve bemol"),
+        ("chords-build", "Majör ve minör nasıl kurulur"), ("chords-1", "Akor kartları: Başlangıç"),
+        ("chords-2", "Akor kartları: Orta"), ("chords-3", "Akor kartları: İleri"), ("chords-4", "Akor kartları: Uzman"),
+        ("rhythm-values", "Nota değerleri"), ("rhythm-rests", "Sus işaretleri"), ("rhythm-dotted", "Noktalı notalar"),
+        ("terms-Dinamikler", "Dinamikler"), ("terms-Tempo", "Tempo"), ("terms-Değişim işaretleri", "Değişim işaretleri"),
+        ("terms-Artikülasyon", "Artikülasyon"), ("terms-İfade", "İfade"), ("terms-Yapısal İşaretler", "Yapısal İşaretler"),
+    ]
+
+    @MainActor
+    private func lessonShots(_ lessons: [(String, String)]) throws {
         continueAfterFailure = false
-        let lessons = [
-            ("notes-treble", "Sol anahtarı notaları"), ("notes-bass", "Fa anahtarı notaları"),
-            ("mnemonic-treble", "Kolay hatırla: Sol anahtarı"), ("mnemonic-bass", "Kolay hatırla: Fa anahtarı"),
-            ("accidentals", "Diyez ve bemol"),
-            ("chords-build", "Majör ve minör nasıl kurulur"), ("chords-1", "Akor kartları: Başlangıç"),
-            ("chords-2", "Akor kartları: Orta"), ("chords-3", "Akor kartları: İleri"), ("chords-4", "Akor kartları: Uzman"),
-            ("rhythm-values", "Nota değerleri"), ("rhythm-rests", "Sus işaretleri"), ("rhythm-dotted", "Noktalı notalar"),
-            ("terms-Dinamikler", "Dinamikler"), ("terms-Tempo", "Tempo"), ("terms-Değişim işaretleri", "Değişim işaretleri"),
-            ("terms-Artikülasyon", "Artikülasyon"), ("terms-İfade", "İfade"), ("terms-Yapısal İşaretler", "Yapısal İşaretler"),
-        ]
         for (id, title) in lessons {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: "ders-\(id)")

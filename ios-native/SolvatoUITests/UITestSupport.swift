@@ -52,7 +52,11 @@ extension XCTestCase {
     @MainActor
     func tapTab(_ app: XCUIApplication, _ label: String) {
         let tab = app.tabBars.buttons[label].firstMatch
-        _ = tab.waitForExistence(timeout: 5)
+        // iPad'de sekmeler üstteki yüzen çubukta (TabBar değil): orada kayma yok, doğrudan dokunulur
+        guard tab.waitForExistence(timeout: 3) else {
+            app.buttons[label].firstMatch.tap()
+            return
+        }
         // Dokunuş hep soldaki sekmeye düştüğü için her denemede biraz daha sağa
         for i in 0..<4 {
             tab.coordinate(withNormalizedOffset: CGVector(dx: 0.5 + 0.25 * Double(i), dy: 0.5)).tap()
