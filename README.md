@@ -1,4 +1,4 @@
-# Solvato
+# Solfado (kod adı Solvato)
 
 Piyano öğrencileri için nota okuma, ritim, akor ve müzik terimleri pratiği. iPhone ve iPad uygulaması: **Swift +
 SwiftUI** (`ios-native/`), yalnız Apple çatıları, üçüncü taraf kod yok. Sunucu yok, hesap yok; tüm ilerleme telefonda.
@@ -25,7 +25,8 @@ dalda. Analitik sunucusu ve admin paneli `solvato-admin` reposunda (1.1).
 
 ## Marka
 
-- Ad: **Solvato** (_solve_ "çöz" + müzikteki _-ato_ eki). Yazıda "Solv" kalın, "ato" mor (`UI/Logo.swift`).
+- Ad: **Solfado** (28 Kasım'dan beri; önce Solvato). Yazıda "Solf" kalın, "ado" mor (`UI/Logo.swift`). Kod, klasör,
+  depo ve kayıt adları `Solvato` kalır; kullanıcıya görünen metinde eski ad olmadığını `AppNameTests` tarar.
 - Logo: piyano tuşları; üçüncü (sarı) tuşta anahtar deliği. Aynı geometri açılış animasyonunda (`SplashScreen.swift`).
 - Maskot: **Solfie** (sekizlik nota, amber bayrak), `UI/Solfie.swift`; `SolfieSays` konuşma balonuyla. Pozlar: `idle`,
   `wave`, `cheer`. Az görünür: tanıtım, tur sonucu, kutlama.
@@ -125,6 +126,17 @@ ios-native/
   dokunuşları tutar, Ritmi Tut'ta çoklu dokunuş (`UI/TouchDownPad`) ve bitiş sesi kesilmez, akor şıkları 60 pt (iç boşluk
   dahil), süre sayacı başlangıca bağlı, tanıtım satır araları, yer tutucu rengi `textFaint`, açılış notalarının solması,
   Hareketi azalt'ta açılış anında kalkar, Sistem temasında pencere ayarı da güncellenir.
+- **Kullanıcı testi revizeleri (yalnız native, 28 Kasım; `docs/ozellikler/kullanici-testi-revize.md`):** ad Solfado;
+  tanıtım 6 adım (`OnboardingStep`: giriş+ad, Do, Sol, öğretmen, `setup` = Ayarların, hazır; denemede doğru tuştan 1 sn
+  sonra kendiliğinden geçiş); Ana sayfada seri hapına dokununca balon (`HomeContent.streakTip`); günün meydan okuması
+  oynandıysa "Yeni meydan okuma yarın"; telefon yan çevrilince şıklı sorularda solda soru, sağda şıklar (`QuizScreen`,
+  `ChordQuizScreen`); akor turunda soru açılınca akor bir kez çalar; Ritmi Tut'ta alana dokunmak turu başlatır
+  (`RhythmTapRound.tapStarts`); **toplam çalışma süresi** (`AppStats.studySeconds`, istatistik kaydında; eski kayıtta
+  son turların süreleriyle başlar): `AppView.countsStudyTime` ekranlarında (turlar, oyunlar, düello, dersler) uygulama
+  öndeyken `AppModel.updateStudyClock` sayar, tek parça en çok 30 dk; profil resmi hep mor (renk seçimi kalktı,
+  `avatarColor` kayıtta durur ama kullanılmaz); Ayarlar › Yardım ve destek (`AppView.help`, `HelpContent`); düello ad
+  kutuları boş (`DuelGame.playerNames`); paylaşımlar düz metin (`UI/ShareTextLink`, WhatsApp'ta yalnız bağlantı
+  gitmesin).
 - **Ayarlar düzeni (yalnız native, `docs/ozellikler/ayarlar.md`):** dört kart (Çalışma · Sorular · Ses ve bildirim ·
   Diğer); satırda o anki değer, dokununca seçim penceresi (`UI/SettingsRows.swift`, değer yazıları `SettingsText`).
   Çalışılacak notalar ayrı ekran (`AppView.notes`). Hatırlatma saati Ayarlar'da satır ("19:00 ›"), tanıtımda büyük kutu.

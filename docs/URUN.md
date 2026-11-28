@@ -1,4 +1,4 @@
-# Solvato: ürün kararları ve yol haritası
+# Solfado: ürün kararları ve yol haritası
 
 Son güncelleme: 25 Kasım 2026. Bu dosya alınan kararları ve sıradaki işleri tutar; kod ayrıntısı `README.md`'de.
 
@@ -12,8 +12,8 @@ ayarlar, öğrenci haftalık raporunu paylaşım menüsüyle öğretmenine gönd
 
 | Konu          | Karar                                                                                                                                                                                                                                                                                                              |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Ad            | **Solvato** ("çöz" + müzikteki _-ato_). Eski ad Notalık. Uygulama kimliği `com.solvato.app`.                                                                                                                                                                                                                       |
-| Logo          | Piyano tuşları, sarı tuşta anahtar deliği (delik büyütülmeyecek). Yazıda "Solv" beyaz, "ato" mor.                                                                                                                                                                                                                  |
+| Ad            | **Solfado** (28 Kasım; önceki adlar Solvato ve Notalık). Kod, depo ve klasör adları `Solvato` kalır; uygulama kimliği `com.solvato.app`.                                                                                                                                                                           |
+| Logo          | Piyano tuşları, sarı tuşta anahtar deliği (delik büyütülmeyecek). Yazıda "Solf" beyaz, "ado" mor.                                                                                                                                                                                                                  |
 | Maskot        | **Solfie**, sekizlik nota; pozlar idle / wave / cheer. Az görünür.                                                                                                                                                                                                                                                 |
 | Gelir         | Yayında **reklamsız ve ücretsiz**. Sonra Solvato Plus, ardından ücretli öğretmen paneli. Ankette reklamdan bahseden herkes bırakma sebebi olarak yazdı.                                                                                                                                                            |
 | Veri          | Sunucu ve hesap yok, veri toplanmıyor. Mağazada "Data Not Collected".                                                                                                                                                                                                                                              |

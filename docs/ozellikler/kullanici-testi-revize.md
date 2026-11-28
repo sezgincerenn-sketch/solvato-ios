@@ -1,6 +1,6 @@
 # Kullanıcı testi revizeleri (28 Kasım)
 
-Durum: **taslak, Ceren'in cevaplarıyla yazıldı (28 Kasım 2026)**. Yalnız native iOS (`ios-native/`). Kaynak: kapalı
+Durum: **uygulandı (28 Kasım 2026)**; "Bize yaz" destek adresini bekliyor, SSS metinleri Ceren'in onayında. Yalnız native iOS (`ios-native/`). Kaynak: kapalı
 test (yüz yüze) notları. Bitince `inceleyici` ajanının karşılaştıracağı ölçüttür. Her madde ayrı commit olabilir.
 
 **Vazgeçilen:** sekme başlıklarının (İlerleme, Öğren, Profil) büyükten küçüğe geçişi bugünkü gibi kalır (Ceren: "bu

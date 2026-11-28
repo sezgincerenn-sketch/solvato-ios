@@ -698,6 +698,12 @@ yazılır.
 - Kontrast (Ceren, 27 Kasım): en soluk gri (`textFaint`) koyu temada kart üstünde 4,29:1 kaldığı için okunan yazılarda bir
   ton koyusu (`textSubtle`) kullanılır: ünvan listesi, akor turunda "SEÇİLEN" ve "✕ Temizle", İlerleme'deki zayıf not,
   Ana sayfa seviye açıklaması, meydan okuma seviye notu, nota dersi ipucu. Web'de bu yazılar daha soluk.
+- Kullanıcı testi revizeleri (Ceren, 28 Kasım; `docs/ozellikler/kullanici-testi-revize.md`): görünen ad Solfado;
+  tanıtım 6 adım (giriş ve ad bir arada, simgeli liste, denemede doğru tuştan 1 sn sonra kendiliğinden ilerler, yanlış
+  uyarısı kalır; anahtar, seviye, hedef ve hatırlatma tek "Ayarların" ekranında); seri hapı balonu; günün meydan
+  okumasında "Yeni meydan okuma yarın"; telefonda yan çevrilmiş şıklı sorular ve akor turu iki sütun; akor turunda soru
+  açılınca akor çalar; Ritmi Tut'ta "Başlamak için dokun"; İlerleme'de Toplam süre kutusu (Seri kutusu kalktı); profil
+  rengi seçimi yok (hep mor); Ayarlar › Yardım ve destek; düello ad kutuları boş; paylaşımlar düz metin.
 - Bilgisayara özgü davranışlar taşınmaz: fareyle üzerine gelme renkleri, boşluk tuşuyla Ritmi Tut, masaüstünde telefon
   çerçevesi, Android geri tuşu.
 

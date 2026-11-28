@@ -1,6 +1,8 @@
 # Tanıtım ve öğretmen kodu ekranı
 
-Durum: **onaylandı, native'de uygulandı (26 Kasım 2026)**. Çekirdek ölçütleri testlerle doğrulandı; ekran ölçütleri
+Durum: **onaylandı, native'de uygulandı (26 Kasım 2026)**. 28 Kasım'da adımlar 9'dan 6'ya indi (giriş ve ad bir
+arada, denemelerde kendiliğinden ilerleme, anahtar/seviye/hedef/hatırlatma tek ekranda): `kullanici-testi-revize.md`
+madde 2 bu dokümandaki adım sırasının yerine geçer. Çekirdek ölçütleri testlerle doğrulandı; ekran ölçütleri
 GitHub Actions simülatör görüntüleriyle (`ekranlar` dalı) kapanacak. Yalnız native iOS'a yazılır (`ios-native/`). Kapsadığı revizeler
 (`docs/ozellikler/tasarim-revize.md`): R5 (tanıtımdaki soru adımı), R9, R12, R27, R28 ve R35 (öğretmen kodu ekranı
 role göre). R5'in Profil tarafı (kart başlıkları) `gezinme.md`'de yapıldı.

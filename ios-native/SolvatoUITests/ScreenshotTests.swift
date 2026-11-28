@@ -483,6 +483,50 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Telefon yan çevrilmiş turlar (kullanici-testi-revize.md madde 5): karma turda art arda dört soru (piyano
+    /// sorusundan sonra şıklı sorular da yan düzende), ritim, kulak ve akor turu
+    @MainActor
+    func testYanTur() throws {
+        try XCTSkipIf(UIDevice.current.userInterfaceIdiom == .pad, "yan düzen telefonda denenir")
+        continueAfterFailure = false
+        defer { XCUIDevice.shared.orientation = .portrait }
+        let topics: [(String, String, String)] = [("yan-ritim", "soru-ritim", "Ritim & Ölçü"), ("yan-kulak", "soru-kulak", "Kulak"), ("yan-akor", "akor", "Akor")]
+        for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
+            // Karma tur: "Devam et" / "Bugünün çalışması"; her soru cevaplanıp sıradakine geçilir
+            XCUIDevice.shared.orientation = .portrait
+            let app = try launch(theme: theme, scenario: "sonuc")
+            XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
+            app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Devam et' OR label BEGINSWITH 'Bugünün çalışması' OR label BEGINSWITH 'Bir tur daha'")).firstMatch.tap()
+            try must(app, app.buttons["Turdan çık"], "yan-karma: tur açılmadı", shot: "yan-karma-hata-\(tr)", timeout: 5)
+            XCUIDevice.shared.orientation = .landscapeLeft
+            Thread.sleep(forTimeInterval: 1.0)
+            for i in 1...4 {
+                snap("yan-karma-\(i)-\(tr)")
+                let key = app.buttons["Do tuşu"].firstMatch
+                if key.exists { key.tap() } else { app.buttons.allElementsBoundByIndex.last { $0.isEnabled && $0.isHittable }?.tap() }
+                Thread.sleep(forTimeInterval: 0.4)
+                if i == 1 { snap("yan-karma-cevap-\(tr)") }
+                let next = app.buttons.matching(NSPredicate(format: "label IN {'Sıradaki', 'Turu bitir'}")).firstMatch
+                if next.exists && next.isHittable { next.tap() }
+                Thread.sleep(forTimeInterval: 0.9)
+            }
+            app.terminate()
+            for (name, scenario, topic) in topics {
+                XCUIDevice.shared.orientation = .portrait
+                let app = try launch(theme: theme, scenario: scenario)
+                XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
+                let card = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", topic)).firstMatch
+                for _ in 0..<6 where !(card.exists && card.isHittable) { app.swipeUp(velocity: .slow) }
+                card.tap()
+                try must(app, app.buttons["Turdan çık"], "\(name): tur açılmadı", shot: "\(name)-hata-\(tr)", timeout: 5)
+                XCUIDevice.shared.orientation = .landscapeLeft
+                Thread.sleep(forTimeInterval: 1.0)
+                snap("\(name)-\(tr)")
+                app.terminate()
+            }
+        }
+    }
+
     /// Tur sonucu ve kutlama: Pratik'te "Devam et" ile karma tur açılır, sonuna kadar oynanır (web turuBitir)
     @MainActor
     func testSonuc() throws {
