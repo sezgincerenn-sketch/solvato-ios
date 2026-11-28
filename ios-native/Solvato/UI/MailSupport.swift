@@ -29,10 +29,11 @@ enum MailSupport {
 }
 
 /// Pencere gönderilince ya da vazgeçilince kapanır
-private final class MailDelegate: NSObject, MFMailComposeViewControllerDelegate {
+@MainActor
+private final class MailDelegate: NSObject, @preconcurrency MFMailComposeViewControllerDelegate {
     static let shared = MailDelegate()
 
-    nonisolated func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        MainActor.assumeIsolated { controller.dismiss(animated: true) }
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
     }
 }
