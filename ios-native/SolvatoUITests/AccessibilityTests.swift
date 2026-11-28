@@ -10,30 +10,41 @@ final class AccessibilityTests: XCTestCase {
     /// Yazı boyutu başlatma argümanı (iOS'un Ayarlar'daki boyutuyla aynı)
     private func size(_ category: String) -> [String] { ["-UIPreferredContentSizeCategoryName", category] }
 
+    /// Büyük yazı üç teste bölünür: 13 ekran tek testte simülatörün 10 dakikalık sınırını aşıyor
+    private static let xxxl = ("UICTContentSizeCategoryXXXL", "xxxl")
+    private static let ax5 = ("UICTContentSizeCategoryAccessibilityXXXL", "ax5")
+
+    /// xxxLarge: sekme ekranları ve Ayarlar
     @MainActor
-    func testBuyukYazi() throws {
+    func testBuyukYazi() throws { try largeText(Self.xxxl, ["pratik", "ilerleme", "profil", "ayarlar", "ogren"]) }
+
+    /// xxxLarge: ders, Oyunlar ve turlar
+    @MainActor
+    func testBuyukYaziAlt() throws { try largeText(Self.xxxl, ["ders", "oyunlar", "soru", "akor", "ritmi-tut"]) }
+
+    /// En büyük erişilebilirlik boyutu (uygulama xxxLarge'da durur)
+    @MainActor
+    func testBuyukYaziEnBuyuk() throws { try largeText(Self.ax5, ["pratik", "ayarlar", "soru"]) }
+
+    @MainActor
+    private func largeText(_ size: (String, String), _ screens: [String]) throws {
         let pad = UIDevice.current.userInterfaceIdiom == .pad
         try XCTSkipIf(pad, "büyük yazı telefonda denenir")
         continueAfterFailure = true
         executionTimeAllowance = 1800
-        let screens = ["pratik", "ilerleme", "profil", "ayarlar", "ogren", "ders", "oyunlar", "soru", "akor", "ritmi-tut"]
-        for (category, tag, list) in [
-            ("UICTContentSizeCategoryXXXL", "xxxl", screens),
-            ("UICTContentSizeCategoryAccessibilityXXXL", "ax5", ["pratik", "ayarlar", "soru"]),
-        ] {
-            for screen in list {
-                let app = try launch(theme: "dark", scenario: scenario(for: screen), extraArgs: size(category))
-                if !goTo(app, screen) { XCTFail("\(screen) açılmadı (\(tag))") }
-                Thread.sleep(forTimeInterval: 0.5)
-                snap("buyuk-yazi-\(screen)-\(tag)-koyu")
-                // Uzun sayfaların altı da (kesik yazı en çok kartların altında çıkar)
-                if ["pratik", "ilerleme", "profil", "ayarlar", "ogren"].contains(screen) {
-                    for _ in 0..<3 { app.swipeUp() }
-                    Thread.sleep(forTimeInterval: 0.4)
-                    snap("buyuk-yazi-\(screen)-alt-\(tag)-koyu")
-                }
-                app.terminate()
+        let (category, tag) = size
+        for screen in screens {
+            let app = try launch(theme: "dark", scenario: scenario(for: screen), extraArgs: self.size(category))
+            if !goTo(app, screen) { XCTFail("\(screen) açılmadı (\(tag))") }
+            Thread.sleep(forTimeInterval: 0.5)
+            snap("buyuk-yazi-\(screen)-\(tag)-koyu")
+            // Uzun sayfaların altı da (kesik yazı en çok kartların altında çıkar)
+            if ["pratik", "ilerleme", "profil", "ayarlar", "ogren"].contains(screen) {
+                for _ in 0..<3 { app.swipeUp() }
+                Thread.sleep(forTimeInterval: 0.4)
+                snap("buyuk-yazi-\(screen)-alt-\(tag)-koyu")
             }
+            app.terminate()
         }
     }
 
