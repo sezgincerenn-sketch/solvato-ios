@@ -1,0 +1,38 @@
+# Gizlilik ve destek sitesi: scripts/site.mjs sayfaları üretir (site/ayarlar.json + uygulamanın hukuk.json'u), GitHub
+# Pages yayınlar. Adresler: https://sezgincerenn-sketch.github.io/solvato-ios/ , .../gizlilik/ , .../destek/
+# (App Store Connect'teki Gizlilik Politikası ve Destek adresleri). Depo ayarlarında Pages kaynağı "GitHub Actions"
+# olmalı. Kendi alan adına geçilirse SITE_BASE "/" olur.
+name: Site
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "scripts/site.mjs"
+      - "ios-native/SolvatoCore/Sources/SolvatoCore/Resources/hukuk.json"
+      - ".github/workflows/site.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: site
+  cancel-in-progress: true
+jobs:
+  yayinla:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sayfaları üret
+        run: SITE_BASE=/solvato-ios/ node scripts/site.mjs
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

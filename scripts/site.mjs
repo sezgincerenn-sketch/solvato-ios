@@ -2,13 +2,16 @@
 // metninden (ios-native/SolvatoCore/Sources/SolvatoCore/Resources/hukuk.json) `site/dist/` altına üç sayfa üretir:
 // index.html, gizlilik/index.html, destek/index.html. Gizlilik sayfası uygulamadaki Gizlilik ekranıyla aynı metni taşır
 // (tek kaynak hukuk.json); geliştirici adı ve iletişim e-postası ayarlar.json'dan. Bağımlılığı yok (yalnız Node).
-// Cloudflare Pages `site/dist`'i yayınlar. Kullanım: node scripts/site.mjs
+// GitHub Pages yayınlar (.github/workflows/site.yml; adres kökü SITE_BASE, ör. "/solvato-ios/"). Kullanım:
+// node scripts/site.mjs  ya da  SITE_BASE=/solvato-ios/ node scripts/site.mjs
 import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..")
 const out = join(root, "site/dist")
+// Sitenin adres kökü: kendi alan adında "/", GitHub Pages proje sayfasında "/solvato-ios/"
+const base = (process.env.SITE_BASE || "/").replace(/\/?$/, "/")
 const cfg = JSON.parse(readFileSync(join(root, "site/ayarlar.json"), "utf8"))
 const eksik = ["gelistirici", "eposta"].filter((k) => !cfg[k])
 if (eksik.length) console.warn(`Uyarı: site/ayarlar.json'da boş alan: ${eksik.join(", ")} (sayfada yer tutucu görünür)`)
@@ -31,7 +34,7 @@ const WEIGHTS = [
 ]
 const fonts = WEIGHTS.map(
   ([w]) =>
-    `@font-face{font-family:Outfit;font-weight:${w};font-display:swap;src:url(/fonts/outfit-${w}.ttf) format("truetype")}`,
+    `@font-face{font-family:Outfit;font-weight:${w};font-display:swap;src:url(${base}fonts/outfit-${w}.ttf) format("truetype")}`,
 ).join("\n")
 
 // Uygulamanın renkleri (SolvatoCore Tokens.swift): koyu tema, sistem açıksa açık tema
@@ -56,9 +59,9 @@ nav{display:flex;gap:16px;margin-top:40px;font-size:14px}
 const page = (title, body) => `<!doctype html>
 <html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title><meta name="robots" content="index,follow"><style>${css}</style></head>
-<body><main><a class="logo" href="/">Solv<span>ato</span></a>
+<body><main><a class="logo" href="${base}">Solf<span>ado</span></a>
 ${body}
-<nav><a href="/gizlilik/">Gizlilik</a><a href="/destek/">Destek</a></nav>
+<nav><a href="${base}gizlilik/">Gizlilik</a><a href="${base}destek/">Destek</a></nav>
 <p class="muted">© ${new Date().getFullYear()} ${esc(ad)}</p>
 </main></body></html>
 `

@@ -140,6 +140,9 @@ Kural: uygulama "yeniden paketlenmiş bir web sitesinin" ötesine geçen özelli
 - **22 Kasım:** sayfalar hazır: `node scripts/site.mjs` → `site/dist/` (ana sayfa, `/gizlilik/`, `/destek/`). Gizlilik
   metni uygulamadaki `legal.ts` `PRIVACY`'den üretilir (tek kaynak). Kalan: `site/ayarlar.json`'a geliştirici adı ve
   iletişim e-postası, alan adı (Cloudflare) ve Cloudflare Pages'te yayın.
+- **28 Kasım:** ad ve e-posta girildi (Ceren Sezgin Kahraman, solfado.destek@gmail.com). Yayın GitHub Pages'te
+  (`.github/workflows/site.yml`): https://sezgincerenn-sketch.github.io/solvato-ios/gizlilik/ ve `/destek/`. Bu iki adres
+  App Store Connect'e girilir. Kendi alan adı alınırsa oraya taşınır.
 
 ## 3. Info.plist (`ios/App/App/Info.plist`)
 

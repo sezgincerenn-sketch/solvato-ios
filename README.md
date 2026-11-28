@@ -40,7 +40,7 @@ dalda. Analitik sunucusu ve admin paneli `solvato-admin` reposunda (1.1).
 cd ios-native/SolvatoCore && swift test     # çekirdek testleri (Linux'ta da koşar)
 python3 scripts/native-guvenlik.py          # güvenlik taraması
 npm install && npx prettier --write docs/x.md   # dokümanları biçimle (tek npm bağımlılığı Prettier)
-node scripts/site.mjs                       # gizlilik/destek sitesi → site/dist
+node scripts/site.mjs                       # gizlilik/destek sitesi → site/dist (GitHub Pages yayınlar: site.yml)
 ```
 
 Arayüz (SwiftUI) Mac gerektirir; Mac yok, GitHub Actions'ın Mac sunucusunda derlenir:

@@ -38,7 +38,9 @@ final class AppNameTests: XCTestCase {
         let legal = try String(contentsOf: root.appendingPathComponent("SolvatoCore/Sources/SolvatoCore/Resources/hukuk.json"), encoding: .utf8)
         XCTAssertFalse(legal.contains("Solvato"))
         XCTAssertTrue(legal.contains("Solfado"))
+        // Logodaki "Solf<span>ado</span>" gibi bölünmüş yazım da sayılır
         let site = try String(contentsOf: root.appendingPathComponent("../scripts/site.mjs"), encoding: .utf8)
+            .replacingOccurrences(of: "<span>", with: "")
         let siteText = site.components(separatedBy: "\n").filter { !$0.contains("SolvatoCore") && !$0.contains("ios-native/Solvato/") }
         XCTAssertFalse(siteText.contains { $0.contains("Solvato") }, "site metninde eski ad")
     }
