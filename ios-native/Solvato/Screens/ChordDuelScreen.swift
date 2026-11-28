@@ -7,7 +7,9 @@ import SwiftUI
 
 struct ChordDuelScreen: View {
     let model: AppModel
-    @State private var names = DuelGame.defaultNames
+    /// Kutulara yazılan adlar (boş gelir); oyunda boş olanın yerine varsayılan ad
+    @State private var typed = ["", ""]
+    private var names: [String] { DuelGame.playerNames(typed) }
     @State private var level: Int
     @State private var game: DuelGame?
     @State private var confirmExit = false
@@ -58,7 +60,9 @@ struct ChordDuelScreen: View {
                 .lineHeight(1.5, size: FontSize.sm)
                 .fixedSize(horizontal: false, vertical: true)
             ForEach(0..<2, id: \.self) { i in
-                TextField("", text: Binding(get: { names[i] }, set: { names[i] = String($0.prefix(DuelGame.nameLimit)) }))
+                TextField(
+                    "", text: Binding(get: { typed[i] }, set: { typed[i] = String($0.prefix(DuelGame.nameLimit)) }),
+                    prompt: Text(DuelGame.defaultNames[i]).foregroundStyle(ThemeColor.textFaint.color))
                     .font(.ui(FontSize.md))
                     .lineHeight(1.5, size: FontSize.md)
                     .foregroundStyle(ThemeColor.text.color)

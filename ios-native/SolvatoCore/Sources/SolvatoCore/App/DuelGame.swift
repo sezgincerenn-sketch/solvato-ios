@@ -18,6 +18,15 @@ public struct DuelGame: Equatable, Sendable {
     public static let colors: [PaletteColor] = [.violet500, .amber500]
     public static let defaultNames = ["1. oyuncu", "2. oyuncu"]
     public static let nameLimit = 14
+
+    /// Kurulumda ad kutuları boş gelir; boş bırakılan ad oyunda ve sonuçta "1. oyuncu" / "2. oyuncu"
+    /// (kullanici-testi-revize.md madde 11)
+    public static func playerNames(_ typed: [String]) -> [String] {
+        defaultNames.indices.map { i in
+            let t = i < typed.count ? typed[i].trimmingCharacters(in: .whitespacesAndNewlines) : ""
+            return t.isEmpty ? defaultNames[i] : t
+        }
+    }
     public static let intro =
         "Telefonu ikinizin arasına, masaya koyun. Ekranın iki yarısı var, her biri bir oyuncunun. Doğru akora ilk basan puanı alır. Yanlış basan o soruda bir daha basamaz. \(rounds) soru."
 

@@ -36,4 +36,11 @@ final class DuelGameTests: XCTestCase {
         XCTAssertEqual(g.scoreText, "1 – 0")
         XCTAssertEqual(g.exitText, "Skor 1 – 0. Çıkarsan düello yarıda kalır.")
     }
+
+    /// Ad kutuları boş gelir; boş ya da yalnız boşluk olan ad varsayılan
+    func testPlayerNames() {
+        XCTAssertEqual(DuelGame.playerNames(["", ""]), ["1. oyuncu", "2. oyuncu"])
+        XCTAssertEqual(DuelGame.playerNames(["Ada", "  "]), ["Ada", "2. oyuncu"])
+        XCTAssertEqual(DuelGame.playerNames([" Ali ", "Can"]), ["Ali", "Can"])
+    }
 }
