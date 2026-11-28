@@ -120,7 +120,7 @@ public struct WeeklyReport: Equatable, Sendable {
 
     /// WhatsApp'a uygun düz metin
     public var text: String {
-        var lines = ["🎹 Solvato · Haftalık rapor", (name.isEmpty ? "" : name + " · ") + range, ""]
+        var lines = ["🎹 Solfado · Haftalık rapor", (name.isEmpty ? "" : name + " · ") + range, ""]
         if questions == 0 {
             lines.append("Bu hafta çalışma yapılmadı.")
         } else {

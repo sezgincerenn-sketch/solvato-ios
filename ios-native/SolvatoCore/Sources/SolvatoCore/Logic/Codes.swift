@@ -161,8 +161,8 @@ public enum TeacherCode {
 
     /// Paylaşım mesajı: kod en üstte, tek başına (R30); öğretmen kodu Profil'de (gezinme.md)
     public static func shareText(code: String, _ t: TeacherSetup) -> String {
-        ([code, "", "🎹 Solvato · Öğretmen kodu", ""] + describe(t).map { "• \($0)" }
-            + ["", "Solvato'da Profil › Öğretmen kodu bölümüne bu kodu yapıştır."]).joined(separator: "\n")
+        ([code, "", "🎹 Solfado · Öğretmen kodu", ""] + describe(t).map { "• \($0)" }
+            + ["", "Solfado'da Profil › Öğretmen kodu bölümüne bu kodu yapıştır."]).joined(separator: "\n")
     }
 }
 

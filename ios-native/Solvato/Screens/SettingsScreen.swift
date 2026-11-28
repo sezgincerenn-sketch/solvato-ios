@@ -118,7 +118,7 @@ struct SettingsScreen: View {
                 model.settings.reminder = true
                 reminderMsg = ""
             } else {
-                reminderMsg = "Bildirim izni verilmedi. iPhone Ayarlar → Solvato → Bildirimler bölümünden açabilirsin."
+                reminderMsg = "Bildirim izni verilmedi. iPhone Ayarlar → Solfado → Bildirimler bölümünden açabilirsin."
             }
         }
     }

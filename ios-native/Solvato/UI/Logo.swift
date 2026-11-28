@@ -1,5 +1,5 @@
-// Solvato logosu: mor kare içinde piyano tuşları; üçüncüsü sarı ve üstünde anahtar deliği ("notaların şifresini çöz")
-// + "Solv·ato" yazısı. Web karşılığı src/components/Logo.tsx; geometri aynı (1024 birimlik çizim).
+// Solfado logosu: mor kare içinde piyano tuşları; üçüncüsü sarı ve üstünde anahtar deliği ("notaların şifresini çöz")
+// + "Solf·ado" yazısı. Web karşılığı src/components/Logo.tsx; geometri aynı (1024 birimlik çizim).
 import SolvatoCore
 import SwiftUI
 
@@ -52,11 +52,11 @@ struct Logo: View {
         HStack(spacing: (size * 0.3).rounded()) {
             LogoMark(size: size)
             HStack(alignment: .firstTextBaseline, spacing: 1) {
-                Text("Solv")
+                Text("Solf")
                     .font(.uiFixed(fontSize, .heavy))
                     .tracking(-0.02 * fontSize)
                     .foregroundStyle(ThemeColor.text.color)
-                Text("ato")
+                Text("ado")
                     .font(.uiFixed(fontSize, .semibold))
                     .tracking(0.03 * fontSize)
                     .foregroundStyle(ThemeColor.violetText.color)
@@ -64,6 +64,6 @@ struct Logo: View {
             .accessibilityHidden(true)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Solvato")
+        .accessibilityLabel("Solfado")
     }
 }

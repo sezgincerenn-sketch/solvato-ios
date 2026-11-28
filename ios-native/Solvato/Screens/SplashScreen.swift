@@ -66,10 +66,10 @@ struct SplashScreen: View {
         }
     }
 
-    /// "Solv" beyaz, "ato" mor (Logo ile aynı); her harf 50 ms arayla aşağıdan gelir
+    /// "Solf" beyaz, "ado" mor (Logo ile aynı); her harf 50 ms arayla aşağıdan gelir
     private func word(_ t: Double) -> some View {
         HStack(spacing: 0) {
-            ForEach(Array("Solvato".enumerated()), id: \.offset) { i, ch in
+            ForEach(Array("Solfado".enumerated()), id: \.offset) { i, ch in
                 let p = Motion.ease.progress(t, delay: 1.15 + Double(i) * 0.05, duration: 0.4)
                 Text(String(ch))
                     .font(.uiFixed(40, i >= 4 ? .semibold : .heavy))

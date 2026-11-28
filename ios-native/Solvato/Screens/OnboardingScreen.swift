@@ -106,7 +106,7 @@ struct OnboardingScreen: View {
                         .foregroundStyle(ThemeColor.text.color)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
-                    Text("Solvato, piyano öğrencileri için kısa pratik turları: nota, ritim, akor ve kulak. Ne kadar ilerlediğini de gösterir.")
+                    Text("Solfado, piyano öğrencileri için kısa pratik turları: nota, ritim, akor ve kulak. Ne kadar ilerlediğini de gösterir.")
                         .font(.ui(FontSize.md))
                         .foregroundStyle(ThemeColor.textSoft.color)
                         .lineHeight(1.5, size: FontSize.md)

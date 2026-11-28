@@ -141,7 +141,7 @@ struct ResultScreen: View {
                 model.settings.reminderMinute = m
                 withAnimation { offer = false }
             } else {
-                offerMsg = "Bildirim izni verilmedi. iPhone Ayarlar → Solvato → Bildirimler bölümünden açabilirsin."
+                offerMsg = "Bildirim izni verilmedi. iPhone Ayarlar → Solfado → Bildirimler bölümünden açabilirsin."
             }
         }
     }

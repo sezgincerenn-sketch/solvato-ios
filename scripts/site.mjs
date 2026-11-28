@@ -64,7 +64,7 @@ ${body}
 `
 
 const gizlilik = page(
-  "Solvato · Gizlilik Politikası",
+  "Solfado · Gizlilik Politikası",
   `<h1>Gizlilik Politikası</h1><p class="muted">Son güncelleme: ${esc(cfg.guncelleme)}</p>
 ${PRIVACY.map((s) => `<h2>${esc(s.title)}</h2>\n${s.body.map((p) => `<p>${esc(p)}</p>`).join("\n")}`).join("\n")}
 <h2>İletişim</h2>
@@ -72,7 +72,7 @@ ${PRIVACY.map((s) => `<h2>${esc(s.title)}</h2>\n${s.body.map((p) => `<p>${esc(p)
 )
 
 const destek = page(
-  "Solvato · Destek",
+  "Solfado · Destek",
   `<h1>Destek</h1>
 <p>Bir sorun mu var, ya da bir öneri? Bize e-postayla yaz.</p>
 <div class="card"><p><strong>E-posta:</strong> ${mail}</p>
@@ -83,15 +83,15 @@ const destek = page(
 <h3>Öğretmen kodunu nereye girerim?</h3>
 <p>Profil › Öğretmen kodu. Öğretmeninin gönderdiği 6 haneli kodu girince çalışacağın notalar ve seviye öğretmeninin seçtiği gibi ayarlanır.</p>
 <h3>Ses gelmiyor.</h3>
-<p>Profil › Ayarlar › Ses açık mı, bak. Solvato telefonun sessiz düğmesi açıkken de çalar; ses yine gelmiyorsa cihazın ses düzeyini yükselt.</p>
+<p>Profil › Ayarlar › Ses açık mı, bak. Solfado telefonun sessiz düğmesi açıkken de çalar; ses yine gelmiyorsa cihazın ses düzeyini yükselt.</p>
 <h3>Günlük hatırlatma gelmiyor.</h3>
-<p>Profil › Ayarlar › Günlük hatırlatma açık olmalı ve iPhone Ayarlar › Bildirimler › Solvato'da bildirimlere izin verilmeli.</p>`,
+<p>Profil › Ayarlar › Günlük hatırlatma açık olmalı ve iPhone Ayarlar › Bildirimler › Solfado'da bildirimlere izin verilmeli.</p>`,
 )
 
 const index = page(
-  "Solvato",
+  "Solfado",
   `<h1>Nota okuma ve müzik teorisi pratiği</h1>
-<p>Solvato, piyano öğrencileri için günde birkaç dakikalık nota okuma, ritim, akor, kulak ve müzik terimleri pratiği. Öğretmenle birlikte kullanılır.</p>
+<p>Solfado, piyano öğrencileri için günde birkaç dakikalık nota okuma, ritim, akor, kulak ve müzik terimleri pratiği. Öğretmenle birlikte kullanılır.</p>
 <p class="muted">iPhone ve iPad için. Reklam yok, hesap gerekmez, veri toplanmaz.</p>`,
 )
 

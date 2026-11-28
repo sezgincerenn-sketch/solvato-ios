@@ -42,7 +42,7 @@ targets:
       properties:
         CFBundleDevelopmentRegion: tr
         CFBundleLocalizations: [tr]
-        CFBundleDisplayName: Solvato
+        CFBundleDisplayName: Solfado
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         ITSAppUsesNonExemptEncryption: false

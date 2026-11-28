@@ -32,5 +32,5 @@ public enum Legal {
     /// Native sürüm yalnız yazı tiplerini kullanır: React ve Capacitor çıkar (özellik dokümanı E-14)
     public static let nativeLicenses = ["Bravura", "Outfit", "JetBrains Mono"]
     public static var licenses: [License] { file.licenses.filter { nativeLicenses.contains($0.name) } }
-    public static let licensesIntro = "Solvato aşağıdaki açık kaynaklı yazı tiplerini ve yazılımları kullanır. Teşekkürler!"
+    public static let licensesIntro = "Solfado aşağıdaki açık kaynaklı yazı tiplerini ve yazılımları kullanır. Teşekkürler!"
 }

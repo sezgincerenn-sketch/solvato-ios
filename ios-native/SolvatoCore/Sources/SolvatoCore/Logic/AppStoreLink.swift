@@ -5,7 +5,7 @@ import Foundation
 public enum AppStoreLink {
     public static let appID = "6837820383"
     public static let url = "https://apps.apple.com/app/id\(appID)"
-    public static let line = "Solvato'yu App Store'dan indir: \(url)"
+    public static let line = "Solfado'yu App Store'dan indir: \(url)"
 
     /// Paylaşılacak metin + boş satır + indirme bağlantısı
     public static func appended(to text: String) -> String { "\(text)\n\n\(line)" }

@@ -191,7 +191,7 @@ public struct HomeContent: Equatable, Sendable {
     /// Ekranda görünen yazılar ve erişilebilirlik adları, web'deki sırayla (diğer konular kapalıyken)
     public var texts: (texts: [String], labels: [String]) {
         var t = ["Solv", "ato", String(streak), String(rank.rank), xpValue]
-        var l = ["Solvato", streakLabel, xpLabel, "Seviye: \(levelLabel). Profili aç", "3 seviyeden \(level).", goalLabel]
+        var l = ["Solfado", streakLabel, xpLabel, "Seviye: \(levelLabel). Profili aç", "3 seviyeden \(level).", goalLabel]
         if let greeting { t.append(greeting) }
         t += ["Seviye", levelLabel] + [1, 2, 3].map(QuestionLevel.label) + [levelNote]
         t += ["Bugün", dailyText, goalFooter, todayTitle, todaySub, "Oyunlar", "Meydan okuma ve düello", gamesBadge, sectionTitle]

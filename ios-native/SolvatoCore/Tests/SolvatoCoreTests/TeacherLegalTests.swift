@@ -20,7 +20,7 @@ final class TeacherLegalTests: XCTestCase {
         let code = TeacherCode.encode(setup)
         let text = TeacherCode.shareText(code: code, setup)
         XCTAssertEqual(text.components(separatedBy: "\n").first, code)
-        XCTAssertTrue(text.hasSuffix("Solvato'da Profil › Öğretmen kodu bölümüne bu kodu yapıştır."))
+        XCTAssertTrue(text.hasSuffix("Solfado'da Profil › Öğretmen kodu bölümüne bu kodu yapıştır."))
         XCTAssertEqual(TeacherFlow.pasted(text), code)
         XCTAssertEqual(TeacherFlow.pasted(code.lowercased()), code)
         XCTAssertEqual(TeacherFlow.pasted("🎹 Solvato · Öğretmen kodu\nKod: \(code)\n"), code, "eski mesaj biçimi")

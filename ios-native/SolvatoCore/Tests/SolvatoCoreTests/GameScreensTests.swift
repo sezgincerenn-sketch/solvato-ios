@@ -54,7 +54,7 @@ final class GameScreensTests: XCTestCase {
         // R30: kod en üstte, tek başına; mesajın tamamı yapıştırılsa da kod bulunur
         XCTAssertEqual(
             mine.shareText,
-            "\(code)\n\nAyşe sana meydan okuyor! 🎹\nRitim: 7/10 · 42 sn\nGeçebilir misin? Solvato'da Oyunlar › \"Sana kod mu geldi?\" kısmına kodu yapıştır.")
+            "\(code)\n\nAyşe sana meydan okuyor! 🎹\nRitim: 7/10 · 42 sn\nGeçebilir misin? Solfado'da Oyunlar › \"Sana kod mu geldi?\" kısmına kodu yapıştır.")
         XCTAssertEqual(GameScreens.pastedCode(mine.shareText), code)
         XCTAssertEqual(GameScreens.pastedCode("  \(code.lowercased())  "), code)
     }

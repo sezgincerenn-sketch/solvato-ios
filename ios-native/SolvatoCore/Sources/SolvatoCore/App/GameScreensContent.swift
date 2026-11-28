@@ -13,7 +13,7 @@ public enum GameScreens {
     }
 
     public static func dailyShareText(no: Int, category: GameCategory, correct: Int, sec: Int, marks: String) -> String {
-        "🎹 Solvato · Günün meydan okuması #\(no)\n\(category.label) · \(correct)/\(Games.length) · \(Games.formatSeconds(sec))\n\(marks)"
+        "🎹 Solfado · Günün meydan okuması #\(no)\n\(category.label) · \(correct)/\(Games.length) · \(Games.formatSeconds(sec))\n\(marks)"
     }
 
     public static func dailyFooter(streak: Int) -> String {
@@ -100,7 +100,7 @@ public struct GameResultContent: Sendable {
             let who = name.trimmingCharacters(in: .whitespacesAndNewlines)
             // Kod en üstte, tek başına (R30)
             shareText =
-                "\(code)\n\n\(who.isEmpty ? "Bir arkadaşın" : who) sana meydan okuyor! 🎹\n\(cat): \(sum.correct)/\(n) · \(fmt(sum.sec))\nGeçebilir misin? Solvato'da Oyunlar › \"Sana kod mu geldi?\" kısmına kodu yapıştır."
+                "\(code)\n\n\(who.isEmpty ? "Bir arkadaşın" : who) sana meydan okuyor! 🎹\n\(cat): \(sum.correct)/\(n) · \(fmt(sum.sec))\nGeçebilir misin? Solfado'da Oyunlar › \"Sana kod mu geldi?\" kısmına kodu yapıştır."
         case let .challenge(_, _, _, o?):
             // Önce doğru sayısı, eşitse süre; ikisi de eşitse berabere
             let win: Bool? = sum.correct != o.correct ? sum.correct > o.correct : sum.sec != o.sec ? sum.sec < o.sec : nil
