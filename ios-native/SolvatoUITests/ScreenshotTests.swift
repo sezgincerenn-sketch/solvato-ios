@@ -40,35 +40,34 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
-    /// İlk açılış tanıtımı (tanitim.md): web referans adları ve dokunuşlar; giriş, öğretmen sorusu, saat çarkı, geri oku
-    /// ve öğretmen yolu (tanıtım biter, öğretmen kodu ekranı yalnız hazırlama bölümüyle; bağlantıyla kod girme bölümü)
+    /// İlk açılış tanıtımı (tanitim.md, kullanici-testi-revize.md): giriş ve ad, iki deneme (doğru tuştan 1 sn sonra
+    /// kendiliğinden ilerler), öğretmen sorusu
     @MainActor
     func testTanitim() throws {
         continueAfterFailure = false
-        let tries = ["Başlayalım", "Devam", "Do tuşu", "Devam", "Sol tuşu", "Devam"]
+        let tries = ["Başla", "Do tuşu", "+1.4", "Sol tuşu", "+1.4"]
         let steps: [(String, [String])] = [
             ("tanitim-0-giris", []),
-            ("tanitim-1-merhaba", ["Başlayalım"]),
-            ("tanitim-2-deneme", ["Başlayalım", "Devam"]),
-            ("tanitim-2-yanlis", ["Başlayalım", "Devam", "Re tuşu"]),
-            ("tanitim-2-dogru", ["Başlayalım", "Devam", "Do tuşu"]),
+            ("tanitim-1-deneme", ["Başla"]),
+            ("tanitim-1-yanlis", ["Başla", "Mi tuşu"]),
+            ("tanitim-1-dogru", ["Başla", "Do tuşu"]),
+            ("tanitim-2-sol", ["Başla", "Do tuşu", "+1.4"]),
             ("tanitim-3-ogretmen", tries),
         ]
         try runTanitim(steps)
     }
 
-    /// Tanıtımın ikinci yarısı (10 dakikalık test sınırına sığsın diye ayrı): anahtar, geri, seviye, hatırlatma, hazır
+    /// Tanıtımın ikinci yarısı (10 dakikalık test sınırına sığsın diye ayrı): Ayarların (üst, alt, saat çarkı), geri, hazır
     @MainActor
     func testTanitimDevam() throws {
         continueAfterFailure = false
-        let base = ["Başlayalım", "Devam", "Do tuşu", "Devam", "Sol tuşu", "Devam", "Devam"]
+        let base = ["Başla", "Do tuşu", "+1.4", "Sol tuşu", "+1.4", "Devam"]
         let steps: [(String, [String])] = [
-            ("tanitim-4-anahtar", base),
+            ("tanitim-4-ayarlar", base),
+            ("tanitim-4-ayarlar-alt", base + ["^"]),
+            ("tanitim-4-saat", base + ["^", "Hatırlatma saati"]),
             ("tanitim-4-geri", base + ["Geri"]),
-            ("tanitim-5-seviye", base + ["Devam"]),
-            ("tanitim-6-hatirlatma", base + ["Devam", "Devam"]),
-            ("tanitim-6-saat", base + ["Devam", "Devam", "Hatırlatma saati"]),
-            ("tanitim-7-hazir", base + ["Devam", "Devam", "Şimdi değil", "Devam"]),
+            ("tanitim-5-hazir", base + ["^", "Günlük hatırlatma", "Devam"]),
         ]
         try runTanitim(steps)
     }
@@ -78,7 +77,7 @@ final class ScreenshotTests: XCTestCase {
     @MainActor
     func testTanitimOgretmen() throws {
         continueAfterFailure = false
-        let tries = ["Başlayalım", "Devam", "Do tuşu", "Devam", "Sol tuşu", "Devam"]
+        let tries = ["Başla", "Do tuşu", "+1.4", "Sol tuşu", "+1.4"]
         try runTanitim([
             ("ogretmen-kodu-hazirla", tries + ["Ben öğretmenim", "Devam"]),
             ("ogretmen-kodu-gir", tries + ["Ben öğretmenim", "Devam", "Öğrenci misin?"]),
@@ -93,12 +92,22 @@ final class ScreenshotTests: XCTestCase {
                 let app = try launch(theme: theme, scenario: "tanitim-1-merhaba")
                 try must(app, app.buttons["Atla"], "\(name): tanıtım açılmadı", shot: "\(name)-hata-\(tr)")
                 for label in taps {
+                    // "+1.4": bekle (denemede kendiliğinden geçiş); "^": yukarı kaydır
+                    if label.hasPrefix("+") {
+                        Thread.sleep(forTimeInterval: Double(label.dropFirst()) ?? 1)
+                        continue
+                    }
+                    if label == "^" {
+                        app.swipeUp()
+                        Thread.sleep(forTimeInterval: 0.4)
+                        continue
+                    }
                     let b = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", label)).firstMatch
                     try must(app, b, "\(name): \(label) yok", shot: "\(name)-hata-\(tr)", timeout: 3)
                     b.tap()
                     Thread.sleep(forTimeInterval: 0.35)
                 }
-                if name.hasPrefix("ogretmen-kodu") || name == "tanitim-6-saat" { Thread.sleep(forTimeInterval: 0.5) }
+                if name.hasPrefix("ogretmen-kodu") || name == "tanitim-4-saat" { Thread.sleep(forTimeInterval: 0.5) }
                 snap("\(name)-\(tr)")
                 app.terminate()
             }

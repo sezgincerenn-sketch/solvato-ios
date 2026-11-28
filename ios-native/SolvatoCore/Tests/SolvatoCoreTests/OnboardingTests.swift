@@ -14,19 +14,29 @@ final class OnboardingTests: XCTestCase {
             while let n = OnboardingFlow.next(after: out.last!, role: role) { out.append(n) }
             return out
         }
-        XCTAssertEqual(walk(.student), [.intro, .hello, .try1, .try2, .teacher, .clef, .level, .reminder, .done])
+        XCTAssertEqual(walk(.student), [.intro, .try1, .try2, .teacher, .setup, .done])
+        XCTAssertEqual(OnboardingStep.allCases.count, 6)
         XCTAssertEqual(walk(.solo), OnboardingStep.allCases)
-        XCTAssertEqual(walk(.teacher), [.intro, .hello, .try1, .try2, .teacher])
+        XCTAssertEqual(walk(.teacher), [.intro, .try1, .try2, .teacher])
         XCTAssertNil(OnboardingFlow.next(after: .done, role: .student))
     }
 
     func testBack() async {
-        XCTAssertEqual(OnboardingFlow.back(from: .hello), .intro)
-        XCTAssertEqual(OnboardingFlow.back(from: .clef), .teacher)
+        XCTAssertEqual(OnboardingFlow.back(from: .try1), .intro)
+        XCTAssertEqual(OnboardingFlow.back(from: .setup), .teacher)
+        XCTAssertEqual(OnboardingFlow.back(from: .done), .setup)
         XCTAssertEqual(OnboardingFlow.back(from: .intro), .intro)
         XCTAssertFalse(OnboardingFlow.showsBack(.intro))
-        XCTAssertTrue(OnboardingFlow.showsBack(.hello))
+        XCTAssertTrue(OnboardingFlow.showsBack(.try1))
         XCTAssertTrue(OnboardingFlow.showsBack(.done))
+    }
+
+    /// Giriş: tam cümle başlık, dört satırlık liste tek VoiceOver öğesi; denemede 1 sn sonra kendiliğinden geçiş
+    func testIntroTexts() async {
+        XCTAssertEqual(OnboardingFlow.introTitle, "Her gün birkaç dakikayla nota okumak kolaylaşsın.")
+        XCTAssertEqual(OnboardingFlow.features, ["Nota okuma", "Ritim", "Akor", "Kulak"])
+        XCTAssertEqual(OnboardingFlow.featuresLabel, "Nota okuma, ritim, akor ve kulak çalışmaları")
+        XCTAssertEqual(OnboardingFlow.autoAdvanceDelay, 1.0)
     }
 
     /// Soru ilk kez: "Evet, öğretmenim var" işaretli; tekrar gösterilince önceki seçim

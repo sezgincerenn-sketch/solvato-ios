@@ -1,10 +1,11 @@
-// Tanıtımın adım sırası ve geri/ileri kuralları (docs/ozellikler/tanitim.md; web revize Onboarding.tsx). Ekran
-// Solvato/Screens/OnboardingScreen.swift. "Ben öğretmenim" seçilirse öğretmen sorusundan sonra tanıtım biter ve
-// öğretmen kodu ekranı (öğrenci kodu hazırlama) açılır.
+// Tanıtımın adım sırası, geri/ileri kuralları ve giriş metinleri (docs/ozellikler/tanitim.md, kullanici-testi-revize.md
+// madde 2). Ekran Solvato/Screens/OnboardingScreen.swift. Altı adım: giriş + ad → Do → Sol → öğretmen sorusu → Ayarların
+// (anahtar, seviye, hedef, hatırlatma) → hazırsın. "Ben öğretmenim" seçilirse öğretmen sorusundan sonra tanıtım biter
+// ve öğretmen kodu ekranı (öğrenci kodu hazırlama) açılır.
 import Foundation
 
 public enum OnboardingStep: Int, CaseIterable, Sendable {
-    case intro, hello, try1, try2, teacher, clef, level, reminder, done
+    case intro, try1, try2, teacher, setup, done
 }
 
 public enum OnboardingFlow {
@@ -21,6 +22,15 @@ public enum OnboardingFlow {
 
     /// Geri oku görünür mü (ilk adımda yeri boş kalır)
     public static func showsBack(_ step: OnboardingStep) -> Bool { step != .intro }
+
+    /// Giriş başlığı
+    public static let introTitle = "Her gün birkaç dakikayla nota okumak kolaylaşsın."
+    /// Girişteki simgeli listenin satırları (simge ekranda; ad)
+    public static let features = ["Nota okuma", "Ritim", "Akor", "Kulak"]
+    /// Liste VoiceOver'da tek öğe
+    public static let featuresLabel = "Nota okuma, ritim, akor ve kulak çalışmaları"
+    /// Denemede doğru tuştan sonra sonraki adıma geçmeden önceki bekleme (sn)
+    public static let autoAdvanceDelay = 1.0
 
     /// Öğretmen sorusunda işaretli seçenek: daha önce cevaplandıysa o, değilse "Evet, öğretmenim var"
     public static func initialRole(_ s: Settings) -> TeacherRole { s.teacherRole == .unset ? .student : s.teacherRole }
