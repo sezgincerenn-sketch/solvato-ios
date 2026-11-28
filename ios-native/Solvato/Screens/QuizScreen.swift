@@ -1,6 +1,8 @@
 // Soru turu: üstte çıkış, adım noktaları ve doğru sayısı; soru kartı (porte, ritim, terim, yazım, kulak); altta
 // klavye ya da şıklar; yanlışta açıklama ve "Sıradaki". Web karşılığı src/screens/QuizSession.tsx. Akış ve bütün yazılar
 // SolvatoCore QuizRound'dan (testli); burada yalnızca çizim. iPad'de 2 oktav, yan ekranda 3 oktav ve iki sütun.
+// Yan ekranda şıklı sorular (ritim, terim, yazım, kulak): solda soru, sağda şıklar; iki sütun ayrı kayar, ekran taşmaz
+// (kullanici-testi-revize.md madde 5). Klavyeli soruda klavye altta tam genişlikte.
 // Doğruda "ting" + başarı titreşimi + şıkta yeşil nabız + notanın zıplaması; yanlışta "dum" + hata titreşimi + sallanma.
 // Telefonda klavyeyle cevaplarken ilk 3 turda "yan çevir" ipucu (6 sn; yan çevrilince bir daha çıkmaz).
 import SolvatoCore
@@ -54,7 +56,24 @@ struct QuizScreen: View {
                         TimerBar(seconds: round.seconds(base: s)) { finish(round.timeout(timeMs: elapsed)) }
                             .id(round.index)
                     }
-                    if land {
+                    if land && !round.usesPiano {
+                        // Yan düzen, şıklı soru: solda soru başlığı ve kartı, sağda şıklar ve "Sıradaki"
+                        HStack(alignment: .top, spacing: 14) {
+                            ScrollView {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    header
+                                    promptCard(height: screenHeight)
+                                    if round.showExplanation { landExplanation }
+                                }
+                                .padding(.bottom, 12)
+                            }
+                            .scrollBounceBehavior(.basedOnSize)
+                            .frame(width: (geo.size.width - 32 - 14) * 0.5)
+                            ScrollView { answerArea }
+                                .scrollBounceBehavior(.basedOnSize)
+                        }
+                        .padding(.leading, Space.s4)
+                    } else if land {
                         HStack(alignment: .top, spacing: 14) {
                             ScrollView {
                                 VStack(alignment: .leading, spacing: 0) {
@@ -222,7 +241,7 @@ struct QuizScreen: View {
             ? 0
             : round.isNote
                 ? (land ? 0 : st == .wrong ? 170 : min(400, max(240, height * 0.44)))
-                : (st == .wrong ? 120 : min(340, max(200, height * 0.38)))
+                : land ? 140 : (st == .wrong ? 120 : min(340, max(200, height * 0.38)))
         return VStack(spacing: 0) {
             Spacer(minLength: 0)
             promptContent

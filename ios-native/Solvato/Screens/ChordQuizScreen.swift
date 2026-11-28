@@ -3,6 +3,8 @@
 // satırı; altta yanlış/süre kutusu ve ana düğme. Web src/screens/ChordQuizSession.tsx. Akış ve yazılar SolvatoCore
 // ChordRound'dan (testli). "Dinle" akoru arpej çalar; doğruda başarı, yanlışta ve süre dolunca hata titreşimi; şıklarda
 // nabız / sallanma. Akoru basarken telefonda ilk turlarda "yan çevir" ipucu (yan çevrilince bir daha çıkmaz).
+// Her soru açılınca akor bir kez çalınır (Ses kapalıysa çalmaz). Telefon yan çevrilince solda soru kartı, sağda şıklar ya
+// da klavye ve ana düğme (kullanici-testi-revize.md madde 5, 6).
 import SolvatoCore
 import SwiftUI
 
@@ -38,16 +40,36 @@ struct ChordQuizScreen: View {
             ThemeColor.bg.color.ignoresSafeArea()
             VStack(spacing: 0) {
                 topBar
-                ScrollView {
-                    VStack(spacing: 0) {
-                        questionCard.padding(.bottom, 12)
-                        if round.usesPiano { pianoArea } else { options.padding(.bottom, 14) }
+                if land {
+                    // Yan düzen: solda soru, sağda cevaplar ve ana düğme; iki sütun ayrı kayar
+                    HStack(alignment: .top, spacing: 14) {
+                        ScrollView {
+                            questionCard.padding(.bottom, 8)
+                        }
+                        .scrollIndicators(.hidden)
+                        .scrollBounceBehavior(.basedOnSize)
+                        VStack(spacing: 0) {
+                            ScrollView {
+                                answers.padding(.bottom, 8)
+                            }
+                            .scrollIndicators(.hidden)
+                            .scrollBounceBehavior(.basedOnSize)
+                            bottomBar
+                        }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.bottom, 8)
+                } else {
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            questionCard.padding(.bottom, 12)
+                            answers
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 8)
+                    }
+                    .scrollIndicators(.hidden)
+                    bottomBar
                 }
-                .scrollIndicators(.hidden)
-                bottomBar
             }
             if let toast {
                 HStack(spacing: 10) {
@@ -76,6 +98,19 @@ struct ChordQuizScreen: View {
             model.persistence.bumpRotateHint(done: true)
             rotateHint = false
         }
+        // Soru açılınca akor bir kez çalınır (kulak sorusundaki gibi 0,35 sn sonra; Ses kapalıysa Sound çalmaz)
+        .task(id: round.index) {
+            do {
+                try await Task.sleep(for: .milliseconds(350))
+                listenChord()
+            } catch {}
+        }
+    }
+
+    /// Şıklar ya da akor klavyesi
+    @ViewBuilder
+    private var answers: some View {
+        if round.usesPiano { pianoArea } else { options.padding(.bottom, 14) }
     }
 
     /// Akoru arpej çalar: notalar 0,22 sn arayla (web listenChord(true)); çalarken düğme koyulaşır
