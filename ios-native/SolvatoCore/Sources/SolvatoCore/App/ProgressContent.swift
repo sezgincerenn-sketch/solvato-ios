@@ -261,3 +261,18 @@ public struct ProgressContent: Sendable {
         return (t, l)
     }
 }
+
+extension ProgressContent {
+    /// İlerleme'nin üstündeki üç kutu: Toplam süre · Tamamlanan tur · Çözülen soru (kullanici-testi-revize.md madde 8)
+    public static func totals(_ stats: AppStats) -> [(value: String, label: String)] {
+        [(studyTime(stats.studySeconds), "Toplam süre"), ("\(stats.totalSessions)", "Tamamlanan tur"),
+         ("\(ProfileText.solved(stats))", "Çözülen soru")]
+    }
+
+    /// Çalışma süresi: 1 saatin altında "35 dk", üstünde "2 sa 15 dk" (tam saatte "2 sa"); 1 dakikanın altında "0 dk"
+    public static func studyTime(_ seconds: Int) -> String {
+        let m = max(0, seconds) / 60
+        guard m >= 60 else { return "\(m) dk" }
+        return m % 60 == 0 ? "\(m / 60) sa" : "\(m / 60) sa \(m % 60) dk"
+    }
+}

@@ -36,6 +36,10 @@ public final class AppModel {
     @ObservationIgnored public let persistence: Persistence
     @ObservationIgnored private let random: RandomSource
     @ObservationIgnored private let clock: () -> Now
+    /// Sayılan ekranın açıldığı an (sn); nil ise süre sayılmıyor
+    @ObservationIgnored private var studyStart: Double?
+    /// Tek parçada en çok sayılan süre (sn): ekran açık bırakılıp unutulursa toplam şişmesin
+    public static let studySegmentCap = 30.0 * 60
 
     public private(set) var nav = ScreenStack()
     public var stats: AppStats { didSet { persistence.save(stats) } }
@@ -267,6 +271,20 @@ public final class AppModel {
         roundsCompleted += 1
         nav.replace(.result)
         roundHasAnswers = false
+    }
+
+    // MARK: Çalışma süresi
+    /// Ekran ya da uygulamanın ön planda olup olmadığı değişti: o ana kadarki süre eklenir; şimdiki ekran sayılıyorsa
+    /// ve uygulama öndeyse saat yeniden başlar. AppRoot ekran değişiminde ve uygulama arka plana geçince çağırır.
+    public func updateStudyClock(active: Bool, now: Double) {
+        if let s = studyStart { addStudyTime(now - s) }
+        studyStart = active && nav.current.countsStudyTime ? now : nil
+    }
+
+    func addStudyTime(_ seconds: Double) {
+        let s = Int(min(max(0, seconds), Self.studySegmentCap).rounded())
+        guard s > 0 else { return }
+        stats.studySeconds += s
     }
 
     // MARK: Ayarlar

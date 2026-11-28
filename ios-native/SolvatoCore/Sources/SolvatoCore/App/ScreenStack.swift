@@ -18,6 +18,15 @@ public enum AppView: String, Sendable, CaseIterable {
     /// Telefonda yan çevrilebilen ekranlar (G-02)
     public var allowsLandscape: Bool { self == .quiz || self == .chordquiz }
 
+    /// Ekranda geçen süre toplam çalışma süresine sayılır: soru turları (oyunlar dahil), akor turu, Ritmi Tut, akor
+    /// düellosu ve dersler (kullanici-testi-revize.md madde 8)
+    public var countsStudyTime: Bool {
+        switch self {
+        case .quiz, .chordquiz, .rhythmtap, .duel, .lesson: true
+        default: false
+        }
+    }
+
     /// Kenardan kaydırınca bir önceki ekrana dönülen ekranlar. Turlarda (test, akor, Ritmi Tut, düello) ekran yine
     /// parmakla kayar ama geri dönülmez; bırakınca turun çıkış onayı açılır (R34).
     public var swipesBack: Bool {

@@ -20,6 +20,7 @@ struct AppRoot: View {
     @State private var homeTargets: [String: CGRect] = [:]
     @State private var tabTargets: [String: CGRect] = [:]
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.scenePhase) private var scenePhase
 
     static let edge = 28.0
 
@@ -86,6 +87,9 @@ struct AppRoot: View {
         .frame(maxWidth: .infinity)
         .background(ThemeColor.bg.color.ignoresSafeArea())
         .onChange(of: v, initial: true) { _, nv in Orientation.allowLandscape(nv.allowsLandscape) }
+        // Toplam çalışma süresi: turlarda, oyunlarda ve derslerde, uygulama öndeyken sayılır
+        .onChange(of: v, initial: true) { _, _ in model.updateStudyClock(active: scenePhase == .active, now: Date().timeIntervalSince1970) }
+        .onChange(of: scenePhase) { _, p in model.updateStudyClock(active: p == .active, now: Date().timeIntervalSince1970) }
         // Gezinme yolu: ileri / geri / sekme değişince yığın eşitlenir. Tam ekran katmanın altında (tura girerken,
         // turdan oyun sonucuna geçerken) geçiş canlandırılmaz.
         .onChange(of: model.nav, initial: true) { old, new in

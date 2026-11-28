@@ -96,8 +96,14 @@ public struct AppStats: Equatable, Sendable {
     public var bestStars: OrderedMap<Int>?
     /// Gün → konu → doğruluk (son 60 gün)
     public var dailyTopics: OrderedMap<OrderedMap<Tally>>?
+    /// Toplam çalışma süresi (sn): turlar, oyunlar ve derslerde geçen süre (İlerleme › Toplam süre;
+    /// kullanici-testi-revize.md madde 8). Eski kayıtta yoksa son turların süreleriyle başlar.
+    public var studySeconds = 0
 
     public init() {}
+
+    /// Eski kayıt için başlangıç: son turların kayıtlı süreleri toplamı
+    static func seedStudySeconds(_ history: [RoundRecord]?) -> Int { (history ?? []).reduce(0) { $0 + ($1.sec ?? 0) } }
 }
 
 // MARK: - JSON (web `loadStats` / `saveStats` ile aynı biçim)
@@ -137,6 +143,7 @@ extension AppStats {
         dailyTopics = json["dailyTopics"]?.object.map { o in
             OrderedMap(o.entries.map { ($0.key, tallies($0.value) ?? OrderedMap()) })
         }
+        studySeconds = json["studySeconds"]?.int ?? Self.seedStudySeconds(history)
     }
 
     public var json: JSON {
@@ -169,6 +176,7 @@ extension AppStats {
         }
         if let bestStars { o["bestStars"] = ints(bestStars) }
         if let dailyTopics { o["dailyTopics"] = .object(dailyTopics.mapValues(tallies)) }
+        o["studySeconds"] = .number(Double(studySeconds))
         return .object(o)
     }
 }

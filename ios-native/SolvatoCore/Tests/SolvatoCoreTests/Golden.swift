@@ -12,11 +12,16 @@ enum Golden {
         return try JSON.parse(Data(contentsOf: url))
     }
 
-    /// İki JSON arasındaki ilk fark (anahtar sırasına bakmaz); yoksa nil
+    /// Yalnız native'de olan, React'ın yazmadığı üst düzey alanlar (toplam çalışma süresi, kullanici-testi-revize.md)
+    static let nativeOnly: Set<String> = ["studySeconds"]
+
+    /// İki JSON arasındaki ilk fark (anahtar sırasına bakmaz; üst düzeyde yalnız Swift'te olan `nativeOnly` alanlar
+    /// sayılmaz); yoksa nil
     static func diff(_ a: JSON, _ b: JSON, path: String = "$") -> String? {
         switch (a, b) {
         case let (.object(x), .object(y)):
             for k in Set(x.keys).union(y.keys).sorted() {
+                if path == "$" && nativeOnly.contains(k) && y[k] == nil { continue }
                 guard let xv = x[k] else { return "\(path).\(k): Swift'te yok" }
                 guard let yv = y[k] else { return "\(path).\(k): React'ta yok" }
                 if let d = diff(xv, yv, path: "\(path).\(k)") { return d }

@@ -85,12 +85,10 @@ struct ProgressScreen: View {
         }
     }
 
-    /// Seri, tamamlanan tur, çözülen soru (Profil'den taşındı; Ceren, 26 Kasım)
+    /// Toplam süre, tamamlanan tur, çözülen soru (seri altta Bu hafta kartında; kullanici-testi-revize.md madde 8)
     private var totals: some View {
         HStack(spacing: Space.s2) {
-            StatTile(value: "\(model.streak) gün", label: "Seri")
-            StatTile(value: "\(model.stats.totalSessions)", label: "Tamamlanan tur")
-            StatTile(value: "\(ProfileText.solved(model.stats))", label: "Çözülen soru")
+            ForEach(ProgressContent.totals(model.stats), id: \.label) { t in StatTile(value: t.value, label: t.label) }
         }
     }
 
