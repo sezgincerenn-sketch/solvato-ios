@@ -1,0 +1,1 @@
+ScreenshotTests / testTanitimDevam(): UITestSupport.swift:39: failed - tanitim-4-ayarlar-alt: Do tuşu yok

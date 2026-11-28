@@ -1,0 +1,3 @@
+Gizlilik bildirimi (Solvato.app/PrivacyInfo.xcprivacy): ['NSPrivacyAccessedAPICategorySystemBootTime', 'NSPrivacyAccessedAPICategoryUserDefaults']
+Paket: Solvato.app · ATS yok · çerçeveler: yok
+Güvenlik denetimi: sorun yok

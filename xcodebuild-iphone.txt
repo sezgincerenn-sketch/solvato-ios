@@ -1,0 +1,44 @@
+/Users/runner/work/solvato-ios/solvato-ios/ios-native/SolvatoUITests/UITestSupport.swift:39: error: -[SolvatoUITests.ScreenshotTests testTanitimDevam] : failed - tanitim-4-ayarlar-alt: Do tuşu yok
+objc[4668]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x106fe4310) and /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x105b5c398). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+Test Case '-[SolvatoUITests.ScreenshotTests testTanitimDevam]' failed (171.134 seconds).
+── son satırlar ──
+    t =   236.62s Tap "Akor, Tanı, tuşlara bas, Yüzde 60 doğru" Button
+    t =   236.62s     Wait for com.solvato.app to idle
+    t =   236.63s     Find the "Akor, Tanı, tuşlara bas, Yüzde 60 doğru" Button
+    t =   237.50s     Check for interrupting elements affecting "Akor, Tanı, tuşlara bas, Yüzde 60 doğru" Button
+    t =   237.64s     Synthesize event
+    t =   238.00s     Wait for com.solvato.app to idle
+    t =   238.34s Waiting 5.0s for "Turdan çık" Button to exist
+    t =   239.36s     Checking `Expect predicate `existsNoRetry == 1` for object "Turdan çık" Button`
+    t =   239.37s         Checking existence of `"Turdan çık" Button`
+    t =   239.65s Setting device orientation to Landscape Left
+    t =   239.67s     Device orientation changed to Landscape Left
+    t =   239.91s     Interface orientation changed to Landscape Right
+    t =   239.92s     Wait for com.solvato.app to idle
+    t =   242.32s Added attachment named 'yan-akor-acik'
+    t =   242.35s Terminate com.solvato.app:15305
+    t =   242.76s     Interface orientation changed to Portrait
+    t =   243.46s Setting device orientation to Portrait
+    t =   243.48s     Device orientation changed to Portrait
+    t =   243.49s     Wait for com.apple.springboard to idle
+    t =   243.65s Tear Down
+Test Case '-[SolvatoUITests.ScreenshotTests testYanTur]' passed (244.311 seconds).
+Test Suite 'ScreenshotTests' failed at 2026-11-28 16:30:51.344.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 415.444 (415.450) seconds
+Test Suite 'SolvatoUITests.xctest' failed at 2026-11-28 16:30:51.348.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 415.444 (415.455) seconds
+Test Suite 'Selected tests' failed at 2026-11-28 16:30:51.349.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 415.444 (415.459) seconds
+2026-11-28 16:31:45.881 xcodebuild[3686:14263] [MT] IDETestOperationsObserverDebug: 657.897 elapsed -- Testing started completed.
+2026-11-28 16:31:45.882 xcodebuild[3686:14263] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-28 16:31:45.882 xcodebuild[3686:14263] [MT] IDETestOperationsObserverDebug: 657.897 sec, +657.897 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/runner/work/solvato-ios/solvato-ios/build/ui-iphone.xcresult
+
+Failing tests:
+	ScreenshotTests.testTanitimDevam()
+
+** TEST EXECUTE FAILED **
+
+Testing started

@@ -1,0 +1,42 @@
+objc[20523]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x1083c0310) and /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x1053dc398). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+── son satırlar ──
+    t =   169.45s Find the "Akor, Tanı, tuşlara bas, Yüzde 60 doğru" Button
+    t =   169.74s Checking existence of `"Akor, Tanı, tuşlara bas, Yüzde 60 doğru" Button`
+    t =   169.94s Find the "Akor, Tanı, tuşlara bas, Yüzde 60 doğru" Button
+    t =   170.11s Tap "Akor, Tanı, tuşlara bas, Yüzde 60 doğru" Button
+    t =   170.11s     Wait for com.solvato.app to idle
+    t =   170.11s     Find the "Akor, Tanı, tuşlara bas, Yüzde 60 doğru" Button
+    t =   170.27s     Check for interrupting elements affecting "Akor, Tanı, tuşlara bas, Yüzde 60 doğru" Button
+    t =   170.33s     Synthesize event
+    t =   170.64s     Wait for com.solvato.app to idle
+    t =   173.69s Waiting 5.0s for "Turdan çık" Button to exist
+    t =   174.72s     Checking `Expect predicate `existsNoRetry == 1` for object "Turdan çık" Button`
+    t =   174.72s         Checking existence of `"Turdan çık" Button`
+    t =   174.94s Setting device orientation to Landscape Left
+    t =   174.95s     Device orientation changed to Landscape Left
+    t =   175.06s     Interface orientation changed to Landscape Right
+    t =   175.06s     Wait for com.solvato.app to idle
+    t =   177.03s Added attachment named 'yan-akor-acik'
+    t =   177.03s Terminate com.solvato.app:35742
+    t =   177.23s     Interface orientation changed to Portrait
+    t =   178.08s Setting device orientation to Portrait
+    t =   178.09s     Device orientation changed to Portrait
+    t =   178.09s     Wait for com.apple.springboard to idle
+    t =   178.13s Tear Down
+Test Case '-[SolvatoUITests.ScreenshotTests testYanTur]' passed (178.311 seconds).
+Test Suite 'ScreenshotTests' passed at 2026-11-28 16:45:11.819.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 571.121 (571.127) seconds
+Test Suite 'SolvatoUITests.xctest' passed at 2026-11-28 16:45:11.821.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 571.121 (571.129) seconds
+Test Suite 'Selected tests' passed at 2026-11-28 16:45:11.821.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 571.121 (571.132) seconds
+2026-11-28 16:45:14.252 xcodebuild[18564:59541] [MT] IDETestOperationsObserverDebug: 780.828 elapsed -- Testing started completed.
+2026-11-28 16:45:14.265 xcodebuild[18564:59541] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-28 16:45:14.265 xcodebuild[18564:59541] [MT] IDETestOperationsObserverDebug: 780.828 sec, +780.828 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/runner/work/solvato-ios/solvato-ios/build/ui-iphone-kucuk.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started

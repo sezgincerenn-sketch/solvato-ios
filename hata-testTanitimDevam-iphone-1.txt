@@ -1,0 +1,159 @@
+Application, 0x102df70c0, pid: 7983, label: 'Solfado' <App element pid: 7983>
+  Window (Main), 0x102df7200, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4336814080.3>
+    Other, 0x102df7340, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4347508736.4>
+      Other, 0x102df7480, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4347051008.5>
+        Other, 0x102df75c0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4336813056.6>
+          Other, 0x102df7c00, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4346611008.7>
+            Other, 0x102df7d40, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4347517952.8>
+              Other, 0x113468000, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4349396992.11>
+                Other, 0x113468140, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4346143488.18>
+                  Other, 0x113468280, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4336815104.23>
+                    Other, 0x1134683c0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4346612800.32>
+                      Other, 0x113468500, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4346612352.46>
+                        Other, 0x113468640, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4346027008.52>
+                          Other, 0x113468780, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4346032384.60>
+                            Other, 0x1134688c0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4346568576.69>
+                              Other, 0x113468a00, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4345472640.73>
+                                Other, 0x113468b40, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4346846208.76>
+                                  ScrollView, 0x113468c80, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4335654912.78>
+                                    Other, 0x113468dc0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4346025216.79>
+                                      Other, 0x113468f00, {{0.0, 726.2}, {402.0, 147.8}} <AX element pid: 7983, elementOrHash.elementID: 4346574848.82>
+                                    Other, 0x113469040, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4346024320.80>
+                                      Other, 0x113469180, {{0.0, 726.2}, {402.0, 147.8}} <AX element pid: 7983, elementOrHash.elementID: 4638688512.83>
+                                        Image, 0x1134692c0, {{-120.0, 731.0}, {642.0, 286.0}}, identifier: 'AdditionalDimmingOverlay' <AX element pid: 7983, elementOrHash.elementID: 4637973504.96>
+                                        Other, 0x113469400, {{0.0, 726.2}, {402.0, 147.8}} <AX element pid: 7983, elementOrHash.elementID: 4417337600.97>
+                                          Other, 0x113469540, {{0.0, 726.2}, {402.0, 147.8}} <AX element pid: 7983, elementOrHash.elementID: 4346575296.123>
+                                        Other, 0x113469680, {{0.0, 726.2}, {402.0, 147.8}} <AX element pid: 7983, elementOrHash.elementID: 4638689152.98>
+                                          Other, 0x1134697c0, {{0.0, 726.2}, {402.0, 147.8}} <AX element pid: 7983, elementOrHash.elementID: 4346575744.124>
+                                          Other, 0x113469900, {{0.0, 726.2}, {402.0, 147.8}} <AX element pid: 7983, elementOrHash.elementID: 4346595072.125>
+                                    Other, 0x113469a40, {{0.0, 62.0}, {402.0, 1120.0}} <AX element pid: 7983, elementOrHash.elementID: 4636508160.81>
+                                      StaticText, 0x113469b80, {{16.0, 88.2}, {131.7, 31.7}}, label: 'Solfado' <AX element pid: 7983, elementOrHash.elementID: 4346842176.84>
+                                        Other, 0x113469cc0, {{16.0, 89.0}, {30.0, 30.0}} <AX element pid: 7983, elementOrHash.elementID: 4346839936.99>
+                                        StaticText, 0x113469e00, {{55.0, 88.2}, {45.7, 31.7}}, label: 'Solf' <AX element pid: 7983, elementOrHash.elementID: 4346840832.100>
+                                        StaticText, 0x113469f40, {{101.7, 88.2}, {46.0, 31.7}}, label: 'ado' <AX element pid: 7983, elementOrHash.elementID: 4346841728.101>
+                                      Button, 0x11346a080, {{235.7, 86.0}, {58.7, 36.0}}, label: 'Seri yok. Bugün bir tur çözünce başlar' <AX element pid: 7983, elementOrHash.elementID: 4346843968.85>
+                                        Other, 0x11346a1c0, {{249.2, 97.2}, {11.2, 14.7}} <AX element pid: 7983, elementOrHash.elementID: 4346842624.102>
+                                        StaticText, 0x11346a300, {{235.7, 86.0}, {58.7, 36.0}}, label: '0' <AX element pid: 7983, elementOrHash.elementID: 4346843072.103>
+                                      Button, 0x11346a440, {{302.3, 86.0}, {83.7, 36.0}}, label: '0 XP, 1. ünvan: Yeni Başlayan. Profili aç' <AX element pid: 7983, elementOrHash.elementID: 4346845312.86>
+                                        StaticText, 0x11346a580, {{318.5, 95.2}, {5.7, 17.7}}, label: '1' <AX element pid: 7983, elementOrHash.elementID: 4346844416.104>
+                                        StaticText, 0x11346a6c0, {{340.3, 94.7}, {33.7, 18.7}}, label: '0 XP' <AX element pid: 7983, elementOrHash.elementID: 4346844864.105>
+                                      Button, 0x11346a800, {{16.0, 142.0}, {370.0, 116.3}}, label: 'Seviye: Başlangıç. Profili aç' <AX element pid: 7983, elementOrHash.elementID: 4346617280.87>
+                                        StaticText, 0x11346a940, {{32.0, 158.0}, {47.7, 15.3}}, label: 'SEVİYE' <AX element pid: 7983, elementOrHash.elementID: 4346613696.106>
+                                        StaticText, 0x11346aa80, {{32.0, 173.3}, {87.7, 25.3}}, label: 'Başlangıç' <AX element pid: 7983, elementOrHash.elementID: 4346614144.107>
+                                        Other, 0x11346abc0, {{182.3, 166.7}, {174.0, 23.3}}, label: '3 seviyeden 1.' <AX element pid: 7983, elementOrHash.elementID: 4346615936.108>
+                                          StaticText, 0x11346ad00, {{192.3, 170.7}, {53.7, 15.3}}, label: 'Başlangıç' <AX element pid: 7983, elementOrHash.elementID: 4346614592.126>
+                                          StaticText, 0x11346ae40, {{272.0, 170.7}, {26.7, 15.3}}, label: 'Orta' <AX element pid: 7983, elementOrHash.elementID: 4346615040.127>
+                                          StaticText, 0x11346af80, {{324.7, 170.7}, {21.7, 15.3}}, label: 'İleri' <AX element pid: 7983, elementOrHash.elementID: 4346615488.128>
+                                        StaticText, 0x11346b0c0, {{364.3, 165.7}, {5.7, 25.3}}, label: '›' <AX element pid: 7983, elementOrHash.elementID: 4346616384.109>
+                                        StaticText, 0x11346b200, {{32.0, 224.7}, {304.0, 17.7}}, label: 'Orta için bu seviyede 50 soru çöz, %80 doğru yap.' <AX element pid: 7983, elementOrHash.elementID: 4346616832.110>
+                                      StaticText, 0x11346b340, {{36.0, 292.0}, {46.0, 15.3}}, label: 'BUGÜN' <AX element pid: 7983, elementOrHash.elementID: 4346617728.88>
+                                      StaticText, 0x11346b480, {{290.3, 290.3}, {75.7, 18.7}}, label: '0/10 soru' <AX element pid: 7983, elementOrHash.elementID: 4346618176.89>
+                                      Other, 0x11346b5c0, {{36.0, 317.0}, {330.0, 10.0}}, label: '10 soruluk hedefin 0 sorusu çözüldü' <AX element pid: 7983, elementOrHash.elementID: 4346618624.90>
+                                      StaticText, 0x11346b700, {{36.0, 335.0}, {291.7, 17.7}}, label: 'Hedefi tamamlayınca serin +1 olur · 10 soru kaldı' <AX element pid: 7983, elementOrHash.elementID: 4346619072.91>
+                                      Button, 0x11346b840, {{36.0, 368.7}, {330.0, 68.0}}, label: 'Bugünün çalışması, Karma · 10 soru · ~3 dk' <AX element pid: 7983, elementOrHash.elementID: 4346621312.92>
+                                        StaticText, 0x11346b980, {{52.0, 382.7}, {137.3, 20.3}}, label: 'Bugünün çalışması' <AX element pid: 7983, elementOrHash.elementID: 4346619968.111>
+                                        StaticText, 0x11346bac0, {{52.0, 405.0}, {134.7, 17.7}}, label: 'Karma · 10 soru · ~3 dk' <AX element pid: 7983, elementOrHash.elementID: 4346620416.112>
+                                        Other, 0x11346bc00, {{310.0, 382.7}, {40.0, 40.0}} <AX element pid: 7983, elementOrHash.elementID: 4346620864.113>
+                                      Button, 0x11346bd40, {{16.0, 472.7}, {370.0, 56.0}}, label: 'Oyunlar, Meydan okuma ve düello, Günün oyunu' <AX element pid: 7983, elementOrHash.elementID: 4346624896.93>
+                                        Other, 0x11346be80, {{41.1, 493.8}, {14.1, 14.9}} <AX element pid: 7983, elementOrHash.elementID: 4346622208.114>
+                                        StaticText, 0x1136a0000, {{78.0, 482.8}, {60.3, 20.3}}, label: 'Oyunlar' <AX element pid: 7983, elementOrHash.elementID: 4346622656.115>
+                                        StaticText, 0x1136a0140, {{78.0, 503.2}, {130.7, 15.3}}, label: 'Meydan okuma ve düello' <AX element pid: 7983, elementOrHash.elementID: 4346623552.116>
+                                        StaticText, 0x1136a0280, {{290.7, 493.0}, {71.3, 15.3}}, label: 'Günün oyunu' <AX element pid: 7983, elementOrHash.elementID: 4346624448.117>
+                                      StaticText, 0x1136a03c0, {{16.0, 548.7}, {148.7, 15.3}}, label: 'PRATİK KATEGORİLERİ' <AX element pid: 7983, elementOrHash.elementID: 4346625344.94>
+                                      Other, 0x1136a0500, {{16.0, 576.0}, {370.0, 360.0}} <AX element pid: 7983, elementOrHash.elementID: 4346839488.95>
+                                        Button, 0x1136a0640, {{16.0, 576.0}, {370.0, 64.0}}, label: 'Sol Anahtarı, Sağ el notaları, Henüz çözülmedi' <AX element pid: 7983, elementOrHash.elementID: 4346645120.118>
+                                          Other, 0x1136a0780, {{48.3, 596.0}, {11.3, 24.0}} <AX element pid: 7983, elementOrHash.elementID: 4346600896.129>
+                                          StaticText, 0x1136a08c0, {{90.0, 588.0}, {90.0, 20.3}}, label: 'Sol Anahtarı' <AX element pid: 7983, elementOrHash.elementID: 4346642880.130>
+                                          StaticText, 0x1136a0a00, {{90.0, 610.3}, {89.3, 17.7}}, label: 'Sağ el notaları' <AX element pid: 7983, elementOrHash.elementID: 4346643328.131>
+                                          Other, 0x1136a0b40, {{304.5, 588.5}, {39.0, 39.0}}, label: 'Henüz çözülmedi' <AX element pid: 7983, elementOrHash.elementID: 4346644224.132>
+                                            StaticText, 0x1136a0c80, {{320.2, 599.7}, {7.7, 16.7}}, label: '–' <AX element pid: 7983, elementOrHash.elementID: 4346643776.154>
+                                          Other, 0x1136a0dc0, {{362.1, 604.2}, {5.8, 7.5}} <AX element pid: 7983, elementOrHash.elementID: 4346644672.133>
+                                        Button, 0x1136a0f00, {{16.0, 650.0}, {370.0, 64.0}}, label: 'Fa Anahtarı, Sol el notaları, Henüz çözülmedi' <AX element pid: 7983, elementOrHash.elementID: 4346648256.119>
+                                          Other, 0x1136a1040, {{47.3, 670.0}, {13.3, 24.0}} <AX element pid: 7983, elementOrHash.elementID: 4346645568.134>
+                                          StaticText, 0x1136a1180, {{90.0, 662.0}, {86.3, 20.3}}, label: 'Fa Anahtarı' <AX element pid: 7983, elementOrHash.elementID: 4346646016.135>
+                                          StaticText, 0x1136a12c0, {{90.0, 684.3}, {84.0, 17.7}}, label: 'Sol el notaları' <AX element pid: 7983, elementOrHash.elementID: 4346646464.136>
+                                          Other, 0x1136a1400, {{304.5, 662.5}, {39.0, 39.0}}, label: 'Henüz çözülmedi' <AX element pid: 7983, elementOrHash.elementID: 4346647360.137>
+                                            StaticText, 0x1136a1540, {{320.2, 673.7}, {7.7, 16.7}}, label: '–' <AX element pid: 7983, elementOrHash.elementID: 4346646912.155>
+                                          Other, 0x1136a1680, {{362.1, 678.2}, {5.8, 7.5}} <AX element pid: 7983, elementOrHash.elementID: 4346647808.138>
+                                        Button, 0x1136a17c0, {{16.0, 724.0}, {370.0, 64.0}}, label: 'Akor, Tanı, tuşlara bas, Henüz çözülmedi' <AX element pid: 7983, elementOrHash.elementID: 4346651392.120>
+                                          Other, 0x1136a1900, {{44.9, 748.8}, {18.1, 14.5}} <AX element pid: 7983, elementOrHash.elementID: 4346648704.139>
+                                          StaticText, 0x1136a1a40, {{90.0, 736.0}, {35.7, 20.3}}, label: 'Akor' <AX element pid: 7983, elementOrHash.elementID: 4346649152.140>
+                                          StaticText, 0x1136a1b80, {{90.0, 758.3}, {101.0, 17.7}}, label: 'Tanı, tuşlara bas' <AX element pid: 7983, elementOrHash.elementID: 4346649600.141>
+                                          Other, 0x1136a1cc0, {{304.5, 736.5}, {39.0, 39.0}}, label: 'Henüz çözülmedi' <AX element pid: 7983, elementOrHash.elementID: 4346650496.142>
+                                            StaticText, 0x1136a1e00, {{320.2, 747.7}, {7.7, 16.7}}, label: '–' <AX element pid: 7983, elementOrHash.elementID: 4346650048.156>
+                                          Other, 0x1136a1f40, {{362.1, 752.2}, {5.8, 7.5}} <AX element pid: 7983, elementOrHash.elementID: 4346650944.143>
+                                        Button, 0x1136a2080, {{16.0, 798.0}, {370.0, 64.0}}, label: '♩, Ritim & Ölçü, Nota değerleri, ölçüler, Henüz çözülmedi' <AX element pid: 7983, elementOrHash.elementID: 4346654976.121>
+                                          StaticText, 0x1136a21c0, {{44.0, 817.3}, {20.0, 25.3}}, label: '♩' <AX element pid: 7983, elementOrHash.elementID: 4346651840.144>
+                                          StaticText, 0x1136a2300, {{90.0, 810.0}, {88.0, 20.3}}, label: 'Ritim & Ölçü' <AX element pid: 7983, elementOrHash.elementID: 4346652288.145>
+                                          StaticText, 0x1136a2440, {{90.0, 832.3}, {138.3, 17.7}}, label: 'Nota değerleri, ölçüler' <AX element pid: 7983, elementOrHash.elementID: 4346652736.146>
+                                          Other, 0x1136a2580, {{304.5, 810.5}, {39.0, 39.0}}, label: 'Henüz çözülmedi' <AX element pid: 7983, elementOrHash.elementID: 4346653632.147>
+                                            StaticText, 0x1136a26c0, {{320.2, 821.7}, {7.7, 16.7}}, label: '–' <AX element pid: 7983, elementOrHash.elementID: 4346653184.157>
+                                          Other, 0x1136a2800, {{362.1, 826.2}, {5.8, 7.5}} <AX element pid: 7983, elementOrHash.elementID: 4346654528.148>
+                                        Button, 0x1136a2940, {{16.0, 872.0}, {370.0, 64.0}}, label: 'Ritmi Tut, Metronomla dokunarak çal, Henüz çözülmedi' <AX element pid: 7983, elementOrHash.elementID: 4346839040.122>
+                                          Other, 0x1136a2a80, {{44.9, 894.9}, {18.1, 18.2}} <AX element pid: 7983, elementOrHash.elementID: 4346655424.149>
+                                          StaticText, 0x1136a2bc0, {{90.0, 884.0}, {64.3, 20.3}}, label: 'Ritmi Tut' <AX element pid: 7983, elementOrHash.elementID: 4346655872.150>
+                                          StaticText, 0x1136a2d00, {{90.0, 906.3}, {166.7, 17.7}}, label: 'Metronomla dokunarak çal' <AX element pid: 7983, elementOrHash.elementID: 4346656320.151>
+                                          Other, 0x1136a2e40, {{304.5, 884.5}, {39.0, 39.0}}, label: 'Henüz çözülmedi' <AX element pid: 7983, elementOrHash.elementID: 4346657664.152>
+                                            StaticText, 0x1136a2f80, {{320.2, 895.7}, {7.7, 16.7}}, label: '–' <AX element pid: 7983, elementOrHash.elementID: 4346656768.158>
+                                          Other, 0x1136a30c0, {{362.1, 900.2}, {5.8, 7.5}} <AX element pid: 7983, elementOrHash.elementID: 4346658112.153>
+                          Other, 0x1136a3200, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4636509696.61>
+                            Other, 0x1136a3340, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4636511744.70>
+              Other, 0x1136a3480, {{0.0, 791.0}, {402.0, 83.0}} <AX element pid: 7983, elementOrHash.elementID: 4347518400.12>
+                Other, 0x1136a35c0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 7983, elementOrHash.elementID: 4347525120.19>
+                  TabBar, 0x1136a3700, {{0.0, 791.0}, {402.0, 83.0}}, label: 'Sekme Çubuğu' <AX element pid: 7983, elementOrHash.elementID: 4348282112.24>
+                    Other, 0x1136a3840, {{21.0, 791.0}, {360.0, 62.0}} <AX element pid: 7983, elementOrHash.elementID: 4347518848.33>
+                      Other, 0x1136a3980, {{21.0, 791.0}, {95.0, 54.0}} <AX element pid: 7983, elementOrHash.elementID: 4346144832.47>
+                      Other, 0x1136a3ac0, {{21.0, 791.0}, {360.0, 62.0}} <AX element pid: 7983, elementOrHash.elementID: 4347519296.48>
+                        Button, 0x1136a3c00, {{25.0, 795.0}, {95.0, 54.0}}, identifier: 'house', label: 'Ana sayfa', Selected <AX element pid: 7983, elementOrHash.elementID: 4336836096.53>
+                          Image, 0x1136a3d40, {{56.0, 801.0}, {33.3, 28.0}}, identifier: 'house.fill', label: 'ev' <AX element pid: 7983, elementOrHash.elementID: 4349407232.62>
+                        Button, 0x1136a3e80, {{110.7, 795.0}, {95.0, 54.0}}, identifier: 'chart.bar', label: 'İlerleme' <AX element pid: 7983, elementOrHash.elementID: 4336838656.54>
+                          Image, 0x1136a4000, {{140.7, 802.3}, {35.0, 25.3}}, identifier: 'chart.bar.fill', label: 'sütun grafik' <AX element pid: 7983, elementOrHash.elementID: 4349408768.63>
+                        Button, 0x1136a4140, {{196.3, 795.0}, {95.0, 54.0}}, identifier: 'book', label: 'Öğren' <AX element pid: 7983, elementOrHash.elementID: 4336841216.55>
+                          Image, 0x1136a4280, {{227.3, 802.3}, {32.3, 25.0}}, identifier: 'book.fill', label: 'yer işareti' <AX element pid: 7983, elementOrHash.elementID: 4349409792.64>
+                        Button, 0x1136a43c0, {{282.0, 795.0}, {95.0, 54.0}}, identifier: 'person', label: 'Profil' <AX element pid: 7983, elementOrHash.elementID: 4419715072.56>
+                          Image, 0x1136a4500, {{317.0, 802.7}, {25.3, 24.7}}, identifier: 'person.fill', label: 'person.fill' <AX element pid: 7983, elementOrHash.elementID: 4349410816.65>
+                      Other, 0x1136a4640, {{25.0, 795.0}, {95.0, 54.0}} <AX element pid: 7983, elementOrHash.elementID: 4348282752.49>
+                        Other, 0x1136a4780, {{25.0, 795.0}, {95.0, 54.0}} <AX element pid: 7983, elementOrHash.elementID: 4347521088.57>
+                          Other, 0x1136a48c0, {{25.0, 795.0}, {95.0, 54.0}} <AX element pid: 7983, elementOrHash.elementID: 4347519744.66>
+                          Other, 0x1136a4a00, {{25.0, 795.0}, {95.0, 54.0}} <AX element pid: 7983, elementOrHash.elementID: 4347521536.67>
+                            Other, 0x1136a4b40, {{25.0, 795.0}, {95.0, 54.0}} <AX element pid: 7983, elementOrHash.elementID: 4347522880.71>
+                              Other, 0x1136a4c80, {{25.0, 795.0}, {95.0, 54.0}} <AX element pid: 7983, elementOrHash.elementID: 4347523328.74>
+                                Other, 0x1136a4dc0, {{25.0, 795.0}, {95.0, 54.0}} <AX element pid: 7983, elementOrHash.elementID: 4347523776.77>
+                              Other, 0x1136a4f00, {{25.0, 795.0}, {95.0, 54.0}} <AX element pid: 7983, elementOrHash.elementID: 4347521984.75>
+                            Other, 0x1136a5040, {{25.0, 795.0}, {95.0, 54.0}} <AX element pid: 7983, elementOrHash.elementID: 4347522432.72>
+                Other, 0x1136a5180, {{0.0, 791.0}, {402.0, 83.0}} <AX element pid: 7983, elementOrHash.elementID: 4349394944.20>
+                  Other, 0x1136a52c0, {{0.0, 791.0}, {402.0, 83.0}} <AX element pid: 7983, elementOrHash.elementID: 4345471744.25>
+                    Other, 0x1136a5400, {{0.0, 791.0}, {402.0, 83.0}} <AX element pid: 7983, elementOrHash.elementID: 4346144384.34>
+                      Other, 0x1136a5540, {{0.0, 791.0}, {402.0, 83.0}} <AX element pid: 7983, elementOrHash.elementID: 4346145280.50>
+                        Other, 0x1136a5680, {{0.0, 791.0}, {402.0, 83.0}} <AX element pid: 7983, elementOrHash.elementID: 4419961344.58>
+                          Other, 0x1136a57c0, {{0.0, 791.0}, {402.0, 83.0}} <AX element pid: 7983, elementOrHash.elementID: 4346145728.68>
+                      Other, 0x1136a5900, {{0.0, 791.0}, {402.0, 83.0}} <AX element pid: 7983, elementOrHash.elementID: 4419961856.51>
+                        Other, 0x1136a5a40, {{0.0, 791.0}, {402.0, 83.0}} <AX element pid: 7983, elementOrHash.elementID: 4346147072.59>
+            Other, 0x1136a5b80, {{0.0, 784.0}, {402.0, 56.0}} <AX element pid: 7983, elementOrHash.elementID: 4346605376.9>
+            Alert, 0x1136a5cc0, {{0.0, 0.0}, {402.0, 874.0}}, label: 'Hoş geldin' <AX element pid: 7983, elementOrHash.elementID: 4346610560.10>
+              Button, 0x1136a5e00, {{20.0, 82.0}, {44.0, 44.0}}, label: 'Geri', Disabled <AX element pid: 7983, elementOrHash.elementID: 4346605824.13>
+              Other, 0x1136a5f40, {{165.3, 101.0}, {78.0, 6.0}} <AX element pid: 7983, elementOrHash.elementID: 4346606720.14>
+              Button, 0x1136a6080, {{348.7, 94.0}, {29.3, 20.3}}, label: 'Atla' <AX element pid: 7983, elementOrHash.elementID: 4346607168.15>
+              ScrollView, 0x1136a61c0, {{20.0, 132.0}, {362.0, 631.7}} <AX element pid: 7983, elementOrHash.elementID: 4335651840.16>
+                Other, 0x1136a6300, {{20.0, 132.0}, {362.0, 491.7}} <AX element pid: 7983, elementOrHash.elementID: 4349405696.21>
+                  Other, 0x1136a6440, {{20.0, 144.0}, {206.0, 49.3}}, label: 'Solfado' <AX element pid: 7983, elementOrHash.elementID: 4347511680.26>
+                    Other, 0x1136a6580, {{20.0, 144.7}, {48.0, 48.0}} <AX element pid: 7983, elementOrHash.elementID: 4346607616.35>
+                    StaticText, 0x1136a66c0, {{82.0, 144.0}, {71.3, 49.3}}, label: 'Solf' <AX element pid: 7983, elementOrHash.elementID: 4346608512.36>
+                    StaticText, 0x1136a6800, {{154.3, 144.0}, {71.7, 49.3}}, label: 'ado' <AX element pid: 7983, elementOrHash.elementID: 4346608960.37>
+                  StaticText, 0x1136a6940, {{20.0, 211.3}, {353.7, 80.7}}, label: 'Her gün birkaç dakikayla nota okumak kolaylaşsın.' <AX element pid: 7983, elementOrHash.elementID: 4347512128.27>
+                  StaticText, 0x1136a6a80, {{20.0, 311.9}, {347.3, 68.3}}, label: 'Solfado, piyano öğrencileri için kısa pratik turları: nota, ritim, akor ve kulak. Ne kadar ilerlediğini de gösterir.' <AX element pid: 7983, elementOrHash.elementID: 4347525568.28>
+                  Other, 0x1136a6bc0, {{22.0, 400.2}, {122.3, 131.3}}, label: 'Nota okuma, ritim, akor ve kulak çalışmaları' <AX element pid: 7983, elementOrHash.elementID: 4346560512.29>
+                    StaticText, 0x1136a6d00, {{28.5, 400.2}, {7.0, 25.3}}, label: '𝄞' <AX element pid: 7983, elementOrHash.elementID: 4346138560.38>
+                    StaticText, 0x1136a6e40, {{56.0, 402.7}, {88.3, 20.3}}, label: 'Nota okuma' <AX element pid: 7983, elementOrHash.elementID: 4346139904.39>
+                    StaticText, 0x1136a6f80, {{22.0, 435.5}, {20.0, 25.3}}, label: '♩' <AX element pid: 7983, elementOrHash.elementID: 4346140800.40>
+                    StaticText, 0x1136a70c0, {{56.0, 438.0}, {38.3, 20.3}}, label: 'Ritim' <AX element pid: 7983, elementOrHash.elementID: 4346142144.41>
+                    StaticText, 0x1136a7200, {{22.0, 470.8}, {20.0, 25.3}}, label: '♬' <AX element pid: 7983, elementOrHash.elementID: 4346143040.42>
+                    StaticText, 0x1136a7340, {{56.0, 473.3}, {35.7, 20.3}}, label: 'Akor' <AX element pid: 7983, elementOrHash.elementID: 4346075264.43>
+                    StaticText, 0x1136a7480, {{22.0, 506.2}, {20.0, 25.3}}, label: '◉' <AX element pid: 7983, elementOrHash.elementID: 4346077056.44>
+                    StaticText, 0x1136a75c0, {{56.0, 508.7}, {40.7, 20.3}}, label: 'Kulak' <AX element pid: 7983, elementOrHash.elementID: 4346084224.45>
+                  TextField, 0x1136a7700, {{20.0, 555.7}, {362.0, 50.0}}, label: 'Adın (isteğe bağlı)', placeholderValue: 'Adın (isteğe bağlı)' <AX element pid: 7983, elementOrHash.elementID: 4336834816.30>
+                Other, 0x1136a7840, {{349.0, 132.0}, {30.0, 631.7}}, label: 'Düşey sarma çubuğu, 1 sayfa', value: %0 <AX element pid: 7983, elementOrHash.elementID: 4419962368.22>
+                  Other, 0x1136a7980, {{376.0, 753.7}, {3.0, 7.0}} <AX element pid: 7983, elementOrHash.elementID: 4346148864.31>
+                Other, 0x1136a7ac0, {{349.0, 132.0}, {30.0, 631.7}}, label: 'Düşey sarma çubuğu, 1 sayfa', value: %0 <AX element pid: 7983, elementOrHash.elementID: 4419962368.22>
+                  Other, 0x1136a7c00, {{376.0, 753.7}, {3.0, 7.0}} <AX element pid: 7983, elementOrHash.elementID: 4346148864.31>
+              Button, 0x1136a7d40, {{20.0, 763.7}, {362.0, 52.3}}, label: 'Başla' <AX element pid: 7983, elementOrHash.elementID: 4346610112.17>
