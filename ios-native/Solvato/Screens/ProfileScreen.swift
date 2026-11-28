@@ -1,4 +1,4 @@
-// Profil sekmesi: ad ve renk, ünvan ve "…'den beri", öğretmen kodu kartı, seviye kartı (açıklamalı), ünvan kartı
+// Profil sekmesi: ad ve profil resmi (hep mor, baş harf), ünvan ve "…'den beri", öğretmen kodu kartı, seviye kartı (açıklamalı), ünvan kartı
 // (liste), haftalık rapor (seri / tur / soru kutuları İlerleme'de). Başlık Apple'ın gezinme çubuğunda (büyük başlık);
 // Ayarlar yalnız sağ üstteki çubuk düğmesinden (dişli). "Tüm ilerleme" düğmesi yok: İlerleme alt menüde.
 // Web src/screens/profile/ProfileScreen.tsx; gezinme revizesi docs/ozellikler/gezinme.md (R5, R14, R20), gezinme-cubugu.md.
@@ -18,7 +18,7 @@ struct ProfileScreen: View {
         ScrollView {
             VStack(spacing: Space.s3) {
                 VStack(spacing: Space.s3) {
-                    Avatar(name: name, color: s.avatarColor, size: 80)
+                    Avatar(name: name, size: 80)
                     TextField("", text: $name, prompt: Text("İsmin").foregroundStyle(ThemeColor.textFaint.color))
                         .font(.ui(FontSize.lg, .heavy))
                         .foregroundStyle(ThemeColor.text.color)
@@ -33,26 +33,6 @@ struct ProfileScreen: View {
                             if cut != v { name = cut }
                             model.settings.name = cut.trimmingCharacters(in: .whitespacesAndNewlines)
                         }
-                    HStack(spacing: Space.s2) {
-                        ForEach(Avatar.colors, id: \.key) { c in
-                            Button { model.settings.avatarColor = c.key } label: {
-                                CSSLinearGradient([c.stops.0.color, c.stops.1.color])
-                                    .clipShape(Circle())
-                                    .frame(width: 28, height: 28)
-                                    // Web outline 2 px, outlineOffset 2: halka renkten 2 pt açıkta
-                                    .padding(4)
-                                    .overlay(Circle().strokeBorder(s.avatarColor == c.key ? ThemeColor.text.color : .clear, lineWidth: 2))
-                                    // Web'de halka yer kaplamaz: yerleşimde 28 pt
-                                    .padding(-4)
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityLabel(c.key)
-                            .accessibilityAddTraits(s.avatarColor == c.key ? .isSelected : [])
-                        }
-                    }
-                    // Web role="radiogroup" aria-label="Profil rengi"
-                    .accessibilityElement(children: .contain)
-                    .accessibilityLabel("Profil rengi")
                     Text(ProfileText.subtitle(rankLabel: rank.label, joinedAt: s.joinedAt, clock: model.now.clock))
                         .font(.ui(FontSize.sm))
                         .foregroundStyle(ThemeColor.textMuted.color)

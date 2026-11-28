@@ -51,10 +51,10 @@ struct DesignSystemScreen: View {
     private var shellParts: some View {
         VStack(alignment: .leading, spacing: Space.s4) {
             HStack(spacing: Space.s3) {
-                Avatar(name: "ada", color: "violet")
-                Avatar(name: "Çağrı", color: "amber")
-                Avatar(name: "", color: "cyan")
-                ForEach(Avatar.colors.map(\.key), id: \.self) { Avatar(name: "S", color: $0, size: 28) }
+                Avatar(name: "ada")
+                Avatar(name: "Çağrı")
+                Avatar(name: "")
+                Avatar(name: "S", size: 28)
             }
             ScreenHeader(title: "Ayarlar", flush: true, onBack: {})
             TopicLink(color: .chords, icon: .piano, title: "Akor", sub: "Tanı, tuşlara bas", stars: 2) {}

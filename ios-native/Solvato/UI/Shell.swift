@@ -6,18 +6,15 @@ import SwiftUI
 // MARK: - Profil resmi
 /// Seçilen renkte daire, içinde ismin baş harfi (isim yoksa nota ikonu)
 struct Avatar: View {
-    /// Seçilebilir renkler: palet adı → [üst, alt] gradyan (web AVATAR_COLORS)
-    static let colors: [(key: String, stops: (PaletteColor, PaletteColor))] = [
-        ("violet", (.violet500, .violet800)), ("blue", (.blue500, .blue700)), ("green", (.green500, .green700)),
-        ("amber", (.amber400, .amber600)), ("pink", (.pink400, .pink500)), ("cyan", (.cyan400, .teal700)),
-    ]
+    /// Hep mor gradyan; renk seçimi kalktı, eski kayıttaki seçim (avatarColor) kullanılmaz (kullanici-testi-revize.md
+    /// madde 9)
+    static let stops: (PaletteColor, PaletteColor) = (.violet500, .violet800)
 
     let name: String
-    var color = "violet"
     var size: Double = 44
 
     var body: some View {
-        let stops = Self.colors.first { $0.key == color }?.stops ?? Self.colors[0].stops
+        let stops = Self.stops
         let initial = name.trimmingCharacters(in: .whitespacesAndNewlines).prefix(1).uppercased(with: Locale(identifier: "tr"))
         ZStack {
             CSSLinearGradient([stops.0.color, stops.1.color]).clipShape(Circle())
