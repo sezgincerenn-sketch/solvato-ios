@@ -67,7 +67,7 @@ final class ScreenshotTests: XCTestCase {
             ("tanitim-4-ayarlar-alt", base + ["^"]),
             ("tanitim-4-saat", base + ["^", "Hatırlatma saati"]),
             ("tanitim-4-geri", base + ["Geri"]),
-            ("tanitim-5-hazir", base + ["^", "Günlük hatırlatma", "Devam"]),
+            ("tanitim-5-hazir", base + ["^", "⏻Günlük hatırlatma", "Devam"]),
         ]
         try runTanitim(steps)
     }
@@ -95,6 +95,14 @@ final class ScreenshotTests: XCTestCase {
                     // "+1.4": bekle (denemede kendiliğinden geçiş); "^": yukarı kaydır
                     if label.hasPrefix("+") {
                         Thread.sleep(forTimeInterval: Double(label.dropFirst()) ?? 1)
+                        continue
+                    }
+                    // "⏻Ad": anahtar (Switch) öğesi
+                    if label.hasPrefix("⏻") {
+                        let sw = app.switches[String(label.dropFirst())].firstMatch
+                        try must(app, sw, "\(name): \(label) yok", shot: "\(name)-hata-\(tr)", timeout: 3)
+                        sw.tap()
+                        Thread.sleep(forTimeInterval: 0.35)
                         continue
                     }
                     if label == "^" {
@@ -513,10 +521,11 @@ final class ScreenshotTests: XCTestCase {
             app.terminate()
             for (name, scenario, topic) in topics {
                 XCUIDevice.shared.orientation = .portrait
+                Thread.sleep(forTimeInterval: 1.0)
                 let app = try launch(theme: theme, scenario: scenario)
                 XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
-                let card = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", topic)).firstMatch
-                for _ in 0..<6 where !(card.exists && card.isHittable) { app.swipeUp(velocity: .slow) }
+                let card = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", topic)).firstMatch
+                for _ in 0..<8 where !(card.exists && card.isHittable) { app.swipeUp(velocity: .slow) }
                 card.tap()
                 try must(app, app.buttons["Turdan çık"], "\(name): tur açılmadı", shot: "\(name)-hata-\(tr)", timeout: 5)
                 XCUIDevice.shared.orientation = .landscapeLeft
