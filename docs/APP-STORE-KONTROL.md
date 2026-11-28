@@ -142,7 +142,8 @@ Kural: uygulama "yeniden paketlenmiş bir web sitesinin" ötesine geçen özelli
   iletişim e-postası, alan adı (Cloudflare) ve Cloudflare Pages'te yayın.
 - **28 Kasım:** ad ve e-posta girildi (Ceren Sezgin Kahraman, solfado.destek@gmail.com). Yayın GitHub Pages'te
   (`.github/workflows/site.yml`): https://sezgincerenn-sketch.github.io/solvato-ios/gizlilik/ ve `/destek/`. Bu iki adres
-  App Store Connect'e girilir. Kendi alan adı alınırsa oraya taşınır.
+  App Store Connect'e girilir. Adreste depo adı (solvato-ios) geçiyor; Ceren: şimdilik böyle kalsın (28 Kasım). Kendi
+  alan adı (ör. solfado.app) alınınca oraya taşınır: `site.yml`'de SITE_BASE "/", Pages ayarına alan adı.
 
 ## 3. Info.plist (`ios/App/App/Info.plist`)
 
