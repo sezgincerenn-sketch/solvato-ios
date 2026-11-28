@@ -48,8 +48,16 @@ final class AccessibilityTests: XCTestCase {
         }
     }
 
+    /// iPad yönleri iki teste bölünür (9 ekran × 4 yön 10 dakika sınırını aşıyor)
     @MainActor
-    func testIpadYonler() throws {
+    func testIpadYonler() throws { try orientationShots(["pratik", "ilerleme", "ogren", "profil", "ayarlar"]) }
+
+    /// iPad yönleri: Oyunlar ve turlar
+    @MainActor
+    func testIpadYonlerTur() throws { try orientationShots(["oyunlar", "soru", "akor", "ritmi-tut"]) }
+
+    @MainActor
+    private func orientationShots(_ screens: [String]) throws {
         let pad = UIDevice.current.userInterfaceIdiom == .pad
         try XCTSkipUnless(pad, "yönler iPad'de denenir")
         continueAfterFailure = true
@@ -58,7 +66,7 @@ final class AccessibilityTests: XCTestCase {
             (.portrait, "dikey"), (.landscapeLeft, "yatay-sol"), (.portraitUpsideDown, "ters-dikey"), (.landscapeRight, "yatay-sag"),
         ]
         defer { XCUIDevice.shared.orientation = .portrait }
-        for screen in ["pratik", "ilerleme", "ogren", "profil", "ayarlar", "oyunlar", "soru", "akor", "ritmi-tut"] {
+        for screen in screens {
             XCUIDevice.shared.orientation = .portrait
             let app = try launch(theme: "dark", scenario: scenario(for: screen))
             if !goTo(app, screen) { XCTFail("\(screen) açılmadı") }

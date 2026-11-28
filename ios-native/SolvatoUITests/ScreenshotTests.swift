@@ -138,24 +138,33 @@ final class ScreenshotTests: XCTestCase {
     }
 
     /// Soru turu: Pratik'ten konu kartına dokunup tur açılır (web referans senaryolarıyla aynı adlar ve adımlar)
+    /// İki teste bölünür (12 senaryo × 2 tema 10 dakika sınırını aşıyor): Sol anahtarı adımları ve diğer konular
     @MainActor
-    func testSoru() throws {
+    func testSoru() throws { try quizShots(Array(Self.quizSteps.prefix(5)) + Array(Self.quizSteps.suffix(2))) }
+
+    /// Soru turu: diğer konular (Diyez & Bemol, Ritim, Terim, Yazım, Kulak)
+    @MainActor
+    func testSoruKonular() throws { try quizShots(Array(Self.quizSteps.dropFirst(5).dropLast(2))) }
+
+    /// (senaryo, dokunulacak konu, sonra yapılacak: ipucu / yanlis / dogru / cikis / boş)
+    static let quizSteps: [(String, String, String)] = [
+        ("soru-nota", "Sol Anahtarı", ""),
+        ("soru-nota-ipucu", "Sol Anahtarı", "ipucu"),
+        ("soru-nota-yanlis", "Sol Anahtarı", "yanlis"),
+        ("soru-nota-dogru", "Sol Anahtarı", "dogru"),
+        ("soru-nota-siklar", "Fa Anahtarı", ""),
+        ("soru-diyez", "Diyez & Bemol", ""),
+        ("soru-ritim", "Ritim & Ölçü", ""),
+        ("soru-terim", "Müzik Terimleri", ""),
+        ("soru-yazim", "Nota Yazımı", ""),
+        ("soru-kulak", "Kulak", ""),
+        ("soru-sure", "Sol Anahtarı", ""),
+        ("soru-cikis", "Sol Anahtarı", "cikis"),
+    ]
+
+    @MainActor
+    private func quizShots(_ steps: [(String, String, String)]) throws {
         continueAfterFailure = false
-        // (senaryo, dokunulacak konu, sonra yapılacak: ipucu / yanlis / dogru / cikis / boş)
-        let steps: [(String, String, String)] = [
-            ("soru-nota", "Sol Anahtarı", ""),
-            ("soru-nota-ipucu", "Sol Anahtarı", "ipucu"),
-            ("soru-nota-yanlis", "Sol Anahtarı", "yanlis"),
-            ("soru-nota-dogru", "Sol Anahtarı", "dogru"),
-            ("soru-nota-siklar", "Fa Anahtarı", ""),
-            ("soru-diyez", "Diyez & Bemol", ""),
-            ("soru-ritim", "Ritim & Ölçü", ""),
-            ("soru-terim", "Müzik Terimleri", ""),
-            ("soru-yazim", "Nota Yazımı", ""),
-            ("soru-kulak", "Kulak", ""),
-            ("soru-sure", "Sol Anahtarı", ""),
-            ("soru-cikis", "Sol Anahtarı", "cikis"),
-        ]
         for (name, topic, action) in steps {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: name)
@@ -202,10 +211,17 @@ final class ScreenshotTests: XCTestCase {
 
     /// Profil ve Ayarlar (web "profil", "profil-alt", "ayarlar", "ayarlar-alt")
     @MainActor
-    func testProfilAyarlar() throws {
+    func testProfilAyarlar() throws { try profileShots(["profil", "profil-alt", "ayarlar", "ayarlar-alt"]) }
+
+    /// Ayarlar ayrıntıları (ayarlar.md): seçim penceresi (Günlük hedef), Çalışılacak notalar ekranı, sıfırlama onayı.
+    /// Ayrı test: hepsi birlikte 10 dakika sınırını aşıyor.
+    @MainActor
+    func testAyarlarDetay() throws { try profileShots(["ayarlar-pencere", "ayarlar-notalar", "ayarlar-sifirla"]) }
+
+    @MainActor
+    private func profileShots(_ names: [String]) throws {
         continueAfterFailure = false
-        // ayarlar.md: seçim penceresi (Günlük hedef), Çalışılacak notalar ekranı, sıfırlama onayı
-        for name in ["profil", "profil-alt", "ayarlar", "ayarlar-alt", "ayarlar-pencere", "ayarlar-notalar", "ayarlar-sifirla"] {
+        for name in names {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: name.hasPrefix("profil") ? name : "ayarlar")
                 XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
@@ -234,7 +250,14 @@ final class ScreenshotTests: XCTestCase {
     /// Öğretmen kodu, Gizlilik ve Lisanslar (web "ogretmen-kodu…", "gizlilik", "lisanslar"): öğretmen kodu Profil'deki
     /// karttan, Gizlilik ve Lisanslar Profil › Ayarlar'dan açılır
     @MainActor
-    func testOgretmenHukuk() throws {
+    func testOgretmenHukuk() throws { try teacherLegalShots(["ogretmen-kodu", "ogretmen-kodu-alt", "ogretmen-kodu-hata", "ogretmen-kodu-uygulandi"]) }
+
+    /// Gizlilik ve Lisanslar (Profil › Ayarlar'dan); ayrı test: 10 dakika sınırı
+    @MainActor
+    func testHukuk() throws { try teacherLegalShots(["gizlilik", "lisanslar"]) }
+
+    @MainActor
+    private func teacherLegalShots(_ names: [String]) throws {
         continueAfterFailure = false
         func open(_ app: XCUIApplication, _ row: String) {
             XCTAssertTrue(app.buttons["Profil"].waitForExistence(timeout: 10))
@@ -249,7 +272,7 @@ final class ScreenshotTests: XCTestCase {
             link.tap()
             Thread.sleep(forTimeInterval: 0.6)
         }
-        for name in ["ogretmen-kodu", "ogretmen-kodu-alt", "ogretmen-kodu-hata", "ogretmen-kodu-uygulandi", "gizlilik", "lisanslar"] {
+        for name in names {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: name)
                 switch name {
@@ -349,16 +372,26 @@ final class ScreenshotTests: XCTestCase {
     /// Oyunlar (web "oyunlar…", "gunun-oyunu…", "meydan-oku…", "oyun-sonucu-…"): Pratik'teki Oyunlar kartından
     @MainActor
     func testOyunlar() throws {
-        continueAfterFailure = false
-        // 10 senaryo × 2 tema; iPad'de varsayılan 10 dakikayı aşıyordu (ekranlar dalı, hata-testOyunlar-ipad)
-        executionTimeAllowance = 1800
-        let steps: [(String, [String])] = [
+        try gameShots([
             ("oyunlar", []), ("oyunlar-oynandi", []),
             ("gunun-oyunu", ["Günün meydan okuması"]), ("gunun-oyunu-oynandi", ["Günün meydan okuması"]),
             ("meydan-oku", ["Arkadaşına meydan oku"]), ("meydan-oku-hata", ["Arkadaşına meydan oku"]),
+        ])
+    }
+
+    /// Oyun sonuçları (tur oynanır) ve akor düellosu; ayrı test: 10 senaryo × 2 tema 10 dakika sınırını aşıyor
+    @MainActor
+    func testOyunSonuclari() throws {
+        try gameShots([
             ("oyun-sonucu-gunluk", ["Günün meydan okuması", "Oyna"]), ("oyun-sonucu-kod", ["Arkadaşına meydan oku", "Başla"]),
             ("duello-kurulum", ["Akor düellosu"]), ("duello-oyun", ["Akor düellosu", "Başlayalım"]),
-        ]
+        ])
+    }
+
+    @MainActor
+    private func gameShots(_ steps: [(String, [String])]) throws {
+        continueAfterFailure = false
+        executionTimeAllowance = 1800
         for (name, taps) in steps {
             for (theme, tr) in [("dark", "koyu"), ("light", "acik")] {
                 let app = try launch(theme: theme, scenario: name)
