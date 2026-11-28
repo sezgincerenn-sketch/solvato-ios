@@ -154,10 +154,12 @@ struct RhythmTapScreen: View {
 
     private var tapArea: some View {
         let active = round.phase == .play || round.phase == .countin
-        let enabled = round.phase == .play || round.phase == .countin
+        let enabled = active || round.tapStarts
         return Text(round.tapLabel)
             .font(.ui(FontSize.xl, .heavy))
-            .foregroundStyle(active ? CategoryColor.rhythm.text.color : ThemeColor.textFaint.color)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, Space.s4)
+            .foregroundStyle(active ? CategoryColor.rhythm.text.color : round.tapStarts ? ThemeColor.textSecondary.color : ThemeColor.textMuted.color)
             .frame(maxWidth: .infinity)
             .frame(height: 150)
             .background(
@@ -169,9 +171,10 @@ struct RhythmTapScreen: View {
             .animation(.linear(duration: 0.06), value: round.pulse)
             .contentShape(Rectangle())
             // Parmak değdiği an sayılır (web onPointerDown); her parmak ayrı vuruş (sırayla iki parmakla vurulabilir)
+            // Tur başlamadan dokunmak turu başlatır (Başla gibi)
             .overlay(TouchDownPad { if enabled { tap() } })
             .accessibilityElement()
-            .accessibilityLabel("Dokun")
+            .accessibilityLabel(round.tapStarts ? round.tapLabel : "Dokun")
             // VoiceOver açıkken de parmak değdiği an vuruş sayılır (çift dokunma gerekmez)
             .accessibilityAddTraits([.isButton, .allowsDirectInteraction])
             .accessibilityAction { tap() }
@@ -196,6 +199,10 @@ struct RhythmTapScreen: View {
 
     /// Dokunuş: güçlü titreşim (R22); duyulan sese göre ölçülür (dokunuş anından ses gecikmesi düşülür)
     private func tap() {
+        if round.tapStarts {
+            start(.play)
+            return
+        }
         guard round.phase == .play || round.phase == .countin else { return }
         // Önce ölçülür, sonra titreşim: titreşim çağrısı ölçümü geciktirmesin
         round.tap(now: Sound.now - Sound.latency)

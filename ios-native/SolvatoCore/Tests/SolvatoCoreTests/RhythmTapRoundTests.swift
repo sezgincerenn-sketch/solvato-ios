@@ -9,7 +9,11 @@ final class RhythmTapRoundTests: XCTestCase {
         XCTAssertEqual(r.bpm, 76)
         XCTAssertEqual(r.patterns.count, RhythmTap.roundLength)
         XCTAssertEqual(r.header, "Ritmi Tut · 1/6")
+        // Tur başlamadan alan "Başlamak için dokun" der ve dokununca başlar
+        XCTAssertEqual(r.tapLabel, "Başlamak için dokun")
+        XCTAssertTrue(r.tapStarts)
         let plan = r.start(.play, now: 10)
+        XCTAssertFalse(r.tapStarts)
         XCTAssertEqual(plan.clicks.count, 8)
         XCTAssertTrue(plan.beats.isEmpty)
         XCTAssertEqual(r.phase, .countin)

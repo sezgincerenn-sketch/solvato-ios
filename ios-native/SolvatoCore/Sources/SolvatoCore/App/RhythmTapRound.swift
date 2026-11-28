@@ -121,9 +121,12 @@ public struct RhythmTapRound: Sendable {
         case .play: "Dokun"
         case .countin: "Hazır…"
         case .listen: "Dinle…"
-        default: "Dokunma alanı"
+        default: "Başlamak için dokun"
         }
     }
+
+    /// Tur başlamadan alan dokununca turu başlatır (Başla düğmesiyle aynı; kullanici-testi-revize.md madde 7)
+    public var tapStarts: Bool { phase == .ready }
 
     /// "5/6 vuruş yerinde · 1 fazla dokunuş" ve "%72" (renkli kısım)
     public var summary: (main: String, pct: String)? {
