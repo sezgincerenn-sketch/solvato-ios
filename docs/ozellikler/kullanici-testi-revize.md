@@ -1,6 +1,6 @@
 # Kullanıcı testi revizeleri (28 Kasım)
 
-Durum: **uygulandı (28 Kasım 2026)**; "Bize yaz" destek adresini bekliyor. SSS metinleri Ceren'in onayından geçti (28 Kasım). Yalnız native iOS (`ios-native/`). Kaynak: kapalı
+Durum: **uygulandı (28 Kasım 2026)**; "Bize yaz" destek adresini bekliyor. SSS metinleri Ceren'in onayından geçti; yan çevirme, akor sesi, Ritmi Tut ve WhatsApp paylaşımı TestFlight 2016'da denendi (28 Kasım). Yalnız native iOS (`ios-native/`). Kaynak: kapalı
 test (yüz yüze) notları. Bitince `inceleyici` ajanının karşılaştıracağı ölçüttür. Her madde ayrı commit olabilir.
 
 **Vazgeçilen:** sekme başlıklarının (İlerleme, Öğren, Profil) büyükten küçüğe geçişi bugünkü gibi kalır (Ceren: "bu
@@ -157,15 +157,15 @@ emeğini gösteren küçük eklemeler (toplam çalışma süresi, yardım ekran�
 - [ ] Tanıtım 6 adım; anahtar, seviye, hedef ve hatırlatma tek ekranda; öğretmen yolu 4. adımda bitiyor.
 - [ ] Seri hapına dokununca doğru metinle balon açılıyor, 3 sn sonra kapanıyor.
 - [ ] Günün meydan okuması oynandıysa "Oyna" yok; bugünkü sonuç, "Sonucu paylaş" ve "Yeni meydan okuma yarın" var.
-- [ ] Yan çevrilmiş karma turda piyano sorusundan sonra şıklı, ritim ve kulak soruları yan düzende taşmadan görünüyor.
-- [ ] Akor sorusu açılınca akor bir kez çalıyor; Ses kapalıyken çalmıyor.
-- [ ] Ritmi Tut'ta tur başlamadan alanda "Başlamak için dokun" yazıyor; dokununca tur başlıyor.
+- [x] Yan çevrilmiş karma turda piyano sorusundan sonra şıklı, ritim ve kulak soruları yan düzende taşmadan görünüyor.
+- [x] Akor sorusu açılınca akor bir kez çalıyor; Ses kapalıyken çalmıyor.
+- [x] Ritmi Tut'ta tur başlamadan alanda "Başlamak için dokun" yazıyor; dokununca tur başlıyor.
 - [ ] İlerleme'de Toplam süre · Tamamlanan tur · Çözülen soru; süre turlarda ve derslerde artıyor, diğer ekranlarda
       artmıyor; "35 dk" / "2 sa 15 dk" biçimi (çekirdek testi).
 - [ ] Profil'de renk seçimi yok; profil resmi mor.
 - [ ] Ayarlar'da Yardım ve destek satırı ve SSS ekranı var; "Bize yaz" Mail'i açıyor (adres geldikten sonra).
 - [ ] Düello kurulumunda ad kutuları boş, yer tutucu soluk; boş bırakılınca oyunda "1. oyuncu".
-- [ ] WhatsApp'ta uygulama içinden kişi seçince metnin tamamı gidiyor (TestFlight'ta elle denenir).
+- [x] WhatsApp'ta uygulama içinden kişi seçince metnin tamamı gidiyor (TestFlight'ta elle denenir).
 - [ ] Koyu/açık tema, iPhone SE, iPhone, iPad ekran görüntülerinde yeni parçalar taşmıyor; erişilebilirlik denetiminde
       yeni bulgu yok.
 
