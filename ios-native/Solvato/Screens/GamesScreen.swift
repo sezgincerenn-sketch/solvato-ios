@@ -81,9 +81,14 @@ struct DailyGameScreen: View {
     let model: AppModel
 
     var body: some View {
+        // Dakikada bir yeniden çizilir: sayfa açıkken gece yarısı geçerse yeni meydan okuma görünür
+        TimelineView(.everyMinute) { _ in page }
+    }
+
+    private var page: some View {
         let today = model.todayGame
         let played = model.todayDaily
-        GamePage(model: model, view: .gameDaily) {
+        return GamePage(model: model, view: .gameDaily) {
             AppCard(tone: CategoryColor.games.base) {
                 VStack(alignment: .leading, spacing: Space.s3) {
                     Text("BUGÜN · #\(today.number)")
@@ -98,10 +103,15 @@ struct DailyGameScreen: View {
                             muted(Games.formatSeconds(p.sec))
                         }
                         Text(p.marks).font(.ui(FontSize.md)).tracking(1)
-                        muted(GameScreens.dailyFooter(streak: model.gameStreak))
+                        if let note = GameScreens.dailyStreakNote(streak: model.gameStreak) { muted(note) }
                         AppButton(
                             "Sonucu paylaş", variant: .success, block: true,
                             share: GameScreens.dailyShareText(no: today.number, category: today.category, correct: p.correct, sec: p.sec, marks: p.marks))
+                        // Günde bir kez: "Oyna" yok; gece yarısı (telefonun saatiyle) yenisi açılır
+                        Text(GameScreens.dailyNext)
+                            .font(.ui(FontSize.sm, .semibold))
+                            .foregroundStyle(ThemeColor.textMuted.color)
+                            .frame(maxWidth: .infinity)
                     } else {
                         muted(GameScreens.dailyIntro)
                         AppButton("Oyna", variant: .success, block: true) {

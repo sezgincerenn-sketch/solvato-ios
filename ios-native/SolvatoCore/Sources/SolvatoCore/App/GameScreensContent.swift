@@ -16,12 +16,16 @@ public enum GameScreens {
         "🎹 Solfado · Günün meydan okuması #\(no)\n\(category.label) · \(correct)/\(Games.length) · \(Games.formatSeconds(sec))\n\(marks)"
     }
 
-    public static func dailyFooter(streak: Int) -> String {
-        "Yarın yeni sorular gelecek." + (streak > 1 ? " \(streak) gündür üst üste oynuyorsun." : "")
+    /// Bugün oynandıysa sonucun altında: üst üste kaç gündür oynandığı (2 ve üstü)
+    public static func dailyStreakNote(streak: Int) -> String? {
+        streak > 1 ? "\(streak) gündür üst üste oynuyorsun." : nil
     }
 
+    /// Bugün oynandıysa "Sonucu paylaş"ın altında (günde bir kez; gece yarısı yenisi açılır)
+    public static let dailyNext = "Yeni meydan okuma yarın"
+
     public static let dailyIntro =
-        "Herkes bugün aynı \(Games.length) soruyu çözüyor. Günde bir kez oynanır, ilk denemen sayılır. Bitince sonucunu arkadaşlarına gönder, kim daha iyi yapmış görün."
+        "Herkes bugün aynı \(Games.length) soruyu çözüyor. Günde bir kez oynanır. Bitince sonucunu arkadaşlarına gönder, kim daha iyi yapmış görün."
 
     /// Meydan okuma kodu kutusu: büyük harf, en çok 9 karakter
     /// Meydan okuma kodu kutusu: büyük harf, 8 karakter, dördüncüden sonra tire kendiliğinden (R31)
@@ -40,7 +44,9 @@ public enum GameScreens {
     public static func dailyTexts(today: DailyInfo, played: DailyRecord?, streak: Int) -> [String] {
         var t = ["Günün meydan okuması", "Bugün · #\(today.number)", today.category.label]
         if let p = played {
-            t += ["\(p.correct)/\(Games.length)", Games.formatSeconds(p.sec), p.marks, dailyFooter(streak: streak), "Sonucu paylaş"]
+            t += ["\(p.correct)/\(Games.length)", Games.formatSeconds(p.sec), p.marks]
+            if let note = dailyStreakNote(streak: streak) { t.append(note) }
+            t += ["Sonucu paylaş", dailyNext]
         } else {
             t += [dailyIntro, "Oyna"]
         }
