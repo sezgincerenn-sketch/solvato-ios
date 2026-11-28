@@ -1,8 +1,10 @@
 // Metin paylaşma düğmesi: sistemin paylaşım menüsünü açar; içerik yalnız düz metin olarak verilir. SwiftUI ShareLink
 // metindeki App Store bağlantısını ayrıca bağlantı olarak da sunuyordu; WhatsApp'ta menüden kişi seçilince yalnız
 // bağlantı gidiyordu (kullanici-testi-revize.md madde 12). Kullanıldığı yer: AppButton (share:), Profil ve İlerleme'deki
-// haftalık rapor. Uygulama kendisi bir şey göndermez; seçilen uygulama gönderir.
+// haftalık rapor. WhatsApp'a bağlantı "https://" olmadan gider (AppStoreLink.forWhatsApp). Uygulama kendisi bir şey
+// göndermez; seçilen uygulama gönderir.
 import LinkPresentation
+import SolvatoCore
 import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
@@ -19,11 +21,24 @@ struct ShareTextLink<Label: View>: View {
     }
 
     private func present() {
-        guard let view = anchor.view, let window = view.window, var top = window.rootViewController else { return }
+        // Gezinme çubuğundaki düğmede (İlerleme'nin sağ üstü) alttaki görünüm pencereye bağlı olmayabilir: o zaman
+        // uygulamanın açık penceresi kullanılır, iPad'de menü sağ üstten açılır
+        let anchored = anchor.view.flatMap { $0.window != nil ? $0 : nil }
+        let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive } ?? UIApplication.shared.connectedScenes.first as? UIWindowScene
+        guard let window = anchored?.window ?? scene?.keyWindow ?? scene?.windows.first, var top = window.rootViewController
+        else { return }
         while let p = top.presentedViewController { top = p }
         let sheet = UIActivityViewController(activityItems: [PlainTextShareItem(text: text)], applicationActivities: nil)
-        sheet.popoverPresentationController?.sourceView = view
-        sheet.popoverPresentationController?.sourceRect = view.bounds
+        if let popover = sheet.popoverPresentationController {
+            if let anchored {
+                popover.sourceView = anchored
+                popover.sourceRect = anchored.bounds
+            } else {
+                popover.sourceView = top.view
+                popover.sourceRect = CGRect(x: top.view.bounds.maxX - 44, y: top.view.safeAreaInsets.top, width: 1, height: 1)
+            }
+        }
         top.present(sheet, animated: true)
     }
 }
@@ -35,7 +50,9 @@ private final class PlainTextShareItem: NSObject, UIActivityItemSource {
 
     func activityViewControllerPlaceholderItem(_ controller: UIActivityViewController) -> Any { text }
 
-    func activityViewController(_ controller: UIActivityViewController, itemForActivityType type: UIActivity.ActivityType?) -> Any? { text }
+    func activityViewController(_ controller: UIActivityViewController, itemForActivityType type: UIActivity.ActivityType?) -> Any? {
+        AppStoreLink.isWhatsApp(type?.rawValue) ? AppStoreLink.forWhatsApp(text) : text
+    }
 
     func activityViewController(_ controller: UIActivityViewController, dataTypeIdentifierForActivityType type: UIActivity.ActivityType?) -> String {
         UTType.plainText.identifier

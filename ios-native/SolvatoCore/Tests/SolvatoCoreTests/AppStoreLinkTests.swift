@@ -14,4 +14,14 @@ final class AppStoreLinkTests: XCTestCase {
         XCTAssertEqual(GameScreens.pastedCode(msg), "ABCD-EFGH")
         XCTAssertEqual(TeacherFlow.pasted(AppStoreLink.appended(to: "ABC-DEF\n\n🎹 Solfado")), "ABC-DEF")
     }
+
+    /// WhatsApp'a bağlantı "https://" olmadan gider (metin kaybolmasın); diğer uygulamalara tam metin
+    func testWhatsApp() {
+        let msg = AppStoreLink.appended(to: "ABC-DEF")
+        XCTAssertEqual(AppStoreLink.forWhatsApp(msg), "ABC-DEF\n\nSolfado'yu App Store'dan indir: apps.apple.com/app/id6837820383")
+        XCTAssertTrue(AppStoreLink.isWhatsApp("net.whatsapp.WhatsApp.ShareExtension"))
+        XCTAssertFalse(AppStoreLink.isWhatsApp("com.apple.UIKit.activity.Message"))
+        XCTAssertFalse(AppStoreLink.isWhatsApp(nil))
+        XCTAssertEqual(TeacherFlow.pasted(AppStoreLink.forWhatsApp(msg)), "ABC-DEF")
+    }
 }
