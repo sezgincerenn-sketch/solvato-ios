@@ -80,6 +80,7 @@ emeğini gösteren küçük eklemeler (toplam çalışma süresi, yardım ekran�
   kulak "Dinle"), sağda cevaplar (klavye ya da şıklar). Piyano sorusundan sonra gelen şıklı soru da yan düzende kalır,
   ekran taşmaz ve kaymaz.
 - Dik çevrilince bugünkü dik düzen. Akor turu da aynı kurala uyar.
+- Karar (Ceren, 28 Kasım): klavyeli sorularda klavye yan düzende altta, tam genişlikte kalır (sağ sütuna geçmez).
 
 ### 6. Akor soruları: açılınca ses
 
